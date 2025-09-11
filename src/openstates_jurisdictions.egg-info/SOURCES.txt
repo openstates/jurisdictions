@@ -1,0 +1,7 @@
+LICENSE
+README.md
+pyproject.toml
+src/openstates_jurisdictions.egg-info/PKG-INFO
+src/openstates_jurisdictions.egg-info/SOURCES.txt
+src/openstates_jurisdictions.egg-info/dependency_links.txt
+src/openstates_jurisdictions.egg-info/top_level.txt
