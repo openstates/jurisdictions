@@ -1,0 +1,506 @@
+[
+  {
+    "gid": 23,
+    "region": "3",
+    "division": "6",
+    "statefp": "01",
+    "statens": "01779775",
+    "stusps": "AL",
+    "name": "Alabama"
+  },
+  {
+    "gid": 41,
+    "region": "4",
+    "division": "9",
+    "statefp": "02",
+    "statens": "01785533",
+    "stusps": "AK",
+    "name": "Alaska"
+  },
+  {
+    "gid": 56,
+    "region": "4",
+    "division": "8",
+    "statefp": "04",
+    "statens": "01779777",
+    "stusps": "AZ",
+    "name": "Arizona"
+  },
+  {
+    "gid": 44,
+    "region": "3",
+    "division": "7",
+    "statefp": "05",
+    "statens": "00068085",
+    "stusps": "AR",
+    "name": "Arkansas"
+  },
+  {
+    "gid": 14,
+    "region": "4",
+    "division": "9",
+    "statefp": "06",
+    "statens": "01779778",
+    "stusps": "CA",
+    "name": "California"
+  },
+  {
+    "gid": 27,
+    "region": "4",
+    "division": "8",
+    "statefp": "08",
+    "statens": "01779779",
+    "stusps": "CO",
+    "name": "Colorado"
+  },
+  {
+    "gid": 11,
+    "region": "1",
+    "division": "1",
+    "statefp": "09",
+    "statens": "01779780",
+    "stusps": "CT",
+    "name": "Connecticut"
+  },
+  {
+    "gid": 12,
+    "region": "3",
+    "division": "5",
+    "statefp": "10",
+    "statens": "01779781",
+    "stusps": "DE",
+    "name": "Delaware"
+  },
+  {
+    "gid": 54,
+    "region": "3",
+    "division": "5",
+    "statefp": "11",
+    "statens": "01702382",
+    "stusps": "DC",
+    "name": "District of Columbia"
+  },
+  {
+    "gid": 2,
+    "region": "3",
+    "division": "5",
+    "statefp": "12",
+    "statens": "00294478",
+    "stusps": "FL",
+    "name": "Florida"
+  },
+  {
+    "gid": 22,
+    "region": "3",
+    "division": "5",
+    "statefp": "13",
+    "statens": "01705317",
+    "stusps": "GA",
+    "name": "Georgia"
+  },
+  {
+    "gid": 32,
+    "region": "4",
+    "division": "9",
+    "statefp": "15",
+    "statens": "01779782",
+    "stusps": "HI",
+    "name": "Hawaii"
+  },
+  {
+    "gid": 7,
+    "region": "4",
+    "division": "8",
+    "statefp": "16",
+    "statens": "01779783",
+    "stusps": "ID",
+    "name": "Idaho"
+  },
+  {
+    "gid": 3,
+    "region": "2",
+    "division": "3",
+    "statefp": "17",
+    "statens": "01779784",
+    "stusps": "IL",
+    "name": "Illinois"
+  },
+  {
+    "gid": 49,
+    "region": "2",
+    "division": "3",
+    "statefp": "18",
+    "statens": "00448508",
+    "stusps": "IN",
+    "name": "Indiana"
+  },
+  {
+    "gid": 55,
+    "region": "2",
+    "division": "4",
+    "statefp": "19",
+    "statens": "01779785",
+    "stusps": "IA",
+    "name": "Iowa"
+  },
+  {
+    "gid": 48,
+    "region": "2",
+    "division": "4",
+    "statefp": "20",
+    "statens": "00481813",
+    "stusps": "KS",
+    "name": "Kansas"
+  },
+  {
+    "gid": 34,
+    "region": "3",
+    "division": "6",
+    "statefp": "21",
+    "statens": "01779786",
+    "stusps": "KY",
+    "name": "Kentucky"
+  },
+  {
+    "gid": 21,
+    "region": "3",
+    "division": "7",
+    "statefp": "22",
+    "statens": "01629543",
+    "stusps": "LA",
+    "name": "Louisiana"
+  },
+  {
+    "gid": 38,
+    "region": "1",
+    "division": "1",
+    "statefp": "23",
+    "statens": "01779787",
+    "stusps": "ME",
+    "name": "Maine"
+  },
+  {
+    "gid": 5,
+    "region": "3",
+    "division": "5",
+    "statefp": "24",
+    "statens": "01714934",
+    "stusps": "MD",
+    "name": "Maryland"
+  },
+  {
+    "gid": 52,
+    "region": "1",
+    "division": "1",
+    "statefp": "25",
+    "statens": "00606926",
+    "stusps": "MA",
+    "name": "Massachusetts"
+  },
+  {
+    "gid": 43,
+    "region": "2",
+    "division": "3",
+    "statefp": "26",
+    "statens": "01779789",
+    "stusps": "MI",
+    "name": "Michigan"
+  },
+  {
+    "gid": 4,
+    "region": "2",
+    "division": "4",
+    "statefp": "27",
+    "statens": "00662849",
+    "stusps": "MN",
+    "name": "Minnesota"
+  },
+  {
+    "gid": 45,
+    "region": "3",
+    "division": "6",
+    "statefp": "28",
+    "statens": "01779790",
+    "stusps": "MS",
+    "name": "Mississippi"
+  },
+  {
+    "gid": 46,
+    "region": "2",
+    "division": "4",
+    "statefp": "29",
+    "statens": "01779791",
+    "stusps": "MO",
+    "name": "Missouri"
+  },
+  {
+    "gid": 47,
+    "region": "4",
+    "division": "8",
+    "statefp": "30",
+    "statens": "00767982",
+    "stusps": "MT",
+    "name": "Montana"
+  },
+  {
+    "gid": 18,
+    "region": "2",
+    "division": "4",
+    "statefp": "31",
+    "statens": "01779792",
+    "stusps": "NE",
+    "name": "Nebraska"
+  },
+  {
+    "gid": 40,
+    "region": "4",
+    "division": "8",
+    "statefp": "32",
+    "statens": "01779793",
+    "stusps": "NV",
+    "name": "Nevada"
+  },
+  {
+    "gid": 8,
+    "region": "1",
+    "division": "1",
+    "statefp": "33",
+    "statens": "01779794",
+    "stusps": "NH",
+    "name": "New Hampshire"
+  },
+  {
+    "gid": 15,
+    "region": "1",
+    "division": "2",
+    "statefp": "34",
+    "statens": "01779795",
+    "stusps": "NJ",
+    "name": "New Jersey"
+  },
+  {
+    "gid": 13,
+    "region": "4",
+    "division": "8",
+    "statefp": "35",
+    "statens": "00897535",
+    "stusps": "NM",
+    "name": "New Mexico"
+  },
+  {
+    "gid": 39,
+    "region": "1",
+    "division": "2",
+    "statefp": "36",
+    "statens": "01779796",
+    "stusps": "NY",
+    "name": "New York"
+  },
+  {
+    "gid": 9,
+    "region": "3",
+    "division": "5",
+    "statefp": "37",
+    "statens": "01027616",
+    "stusps": "NC",
+    "name": "North Carolina"
+  },
+  {
+    "gid": 33,
+    "region": "2",
+    "division": "4",
+    "statefp": "38",
+    "statens": "01779797",
+    "stusps": "ND",
+    "name": "North Dakota"
+  },
+  {
+    "gid": 25,
+    "region": "2",
+    "division": "3",
+    "statefp": "39",
+    "statens": "01085497",
+    "stusps": "OH",
+    "name": "Ohio"
+  },
+  {
+    "gid": 29,
+    "region": "3",
+    "division": "7",
+    "statefp": "40",
+    "statens": "01102857",
+    "stusps": "OK",
+    "name": "Oklahoma"
+  },
+  {
+    "gid": 17,
+    "region": "4",
+    "division": "9",
+    "statefp": "41",
+    "statens": "01155107",
+    "stusps": "OR",
+    "name": "Oregon"
+  },
+  {
+    "gid": 19,
+    "region": "1",
+    "division": "2",
+    "statefp": "42",
+    "statens": "01779798",
+    "stusps": "PA",
+    "name": "Pennsylvania"
+  },
+  {
+    "gid": 6,
+    "region": "1",
+    "division": "1",
+    "statefp": "44",
+    "statens": "01219835",
+    "stusps": "RI",
+    "name": "Rhode Island"
+  },
+  {
+    "gid": 28,
+    "region": "3",
+    "division": "5",
+    "statefp": "45",
+    "statens": "01779799",
+    "stusps": "SC",
+    "name": "South Carolina"
+  },
+  {
+    "gid": 51,
+    "region": "2",
+    "division": "4",
+    "statefp": "46",
+    "statens": "01785534",
+    "stusps": "SD",
+    "name": "South Dakota"
+  },
+  {
+    "gid": 30,
+    "region": "3",
+    "division": "6",
+    "statefp": "47",
+    "statens": "01325873",
+    "stusps": "TN",
+    "name": "Tennessee"
+  },
+  {
+    "gid": 26,
+    "region": "3",
+    "division": "7",
+    "statefp": "48",
+    "statens": "01779801",
+    "stusps": "TX",
+    "name": "Texas"
+  },
+  {
+    "gid": 24,
+    "region": "4",
+    "division": "8",
+    "statefp": "49",
+    "statens": "01455989",
+    "stusps": "UT",
+    "name": "Utah"
+  },
+  {
+    "gid": 10,
+    "region": "1",
+    "division": "1",
+    "statefp": "50",
+    "statens": "01779802",
+    "stusps": "VT",
+    "name": "Vermont"
+  },
+  {
+    "gid": 53,
+    "region": "3",
+    "division": "5",
+    "statefp": "51",
+    "statens": "01779803",
+    "stusps": "VA",
+    "name": "Virginia"
+  },
+  {
+    "gid": 20,
+    "region": "4",
+    "division": "9",
+    "statefp": "53",
+    "statens": "01779804",
+    "stusps": "WA",
+    "name": "Washington"
+  },
+  {
+    "gid": 1,
+    "region": "3",
+    "division": "5",
+    "statefp": "54",
+    "statens": "01779805",
+    "stusps": "WV",
+    "name": "West Virginia"
+  },
+  {
+    "gid": 16,
+    "region": "2",
+    "division": "3",
+    "statefp": "55",
+    "statens": "01779806",
+    "stusps": "WI",
+    "name": "Wisconsin"
+  },
+  {
+    "gid": 31,
+    "region": "4",
+    "division": "8",
+    "statefp": "56",
+    "statens": "01779807",
+    "stusps": "WY",
+    "name": "Wyoming"
+  },
+  {
+    "gid": 42,
+    "region": "9",
+    "division": "0",
+    "statefp": "60",
+    "statens": "01802701",
+    "stusps": "AS",
+    "name": "American Samoa"
+  },
+  {
+    "gid": 37,
+    "region": "9",
+    "division": "0",
+    "statefp": "66",
+    "statens": "01802705",
+    "stusps": "GU",
+    "name": "Guam"
+  },
+  {
+    "gid": 36,
+    "region": "9",
+    "division": "0",
+    "statefp": "69",
+    "statens": "01779809",
+    "stusps": "MP",
+    "name": "Commonwealth of the Northern Mariana Islands"
+  },
+  {
+    "gid": 50,
+    "region": "9",
+    "division": "0",
+    "statefp": "72",
+    "statens": "01779808",
+    "stusps": "PR",
+    "name": "Puerto Rico"
+  },
+  {
+    "gid": 35,
+    "region": "9",
+    "division": "0",
+    "statefp": "78",
+    "statens": "01802710",
+    "stusps": "VI",
+    "name": "United States Virgin Islands"
+  }
+]
