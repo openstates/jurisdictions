@@ -2,6 +2,14 @@ from enum import Enum
 from pydantic import BaseModel, Field
 from typing import Any
 
+"""
+LSADS - No legal entity
+CCD 22,
+CDP 57,
+Sub-District 24, unlikely
+
+"""
+
 class SourceType(str, Enum):
     """These are the allowed defined types for SourceObjects"""
     AI = "ai_generated"

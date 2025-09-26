@@ -27,7 +27,7 @@ CIVIC_DATA_OCDIDS = "https://raw.githubusercontent.com/opencivicdata/ocd-divisio
 
 CIVIC_DATA_LOCAL_OCDIDS = f"https://github.com/opencivicdata/ocd-division-ids/tree/master/identifiers/country-us/state-{stusps}-local_gov.csv"
 
-class RoleType(Enum, str):
+class RoleType(str, Enum):
     ELECTED = "elected"
     APPOINTED = "appointed"
     CONTRACTED = "contracted"
@@ -55,23 +55,21 @@ def get_ocd_id(local_ocdids: pd.DataFrame, name) -> str:
         by_display = local_ocdids.loc[local_ocdids["display_name"].str.contains(f"{name}"), "ocdID"]
         if by_display:
             return by_display
-    else:
+    except:
         return ""
 
 def generate_ocd_id():
-
-
+    pass
 
 COUNTRY = 'us'
 
-VALID_ASOF = datetime(year=2024, month=9, date=25) # last release date
-ACCURATE_ASOF = datetime(year=2025, month=8, date=10) # Last updated by Creyton, last modified 2025-6-27 by Census.
-VALID_THRU = datetime(year=2025, month=12, date=31) # TODO: Check when next series is due.
+VALID_ASOF = datetime(year=2024, month=9, day=25) # last release date
+ACCURATE_ASOF = datetime(year=2025, month=8, day=10) # Last updated by Creyton, last modified 2025-6-27 by Census.
+VALID_THRU = datetime(year=2025, month=12, day=31) # TODO: Check when next series is due.
 
 
 def generate_arcgis_req(layer: int, geod: str):
     pass
-
 
 
 def load_state_code_lookup():
@@ -120,7 +118,7 @@ def main():
                         'SLDLST_list': row['SLDLST_list'],
                         'COUNTYFP_list': row['COUNTYFP_list'],
                         'COUNTY_NAMES': row['COUNTY_NAMES'],
-                        'COUSUBFP': row['COUSUBFP'],
+                        'COUSUBFP': row['COUSUBFP'], # if not legal LSAD
                         "LSAD": row['LSAD'],
                         'PLACEFP': row['PLACEFP'],
                         'common_name': row['NAME'],
