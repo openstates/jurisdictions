@@ -13,6 +13,9 @@ Opportunities to contribute:
   data team's research:
   [https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362"](https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362)
 
+  Use existing Open Civic Data identifiers as a starting place:
+  https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/refs/heads/master/identifiers/country-us.csv
+
 - Develop and test AI prompts to gather urls related to municipalities:
     - main website
     - officials
