@@ -10,14 +10,17 @@ Thank you for your interest in contributing! Please follow these guidelines:
 
 Opportunities to contribute:
 - Develop the data engineering pipeline to generate .yaml files from the civic
-  data team's research
+  data team's research:
+  [https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362"](https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362)
+
 - Develop and test AI prompts to gather urls related to municipalities:
     - main website
     - officials
     - election updates
     - legislative sessions
 
-- Develop the arcGiS call to add enable users to quickly retrieve geometries
-  related to divisions.
+- Develop the arcGiS call to add enable users to quickly retrieve geometries related to divisions.
+- Add documentation to enable users to understand the scope and purpose of the data collected here.
+
 
 For questions, open an issue or contact the maintainers.
