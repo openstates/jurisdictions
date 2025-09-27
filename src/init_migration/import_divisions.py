@@ -1,5 +1,16 @@
+
+
+
 """
-Script to import divisions data from a Google Sheet and convert each row into a Division object.
+Script to import divisions data from a Google Sheet and convert each row into a
+Division object.
+
+Note the following LSADs are unlikely to map to OCDids:
+
+LSADS - No legal entity
+CCD 22,
+CDP 57,
+Sub-District 24
 """
 import csv
 import requests

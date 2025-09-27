@@ -13,7 +13,7 @@ import json
 import os
 from src.utils.str_utils import zero_pad_value
 import pandas as pd
-from import_divisions import load_state_code_lookup, fetch_csv_rows
+from init_migration.import_divisions import load_state_code_lookup, fetch_csv_rows
 
 # TODO: Update this to the correct CSV export URL for your Google Sheet
 DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121"

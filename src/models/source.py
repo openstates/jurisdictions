@@ -3,12 +3,7 @@ from pydantic import BaseModel, Field
 from pydantic import AnyHttpUrl, FtpUrl, FileUrl
 from typing import Union
 
-"""
-LSADS - No legal entity
-CCD 22,
-CDP 57,
-Sub-District 24, unlikely
-"""
+
 
 class SourceType(str, Enum):
     """These are the allowed defined types for SourceObjects"""
