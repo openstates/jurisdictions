@@ -76,7 +76,6 @@ Run the following commands to verify everything works:
 ```sh
 uv run pytest
 uv run ruff
-uv run uvicorn progress.eagle.app:api
 ```
 
 ### 9. Update VS Code Workspace Settings
