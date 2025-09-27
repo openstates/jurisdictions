@@ -18,6 +18,13 @@ class Boundary(BaseModel):
     extent: Optional[Extent] = None
 
 
+class Population(BaseModel):
+    population: int
+    source: SourceObj
+
+class DivMetadata(BaseModel):
+    population: Optional[Population] = None
+
 class GovernmentIdentifiers(BaseModel):
     """
     Census designated identifiers for the locale.
@@ -45,7 +52,7 @@ class Geometry(BaseModel):
     boundary: Boundary = Field(..., description = "The centroid and extent of the geometry.")
     children: List[str] = Field(default_factory=list, description = "A list of child division ids.")
     arcGIS_address: str = Field(..., description = "A url or curl-like request string to the arcGIS server. Ideally this is granular to the layer defined by the division id.")
-    government_identifiers: GovernmentIdentifiers = Field(default_factory=dict, description="A dictionary of the  code(s) (i.e. Census state_code, fips_code, geoid, etc.) official name in snake_case and the value. Can include more than one key.")
+
 
 class Division(BaseModel):
     id: str = Field(..., description = "Description the canonical OpenCivicData id for the political geo division. Should be sourced from the Open Civic Data repo. Example: ADD TKTK See: docs.opencivicdata.org")
@@ -58,7 +65,9 @@ class Division(BaseModel):
     accurate_asof: Optional[datetime] = Field(default=None, description="The datetime ('2025-05-01:00:00:00' ISO 8601 standard format when the data for the record is known to be accurate by the researcher. This may or may not be the same data as the 'last_updated' date below.")
     last_updated: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="The datetime that the data in the record was last updated by the researcher (or it's agent).")
     sourcing: List[SourceObj] = Field(default_factory=list, description="Describe how the data was sourced. Used to identify AI generated data.")
-    metadata: Dict[str, Any] = Field(default_factory=dict, description="Any other useful information that a researcher feels should be included.")
+    metadata: DivMetadata = Field(default_factory=dict, description="Any other useful information that a researcher feels should be included.")
+    government_identifiers: GovernmentIdentifiers = Field(default_factory=dict, description="A dictionary of the  code(s) (i.e. Census state_code, fips_code, geoid, etc.) official name in snake_case and the value. Can include more than one key.")
+    jurisdiction_id: str
 
     def flatten(self) -> dict:
         """A method for converting a nested Division object, to a flat record(s) in LongTidy format for export to csv."""
