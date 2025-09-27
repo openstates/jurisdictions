@@ -6,11 +6,13 @@ from .sourcing import SourceObj
 
 class ClassificationEnum(str, Enum):
     """These are the allowed defined types for jurisdictions"""
-    GOVERNMENT = "government"  # i.e. city council
-    LEGISLATURE = "legislature"
+    GOVERNMENT = "government"
+    LEGISLATURE = "legislature" # i.e. city council
     SCHOOL_SYSTEM = "school_system"
     EXECUTIVE = "executive"  # i.e. mayor
     TRANSIT_AUTHORITY = "transit_authority"
+    JUDICIAL = "judicial" # NON-OCDid COMPLIANT; ADDED
+    PROSECUTORIAL = "prosecutorial" # NON-OCDid COMPLIANT; ADDED
 
 class SessionDetail(BaseModel):
     """Appears in the 'legislative_sessions' as a value for each session key."""
@@ -75,8 +77,22 @@ class Jurisdiction(BaseModel):
 
 if __name__ == "__main__":
 
-    sample = Jurisdiction(
-        id="ocd-jurisdiction/country:us/state:wa/place:seattle",
+    # sample = Jurisdiction(
+
+        Jurisidiction:
+        id="ocd-jurisdiction/country:us/state:wa/county:seattle_county",
+        Associated Divisions:
+        id = "ocd-division/country:us/state:wa/county:seattle_county"
+            id = "ocd-division/country:us/state:wa/county:seattle_county/cousub:1"
+            id = "ocd-division/country:us/state:wa/county:seattle_county/cousub:2"
+
+
+        id="ocd-jurisdiction/country:us/state:wa/schoolboard:SeattleSchoolBoard",
+
+        id="ocd-division/country:us/state:wa/schoolboard:SeattleSchoolBoard",
+            id="ocd-jurisdiction/country:us/state:wa/schoolboard:SeattleSchoolBoard/div:Franklin School District",
+
+
         name="Seattle City Council",
         url="https://www.seattle.gov/council",
         classification=ClassificationEnum.GOVERNMENT,
@@ -88,11 +104,5 @@ if __name__ == "__main__":
             start_date = datetime(day=10, month=10, year=2025),
         ),
         feature_flags = [{"legislative_sessions": False}]
-
-
-    term: Optional[TermDetail] = Field(default=None, description="The details of the terms for elected officials representing this jurisdiction. ")
-    accurate_asof: Optional[datetime] = Field(default=None, description="The datetime ('2025-05-01:00:00:00' ISO 8601 standard format when the data for the record is known to be accurate by the researcher. This may or may not be the same data as the 'last_updated' date below. **REQUIRED**")
-    last_updated: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="The datetime that the data in the record was last updated by the researcher (or it's agent).")
-    sourcing: List[SourceObj] = Field(default_factory=list, description="Describe how the data was sourced. Used to identify AI generated data.")
-    metadata: Dict[str, Any] = Field(default_factory=dict, description="Any other useful information that a research feels should be included.")
-    )
+        term = TermDetail(
+        )
