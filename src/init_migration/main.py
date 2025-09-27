@@ -1,5 +1,5 @@
 """
-Main runs the intial ingestion pipeline that generates Divisions and
+Main runs the initial ingestion pipeline that generates Divisions and
 Jurisdiction objects from our source files and research.
 """
 
