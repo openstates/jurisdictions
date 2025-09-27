@@ -77,32 +77,15 @@ class Jurisdiction(BaseModel):
 
 if __name__ == "__main__":
 
-    # sample = Jurisdiction(
-
-        Jurisidiction:
-        id="ocd-jurisdiction/country:us/state:wa/county:seattle_county",
-        Associated Divisions:
-        id = "ocd-division/country:us/state:wa/county:seattle_county"
-            id = "ocd-division/country:us/state:wa/county:seattle_county/cousub:1"
-            id = "ocd-division/country:us/state:wa/county:seattle_county/cousub:2"
-
-
-        id="ocd-jurisdiction/country:us/state:wa/schoolboard:SeattleSchoolBoard",
-
-        id="ocd-division/country:us/state:wa/schoolboard:SeattleSchoolBoard",
-            id="ocd-jurisdiction/country:us/state:wa/schoolboard:SeattleSchoolBoard/div:Franklin School District",
-
-
+    sample = Jurisdiction (
         name="Seattle City Council",
         url="https://www.seattle.gov/council",
         classification=ClassificationEnum.GOVERNMENT,
-        description="A jurisdiction category. **(required)** See ClassificationEnum."),
         legislative_sessions = SessionDetail(
             name="119th Congress",
             identifiers = "",
             classification = "",
             start_date = datetime(day=10, month=10, year=2025),
         ),
-        feature_flags = [{"legislative_sessions": False}]
-        term = TermDetail(
-        )
+        feature_flags = [{"legislative_sessions": False}],
+    )
