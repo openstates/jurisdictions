@@ -19,18 +19,21 @@ class Boundary(BaseModel):
 
 
 class GovernmentIdentifiers(BaseModel):
+    """
+    Census designated identifiers for the locale.
+    TODO: Provide a reference(s) for census definitions of the codes below here
+    and in the docs.
+    """
+    namelsad: str = Field(description="The Census designated legal name for the geo political entity associated with a given locale.")
     statefp: str
-                      government_identifiers= {
-                        'STATEFP': row['STATEFP'],
-                        'SLDUST_list': row['SLDUST_list'],
-                        'SLDLST_list': row['SLDLST_list'],
-                        'COUNTYFP_list': row['COUNTYFP_list'],
-                        'COUNTY_NAMES': row['COUNTY_NAMES'],
-                        'COUSUBFP': row['COUSUBFP'], # if not legal LSAD
-                        "LSAD": row['LSAD'],
-                        'PLACEFP': row['PLACEFP'],
-                        'common_name': row['NAME'],
-                    },
+    sldust: list[str]
+    sldlst: list[str]
+    countyfp: list[str]
+    county_names: list[str]
+    cousubfp: Optional[str] = None
+    placefp: Optional[str] = None
+    lsad: str
+    common_name: Optional[list[str]] = Field(default=None, description="The commonly used named for the place if different than the official NAMELSAD. Used for matching on alternative names for a locale.")
 
 
 class Geometry(BaseModel):
@@ -39,7 +42,7 @@ class Geometry(BaseModel):
     boundary: Boundary = Field(..., description = "The centroid and extent of the geometry.")
     children: List[str] = Field(default_factory=list, description = "A list of child division ids.")
     arcGIS_address: str = Field(..., description = "A url or curl-like request string to the arcGIS server. Ideally this is granular to the layer defined by the division id.")
-    government_identifiers: Dict[str, Any] = Field(default_factory=dict, description="A dictionary of the  code(s) (i.e. Census state_code, fips_code, geoid, etc.) official name in snake_case and the value. Can include more than one key.")
+    government_identifiers: Optional[dict[str, Any]] = Field(default_factory=dict, description="A dictionary of the  code(s) (i.e. Census state_code, fips_code, geoid, etc.) official name in snake_case and the value. Can include more than one key.")
 
 class Division(BaseModel):
     id: str = Field(..., description = "Description the canonical OpenCivicData id for the political geo division. Should be sourced from the Open Civic Data repo. Example: ADD TKTK See: docs.opencivicdata.org")
