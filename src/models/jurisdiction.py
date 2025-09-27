@@ -2,7 +2,7 @@ from enum import Enum
 from pydantic import BaseModel, Field
 from typing import Any, Dict, List, Optional
 from datetime import datetime, timezone
-from .sourcing import SourceObj
+from .source import SourceObj
 
 class ClassificationEnum(str, Enum):
     """These are the allowed defined types for jurisdictions"""
@@ -87,5 +87,5 @@ if __name__ == "__main__":
             classification = "",
             start_date = datetime(day=10, month=10, year=2025),
         ),
-        feature_flags = [{"legislative_sessions": False}],
+        feature_flags = [{"legislative_sessions": -1, "term_detail": 1}], # Where "1" means expect this feature and "-1" means not applicable.
     )

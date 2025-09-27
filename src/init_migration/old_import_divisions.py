@@ -16,7 +16,7 @@ import csv
 import requests
 from typing import List
 from models.division import Division, Geometry
-from models.source import SourceObj, SourceType
+from src.models.source import SourceObj, SourceType
 from models.jurisdiction import Jurisdiction, TermDetail, SessionDetail, ClassificationEnum
 from datetime import datetime
 from enum import Enum
