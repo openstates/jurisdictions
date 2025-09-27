@@ -5,6 +5,7 @@ from typing import Any, List, Dict, Optional
 from datetime import datetime, timezone
 from .source import SourceObj
 
+
 class Centroid(BaseModel):
     geo_type: str = Field(default="Point")
     coordinates: List[float] = Field(..., description="A two-item array defining the centroid (center) of the geometry. Example: [-176.59989528409687, 51.88215100813731]")
@@ -15,6 +16,22 @@ class Extent(BaseModel):
 class Boundary(BaseModel):
     centroid: Optional[Centroid] = None
     extent: Optional[Extent] = None
+
+
+class GovernmentIdentifiers(BaseModel):
+    statefp: str
+                      government_identifiers= {
+                        'STATEFP': row['STATEFP'],
+                        'SLDUST_list': row['SLDUST_list'],
+                        'SLDLST_list': row['SLDLST_list'],
+                        'COUNTYFP_list': row['COUNTYFP_list'],
+                        'COUNTY_NAMES': row['COUNTY_NAMES'],
+                        'COUSUBFP': row['COUSUBFP'], # if not legal LSAD
+                        "LSAD": row['LSAD'],
+                        'PLACEFP': row['PLACEFP'],
+                        'common_name': row['NAME'],
+                    },
+
 
 class Geometry(BaseModel):
     start: datetime = Field(..., description = "Best approximation of date boundary became effective.")
@@ -28,14 +45,14 @@ class Division(BaseModel):
     id: str = Field(..., description = "Description the canonical OpenCivicData id for the political geo division. Should be sourced from the Open Civic Data repo. Example: ADD TKTK See: docs.opencivicdata.org")
     country: str = Field(..., description = "Two-letter ISO-3166 alpha-2 country code. (e.g. 'us', 'ca')")
     display_name: str = Field(..., description = "Human-readable name for division. Should be sourced from the Open Civic Data repo.")
-    geometries: List[Geometry] = Field(default_factory=list, description = "A list of associated geometries, as defined by the Geometry model. Empty array if not set.")
+    geometries: Optional[List[Geometry]] = Field(default_factory=list, description = "A list of associated geometries, as defined by the Geometry model. Empty array if not set.")
     also_known_as: List[str] = Field(default_factory=list, description = "A list of alternate formatted OCDids that refer to the same geo political divisions.")
     valid_thru: Optional[datetime] = Field(default=None, description="If a division is set to be retired, use this date to indicate when the division is no longer valid.")
     valid_asof: Optional[datetime] = Field(default=None, description="If a new division is created use this date to indicate when the division will become active.")
     accurate_asof: Optional[datetime] = Field(default=None, description="The datetime ('2025-05-01:00:00:00' ISO 8601 standard format when the data for the record is known to be accurate by the researcher. This may or may not be the same data as the 'last_updated' date below.")
     last_updated: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="The datetime that the data in the record was last updated by the researcher (or it's agent).")
     sourcing: List[SourceObj] = Field(default_factory=list, description="Describe how the data was sourced. Used to identify AI generated data.")
-    metadata: Dict[str, Any] = Field(default_factory=dict, description="Any other useful information that a research feels should be included.")
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="Any other useful information that a researcher feels should be included.")
 
     def flatten(self) -> dict:
         """A method for converting a nested Division object, to a flat record(s) in LongTidy format for export to csv."""

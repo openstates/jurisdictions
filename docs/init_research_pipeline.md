@@ -4,13 +4,14 @@
     - Pull OCDids from Open Civic Data (use the state directory "local" .csv)
     - For each record in the local list, pull the full data from master list.
         - We will work from the master list.
-        - Convert this into a partial Division record.
+        - Convert this into a Division record.
+            Sourcing:  "Initial ingest of master OCDids maintained by the Open Civic Data project."
         - Generate a UUID (timestamp)
-        - Add data from master list to "stub" Division model which
-          includes/requires only the fields we get from the Master List
-        - convert the stub model to .yaml and store the .yaml file with the UUID
+        - Map fields in master list to Division model
+        - convert the  model to .yaml and store the .yaml file with the UUID
           only as the name
         - Parse the OCDid in the OCDidParsed model
+
     -Return:
         OCDidIngestReq() model
             - UUID
