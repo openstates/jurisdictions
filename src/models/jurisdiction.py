@@ -71,3 +71,13 @@ class Jurisdiction(BaseModel):
     def to_csv(self) -> str:
         """ A method to export the flattend record(s) to .csv"""
         raise NotImplementedError
+
+
+if __name__ == "__main__":
+
+    sample = Jurisdiction(
+        id="ocd-jurisdiction/country:us/state:wa/place:Seattle"
+        name="Seattle City Council",
+        url = "some url",
+        classifaction = ClassificationEnum.GOVERNMENT,
+    )
