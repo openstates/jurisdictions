@@ -1,31 +1,16 @@
 [project]
-name = "openstates-jurisdictions"
+name = "jurisdictions"
 version = "0.1.0"
-description = "Structured data and tools for OpenStates divisions and jurisdictions."
-authors = [
-  { name = "OpenStates", email = "info@openstates.org" }
-]
-license = { file = "LICENSE" }
+description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.11.9",
+]
 
-[tool.setuptools]
-package-dir = {"" = "src"}
-
-[tool.setuptools.packages.find]
-where = ["src"]
-
-
-[tool.poetry.dependencies]
-requests = "^2.32.5"
-pandas = "^2.3.2"
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra -q"
-testpaths = [
-  "tests"
+[dependency-groups]
+dev = [
+    "polars>=1.33.1",
+    "pytest>=8.4.2",
+    "ruff>=0.13.2",
 ]

@@ -16,6 +16,11 @@ Opportunities to contribute:
   Use existing Open Civic Data identifiers as a starting place:
   https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/refs/heads/master/identifiers/country-us.csv
 
+- Reference:
+  - [Difference between an Jurisdiction and a Division]
+    https://drive.google.com/drive/u/0/folders/1E0EJsfVTBA_vvlPuqx_P6tmsoO1TDACj
+  -
+
 - Develop and test AI prompts to gather urls related to municipalities:
     - main website
     - officials
