@@ -33,6 +33,9 @@ class GovernmentIdentifiers(BaseModel):
     cousubfp: Optional[str] = None
     placefp: Optional[str] = None
     lsad: str
+    geoid: str
+    geoid_12: str
+    geoid_14: str
     common_name: Optional[list[str]] = Field(default=None, description="The commonly used named for the place if different than the official NAMELSAD. Used for matching on alternative names for a locale.")
 
 
@@ -42,7 +45,7 @@ class Geometry(BaseModel):
     boundary: Boundary = Field(..., description = "The centroid and extent of the geometry.")
     children: List[str] = Field(default_factory=list, description = "A list of child division ids.")
     arcGIS_address: str = Field(..., description = "A url or curl-like request string to the arcGIS server. Ideally this is granular to the layer defined by the division id.")
-    government_identifiers: Optional[dict[str, Any]] = Field(default_factory=dict, description="A dictionary of the  code(s) (i.e. Census state_code, fips_code, geoid, etc.) official name in snake_case and the value. Can include more than one key.")
+    government_identifiers: GovernmentIdentifiers = Field(default_factory=dict, description="A dictionary of the  code(s) (i.e. Census state_code, fips_code, geoid, etc.) official name in snake_case and the value. Can include more than one key.")
 
 class Division(BaseModel):
     id: str = Field(..., description = "Description the canonical OpenCivicData id for the political geo division. Should be sourced from the Open Civic Data repo. Example: ADD TKTK See: docs.opencivicdata.org")

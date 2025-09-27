@@ -2,17 +2,17 @@
 Dictionaries representing file mappings for initial data migration.
 """
 
-ocdid_master_mapper = {'id': None,
-                        'name': None,
-                        'sameAs': None,
-                        'sameAsNote': None,
-                        'validThrough': None,
-                        'census_geoid': None,
-                        'census_geoid_12': None,
-                        'census_geoid_14': None,
-                        'openstates_district':None,
+ocdid_master_mapper = {'id': "id",
+                        'name': "display_name",
+                        'sameAs': "also_known_as",
+                        'sameAsNote': "metadata.also_known_as_note",
+                        'validThrough': "valid_asof",
+                        'census_geoid': "geometries.government_identifiers.geoid",
+                        'census_geoid_12': "geometries.government_identifiers.geoid_12",
+                        'census_geoid_14': "geometries.government_identifiers.geoid_14",
+                        'openstates_district': "metadata.openstates_district",
                         'placeholder_id': None,
                         'sch_dist_stateid': None,
-                        'state_id': None,
-                        'validFrom': None
+                        'state_id': "geometries.government_identifiers.stusps", # IS IT STATE CODE?
+                        'validFrom': "valid_thru"
 }
