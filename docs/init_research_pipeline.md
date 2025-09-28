@@ -13,7 +13,7 @@
         - Parse the OCDid in the OCDidParsed model
 
     -Return:
-        OCDidIngestReq() model
+        OCDidIngestResp() model
             - UUID
             - filepath
             - OCDidParsed

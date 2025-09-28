@@ -17,7 +17,6 @@ class Boundary(BaseModel):
     centroid: Optional[Centroid] = None
     extent: Optional[Extent] = None
 
-
 class Population(BaseModel):
     population: int
     source: SourceObj
