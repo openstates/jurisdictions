@@ -1,14 +1,13 @@
-from pydantic import Field, BaseModel
+from pydantic import BaseModel
 from uuid import UUID
 from pathlib import Path
-from src.models.ocdid import OCDidParsed
 from typing import Any
 
 
 class OCDidIngestResp(BaseModel):
     uuid:UUID
     filepath: Path
-    parsed_ocdid: OCDidParsed
+    ocdid: str
     raw_record: dict[str, Any]
 
 
@@ -17,7 +16,7 @@ class OCDidIngestResp(BaseModel):
 # file.
 class DivGeneratorReq(BaseModel):
     data: OCDidIngestResp
-    base_object: bool
+    build_base_object: bool
     ai_url: bool # Wether or not to populate url data w/ai scraper
     geo_req: bool # Whether or not to populate geo request data
     population_req: bool # Wether or not to populate with Census population API call.

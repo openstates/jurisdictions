@@ -3,6 +3,17 @@ from pydantic import BaseModel, Field
 from typing import Any, Dict, List, Optional
 from datetime import datetime, timezone
 from .source import SourceObj
+import yaml
+from pathlib import Path
+# We can choose whichever UUID version is short but won't cause clashes.
+from uuid import UUID, uuid4
+
+import logging
+logger = logging.getLogger(__name__)
+
+# TODO: Do not hardcode yaml filepaths; allow versions
+
+PROJECT_PATH = "jurisdictions/"
 
 class ClassificationEnum(str, Enum):
     """These are the allowed defined types for jurisdictions"""
@@ -34,6 +45,7 @@ class Jurisdiction(BaseModel):
     Class for defining a Jurisdiction object.
     Reference: https://github.com/opencivicdata/docs.opencivicdata.org/blob/master/data/datatypes.rst#id3
     """
+    _id: UUID = Field(default_factory=uuid4(), description = "The uuid associated with the .yaml file when it was initially generated for this project.")
     id: str = Field(..., description="Jurisdictions IDs take the form ocd-jurisdiction/<jurisdiction_id>/<jurisdiction_type> where jurisdiction_id is the ID for the related division without the ocd-division/ prefix and jurisdiction_type is council, legislature, etc.")
     name: str = Field(..., description="Name of jurisdiction (e.g. North Carolina General Assembly). Should be sourced from official gov source data (i.e. Census) **(required)**")
     url: str = Field(..., description="URL pointing to jurisdiction's website. **(required)**")
@@ -54,6 +66,21 @@ class Jurisdiction(BaseModel):
         #  - Check "jurisdiction type" is an allowed type
         #  - Check that a matching Division object exists. If not... we need one!
         pass
+
+    # Untested
+    @classmethod
+    def load_jurisdiction(cls, filepath):
+        try:
+            data = yaml.safe_load(filepath)
+            cls = cls(**data)
+        except Exception as error:
+            logger.error("Failed to load jurisdiction object", extras={"error":error}, exc_info=True)
+            raise ValueError("Failed to load jurisdiction. Check filepath") from error
+    # Untested
+    def dump_jurisdiction(self):
+        filepath = Path(f"{PROJECT_PATH}/{self.name}_{self.id}_{self._id}")
+        yaml.safe_dump(filepath)
+        return filepath
 
     @classmethod
     def division_id_to_jurisdiction_id(cls, classification_type: str):
