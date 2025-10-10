@@ -10,6 +10,7 @@ Generate OCDids
 from typing import Any
 import i18naddress
 import logging
+from errors import OCDIdParsingError
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -26,8 +27,7 @@ def ocdid_parser(ocdid_str):
         ocdid_str (str): The OCDid string to be parsed.
 
     returns:
-        parsed_ocdid (dict): The parsed OCDid with each division returned
-                             as a key, value pair.
+        parsed_ocdid (dict): The parsed OCDid with each division returned as a key, value pair.
     """
     try:
         parsed = ocdid_str.split("/")

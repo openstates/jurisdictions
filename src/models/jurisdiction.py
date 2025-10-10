@@ -2,15 +2,28 @@ from enum import Enum
 from pydantic import BaseModel, Field
 from typing import Any, Dict, List, Optional
 from datetime import datetime, timezone
-from .sourcing import SourceObj
+from .source import SourceObj
+import yaml
+from pathlib import Path
+# We can choose whichever UUID version is short but won't cause clashes.
+from uuid import UUID, uuid4
+
+import logging
+logger = logging.getLogger(__name__)
+
+# TODO: Do not hardcode yaml filepaths; allow versions
+
+PROJECT_PATH = "jurisdictions/"
 
 class ClassificationEnum(str, Enum):
     """These are the allowed defined types for jurisdictions"""
-    GOVERNMENT = "government"  # i.e. city council
-    LEGISLATURE = "legislature"
+    GOVERNMENT = "government"
+    LEGISLATURE = "legislature" # i.e. city council
     SCHOOL_SYSTEM = "school_system"
     EXECUTIVE = "executive"  # i.e. mayor
     TRANSIT_AUTHORITY = "transit_authority"
+    JUDICIAL = "judicial" # NON-OCDid COMPLIANT; ADDED
+    PROSECUTORIAL = "prosecutorial" # NON-OCDid COMPLIANT; ADDED
 
 class SessionDetail(BaseModel):
     """Appears in the 'legislative_sessions' as a value for each session key."""
@@ -32,6 +45,7 @@ class Jurisdiction(BaseModel):
     Class for defining a Jurisdiction object.
     Reference: https://github.com/opencivicdata/docs.opencivicdata.org/blob/master/data/datatypes.rst#id3
     """
+    _id: UUID = Field(default_factory=uuid4(), description = "The uuid associated with the .yaml file when it was initially generated for this project.")
     id: str = Field(..., description="Jurisdictions IDs take the form ocd-jurisdiction/<jurisdiction_id>/<jurisdiction_type> where jurisdiction_id is the ID for the related division without the ocd-division/ prefix and jurisdiction_type is council, legislature, etc.")
     name: str = Field(..., description="Name of jurisdiction (e.g. North Carolina General Assembly). Should be sourced from official gov source data (i.e. Census) **(required)**")
     url: str = Field(..., description="URL pointing to jurisdiction's website. **(required)**")
@@ -52,6 +66,21 @@ class Jurisdiction(BaseModel):
         #  - Check "jurisdiction type" is an allowed type
         #  - Check that a matching Division object exists. If not... we need one!
         pass
+
+    # Untested
+    @classmethod
+    def load_jurisdiction(cls, filepath):
+        try:
+            data = yaml.safe_load(filepath)
+            cls = cls(**data)
+        except Exception as error:
+            logger.error("Failed to load jurisdiction object", extras={"error":error}, exc_info=True)
+            raise ValueError("Failed to load jurisdiction. Check filepath") from error
+    # Untested
+    def dump_jurisdiction(self):
+        filepath = Path(f"{PROJECT_PATH}/{self.name}_{self.id}_{self._id}")
+        yaml.safe_dump(filepath)
+        return filepath
 
     @classmethod
     def division_id_to_jurisdiction_id(cls, classification_type: str):
@@ -75,24 +104,15 @@ class Jurisdiction(BaseModel):
 
 if __name__ == "__main__":
 
-    sample = Jurisdiction(
-        id="ocd-jurisdiction/country:us/state:wa/place:seattle",
+    sample = Jurisdiction (
         name="Seattle City Council",
         url="https://www.seattle.gov/council",
         classification=ClassificationEnum.GOVERNMENT,
-        description="A jurisdiction category. **(required)** See ClassificationEnum."),
         legislative_sessions = SessionDetail(
             name="119th Congress",
             identifiers = "",
             classification = "",
             start_date = datetime(day=10, month=10, year=2025),
         ),
-        feature_flags = [{"legislative_sessions": False}]
-
-
-    term: Optional[TermDetail] = Field(default=None, description="The details of the terms for elected officials representing this jurisdiction. ")
-    accurate_asof: Optional[datetime] = Field(default=None, description="The datetime ('2025-05-01:00:00:00' ISO 8601 standard format when the data for the record is known to be accurate by the researcher. This may or may not be the same data as the 'last_updated' date below. **REQUIRED**")
-    last_updated: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="The datetime that the data in the record was last updated by the researcher (or it's agent).")
-    sourcing: List[SourceObj] = Field(default_factory=list, description="Describe how the data was sourced. Used to identify AI generated data.")
-    metadata: Dict[str, Any] = Field(default_factory=dict, description="Any other useful information that a research feels should be included.")
+        feature_flags = [{"legislative_sessions": -1, "term_detail": 1}], # Where "1" means expect this feature and "-1" means not applicable.
     )

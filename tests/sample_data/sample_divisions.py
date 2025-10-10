@@ -1,19 +1,8 @@
 """
 Script to import divisions data from a Google Sheet and convert each row into a Division object.
 """
-import csv
-import requests
-from typing import List
-from models.division import Division, Geometry
-from models.source import SourceObj, SourceType
-from models.jurisdiction import Jurisdiction, TermDetail, SessionDetail, ClassificationEnum
-from datetime import datetime
-from enum import Enum
-import json
-import os
-from src.utils.str_utils import zero_pad_value
 import pandas as pd
-from init_migration.import_divisions import load_state_code_lookup, fetch_csv_rows
+from init_migration.import_divisions import fetch_csv_rows
 
 # TODO: Update this to the correct CSV export URL for your Google Sheet
 DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121"

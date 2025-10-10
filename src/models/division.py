@@ -1,10 +1,18 @@
 
 
 from pydantic import BaseModel, Field
-from typing import Any, List, Dict, Optional
+from typing import List, Optional
 from datetime import datetime, timezone
 from .source import SourceObj
+import yaml
+# We can choose whichever UUID version is short but won't cause clashes.
+from uuid import UUID, uuid4
+from pathlib import Path
+import logging
 
+logger = logging.getLogger(__name__)
+
+PROJECT_PATH = "divisions/"
 
 class Centroid(BaseModel):
     geo_type: str = Field(default="Point")
@@ -17,6 +25,12 @@ class Boundary(BaseModel):
     centroid: Optional[Centroid] = None
     extent: Optional[Extent] = None
 
+class Population(BaseModel):
+    population: int
+    source: SourceObj
+
+class DivMetadata(BaseModel):
+    population: Optional[Population] = None
 
 class GovernmentIdentifiers(BaseModel):
     """
@@ -34,8 +48,8 @@ class GovernmentIdentifiers(BaseModel):
     placefp: Optional[str] = None
     lsad: str
     geoid: str
-    geoid_12: str
-    geoid_14: str
+    geoid_12: Optional[str] = None
+    geoid_14: Optional[str] = None
     common_name: Optional[list[str]] = Field(default=None, description="The commonly used named for the place if different than the official NAMELSAD. Used for matching on alternative names for a locale.")
 
 
@@ -45,10 +59,11 @@ class Geometry(BaseModel):
     boundary: Boundary = Field(..., description = "The centroid and extent of the geometry.")
     children: List[str] = Field(default_factory=list, description = "A list of child division ids.")
     arcGIS_address: str = Field(..., description = "A url or curl-like request string to the arcGIS server. Ideally this is granular to the layer defined by the division id.")
-    government_identifiers: GovernmentIdentifiers = Field(default_factory=dict, description="A dictionary of the  code(s) (i.e. Census state_code, fips_code, geoid, etc.) official name in snake_case and the value. Can include more than one key.")
+
 
 class Division(BaseModel):
-    id: str = Field(..., description = "Description the canonical OpenCivicData id for the political geo division. Should be sourced from the Open Civic Data repo. Example: ADD TKTK See: docs.opencivicdata.org")
+    _id: UUID | None = Field(default_factory=uuid4(), description="The uuid associated with the .yaml file when it was initially generated for this project.")
+    id: str = Field(..., description = "The canonical OpenCivicData id for the political geo division. Should be sourced from the Open Civic Data repo. Example: ADD TKTK See: docs.opencivicdata.org")
     country: str = Field(..., description = "Two-letter ISO-3166 alpha-2 country code. (e.g. 'us', 'ca')")
     display_name: str = Field(..., description = "Human-readable name for division. Should be sourced from the Open Civic Data repo.")
     geometries: Optional[List[Geometry]] = Field(default_factory=list, description = "A list of associated geometries, as defined by the Geometry model. Empty array if not set.")
@@ -58,7 +73,27 @@ class Division(BaseModel):
     accurate_asof: Optional[datetime] = Field(default=None, description="The datetime ('2025-05-01:00:00:00' ISO 8601 standard format when the data for the record is known to be accurate by the researcher. This may or may not be the same data as the 'last_updated' date below.")
     last_updated: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="The datetime that the data in the record was last updated by the researcher (or it's agent).")
     sourcing: List[SourceObj] = Field(default_factory=list, description="Describe how the data was sourced. Used to identify AI generated data.")
-    metadata: Dict[str, Any] = Field(default_factory=dict, description="Any other useful information that a researcher feels should be included.")
+    metadata: Optional[DivMetadata] = Field(None, description="Any other useful information that a researcher feels should be included.")
+    government_identifiers: Optional[GovernmentIdentifiers] = Field(None, description="A dictionary of the  code(s) (i.e. Census state_code, fips_code, geoid, etc.) official name in snake_case and the value. Can include more than one key.")
+    jurisdiction_id: str
+
+    # Untested
+    @classmethod
+    def load_division(cls, filepath):
+        try:
+            data = yaml.safe_load(filepath)
+            cls = cls(**data)
+        except Exception as error:
+            logger.error("Failed to load division object", extras={"error":error}, exc_info=True)
+            raise ValueError("Failed to load division. Check filepath") from error
+
+    # Untested
+    def dump_division(self):
+        if not self.government_identifiers:
+            raise ValueError("A geoid is required to store a division obect.")
+        filepath = Path(f"{PROJECT_PATH}/{self.display_name}_{self.government_identifiers.geoid}_{self._id}")
+        yaml.safe_dump(filepath)
+        return filepath
 
     def flatten(self) -> dict:
         """A method for converting a nested Division object, to a flat record(s) in LongTidy format for export to csv."""

@@ -16,7 +16,6 @@ Examples removed: "city", "town", "village", "borough", "municipality",
 import csv
 import re
 from pathlib import Path
-from typing import Optional
 
 LSAD_RE = re.compile(
     r"""
