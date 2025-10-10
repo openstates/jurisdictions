@@ -1,16 +1,23 @@
 from __future__ import annotations
 import asyncio
+import base64
+import importlib.util
 import json
 import os
 import random
 from pathlib import Path
-from typing import Iterable, Optional, Mapping
-
+from typing import Iterable, Mapping, Optional
 
 import httpx
-import importlib.util
-
 from loguru import logger
+
+# Import custom errors from parent package
+from src.errors import (
+    APIRetryError,
+    UnexpectedContentError,
+    DownloaderNotInitializedError,
+    CacheError,
+)
 
 # Configure Loguru
 logger.add(
@@ -26,10 +33,13 @@ logger.add(
 # Optionally load environment variables from a .env file if python-dotenv is installed
 try:
     from dotenv import load_dotenv
-    load_dotenv()  # This will load variables from a .env file into os.environ
+      # This will load variables from a .env file into os.environ
 except ImportError:
-    # If python-dotenv is not installed, continue silently
-    pass
+    # If python-dotenv is not installed, define a no-op function
+    def load_dotenv():
+        pass
+    
+load_dotenv()
 
 # -----------------------------
 # Config
@@ -69,7 +79,7 @@ class AsyncDownloader:
     Async HTTP downloader with:
       - connection pooling, optional HTTP/2 (auto-disabled if h2 not installed)
       - bounded concurrency
-      - retries with exponential backoff + jitter
+      - retries with exponential backoff and jitter
       - ETag/Last-Modified conditional requests via a JSON cache
 
     Intentionally does NOT know which URLs to fetch or how to parse them.
@@ -98,19 +108,50 @@ class AsyncDownloader:
 
         if self.cfg.etag_cache_path and self.cfg.etag_cache_path.is_file():
             try:
-                self._etag_cache = json.loads(self.cfg.etag_cache_path.read_text("utf-8"))
-            except Exception:
+                cache_content = self.cfg.etag_cache_path.read_text("utf-8")
+                self._etag_cache = json.loads(cache_content)
+                logger.debug(f"Loaded ETag cache from {self.cfg.etag_cache_path} ({len(self._etag_cache)} entries)")
+            except json.JSONDecodeError as e:
+                # Corrupted cache file - this is a problem we should raise
+                raise CacheError(
+                    f"ETag cache file is corrupted and cannot be parsed as JSON: {e}",
+                    cache_path=str(self.cfg.etag_cache_path)
+                ) from e
+            except (OSError, IOError) as e:
+                # File read error - warn but continue with empty cache
+                logger.warning(
+                    f"Failed to read ETag cache from {self.cfg.etag_cache_path}: {e}. "
+                    "Starting with empty cache."
+                )
                 self._etag_cache = {}
         return self
 
     async def __aexit__(self, *exc) -> None:
         if self._client:
             await self._client.aclose()
+        
         if self.cfg.etag_cache_path:
             try:
-                self.cfg.etag_cache_path.write_text(json.dumps(self._etag_cache), encoding="utf-8")
-            except Exception:
-                pass
+                # Ensure parent directory exists
+                self.cfg.etag_cache_path.parent.mkdir(parents=True, exist_ok=True)
+                
+                # Write cache to file
+                cache_json = json.dumps(self._etag_cache, indent=2)
+                self.cfg.etag_cache_path.write_text(cache_json, encoding="utf-8")
+                logger.debug(f"Saved ETag cache to {self.cfg.etag_cache_path} ({len(self._etag_cache)} entries)")
+            except (OSError, IOError) as e:
+                # File write error during cleanup
+                # Log as error but don't raise - we're in cleanup phase
+                logger.error(
+                    f"Failed to save ETag cache to {self.cfg.etag_cache_path}: {e}. "
+                    "Cache will not be persisted for next run."
+                )
+            except Exception as e:
+                # Unexpected error (e.g., serialization issue)
+                logger.error(
+                    f"Unexpected error while saving ETag cache: {type(e).__name__}: {e}. "
+                    "Cache will not be persisted for next run."
+                )
 
     async def fetch_bytes(self, url: str, *, force: bool = False) -> Optional[bytes]:
         """
@@ -119,8 +160,15 @@ class AsyncDownloader:
         Args:
         url: The URL to fetch.
         force: If True, bypass ETag/Last-Modified conditional headers and force a fresh fetch.
+        
+        Raises:
+        DownloaderNotInitializedError: If called outside async context manager.
+        UnexpectedContentError: If HTML is returned when data was expected.
+        APIRetryError: If max retries exhausted for retryable errors.
+        httpx.HTTPStatusError: For non-retryable HTTP errors (4xx except 429).
         """
-        assert self._client is not None, "Use 'async with AsyncDownloader(...)'"
+        if self._client is None:
+            raise DownloaderNotInitializedError()
 
         backoff = 0.5
         req_headers: dict[str, str] = {}
@@ -141,14 +189,14 @@ class AsyncDownloader:
                 resp.raise_for_status()
 
                 # Guard accidental HTML
-                ctype = resp.headers.get("content-type", "").lower()
-                head = resp.content[:64].lstrip().lower()
-                if (
-                    "html" in ctype
-                    or head.startswith(b"<!doctype html")
-                    or head.startswith(b"<html")
+                if self._is_html_response(
+                    resp.content, resp.headers.get("content-type", "")
                 ):
-                    raise ValueError(f"Unexpected HTML from {url}")
+                    raise UnexpectedContentError(
+                        f"Expected data but received HTML from {url}",
+                        url=url,
+                        content_type=resp.headers.get("content-type", ""),
+                    )
 
                 # Save validators (works for both raw and API endpoints)
                 etag = resp.headers.get("etag")
@@ -162,7 +210,8 @@ class AsyncDownloader:
                 # If this is the GitHub API (JSON envelope), decode base64 content
                 # or fall back to the provided download_url if present
                 try:
-                    is_api_json = ("application/json" in ctype) or (
+                    content_type = resp.headers.get("content-type", "").lower()
+                    is_api_json = ("application/json" in content_type) or (
                         "api.github.com" in url
                     )
                     if is_api_json:
@@ -172,8 +221,6 @@ class AsyncDownloader:
                             content_field = data.get("content")
                             encoding = data.get("encoding")
                             if content_field is not None and encoding == "base64":
-                                import base64
-
                                 # GitHub may insert newlines in base64; remove whitespace before decoding
                                 b = base64.b64decode(
                                     str(content_field).encode("utf-8"), validate=False
@@ -185,16 +232,14 @@ class AsyncDownloader:
                                 async with self._sem:
                                     dl_resp = await self._client.get(dl)
                                 dl_resp.raise_for_status()
-                                dl_ctype = dl_resp.headers.get(
-                                    "content-type", ""
-                                ).lower()
-                                dl_head = dl_resp.content[:64].lstrip().lower()
-                                if (
-                                    "html" in dl_ctype
-                                    or dl_head.startswith(b"<!doctype html")
-                                    or dl_head.startswith(b"<html")
-                                ):
-                                    raise ValueError(f"Unexpected HTML from {dl}")
+                                
+                                # Guard accidental HTML from download_url
+                                if self._is_html_response(dl_resp.content, dl_resp.headers.get("content-type", "")):
+                                    raise UnexpectedContentError(
+                                        f"Expected data but received HTML from download_url {dl}",
+                                        url=dl,
+                                        content_type=dl_resp.headers.get("content-type", "")
+                                    )
                                 return dl_resp.content
                 except (ValueError, json.JSONDecodeError) as e:
                     # Not JSON or unexpected payload; fall through to raw content
@@ -209,7 +254,9 @@ class AsyncDownloader:
                     logger.error(
                         f"Network error for {url} after {attempt + 1} attempt(s); giving up: {type(e).__name__}: {e}"
                     )
-                    raise
+                    raise APIRetryError(
+                        f"Failed to fetch {url} after {self.cfg.max_retries + 1} attempts: {type(e).__name__}: {e}"
+                    ) from e
                 logger.warning(
                     f"Transient network error for {url} on attempt {attempt + 1}; will retry: {type(e).__name__}: {e}"
                 )
@@ -230,9 +277,16 @@ class AsyncDownloader:
                     logger.error(
                         f"HTTP {status} for {url} after {attempt + 1} attempt(s); giving up"
                     )
+                    raise APIRetryError(
+                        f"HTTP {status} error for {url} after {self.cfg.max_retries + 1} attempts"
+                    ) from e
                 else:
                     logger.error(f"HTTP {status} for {url}; not retryable: {e}")
-                raise
+                    raise
+        
+        # This line should never be reached, but satisfies type checker
+        # All code paths above either return or raise an exception
+        raise APIRetryError(f"Unexpected: exhausted retries without returning or raising for {url}")
 
     async def download_to(self, url: str, dest: os.PathLike | str, *, overwrite: bool = True, force: bool = False) -> tuple[Path, str]:
         """
@@ -262,6 +316,33 @@ class AsyncDownloader:
     async def download_many(self, url_to_path: Mapping[str, os.PathLike | str]) -> list[tuple[Path, str]]:
         coros = [self.download_to(u, p) for u, p in url_to_path.items()]
         return await asyncio.gather(*coros)
+
+    @staticmethod
+    def _is_html_response(content: bytes, content_type: str) -> bool:
+        """
+        Check if response content appears to be HTML.
+        
+        Args:
+            content: Response body bytes
+            content_type: Content-Type header value
+            
+        Returns:
+            True if the response appears to be HTML, False otherwise
+        """
+        ctype = content_type.lower()
+        if "html" in ctype:
+            return True
+        
+        # Check first 128 bytes for common HTML markers
+        head = content[:128].lstrip().lower()
+        html_markers = (
+            b"<!doctype html",
+            b"<html",
+            b"<head",
+            b"<body",
+            b"<title",
+        )
+        return any(head.startswith(marker) for marker in html_markers)
 
 
 # -----------------------------
