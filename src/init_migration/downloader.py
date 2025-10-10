@@ -15,8 +15,8 @@ from loguru import logger
 # Configure Loguru
 logger.add(
     "downloader.log",
-    rotation="1 MB",         # rotate logs when they reach 1MB
-    retention="10 files",    #  keep up to 10 files
+    rotation="1 MB",          # rotate logs when they reach 1MB
+    retention=10,             #  keep up to 10 files
     enqueue=True,             # allow async logging
     backtrace=True,           # include tracebacks in logs
     diagnose=True,            # log errors when they happen
@@ -136,6 +136,7 @@ class AsyncDownloader:
                 async with self._sem:
                     resp = await self._client.get(url, headers=req_headers)
                 if resp.status_code == 304:
+                    logger.info(f"Unchanged (304) for {url}")
                     return None
                 resp.raise_for_status()
 
@@ -197,14 +198,21 @@ class AsyncDownloader:
                                 return dl_resp.content
                 except (ValueError, json.JSONDecodeError) as e:
                     # Not JSON or unexpected payload; fall through to raw content
-                    logger.debug(f"Falling back to raw content for {url} ({type(e).__name__}: {e}")
+                    logger.debug(f'Falling back to raw content for {url} ({type(e).__name__}: {e})')
 
                 # Default: return raw bytes (raw.githubusercontent.com, etc.)
+                logger.success(f"Downloaded {url} ({len(resp.content)} bytes)")
                 return resp.content
 
-            except (httpx.ConnectError, httpx.ReadTimeout, httpx.RemoteProtocolError, httpx.PoolTimeout):
+            except (httpx.ConnectError, httpx.ReadTimeout, httpx.RemoteProtocolError, httpx.PoolTimeout) as e:
                 if attempt >= self.cfg.max_retries:
+                    logger.error(
+                        f"Network error for {url} after {attempt + 1} attempt(s); giving up: {type(e).__name__}: {e}"
+                    )
                     raise
+                logger.warning(
+                    f"Transient network error for {url} on attempt {attempt + 1}; will retry: {type(e).__name__}: {e}"
+                )
                 await asyncio.sleep(backoff + random.random() * 0.25)
                 backoff = min(4.0, backoff * 2)
             except httpx.HTTPStatusError as e:
@@ -213,9 +221,17 @@ class AsyncDownloader:
                     retry_after = e.response.headers.get("Retry-After")
                     delay = (int(retry_after) if retry_after and retry_after.isdigit() else backoff)
                     if attempt < self.cfg.max_retries:
+                        logger.warning(
+                            f"HTTP {status} for {url} on attempt {attempt + 1}; retrying after {delay:.2f}s"
+                        )
                         await asyncio.sleep(delay + random.random() * 0.25)
                         backoff = min(8.0, backoff * 2)
                         continue
+                    logger.error(
+                        f"HTTP {status} for {url} after {attempt + 1} attempt(s); giving up"
+                    )
+                else:
+                    logger.error(f"HTTP {status} for {url}; not retryable: {e}")
                 raise
 
     async def download_to(self, url: str, dest: os.PathLike | str, *, overwrite: bool = True, force: bool = False) -> tuple[Path, str]:
@@ -253,8 +269,11 @@ class AsyncDownloader:
 # -----------------------------
 async def main() -> None:
     # Build *your* list of URLs here (outside the downloader).
+    # urls = [
+    #     "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv",
+    # ]
     urls = [
-        "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv",
+        "https://api.github.com/repos/opencivicdata/ocd-division-ids/contents/identifiers/country-us.csv?ref=master",
     ]
 
     cfg = DownloaderConfig(
@@ -274,8 +293,8 @@ async def main() -> None:
         results = await d.download_many(url_to_path)
         print("downloads:", results)
         # To force a fresh re-download ignoring ETag/Last-Modified for a single URL:
-        # path, status = await d.download_to(urls[0], Path("downloads") / Path(urls[0]).name, force=True)
-        # print("forced:", path, status)
+        path, status = await d.download_to(urls[0], Path("downloads") / Path(urls[0]).name, force=True)
+        print("forced:", path, status)
 
 
 if __name__ == "__main__":
