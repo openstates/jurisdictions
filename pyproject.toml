@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "duckdb>=1.4.1",
     "google-i18n-address>=3.1.1",
     "httpx[http2]>=0.28.1",
     "loguru>=0.7.3",
