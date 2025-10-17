@@ -518,12 +518,16 @@ async def main() -> None:
         sizes = [len(b) if b else 0 for b in blobs]
         print("bytes fetched:", sizes)
 
-        url_to_path = {u: Path("downloads") / Path(u).name for u in urls}
+        # Updated: strip query params from filename
+        url_to_path = {
+            u: Path("downloads") / os.path.basename(urlparse(u).path)
+            for u in urls
+        }
         results = await d.download_many(url_to_path)
         print("downloads:", results)
         # To force a fresh re-download ignoring ETag/Last-Modified for a single URL:
         path, status = await d.download_to(
-            urls[0], Path("downloads") / Path(urls[0]).name, force=True
+            urls[0], Path("downloads") / os.path.basename(urlparse(urls[0]).path), force=True
         )
         print("forced:", path, status)
 
