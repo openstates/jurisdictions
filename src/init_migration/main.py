@@ -19,13 +19,17 @@ def load_csv_to_duckdb(
 ) -> dict:
     """Load CSV into DuckDB and return summary stats
 
+    Valid rows are loaded into the main table. Rows with errors (e.g., too many columns)
+    are loaded into a quarantine table for later analysis.
+
     Args:
         csv_path: Path to the CSV file to load
         table_name: Name for the DuckDB table (will be sanitized)
         db_path: Path to the DuckDB database file
 
     Returns:
-        dict with keys: table_name, row_count, column_count, columns, file_path
+        dict with keys: table_name, row_count, column_count, columns, file_path,
+        quarantine_table, quarantine_count
 
     Raises:
         FileNotFoundError: If CSV file doesn't exist
@@ -36,30 +40,85 @@ def load_csv_to_duckdb(
 
     # Sanitize table name (alphanumeric and underscore only)
     sanitized_name = "".join(c if c.isalnum() or c == "_" else "_" for c in table_name)
-    if not sanitized_name:
+
+    # Ensure table name is not empty and doesn't start with a number
+    if not sanitized_name or not sanitized_name.replace("_", ""):
         raise ValueError(f"Invalid table name: {table_name}")
+
+    # Prepend 't_' if name starts with a digit (SQL requirement)
+    if sanitized_name[0].isdigit():
+        sanitized_name = "t_" + sanitized_name
+
+    quarantine_name = f"{sanitized_name}_quarantine"
 
     conn = duckdb.connect(db_path)
 
     try:
-        # Create table from CSV using DuckDB's efficient CSV reader
+        # First, load all valid rows with ignore_errors=true
         conn.execute(f"""
             CREATE OR REPLACE TABLE {sanitized_name} AS
-            SELECT * FROM read_csv_auto('{csv_path}')
+            SELECT * FROM read_csv_auto('{csv_path}', ignore_errors=true)
         """)
 
-        # Gather statistics
+        # Gather statistics for main table
         row_count = conn.execute(f"SELECT COUNT(*) FROM {sanitized_name}").fetchone()[0]
         columns_info = conn.execute(f"DESCRIBE {sanitized_name}").fetchall()
         column_names = [col[0] for col in columns_info]
+
+        # Read the CSV as all text columns to capture problematic rows
+        # We'll read with maximum columns to catch rows with extra data
+        conn.execute(f"""
+            CREATE OR REPLACE TABLE {quarantine_name} AS
+            SELECT * FROM read_csv(
+                '{csv_path}',
+                ALL_VARCHAR=true,
+                ignore_errors=false,
+                max_line_size=1048576
+            )
+            EXCEPT
+            SELECT * FROM read_csv(
+                '{csv_path}',
+                ALL_VARCHAR=true,
+                ignore_errors=true,
+                max_line_size=1048576
+            )
+        """)
+
+        quarantine_count = conn.execute(f"SELECT COUNT(*) FROM {quarantine_name}").fetchone()[0]
 
         return {
             "table_name": sanitized_name,
             "row_count": row_count,
             "column_count": len(column_names),
             "columns": column_names,
-            "file_path": str(csv_path)
+            "file_path": str(csv_path),
+            "quarantine_table": quarantine_name,
+            "quarantine_count": quarantine_count
         }
+    except Exception as e:
+        # If the quarantine approach fails, fall back to basic ignore_errors
+        try:
+            conn.execute(f"""
+                CREATE OR REPLACE TABLE {sanitized_name} AS
+                SELECT * FROM read_csv_auto('{csv_path}', ignore_errors=true)
+            """)
+
+            row_count = conn.execute(f"SELECT COUNT(*) FROM {sanitized_name}").fetchone()[0]
+            columns_info = conn.execute(f"DESCRIBE {sanitized_name}").fetchall()
+            column_names = [col[0] for col in columns_info]
+
+            return {
+                "table_name": sanitized_name,
+                "row_count": row_count,
+                "column_count": len(column_names),
+                "columns": column_names,
+                "file_path": str(csv_path),
+                "quarantine_table": None,
+                "quarantine_count": 0,
+                "error": str(e)
+            }
+        except Exception as fallback_error:
+            raise Exception(f"Failed to load CSV even with error handling: {fallback_error}") from e
     finally:
         conn.close()
 
@@ -103,6 +162,12 @@ async def main() -> None:
                     print(f", ... +{stats['column_count'] - 5} more")
                 else:
                     print()
+
+                # Report on quarantined rows
+                if stats.get('quarantine_count', 0) > 0:
+                    print(f"  ⚠️  {stats['quarantine_count']:,} problematic rows saved to '{stats['quarantine_table']}'")
+                elif stats.get('error'):
+                    print(f"  ⚠️  Warning: {stats['error']}")
             except Exception as e:
                 print(f"\n✗ Failed to load {csv_path}: {e}")
 # async def main() -> None:

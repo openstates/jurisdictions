@@ -19,6 +19,7 @@ dependencies = [
 dev = [
     "polars>=1.33.1",
     "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
     "respx>=0.22.0",
     "ruff>=0.13.2",
 ]
