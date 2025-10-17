@@ -5,6 +5,8 @@ import importlib.util
 import json
 import os
 import random
+import time
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Iterable, Mapping, Optional, Literal
 
@@ -19,28 +21,28 @@ from src.errors import (
     CacheError,
 )
 
-# Configure Loguru
-logger.add(
-    "downloader.log",
-    rotation="1 MB",  # rotate logs when they reach 1MB
-    retention=10,  #  keep up to 10 files
-    enqueue=True,  # allow async logging
-    backtrace=True,  # include tracebacks in logs
-    diagnose=True,  # log errors when they happen
-    level="DEBUG",
-)
+# Provide an optional helper to configure logging externally (no import-time side effects)
 
-# Optionally load environment variables from a .env file if python-dotenv is installed
-try:
-    from dotenv import load_dotenv
-except ImportError:
-    logger.debug("python-dotenv not installed; .env file loading disabled")
+def configure_downloader_logging(
+    *,
+    sink: str | os.PathLike = "downloader.log",
+    level: str = "DEBUG",
+    rotation: str = "1 MB",
+    retention: int | str = 10,
+) -> None:
+    """Optionally configure Loguru logging for the downloader module.
 
-    def load_dotenv():
-        pass
-
-
-load_dotenv()
+    This avoids adding handlers at import-time. Call from application code if desired.
+    """
+    logger.add(
+        str(sink),
+        rotation=rotation,
+        retention=retention,
+        enqueue=True,
+        backtrace=True,
+        diagnose=True,
+        level=level,
+    )
 
 
 # -----------------------------
@@ -89,7 +91,15 @@ class DownloaderConfig:
         self.max_backoff = max_backoff
 
 
-_DEF_HEADERS = {"Accept": "*/*"}
+DEFAULT_HEADERS = {"Accept": "*/*"}
+
+from urllib.parse import urlparse
+
+from typing import Literal as _LiteralForAlias
+DownloadStatus = _LiteralForAlias["downloaded", "unchanged", "skipped"]
+
+def _is_github_host(host: str | None) -> bool:
+    return host in {"api.github.com", "raw.githubusercontent.com"}
 
 
 def _http2_available() -> bool:
@@ -117,18 +127,20 @@ class AsyncDownloader:
         self._etag_cache: dict[str, dict[str, str]] = {}
 
     async def __aenter__(self) -> "AsyncDownloader":
-        headers = dict(_DEF_HEADERS)
+        headers = dict(DEFAULT_HEADERS)
         headers["User-Agent"] = self.cfg.user_agent
-        if self.cfg.use_github_auth and self.cfg.github_token:
-            # GitHub raw may ignore Authorization; harmless if set.
-            headers["Authorization"] = f"Bearer {self.cfg.github_token}"
 
         use_http2 = self.cfg.http2 and _http2_available()
+        limits = httpx.Limits(
+            max_connections=self.cfg.concurrency,
+            max_keepalive_connections=min(10, self.cfg.concurrency),
+        )
         self._client = httpx.AsyncClient(
             headers=headers,
             timeout=self.cfg.timeout,
             http2=use_http2,
             follow_redirects=True,
+            limits=limits,
         )
 
         if self.cfg.etag_cache_path and self.cfg.etag_cache_path.is_file():
@@ -162,9 +174,13 @@ class AsyncDownloader:
                 # Ensure parent directory exists
                 self.cfg.etag_cache_path.parent.mkdir(parents=True, exist_ok=True)
 
-                # Write cache to file
-                cache_json = json.dumps(self._etag_cache, indent=2)
-                self.cfg.etag_cache_path.write_text(cache_json, encoding="utf-8")
+                # Atomic write: write to a temp file, then replace
+                cache_json = json.dumps(self._etag_cache, separators=(",", ":"))
+                tmp_path = self.cfg.etag_cache_path.with_suffix(
+                    self.cfg.etag_cache_path.suffix + ".tmp"
+                )
+                tmp_path.write_text(cache_json, encoding="utf-8")
+                os.replace(tmp_path, self.cfg.etag_cache_path)
                 logger.debug(
                     f"Saved ETag cache to {self.cfg.etag_cache_path} ({len(self._etag_cache)} entries)"
                 )
@@ -201,7 +217,7 @@ class AsyncDownloader:
         if self._client is None:
             raise DownloaderNotInitializedError()
 
-        backoff = 0.5
+        backoff = float(self.cfg.initial_backoff)
         req_headers: dict[str, str] = {}
         cache = self._etag_cache.get(url)
         if cache and not force:
@@ -212,6 +228,11 @@ class AsyncDownloader:
 
         for attempt in range(self.cfg.max_retries + 1):
             try:
+                # Add GitHub Authorization per-request only for GitHub hosts
+                if self.cfg.use_github_auth and self.cfg.github_token:
+                    host = urlparse(url).hostname
+                    if _is_github_host(host):
+                        req_headers["Authorization"] = f"Bearer {self.cfg.github_token}"
                 async with self._sem:
                     resp = await self._client.get(url, headers=req_headers)
 
@@ -263,23 +284,49 @@ class AsyncDownloader:
                     f"Transient network error for {url} on attempt {attempt + 1}; will retry: {type(e).__name__}: {e}"
                 )
                 await asyncio.sleep(backoff + random.random() * 0.25)
-                backoff = min(4.0, backoff * 2)
+                backoff = min(float(self.cfg.max_backoff), backoff * 2)
             except httpx.HTTPStatusError as e:
                 status = e.response.status_code
-                if status in (429,) or 500 <= status < 600:
-                    retry_after = e.response.headers.get("Retry-After")
-                    delay = (
-                        int(retry_after)
-                        if retry_after and retry_after.isdigit()
-                        else backoff
+                # Determine retry-eligible statuses and compute delay
+                retry = False
+                delay = backoff
+
+                # Standard retryable statuses
+                if status == 429 or 500 <= status < 600:
+                    retry = True
+
+                # GitHub-specific 403 rate limiting
+                hdrs = {k.lower(): v for k, v in e.response.headers.items()}
+                if status == 403 and hdrs.get("x-ratelimit-remaining") == "0":
+                    retry = True
+                    reset = hdrs.get("x-ratelimit-reset")
+                    if reset and reset.isdigit():
+                        now = int(time.time())
+                        delay = max(0, int(reset) - now)
+
+                # Retry-After header parsing (seconds or HTTP-date)
+                if retry:
+                    ra = e.response.headers.get("Retry-After")
+                    if ra:
+                        if ra.isdigit():
+                            delay = max(delay, int(ra))
+                        else:
+                            try:
+                                dt = parsedate_to_datetime(ra)
+                                if dt is not None:
+                                    now_ts = time.time()
+                                    delay = max(delay, max(0.0, dt.timestamp() - now_ts))
+                            except Exception:
+                                pass
+
+                if retry and attempt < self.cfg.max_retries:
+                    logger.warning(
+                        f"HTTP {status} for {url} on attempt {attempt + 1}; retrying after {delay:.2f}s"
                     )
-                    if attempt < self.cfg.max_retries:
-                        logger.warning(
-                            f"HTTP {status} for {url} on attempt {attempt + 1}; retrying after {delay:.2f}s"
-                        )
-                        await asyncio.sleep(delay + random.random() * 0.25)
-                        backoff = min(8.0, backoff * 2)
-                        continue
+                    await asyncio.sleep(delay + random.random() * 0.25)
+                    backoff = min(float(self.cfg.max_backoff), backoff * 2)
+                    continue
+                elif retry:
                     logger.error(
                         f"HTTP {status} for {url} after {attempt + 1} attempt(s); giving up"
                     )
@@ -350,10 +397,11 @@ class AsyncDownloader:
             True if the response appears to be HTML, False otherwise
 
         Example:
-            >>> _is_html_response(b"<!DOCTYPE html><html>", "text/html")
-            True
-            >>> _is_html_response(b"division_id,name", "text/csv")
-            False
+            .. code-block:: python
+            AsyncDownloader._is_html_response(b"<!DOCTYPE html><html>", "text/html")
+            # True
+            AsyncDownloader._is_html_response(b"division_id,name", "text/csv")
+            # False
         """
         ctype = content_type.lower()
         if "html" in ctype:
@@ -421,6 +469,14 @@ class AsyncDownloader:
                         url=dl_url,
                         content_type=dl_resp.headers.get("content-type", ""),
                     )
+                # Persist validators from the download_url response under the original URL key
+                etag = dl_resp.headers.get("etag")
+                last_mod = dl_resp.headers.get("last-modified")
+                if etag or last_mod:
+                    self._etag_cache[url] = {
+                        "etag": etag or "",
+                        "last_modified": last_mod or "",
+                    }
                 return dl_resp.content
 
         except (ValueError, json.JSONDecodeError) as e:
