@@ -18,5 +18,22 @@ dependencies = [
 dev = [
     "polars>=1.33.1",
     "pytest>=8.4.2",
+    "respx>=0.22.0",
     "ruff>=0.13.2",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "asyncio: marks tests as asyncio-based async tests",
+]
+addopts = [
+    "--strict-markers",
+    "--verbose",
+    "--color=yes",
 ]
