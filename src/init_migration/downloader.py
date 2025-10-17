@@ -9,6 +9,9 @@ import time
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Iterable, Mapping, Optional, Literal
+from urllib.parse import urlparse
+
+from typing import Literal as _LiteralForAlias
 
 import httpx
 from loguru import logger
@@ -90,12 +93,17 @@ class DownloaderConfig:
         self.initial_backoff = initial_backoff
         self.max_backoff = max_backoff
 
+        if concurrency < 1:
+            raise ValueError("concurrency must be >= 1")
+        if max_retries < 0:
+            raise ValueError("max_retries must be >= 0")
+        if initial_backoff > max_backoff:
+            raise ValueError("initial_backoff cannot exceed max_backoff")
+
 
 DEFAULT_HEADERS = {"Accept": "*/*"}
 
-from urllib.parse import urlparse
 
-from typing import Literal as _LiteralForAlias
 DownloadStatus = _LiteralForAlias["downloaded", "unchanged", "skipped"]
 
 def _is_github_host(host: str | None) -> bool:
