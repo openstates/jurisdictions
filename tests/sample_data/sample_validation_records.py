@@ -2,7 +2,7 @@
 Script to import divisions data from a Google Sheet and convert each row into a Division object.
 """
 import pandas as pd
-from init_migration.import_divisions import fetch_csv_rows
+from src.utils.csv_utils import fetch_csv_rows
 
 # TODO: Update this to the correct CSV export URL for your Google Sheet
 DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121"
