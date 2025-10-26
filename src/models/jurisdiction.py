@@ -45,8 +45,8 @@ class Jurisdiction(BaseModel):
     Class for defining a Jurisdiction object.
     Reference: https://github.com/opencivicdata/docs.opencivicdata.org/blob/master/data/datatypes.rst#id3
     """
-    _id: UUID = Field(default_factory=uuid4(), description = "The uuid associated with the .yaml file when it was initially generated for this project.")
-    id: str = Field(..., description="Jurisdictions IDs take the form ocd-jurisdiction/<jurisdiction_id>/<jurisdiction_type> where jurisdiction_id is the ID for the related division without the ocd-division/ prefix and jurisdiction_type is council, legislature, etc.")
+    id: UUID = Field(default_factory=uuid4(), description = "The uuid associated with the object when it was generated for this project. This is a ddeterministic uuid based on the ocdid and version")
+    ocdid: str = Field(..., description="Jurisdictions IDs take the form ocd-jurisdiction/<jurisdiction_id>/<jurisdiction_type> where jurisdiction_id is the ID for the related division without the ocd-division/ prefix and jurisdiction_type is council, legislature, etc.")
     name: str = Field(..., description="Name of jurisdiction (e.g. North Carolina General Assembly). Should be sourced from official gov source data (i.e. Census) **(required)**")
     url: str = Field(..., description="URL pointing to jurisdiction's website. **(required)**")
     classification: ClassificationEnum = Field(..., description="A jurisdiction category. **(required)** See ClassificationEnum.")

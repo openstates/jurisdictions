@@ -3,7 +3,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from datetime import datetime, timezone
-from .source import SourceObj
+from src.models.source import SourceObj
 import yaml
 # We can choose whichever UUID version is short but won't cause clashes.
 from uuid import UUID, uuid4
@@ -62,8 +62,8 @@ class Geometry(BaseModel):
 
 
 class Division(BaseModel):
-    _id: UUID | None = Field(default_factory=uuid4(), description="The uuid associated with the .yaml file when it was initially generated for this project.")
-    id: str = Field(..., description = "The canonical OpenCivicData id for the political geo division. Should be sourced from the Open Civic Data repo. Example: ADD TKTK See: docs.opencivicdata.org")
+    id: UUID | None = Field(default_factory=uuid4(), description="The uuid associated with the division object  when it was generated for this project. This is a ddeterministic uuid based on the ocdid and version.")
+    ocdid: str = Field(..., description = "The canonical OpenCivicData id for the political geo division. Should be sourced from the Open Civic Data repo. Example: ADD TKTK See: docs.opencivicdata.org")
     country: str = Field(..., description = "Two-letter ISO-3166 alpha-2 country code. (e.g. 'us', 'ca')")
     display_name: str = Field(..., description = "Human-readable name for division. Should be sourced from the Open Civic Data repo.")
     geometries: Optional[List[Geometry]] = Field(default_factory=list, description = "A list of associated geometries, as defined by the Geometry model. Empty array if not set.")
