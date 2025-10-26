@@ -1,3 +1,5 @@
+from src.models.jurisdiction import Jurisdiction, ClassificationEnum
+
 if __name__ == "__main__":
 
     harbor_hills = Jurisdiction(
