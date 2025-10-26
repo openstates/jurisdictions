@@ -20,3 +20,11 @@ class DivGeneratorReq(BaseModel):
     ai_url: bool # Wether or not to populate url data w/ai scraper
     geo_req: bool # Whether or not to populate geo request data
     population_req: bool # Wether or not to populate with Census population API call.
+
+class GeneratorResp(BaseModel):
+    data: OCDidIngestResp
+    division: Any  # Division object
+    jurisdiction: Any | None  # Jurisdiction object, if applicable.
+
+class JurGeneratorReq(DivGeneratorReq):
+    division: str  # OCDID of the division to generate jurisdiction for.
