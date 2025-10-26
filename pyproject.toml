@@ -6,12 +6,13 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "google-i18n-address>=3.1.1",
+    "pyaml>=25.7.0",
     "pydantic>=2.11.9",
+    "polars>=1.33.1",
 ]
 
 [dependency-groups]
 dev = [
-    "polars>=1.33.1",
     "pytest>=8.4.2",
     "ruff>=0.13.2",
 ]
