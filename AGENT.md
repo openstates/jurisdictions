@@ -63,19 +63,27 @@ You are helping to build an ETL pipeline that will load data about local cities 
 
 ## Pipeline flow (initial ingestion)
 
-1. Read the Validation Research CSV (via Polars).
-2. Normalize place names (strip LSAD from NAMELSAD) for matching.
-3. Match each record to an Official Division OCD ID (`country-us.csv`).
-4. Build Division objects:
+### Pipeline 1: 
+Given each state:  
+1. Read the Official Division OCD ID (`country-us.csv`) for each state
+2. Return only local OCDids. 
+3  For each division ocdid, return a request object to run  Pipeline 2. 
+
+### Pipeline 2: 
+Given a request object with an official division ocdid: 
+3. Normalize place names for matching.
+
+4. Match each record to anValidation Research CSV (via Polars).
+5. Build Division objects:
    - Fill required fields; set `geometries` as an empty list if unknown.
    - Include `government_identifiers` (e.g., `namelsad`, `statefp`, `lsad`, `geoid`).
    - Link to associated `jurisdiction_id` (string).
-5. Derive Jurisdiction objects:
+6. Derive Jurisdiction objects:
    - Use division→jurisdiction construction rules noted above.
    - Choose `classification` (e.g., `legislature`/`government`) using heuristic rules.
    - Fill required fields: `name`, `url`, `classification`, `legislative_sessions` (possibly empty dict), `feature_flags` (possibly empty list).
-6. Serialize each object to YAML and write to the correct directory.
-7. Log decisions and any unmatched/ambiguous records for review.
+7. Serialize each object to YAML and write to the correct directory.
+8. Log decisions and any unmatched/ambiguous records for review.
 
 ## Minimal YAML examples
 
@@ -129,7 +137,9 @@ metadata: {}
 - Linting:
   - `uv run ruff .`
 
-Note: Polars is currently in the dev dependency group in `pyproject.toml`. If the ingestion code depends on Polars at runtime, consider moving it to main dependencies.
+## Unit tests 
+All tests should be stored in tests/ and the file path should mirror the
+filepath where the code is stored. 
 
 ## Acceptance criteria
 
@@ -138,9 +148,9 @@ Note: Polars is currently in the dev dependency group in `pyproject.toml`. If th
   - Each Division has a valid Official Division OCD ID.
   - Each Jurisdiction OCD ID follows the correct schema and is derivable from the Division.
   - Tests in `tests/` pass and Ruff reports no errors.
+  - Integration tests in `integration/` pass and report no errors. 
 
 ## Future phases
-
 - AI scrapers to fill missing fields (ArcGIS layer URLs, official websites, etc.).
 - FastAPI CRUDL service for ongoing updates.
 - Enhanced validation (e.g., existence checks against OCD sources).

@@ -1,0 +1,18 @@
+id: "oid1-pdnd3tbr-bkad-adaf-2c57-zokswltdeuqs-qsadjufu-qurn-4xlr-ob7p-alq4cngasdug-rnxgvu6c-xrtp-cul3-lm6c-fk2fn4tj2vls-vhbfipqv-hp3z-6caj-56ce-toa75o3b2ka"
+ocdid: "ocd-division/country:us/district:dc/anc:1a/council_district:1"
+country: "us"
+display_name: "ANC 1A District 1"
+geometries: []
+also_known_as: []
+last_updated: "2025-10-27T01:29:51Z"
+sourcing: []
+government_identifiers:
+  namelsad: "missing-namelsad"
+  statefp: "missing-statefp"
+  sldust: []
+  sldlst: []
+  countyfp: []
+  county_names: []
+  lsad: "missing-lsad"
+  geoid: "missing-geoid"
+jurisdiction_id: "ocd-jurisdiction/country:us/district:dc/anc:1a/government"

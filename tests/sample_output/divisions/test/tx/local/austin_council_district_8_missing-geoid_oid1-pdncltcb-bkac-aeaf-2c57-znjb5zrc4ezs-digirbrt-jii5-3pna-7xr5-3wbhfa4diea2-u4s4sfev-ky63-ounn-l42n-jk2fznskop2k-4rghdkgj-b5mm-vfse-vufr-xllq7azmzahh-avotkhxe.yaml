@@ -1,0 +1,18 @@
+id: "oid1-pdncltcb-bkac-aeaf-2c57-znjb5zrc4ezs-digirbrt-jii5-3pna-7xr5-3wbhfa4diea2-u4s4sfev-ky63-ounn-l42n-jk2fznskop2k-4rghdkgj-b5mm-vfse-vufr-xllq7azmzahh-avotkhxe"
+ocdid: "ocd-division/country:us/state:tx/place:austin/council_district:8"
+country: "us"
+display_name: "Austin Council District 8"
+geometries: []
+also_known_as: []
+last_updated: "2025-10-27T01:29:51Z"
+sourcing: []
+government_identifiers:
+  namelsad: "missing-namelsad"
+  statefp: "missing-statefp"
+  sldust: []
+  sldlst: []
+  countyfp: []
+  county_names: []
+  lsad: "missing-lsad"
+  geoid: "missing-geoid"
+jurisdiction_id: "ocd-jurisdiction/country:us/state:tx/place:austin/government"

@@ -1,0 +1,7 @@
+division_ocdid,jurisdiction_ocdid,name,sameAs,sameAsNote,validThrough,census_geoid,census_geoid_12,census_geoid_14,openstates_district,placeholder_id,sch_dist_stateid,state_id,validFrom,Notes
+ocd-division/country:us/state:ca/place:sausalito,ocd-jurisdiction/country:us/state:ca/place:sausalito/government,Sausalito city,,,,place-0670364,,,,,,,,
+ocd-division/country:us/state:ca/county:marin/cdp:marin_city,ocd-jurisdiction/country:us/state:ca/county:marin/special_district:marin_city_community_services_district/governing_board,Marin City CDP,,,,,,,,,,,,"cousub - in Creyton's spreadsheet, missing official OCDid - no match"
+ocd-division/country:us/district:dc/anc:1a/council_district:1,ocd-jurisdiction/country:us/district:dc/anc:1a/government,Washington DC Advisory Neighborhood Commission 1A - District 1,,,,,,,,,,,,"advisory district - has ocdid, missing from Creyton's spreadsheet - no match; Also this may actually be a ""governing board"""
+ocd-division/country:us/state:wa/place:seattle/council_district:1,ocd-jurisdiction/country:us/state:wa/place:seattle/government,Seattle WA City Council District 1,,,,place-5363000,,,,,,,,
+ocd-division/country:us/state:wa/place:tacoma,ocd-jurisdiction/country:us/state:wa/place:tacoma/government,Tacoma city,,,,place-5370000,,,,, ,,,
+ocd-division/country:us/state:tx/place:austin/council_district:8,ocd-jurisdiction/country:us/state:tx/place:austin/government,Austin TX city council district 8 (effective Jan 2015),,,, ,,,,, ,,,malformed name in official OCDid repo
