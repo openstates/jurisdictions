@@ -1,0 +1,18 @@
+id: "oid1-pdna3s2b-blac-adae-yc76-zwjcl3zzwebn-atceqe4f-kl5p-o5xo-6pqn-ziesmaqjrvfd-5jlfog2z-nsg3-q3s2-ty6t-qgqj47mvsgrz-f7t24yki-7azx-nqp3-af73-ugfk"
+ocdid: "ocd-division/country:us/state:ca/place:sausalito"
+country: "us"
+display_name: "Sausalito"
+geometries: []
+also_known_as: []
+last_updated: "2025-10-27T01:29:51Z"
+sourcing: []
+government_identifiers:
+  namelsad: "Sausalito city"
+  statefp: "06"
+  sldust: ["002"]
+  sldlst: ["012"]
+  countyfp: ["041"]
+  county_names: ["Marin"]
+  lsad: "25"
+  geoid: "0670364"
+jurisdiction_id: "ocd-jurisdiction/country:us/state:ca/place:sausalito/government"

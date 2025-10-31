@@ -1,0 +1,18 @@
+id: "c104c614-3662-5202-ac00-c348b7c31e4f"
+ocdid: "ocd-division/country:us/state:wa/place:tacoma"
+country: "us"
+display_name: "Tacoma"
+geometries: []
+also_known_as: []
+last_updated: "2025-10-27T01:29:51Z"
+sourcing: []
+government_identifiers:
+  namelsad: "Tacoma city"
+  statefp: "53"
+  sldust: ["027", "028", "029"]
+  sldlst: ["027", "028", "029"]
+  countyfp: ["053"]
+  county_names: ["Pierce"]
+  lsad: "25"
+  geoid: "5370000"
+jurisdiction_id: "ocd-jurisdiction/country:us/state:wa/place:tacoma/government"

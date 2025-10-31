@@ -1,0 +1,18 @@
+id: "oid1-pdncldcb-blac-adae-76zg-pc3yzvtyvraw-okubddmc-st7l-3avx-memo-nrj5idaucqkq-jzdzeikn-gr55-nhvn-j3vm-2n4loyi4p3jg-hwy4ucss-3f2l-fwee-ymng-cbd4h7mnuhky"
+ocdid: "ocd-division/country:us/state:ca/county:marin/cdp:marin_city"
+country: "us"
+display_name: "Marin City"
+geometries: []
+also_known_as: []
+last_updated: "2025-10-27T01:29:51Z"
+sourcing: []
+government_identifiers:
+  namelsad: "Marin City CDP"
+  statefp: "06"
+  sldust: ["002"]
+  sldlst: ["012"]
+  countyfp: ["041"]
+  county_names: ["Marin"]
+  lsad: "57"
+  geoid: "0645820"
+jurisdiction_id: "ocd-jurisdiction/country:us/state:ca/county:marin/special_district:marin_city_community_services_district/governing_board"
