@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    
+
+    {
+      "name": "Run downloader module",
+      "type": "python",
+      "request": "launch",
+      "module": "src.init_migration.downloader",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}
