@@ -17,13 +17,14 @@ PROJECT_PATH = "jurisdictions/"
 
 class ClassificationEnum(str, Enum):
     """These are the allowed defined types for jurisdictions"""
-    GOVERNMENT = "government"
-    LEGISLATURE = "legislature" # i.e. city council
-    SCHOOL_SYSTEM = "school_system"
+    GOVERNMENT = "government" #i.e. city council
+    LEGISLATURE = "legislature" # i.e. state legislature,
+    SCHOOL_SYSTEM = "school_system" # i.e. county school district board, individualschool board, community college board
     EXECUTIVE = "executive"  # i.e. mayor
-    TRANSIT_AUTHORITY = "transit_authority"
+    TRANSIT_AUTHORITY = "transit_authority" #i.e. PORT Authority of New York and New Jersey
     JUDICIAL = "judicial" # NON-OCDid COMPLIANT; ADDED
-    PROSECUTORIAL = "prosecutorial" # NON-OCDid COMPLIANT; ADDED
+    PROSECUTORIAL = "prosecutorial" # NON-OCDid COMPLIANT; ADDED, Examples: District Attorney Offices
+    GOVERNING_BOARD = "governing_board" # NON-OCDid COMPLIANT; ADDED; Examples:  Cousubs that have elected governing bodies that advise but meet under the fiscal oversight of the county government. Utility districts with elected boards, etc.
 
 class SessionDetail(BaseModel):
     """Appears in the 'legislative_sessions' as a value for each session key."""
@@ -36,6 +37,7 @@ class SessionDetail(BaseModel):
 class TermDetail(BaseModel):
     duration: int = Field(..., description = "This is typically defined in years.")
     term_description: str = Field(..., description = "The legal language defining how the terms is proscribed in the source document. i.e Shall commence the second tuesday following the last general election and any other useful information.")
+    number_of_positions: int = Field(..., description = "The number of distinct positions that are elected to represent the jurisdiction inclusive of at-large positions. For a city council with 5 members and , this would be 7.")
     term_limits: Optional[str] = Field(default=None, description = "Typically defined as the number of terms an office holder can hold. Can be a string description of the term limits if any.")
     source_url: str = Field(..., description = "The source url that defines the terms for the jurisdiction. Must be a .gov source. Can often be found in the incorporation charter or state constitution." )
     last_known_start_date: Optional[datetime] = Field(default=None, description="The last known start of the most recent term. This date allows future term start and end dates to be computed programmatically." )
@@ -45,8 +47,8 @@ class Jurisdiction(BaseModel):
     Class for defining a Jurisdiction object.
     Reference: https://github.com/opencivicdata/docs.opencivicdata.org/blob/master/data/datatypes.rst#id3
     """
-    _id: UUID = Field(default_factory=uuid4(), description = "The uuid associated with the .yaml file when it was initially generated for this project.")
-    id: str = Field(..., description="Jurisdictions IDs take the form ocd-jurisdiction/<jurisdiction_id>/<jurisdiction_type> where jurisdiction_id is the ID for the related division without the ocd-division/ prefix and jurisdiction_type is council, legislature, etc.")
+    id: UUID = Field(default_factory=uuid4(), description = "The uuid associated with the object when it was generated for this project. This is a ddeterministic uuid based on the ocdid and version")
+    ocdid: str = Field(..., description="Jurisdictions IDs take the form ocd-jurisdiction/<jurisdiction_id>/<jurisdiction_type> where jurisdiction_id is the ID for the related division without the ocd-division/ prefix and jurisdiction_type is council, legislature, etc.")
     name: str = Field(..., description="Name of jurisdiction (e.g. North Carolina General Assembly). Should be sourced from official gov source data (i.e. Census) **(required)**")
     url: str = Field(..., description="URL pointing to jurisdiction's website. **(required)**")
     classification: ClassificationEnum = Field(..., description="A jurisdiction category. **(required)** See ClassificationEnum.")

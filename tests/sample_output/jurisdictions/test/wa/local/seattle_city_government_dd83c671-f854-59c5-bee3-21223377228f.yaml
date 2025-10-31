@@ -1,0 +1,11 @@
+id: "dd83c671-f854-59c5-bee3-21223377228f"
+ocdid: "ocd-jurisdiction/country:us/state:wa/place:seattle/government"
+name: "Seattle City Government"
+url: "missing-url-seattle"
+classification: "government"
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: null
+last_updated: "2025-10-27T01:29:51Z"
+sourcing: []
+metadata: {}

@@ -1,0 +1,18 @@
+id: "oid1-pdnb3tcb-bkac-aeaf-2c57-znjbn3tteind-ygadjymm-izch-ol62-h7pi-23mckkaific4-syrfgtdu-r6wg-h536-2gyg-rhv52km6hujs-k6zjvxk3-7ucu-ww4l-tb3w-dj4eqbx4gtdy-lz4zchzh"
+ocdid: "ocd-division/country:us/state:wa/place:seattle/council_district:1"
+country: "us"
+display_name: "Seattle Council District 1"
+geometries: []
+also_known_as: []
+last_updated: "2025-10-27T01:29:51Z"
+sourcing: []
+government_identifiers:
+  namelsad: "Seattle city"
+  statefp: "53"
+  sldust: ["032", "034", "036", "037", "043", "046"]
+  sldlst: ["032", "034", "036", "037", "043", "046"]
+  countyfp: ["033"]
+  county_names: ["King"]
+  lsad: "25"
+  geoid: "5363000"
+jurisdiction_id: "ocd-jurisdiction/country:us/state:wa/place:seattle/government"
