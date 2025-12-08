@@ -2,10 +2,26 @@ id: "oid1-pdna3s2b-blac-adae-yc76-zwjcl3zzwebn-atceqe4f-kl5p-o5xo-6pqn-ziesmaqjr
 ocdid: "ocd-division/country:us/state:ca/place:sausalito"
 country: "us"
 display_name: "Sausalito"
-geometries: []
+geometries:
+  - start: null
+    end: null
+    boundary: null
+    children: null
+    arcGIS_address: https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4/query?where=GEOID%3D'0670364'&outFields=*&outSR=4326&f=geojson
 also_known_as: []
+valid_thru: null
+valid_asof: null
+accurate_asof: "2025-10-27T01:29:51Z"
 last_updated: "2025-10-27T01:29:51Z"
-sourcing: []
+sourcing:
+  - field: geometries
+    source_name: "Census TIGER/Line"
+    source_url: https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer
+    source_type: "human_researched"
+  - field: government_identifiers
+    source_name: "civicdata.tech"
+    source_url: "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362"
+    source_type: "human_researched"
 government_identifiers:
   namelsad: "Sausalito city"
   statefp: "06"

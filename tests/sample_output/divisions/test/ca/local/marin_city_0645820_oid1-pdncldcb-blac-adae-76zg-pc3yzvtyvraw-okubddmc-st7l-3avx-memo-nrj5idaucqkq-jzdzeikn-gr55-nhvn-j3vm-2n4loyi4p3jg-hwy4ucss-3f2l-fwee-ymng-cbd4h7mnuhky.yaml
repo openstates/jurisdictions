@@ -2,17 +2,42 @@ id: "oid1-pdncldcb-blac-adae-76zg-pc3yzvtyvraw-okubddmc-st7l-3avx-memo-nrj5idauc
 ocdid: "ocd-division/country:us/state:ca/county:marin/cdp:marin_city"
 country: "us"
 display_name: "Marin City"
-geometries: []
-also_known_as: []
+geometries:
+  - start: null
+    end: null
+    boundary: null
+    children: null
+    arcGIS_address: https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/5/query?where=GEOID%3D'0645820'&outFields=*&outSR=4326&f=geojson
+also_known_as:
+  - "Marin City Census Designated Place"
+valid_thru: null
+valid_asof: null
+accurate_asof: "2025-10-27T01:29:51Z"
 last_updated: "2025-10-27T01:29:51Z"
-sourcing: []
+sourcing:
+  - field: geometries
+    source_name: "Census TIGER/Line"
+    source_url: https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer
+    source_type: "human_researched"
+  - field: government_identifiers
+    source_name: "civicdata.tech"
+    source_url: "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362"
+    source_type: "human_researched"
+  - field: metadata.population
+    source_name: "Census 2020 Decceennial Census"
+    source_url: "https://data.census.gov/profile/Marin_City_CDP,_California?g=160XX00US0645820"
+    source_type: "human_researched"
+metadata:
+  - key: population
+    value: 2993
 government_identifiers:
   namelsad: "Marin City CDP"
   statefp: "06"
+  placefp: "46420"
   sldust: ["002"]
   sldlst: ["012"]
   countyfp: ["041"]
   county_names: ["Marin"]
   lsad: "57"
   geoid: "0645820"
-jurisdiction_id: "ocd-jurisdiction/country:us/state:ca/county:marin/special_district:marin_city_community_services_district/governing_board"
+jurisdiction_id: "ocd-jurisdiction/country:us/state:ca/county:marin/cdp:marin_city/special_district:marin_city_community_services_district/governing_board"
