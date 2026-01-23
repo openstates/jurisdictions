@@ -15,4 +15,9 @@ dependencies = [
 dev = [
     "pytest>=8.4.2",
     "ruff>=0.13.2",
+    "pytest-pythonpath>=0.7",
 ]
+
+[tool.pytest.ini_options]
+# Where pytest should look for tests (keep tests/ at repo root)
+testpaths = ["tests"]

@@ -4,14 +4,14 @@ from validation data sets. If requested, it will also enrich the data with
 external API requests.
 """
 
-from src.init_migration.models import DivGeneratorReq
+from src.init_migration.models import PipelineReq
 from src.models.ocdid import OCDidParsed
 from src.models.division import Division, Geometry
 from src.models.jurisdiction import Jurisdiction
 from typing import Any
 import polars as pl
 from polars import DataFrame
-from utils.state_lookup import load_state_code_lookup
+from src.utils.state_lookup import load_state_code_lookup
 from pydantic import BaseModel
 from datetime import datetime, UTC
 import logging
@@ -23,9 +23,6 @@ DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoH
 
 TODAY = datetime.now(tz=UTC) # automatically generate current run date.
 
-class NoMatch(BaseModel):
-    validation_no_ocdid: DataFrame = pl.DataFrame()
-    ocdid_no_validation: list[Division] = [] # Could also be OCDids
 
 class ValidationRecord(BaseModel):
     """
@@ -35,7 +32,7 @@ class ValidationRecord(BaseModel):
 class JurGenerator:
     def __init__(
             self,
-            req: DivGeneratorReq, validation_data_filepath=DIVISIONS_SHEET_CSV_URL,
+            req: PipelineReq, validation_data_filepath=DIVISIONS_SHEET_CSV_URL,
             ):
         self.req = req
         self.data = req.data
@@ -95,16 +92,6 @@ class JurGenerator:
             raise ValueError("Unable to filter state validation data.")
         return self.validation_df
 
-    def _map_basedata_to_div_obj(self, val_rec: pl.Series) -> Division:
-        return Division()
-
-    def _populate_geometry(self) -> Geometry:
-        geometry = Geometry()
-        return geometry
-
-    def _populate_census_population_request(self) -> str:
-        return "some_api_call"
-
     def _check_if_div_is_jurisdiction(self) ->bool:
         is_jurisdiction = False
         return is_jurisdiction
@@ -113,16 +100,16 @@ class JurGenerator:
         val_rec
         return Jurisdiction()
 
-    def _populate_juris_urls(self) -> dict[str, Any]:
-        # Calls AI with self.jurisdiction object and returns the urls in the
-        # following format.
-        if self.req.ai_url:
-            return {
-                "primary_url": "",
-                "secondary_url": ["", "", ""]
-                }
-        else:
-            return {}
+    def _populate_juris_url(self) -> str:
+        """ Method that calls the AI service to populate website urls for the
+        jurisdiction.
+        Returns:
+            str: The populated url.
+        """
+        # TODO: Call AI service module here.
+        self.jurisdiction.url = "https://www.example.gov"
+        return self.jurisdiction.url
+
 
     def generate_jurisdiction(self, val_rec: pl.Series) -> Jurisdiction | None:
         if not self.division:
@@ -131,7 +118,7 @@ class JurGenerator:
         is_jurisdiction = self._check_if_div_is_jurisdiction()
         if is_jurisdiction:
             self.jurisdiction = self._map_basedata_to_juris_obj(self, val_rec=val_rec)
-            self._populate_juris_urls()
+            self._populate_juris_url()
 
 
     def save_jurisdiction(self):

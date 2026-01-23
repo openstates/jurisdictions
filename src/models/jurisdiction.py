@@ -17,7 +17,7 @@ PROJECT_PATH = "jurisdictions/"
 class ClassificationEnum(str, Enum):
     """These are the allowed defined types for jurisdictions"""
     GOVERNMENT = "government" #i.e. city council
-    LEGISLATURE = "legislature" # i.e. state legislature,
+    LEGISLATURE = "legislature" # i.e. state legislature, used for bicameral bodies
     SCHOOL_SYSTEM = "school_system" # i.e. county school district board, individualschool board, community college board
     EXECUTIVE = "executive"  # i.e. mayor
     TRANSIT_AUTHORITY = "transit_authority" #i.e. PORT Authority of New York and New Jersey
@@ -60,7 +60,7 @@ class SessionDetail(BaseModel):
 class TermDetail(BaseModel):
     duration: int = Field(..., description = "This is typically defined in years.")
     term_description: str = Field(..., description = "The legal language defining how the terms is proscribed in the source document. i.e Shall commence the second tuesday following the last general election and any other useful information.")
-    number_of_positions: int = Field(..., description = "The number of distinct positions that are elected to represent the jurisdiction inclusive of at-large positions. For a city council with 5 members and , this would be 7.")ig
+    number_of_positions: int = Field(..., description = "The number of distinct positions that are elected to represent the jurisdiction inclusive of at-large positions. For a city council with 5 members and , this would be 7.")
     term_limits: Optional[str] = Field(default=None, description = "Typically defined as the number of terms an office holder can hold. Can be a string description of the term limits if any.")
     source_url: str = Field(..., description = "The source url that defines the terms for the jurisdiction. Must be a .gov source. Can often be found in the incorporation charter or state constitution." )
     last_known_term_end_date: Optional[datetime] = Field(default=None, description="The last known start of the most recent term. This date allows future term start and end dates to be computed programmatically." )

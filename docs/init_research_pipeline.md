@@ -1,10 +1,10 @@
 1. Fetch data from Open Civic Data repo
     Pipeline will run by state:
-    - Pull Master list of OCDids form Open Civic Data (us.csv)
+    - Pull Master list of OCDids form Open Civic Data (us.csv) (divisons)
     - Pull OCDids from Open Civic Data (use the state directory "local" .csv)
     - For each record in the local list, pull the full data from master list.
         - We will work from the master list.
-        - Convert this into a Division record.
+        - Convert this into a stub for a Division record.
             Sourcing:  "Initial ingest of master OCDids maintained by the Open Civic Data project."
         - Generate a UUID (timestamp)
         - Map fields in master list to Division model
@@ -14,10 +14,10 @@
 
     -Return:
         OCDidIngestResp() model
-            - UUID
-            - filepath
-            - OCDidParsed
-            - raw record from the master list
+            - UUID # id of the stub Division object
+            - filepath # path to the stub Division object
+            - OCDidParsed # OCDID from Open Civic Data master list
+            - raw record from Open Civic Data master list
 
 2. Fetch the data from the master research spreadsheet (hereafter: Creyton's spreadsheet) by state (do a state code lookup)
     Pipeline will run by state:
@@ -27,9 +27,13 @@
     - Given the parsed OCDid, find a "place" match in the research
     - If match:
         - load the stub Division
-        - Populate the data in Divison model
+        - Populate the data in Division model
+            - ai call to find the argis server and return the url.
         - resave the now populated stub
         - update Creyton's spreadsheet with the OCDid for the record
             - Indicates we found a match
+        - build a Jurisdictions record 
+            - ai call to return website for jurisdiction (wikipedia?)
+                - includes gnis identifier (geoid)
     - If not match:
         - add to quarantine, append to file.

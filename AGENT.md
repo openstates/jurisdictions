@@ -140,6 +140,8 @@ metadata: {}
 ## Unit tests 
 All tests should be stored in tests/ and the file path should mirror the
 filepath where the code is stored. 
+Write a unit test file for each module. The test file should include fixtures
+needed to run the tests in that module.
 
 ## Acceptance criteria
 
