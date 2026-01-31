@@ -11,8 +11,8 @@ ocdid_master_mapper = {'id': "id",
                         'census_geoid_12': "geometries.government_identifiers.geoid_12",
                         'census_geoid_14': "geometries.government_identifiers.geoid_14",
                         'openstates_district': "metadata.openstates_district",
-                        'placeholder_id': None,
-                        'sch_dist_stateid': None,
+                        'placeholder_id': "metadata.placeholder_id", # Only 5284 values
+                        'sch_dist_stateid': "metadata.sch_dist_stateid", # 15438 values
                         'state_id': "geometries.government_identifiers.stusps", # IS IT STATE CODE?
                         'validFrom': "valid_thru"
 }

@@ -5,19 +5,38 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "duckdb>=1.4.1",
     "google-i18n-address>=3.1.1",
+    "httpx[http2]>=0.28.1",
+    "loguru>=0.7.3",
+    "pandas>=2.3.2",
+    "polars>=1.33.1",
+    "pyarrow>=21.0.0",
     "pyaml>=25.7.0",
     "pydantic>=2.11.9",
-    "polars>=1.33.1",
 ]
 
 [dependency-groups]
 dev = [
     "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
+    "respx>=0.22.0",
     "ruff>=0.13.2",
     "pytest-pythonpath>=0.7",
 ]
 
 [tool.pytest.ini_options]
-# Where pytest should look for tests (keep tests/ at repo root)
 testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "asyncio: marks tests as asyncio-based async tests",
+]
+addopts = [
+    "--strict-markers",
+    "--verbose",
+    "--color=yes",
+]
