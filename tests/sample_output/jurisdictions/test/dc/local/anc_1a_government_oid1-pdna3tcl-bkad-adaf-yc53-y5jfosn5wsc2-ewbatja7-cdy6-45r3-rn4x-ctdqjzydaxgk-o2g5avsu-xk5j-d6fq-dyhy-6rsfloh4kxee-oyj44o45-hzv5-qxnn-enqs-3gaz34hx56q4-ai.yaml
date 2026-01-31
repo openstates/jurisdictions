@@ -1,7 +1,7 @@
 id: "oid1-pdna3tcl-bkad-adaf-yc53-y5jfosn5wsc2-ewbatja7-cdy6-45r3-rn4x-ctdqjzydaxgk-o2g5avsu-xk5j-d6fq-dyhy-6rsfloh4kxee-oyj44o45-hzv5-qxnn-enqs-3gaz34hx56q4-ai"
 ocdid: "ocd-jurisdiction/country:us/district:dc/anc:1a/government"
 name: "ANC 1A Government"
-url: "https://oanc.dc.gov/anc-profile/anc-1a"
+url: "https://oanc.dc.gov/anc-profile/anc-1"
 classification: "government"
 legislative_sessions: {}
 feature_flags: []
@@ -12,6 +12,6 @@ term:
     term_limits: null
     last_known_term_end_date: null
 accurate_asof: null
-last_updated: "2025-10-27T01:29:51Z"
+last_updated: "2026-01-31T01:29:51Z"
 sourcing: []
 metadata: {}
