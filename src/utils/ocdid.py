@@ -10,7 +10,7 @@ Generate OCDids
 from typing import Any
 import i18naddress
 import logging
-from errors import OCDIdParsingError
+from src.errors import OCDIdParsingError
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

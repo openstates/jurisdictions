@@ -1,5 +1,8 @@
 import json
-import os
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]  # this is jurisdictions/src
+DATA_PATH = ROOT / "state_lookup.json"
 
 def load_state_code_lookup():
     """
@@ -8,6 +11,5 @@ def load_state_code_lookup():
         dict: State code lookup dictionary.
     """
 
-    path = os.path.join(os.path.dirname(__file__), "data", "state_lookup.json")
-    with open(path, "r", encoding="utf-8") as f:
+    with DATA_PATH.open("r", encoding="utf-8") as f:
         return json.load(f)

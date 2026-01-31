@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
-from utils.ocdid import ocdid_parser
-from errors import OCDIdParsingError
+from src.utils.ocdid import ocdid_parser
+from src.errors import OCDIdParsingError
 
 class OCDidParsed(BaseModel):
     """

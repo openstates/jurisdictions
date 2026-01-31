@@ -11,8 +11,8 @@ from src.models.jurisdiction import Jurisdiction
 from typing import Any
 import polars as pl
 from polars import DataFrame
-from utils.state_lookup import load_state_code_lookup
-from pydantic import BaseModel
+from src.utils.state_lookup import load_state_code_lookup
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime, UTC
 import logging
 
@@ -23,9 +23,13 @@ DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoH
 
 TODAY = datetime.now(tz=UTC) # automatically generate current run date.
 
-class NoMatch(BaseModel):
+class PolarsBaseModel(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+class NoMatch(PolarsBaseModel):
     validation_no_ocdid: DataFrame = pl.DataFrame()
     ocdid_no_validation: list[Division] = [] # Could also be OCDids
+    
+
 
 class ValidationRecord(BaseModel):
     """
@@ -220,6 +224,107 @@ class DivGenerator:
         self.validation_df.write_csv(self.validation_output_fp)
         print(f"Validation data saved to: {self.validation_output_fp}")
 
+
+    def build_jurisdiction_record(self) -> Jurisdiction | None:
+        """
+        Build or update the Jurisdiction record for the current division.
+
+        Behavior:
+        - Uses the configured DivGeneratorReq on self.req.
+        - If build_base_object is True:
+            * Treat as if there is no existing YAML jurisdiction file.
+            * Construct a new Jurisdiction object from validation data.
+        - If build_base_object is False:
+            * Attempt to load an existing jurisdiction from disk and update it.
+        - If ai_url is True:
+            * Make an AI/url-population call via _populate_juris_urls and attach
+              any returned URLs to the jurisdiction object.
+        """
+        # Ensure we have a Division to work with
+        if not self.division:
+            try:
+                self.load_division()
+            except Exception as error:
+                logger.error(
+                    "Unable to build jurisdiction record without a division",
+                    extra={"error": error},
+                    exc_info=True,
+                )
+                raise
+
+        # We need a validation record to map into a Jurisdiction
+        if not hasattr(self, "validation_df") or getattr(self, "validation_df", None) is None:
+            # Load the state-specific validation data
+            self.load_validation_data()
+
+        # Try to match this division to a single validation record
+        state_val_df = self.validation_df
+        match = self.match_division(state_val_df)
+        if match is None:
+            logger.info(
+                "No matching validation record found for division; skipping jurisdiction build",
+                extra={"ocdid": self.parsed_ocdid.raw_ocdid},
+            )
+            return None
+
+        # Build or load the base jurisdiction object
+        if self.req.build_base_object:
+            # Act like there is no existing YAML; build from validation record
+            self.jurisdiction = self._map_basedata_to_juris_obj(val_rec=match)
+        else:
+            # Try to load an existing jurisdiction file and then update it
+            try:
+                existing = self.load_jurisdiction()
+                self.jurisdiction = existing
+            except Exception:
+                # If loading fails, fall back to building from scratch
+                logger.warning(
+                    "Failed to load existing jurisdiction; building a new one instead",
+                    extra={"filepath": str(self.division_filepath)},
+                    exc_info=True,
+                )
+                self.jurisdiction = self._map_basedata_to_juris_obj(val_rec=match)
+
+        if not self.jurisdiction:
+            raise ValueError("Jurisdiction object was not created successfully.")
+
+        # Only divisions that are actually jurisdictions should proceed
+        if not self._check_if_div_is_jurisdiction():
+            logger.info(
+                "Division is not a jurisdiction; skipping jurisdiction record build",
+                extra={"ocdid": self.parsed_ocdid.raw_ocdid},
+            )
+            return None
+
+        # Optionally enrich with AI-derived URLs
+        if self.req.ai_url:
+            try:
+                url_data = self._populate_juris_urls()
+                # Attach URLs to the jurisdiction object if there is a place for them.
+                # This assumes the Jurisdiction model has attributes like `urls` or `extras`.
+                if hasattr(self.jurisdiction, "urls") and isinstance(
+                    getattr(self.jurisdiction, "urls"), dict | list | type(None)
+                ):
+                    # Simple strategy: store primary + secondary under a single field
+                    setattr(self.jurisdiction, "urls", url_data)
+                elif hasattr(self.jurisdiction, "extras") and isinstance(
+                    getattr(self.jurisdiction, "extras"), dict | type(None)
+                ):
+                    extras = getattr(self.jurisdiction, "extras") or {}
+                    extras["ai_urls"] = url_data
+                    setattr(self.jurisdiction, "extras", extras)
+            except Exception as error:
+                logger.error(
+                    "AI URL enrichment failed; continuing without URL data",
+                    extra={"error": error},
+                    exc_info=True,
+                )
+
+        # Persist the jurisdiction YAML
+        self.save_jurisdiction()
+        return self.jurisdiction
+
+
     async def run(self):
         # TODO:
         # - Implement method by method
@@ -232,13 +337,29 @@ class DivGenerator:
 if __name__  == "__main__":
 
     import asyncio
+    from pathlib import Path
+    from src.init_migration.models import OCDidIngestResp, DivGeneratorReq
 
-    dg = DivGenerator()
+    # TODO: customize these values for the division you want to process
+    ingest = OCDidIngestResp(
+        uuid="00000000-0000-0000-0000-000000000000",  # or an actual UUID
+        filepath=Path("path/to/division.yaml"),
+        ocdid="ocd-division/country:us/state:ca/place:san_francisco",
+        raw_record={},
+    )
 
+    req = DivGeneratorReq(
+        data=ingest,
+        build_base_object=True,
+        ai_url=False,
+        geo_req=False,
+        population_req=False,
+    )
+
+    dg = DivGenerator(req=req)
     division, jurisdiction = asyncio.run(dg.run())
-
-
-
+    print("Division:", division)
+    print("Jurisdiction:", jurisdiction)
 
 
 
