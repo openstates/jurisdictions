@@ -3,7 +3,7 @@
 
 import pytest
 
-from src.init_migration.models import PipelineReq, OCDidIngestResp
+from src.init_migration.models import GeneratorReq, OCDidIngestResp
 from src.init_migration.generate_division import DivGenerator
 import uuid
 from pathlib import Path
@@ -15,7 +15,7 @@ import pytest
 
 
 @pytest.fixture
-def sample_req(tmp_path) -> PipelineReq:
+def sample_req(tmp_path) -> GeneratorReq:
     # Create a fake OCDidIngestResp
     resp = OCDidIngestResp(
         uuid=uuid.UUID(int=0),
@@ -24,7 +24,7 @@ def sample_req(tmp_path) -> PipelineReq:
         raw_record={}
     )
 
-    req = PipelineReq(
+    req = GeneratorReq(
         data=resp,
         build_base_object=False,
         ai_url=False,
@@ -53,7 +53,7 @@ def test_load_verification_data_lookup(tmp_path, sample_req, sample_validation_c
         raw_record={}
     )
 
-    req = PipelineReq(
+    req = GeneratorReq(
         data=resp,
         build_base_object=False,
         ai_url=False,

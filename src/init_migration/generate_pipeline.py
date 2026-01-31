@@ -9,7 +9,7 @@ import logging
 from typing import Any
 from pathlib import Path
 
-from src.init_migration.models import OCDidIngestResp, PipelineReq, GeneratorResp
+from src.init_migration.models import OCDidIngestResp, GeneratorReq, GeneratorResp
 from src.init_migration.generate_division import DivGenerator
 from src.init_migration.generate_jurisdiction import JurGenerator
 from src.utils.ocdid import ocdid_parser
@@ -33,11 +33,11 @@ class ValidationRecord(BaseModel):
     TODO: Convert the fields in the spreadsheet into a model.
     """
 
-class Pipeline:
+class GeneratePipeline:
     """Orchestrator that coordinates Division and Jurisdiction generation."""
 
     def __init__(
-        self, req: PipelineReq,
+        self, req: GeneratorReq,
     ) -> None:
         """Initialize the Pipeline with request data and configuration flags.
 
@@ -81,7 +81,7 @@ class Pipeline:
             Dictionary with keys `division` and `jurisdiction` containing the generated
             objects or None if generation failed/was skipped.
         """
-        req = PipelineReq(
+        req = GeneratorReq(
             data=self.data,
             build_base_object=self.build_base_object,
             ai_url=self.ai_url,
@@ -100,7 +100,7 @@ class Pipeline:
 
         return self.response
 
-    def _generate_division(self, req: PipelineReq) -> Division | None:
+    def _generate_division(self, req: GeneratorReq) -> Division | None:
         """Generate a Division object based on the PipelineReq.
 
         Args:
@@ -158,7 +158,7 @@ class Pipeline:
 
         return None
 
-    def _generate_jurisdiction(self, req: PipelineReq) -> Jurisdiction | None:
+    def _generate_jurisdiction(self, req: GeneratorReq) -> Jurisdiction | None:
         """Generate a Jurisdiction object using the JurGenerator.
 
         Args:
@@ -211,7 +211,7 @@ if __name__ == "__main__":
         raw_record={}
     )
 
-    pipeline = Pipeline(
+    pipeline = GeneratePipeline(
         data=sample,
         build_base_object=True,
         geo_req=False,

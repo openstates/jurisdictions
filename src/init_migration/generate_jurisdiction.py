@@ -4,7 +4,7 @@ from validation data sets. If requested, it will also enrich the data with
 external API requests.
 """
 
-from src.init_migration.models import PipelineReq
+from src.init_migration.models import GeneratorReq
 from src.models.ocdid import OCDidParsed
 from src.models.division import Division, Geometry
 from src.models.jurisdiction import Jurisdiction
@@ -32,7 +32,7 @@ class ValidationRecord(BaseModel):
 class JurGenerator:
     def __init__(
             self,
-            req: PipelineReq, validation_data_filepath=DIVISIONS_SHEET_CSV_URL,
+            req: GeneratorReq, validation_data_filepath=DIVISIONS_SHEET_CSV_URL,
             ):
         self.req = req
         self.data = req.data

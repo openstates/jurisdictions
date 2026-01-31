@@ -4,7 +4,7 @@ from validation data sets. If requested, it will also enrich the data with
 external API requests.
 """
 
-from src.init_migration.models import PipelineReq
+from src.init_migration.models import GeneratorReq
 from src.models.ocdid import OCDidParsed
 from src.models.division import Division, Geometry
 from src.models.jurisdiction import Jurisdiction
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 class DivGenerator:
     def __init__(
             self,
-            req: PipelineReq
+            req: GeneratorReq
             ):
         self.req = req
         self.data = req.data
