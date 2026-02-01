@@ -1,5 +1,4 @@
 """ETag cache functionality tests"""
-import json
 import pytest
 from httpx import Response
 

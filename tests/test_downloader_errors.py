@@ -1,14 +1,11 @@
 """Error handling tests for AsyncDownloader"""
 import pytest
-import respx
 from httpx import Response
 
 from src.init_migration.downloader import AsyncDownloader, DownloaderConfig
 from src.errors import (
     APIRetryError,
-    UnexpectedContentError,
-    DownloaderNotInitializedError,
-    CacheError
+    UnexpectedContentError
 )
 
 

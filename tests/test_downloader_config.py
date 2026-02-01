@@ -1,7 +1,4 @@
 """Tests for DownloaderConfig"""
-import os
-import pytest
-from pathlib import Path
 from httpx import Timeout
 
 from src.init_migration.downloader import DownloaderConfig, _http2_available

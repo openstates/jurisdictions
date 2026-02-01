@@ -1,0 +1,34 @@
+accurate_asof: null
+also_known_as: []
+country: us
+display_name: Miamisburg
+geometries: []
+government_identifiers:
+  common_name: null
+  county_names: []
+  countyfp: []
+  cousubfp: null
+  geoid: '0000000'
+  geoid_12: null
+  geoid_14: null
+  lsad: ''
+  namelsad: Miamisburg
+  placefp: null
+  sldlst: []
+  sldust: []
+  statefp: ''
+id: 3fa85f64-5717-4562-b3fc-2c963f66afa7
+jurisdiction_id: ocd-jurisdiction/country:us/state:oh/place:miamisburg/government
+last_updated: '2026-02-01T03:00:51.328889Z'
+metadata: null
+ocdid: ocd-division/country:us/state:oh/place:miamisburg
+sourcing:
+- field:
+  - ocdid
+  source_description: Open Civic Data Master repo
+  source_name: ocdid_ingest
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv
+valid_asof: null
+valid_thru: null

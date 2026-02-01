@@ -7,11 +7,8 @@ from src.init_migration.models import GeneratorReq, OCDidIngestResp
 from src.init_migration.generate_division import DivGenerator
 import uuid
 from pathlib import Path
-import uuid
-from pathlib import Path
 
 import polars as pl
-import pytest
 
 
 @pytest.fixture

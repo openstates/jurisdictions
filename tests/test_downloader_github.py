@@ -1,7 +1,6 @@
 """GitHub API specific tests"""
 import base64
 import pytest
-import respx
 from httpx import Response
 
 from src.init_migration.downloader import AsyncDownloader, DownloaderConfig

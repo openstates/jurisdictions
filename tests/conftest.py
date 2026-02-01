@@ -4,6 +4,8 @@ import respx
 from pathlib import Path
 import json
 import sys
+import asyncio
+import inspect
 
 # Ensure project root is on sys.path so `import src` works without installation
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -14,8 +16,6 @@ if str(PROJECT_ROOT) not in sys.path:
 # Register asyncio marker to avoid strict-markers failure and provide a simple async runner
 pytest.register_assert_rewrite(__name__)
 
-import asyncio
-import inspect
 
 def pytest_configure(config):
     config.addinivalue_line("markers", "asyncio: mark test as async and run in event loop")

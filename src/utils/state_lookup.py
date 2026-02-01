@@ -8,6 +8,7 @@ def load_state_code_lookup():
         dict: State code lookup dictionary.
     """
 
-    path = os.path.join(os.path.dirname(__file__), "data", "state_lookup.json")
+    utils_dir = os.path.dirname(__file__)
+    path = os.path.join(os.path.dirname(utils_dir), "state_lookup.json")
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)

@@ -1,9 +1,21 @@
 You are helping to build an ETL pipeline that will load data about local cities into a GitHub repository. The data will be stored in YAML files. The structure of the data is defined by Pydantic v2 models.
 
+## Agent Permissions
+
+The agent is authorized to autonomously:
+- Run tests (`uv run pytest`) without asking for permission
+- Execute code snippets and scripts to validate functionality
+- Run linting checks (`uv run ruff`)
+- Modify Python files to fix issues and implement features
+- Execute terminal commands to build, test, and inspect the project
+- Create and edit test files to improve test coverage
+- Commit changes to git branches (on `pipeline_match_ocdid_ai` or feature branches only)
+
+No confirmation needed before running tests, executing code, or making changes during development.
+
 ## Scope
 
-- Goal: Generate initial Division and Jurisdiction YAML files from the “Validation Research” CSV (exported from the linked Google Sheet).
-- Out of scope: Crawling/scraping for missing fields (handled in a later AI pass), FastAPI CRUDL API (to be added later).
+- Goal: Generate initial Division and Jurisdiction YAML files from the “Validation Research” CSV (ingested from the linked Google Sheet).
 
 ## Inputs and outputs
 

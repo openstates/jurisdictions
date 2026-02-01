@@ -1,11 +1,9 @@
 """Core functionality tests for AsyncDownloader"""
-import asyncio
 import pytest
-import respx
 from httpx import Response
 from pathlib import Path
 
-from src.init_migration.downloader import AsyncDownloader, DownloaderConfig
+from src.init_migration.downloader import AsyncDownloader
 from src.errors import DownloaderNotInitializedError
 
 
