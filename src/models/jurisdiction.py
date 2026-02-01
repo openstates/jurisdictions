@@ -1,6 +1,6 @@
 from enum import Enum
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 from datetime import datetime, timezone
 from .source import SourceObj
 import yaml

@@ -8,12 +8,8 @@ from src.init_migration.models import GeneratorReq
 from src.models.ocdid import OCDidParsed
 from src.models.division import Division, Geometry
 from src.models.jurisdiction import Jurisdiction
-from typing import Any
 import polars as pl
-from polars import DataFrame
 from src.utils.state_lookup import load_state_code_lookup
-from pydantic import BaseModel
-from datetime import datetime, UTC
 import logging
 from src.init_migration.models import GeneratorResp
 

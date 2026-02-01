@@ -2,8 +2,7 @@
 import pytest
 import duckdb
 from pathlib import Path
-from unittest.mock import AsyncMock, patch, MagicMock, call
-import asyncio
+from unittest.mock import AsyncMock, patch, MagicMock
 import sys
 
 # Add src to path for imports

@@ -6,22 +6,19 @@ generation work to `generate_division` and `generate_jurisdiction` modules.
 """
 
 import logging
-from typing import Any
 from pathlib import Path
 
 from src.init_migration.models import OCDidIngestResp, GeneratorReq, GeneratorResp
 from src.init_migration.generate_division import DivGenerator
-from src.init_migration.generate_jurisdiction import JurGenerator
 from src.utils.ocdid import ocdid_parser
 from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
 import polars as pl
 from pydantic import BaseModel
-from datetime import datetime, UTC
 
 logger = logging.getLogger(__name__)
 
-DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121"
+
 
 class NoMatch(BaseModel):
     model_config = {"arbitrary_types_allowed": True}
@@ -90,7 +87,7 @@ class GeneratePipeline:
             validation_data_filepath=self.validation_data_filepath,
         )
 
-        logger.info(f"Starting pipeline for OCDid", extra={"ocdid": self.data.ocdid, "as_datetime": req.asof_datetime})
+        logger.info("Starting pipeline for OCDid", extra={"ocdid": self.data.ocdid, "as_datetime": req.asof_datetime})
         # Generate Division
         self.response.division = self._generate_division(req)
 
