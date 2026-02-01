@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Any, Dict, List, Optional
 from datetime import datetime, timezone
 from .source import SourceObj
@@ -11,20 +11,43 @@ from uuid import UUID, uuid4
 import logging
 logger = logging.getLogger(__name__)
 
-# TODO: Do not hardcode yaml filepaths; allow versions
 
 PROJECT_PATH = "jurisdictions/"
 
 class ClassificationEnum(str, Enum):
     """These are the allowed defined types for jurisdictions"""
     GOVERNMENT = "government" #i.e. city council
-    LEGISLATURE = "legislature" # i.e. state legislature,
+    LEGISLATURE = "legislature" # i.e. state legislature, used for bicameral bodies
     SCHOOL_SYSTEM = "school_system" # i.e. county school district board, individualschool board, community college board
     EXECUTIVE = "executive"  # i.e. mayor
     TRANSIT_AUTHORITY = "transit_authority" #i.e. PORT Authority of New York and New Jersey
     JUDICIAL = "judicial" # NON-OCDid COMPLIANT; ADDED
     PROSECUTORIAL = "prosecutorial" # NON-OCDid COMPLIANT; ADDED, Examples: District Attorney Offices
     GOVERNING_BOARD = "governing_board" # NON-OCDid COMPLIANT; ADDED; Examples:  Cousubs that have elected governing bodies that advise but meet under the fiscal oversight of the county government. Utility districts with elected boards, etc.
+
+
+class URLEnum(str, Enum):
+    """These are the allowed defined types for jurisdiction urls"""
+    PEOPLE = "people"
+    MEETINGS = "meetings"
+
+class URLObject(BaseModel):
+    """A URL object for defining known url types for a jurisdiction."""
+    url_type: URLEnum | str = Field(..., description="The type of url being defined.")
+    url: str = Field(..., description="The url string associated with the url type.")
+
+class URLS(BaseModel):
+    urls: list[URLObject] = Field(..., description="The url string or enum value.")
+
+
+class JurisdictionMetadata(BaseModel):
+    """A metadata object for defining known metadata for a jurisdiction."""
+    model_config = ConfigDict(extra='allow')
+    urls: list[URLObject] = Field(
+        ...,
+        description=
+            "List of URLs related to the jurisdiction; additional arbitrary key-value pairs allowed on this model.",
+    )
 
 class SessionDetail(BaseModel):
     """Appears in the 'legislative_sessions' as a value for each session key."""
@@ -40,7 +63,7 @@ class TermDetail(BaseModel):
     number_of_positions: int = Field(..., description = "The number of distinct positions that are elected to represent the jurisdiction inclusive of at-large positions. For a city council with 5 members and , this would be 7.")
     term_limits: Optional[str] = Field(default=None, description = "Typically defined as the number of terms an office holder can hold. Can be a string description of the term limits if any.")
     source_url: str = Field(..., description = "The source url that defines the terms for the jurisdiction. Must be a .gov source. Can often be found in the incorporation charter or state constitution." )
-    last_known_start_date: Optional[datetime] = Field(default=None, description="The last known start of the most recent term. This date allows future term start and end dates to be computed programmatically." )
+    last_known_term_end_date: Optional[datetime] = Field(default=None, description="The last known start of the most recent term. This date allows future term start and end dates to be computed programmatically." )
 
 class Jurisdiction(BaseModel):
     """
@@ -58,7 +81,7 @@ class Jurisdiction(BaseModel):
     accurate_asof: Optional[datetime] = Field(default=None, description="The datetime ('2025-05-01:00:00:00' ISO 8601 standard format when the data for the record is known to be accurate by the researcher. This may or may not be the same data as the 'last_updated' date below. **REQUIRED**")
     last_updated: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="The datetime that the data in the record was last updated by the researcher (or it's agent).")
     sourcing: List[SourceObj] = Field(default_factory=list, description="Describe how the data was sourced. Used to identify AI generated data.")
-    metadata: Dict[str, Any] = Field(default_factory=dict, description="Any other useful information that a research feels should be included.")
+    metadata: JurisdictionMetadata = Field(default_factory=dict, description="Any other useful information that a research feels should be included.")
 
     # @field_validator("id")
     def validate_jurisdiction_id(self):

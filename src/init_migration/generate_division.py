@@ -4,54 +4,37 @@ from validation data sets. If requested, it will also enrich the data with
 external API requests.
 """
 
-from src.init_migration.models import DivGeneratorReq
+from src.init_migration.models import GeneratorReq
 from src.models.ocdid import OCDidParsed
 from src.models.division import Division, Geometry
 from src.models.jurisdiction import Jurisdiction
 from typing import Any
 import polars as pl
 from polars import DataFrame
-from utils.state_lookup import load_state_code_lookup
+from src.utils.state_lookup import load_state_code_lookup
 from pydantic import BaseModel
 from datetime import datetime, UTC
 import logging
-from init_migration.models import GeneratorResp
+from src.init_migration.models import GeneratorResp
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
-DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121"
-
-TODAY = datetime.now(tz=UTC) # automatically generate current run date.
-
-class NoMatch(BaseModel):
-    validation_no_ocdid: DataFrame = pl.DataFrame()
-    ocdid_no_validation: list[Division] = [] # Could also be OCDids
-
-class ValidationRecord(BaseModel):
-    """
-    TODO: Convert the fields in the spreadsheet into a model.
-    """
 
 class DivGenerator:
     def __init__(
             self,
-            req: DivGeneratorReq, validation_data_filepath=DIVISIONS_SHEET_CSV_URL,
+            req: GeneratorReq
             ):
         self.req = req
         self.data = req.data
         self.uuid = self.data.uuid
         self.division_filepath = self.data.filepath
         self.parsed_ocdid = OCDidParsed(raw_ocdid=self.data.ocdid)
-        self.raw_record = self.data  # Fix circular reference
-        self.validation_load_fp = validation_data_filepath
-        self.validation_output_fp = f"validation_data_asof_{TODAY}.csv"
+        self.raw_record = req.data
         self.state_lookup = load_state_code_lookup()
-        self.quarantine = NoMatch()
-        self.validation_no_ocdid_fp = f"validation_no_ocdid_asof_{TODAY}.csv"
-        self.ocdid_no_validation_fp = f"ocdid_no_validation_asof_{TODAY}.txt"
+
         self.division: Division | None  = None
-        self.jurisdiction: Jurisdiction | None  = None
 
 
     def load_division(self) -> Division:
@@ -151,34 +134,6 @@ class DivGenerator:
             self.division.geometries = [geometry]
         return self.division
 
-    def _check_if_div_is_jurisdiction(self) ->bool:
-        is_jurisdiction = False
-        return is_jurisdiction
-
-    def _map_basedata_to_juris_obj(self, val_rec: pl.Series) -> Jurisdiction:
-        val_rec
-        return Jurisdiction()
-
-    def _populate_juris_urls(self) -> dict[str, Any]:
-        # Calls AI with self.jurisdiction object and returns the urls in the
-        # following format.
-        if self.req.ai_url:
-            return {
-                "primary_url": "",
-                "secondary_url": ["", "", ""]
-                }
-        else:
-            return {}
-
-    def generate_jurisdiction(self, val_rec: pl.Series) -> Jurisdiction | None:
-        if not self.division:
-            raise ValueError("Division object does not exist")
-        # Not all divisions have a corresponding jurisdiction object.
-        is_jurisdiction = self._check_if_div_is_jurisdiction()
-        if is_jurisdiction:
-            self.jurisdiction = self._map_basedata_to_juris_obj(self, val_rec=val_rec)
-            self._populate_juris_urls()
-
     def save_division(self):
         """
         Store the populated division object to the divisions filepath.
@@ -222,12 +177,17 @@ class DivGenerator:
         state_val_df = self.load_state_validation_data()
         matched_record = self.match_division(state_val_df=state_val_df)
         if matched_record is None:
-
-        return GeneratorResp(
-            data=self.data,
-            division=self.division or None,
-            jurisdiction=self.jurisdiction or None
-        )
+            self.save_quarantine_data()
+            return GeneratorResp(
+                data=self.data,
+                division=self.division or None,
+                jurisdiction=self.jurisdiction or None
+            )
+        self.generate_division(val_rec=matched_record)
+        if self.req.population_req:
+            self._populate_census_population_request()
+        self.save_division()
+        return division
 
 
 

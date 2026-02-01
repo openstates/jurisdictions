@@ -5,6 +5,12 @@ url: "https://tacoma.gov/"
 classification: "government"
 legislative_sessions: {}
 feature_flags: []
+term:
+  - duration: null
+    term_description: null
+    number_of_positions: null
+    term_limits: null
+    last_known_term_end_date: null
 accurate_asof: null
 last_updated: "2025-10-27T01:29:51Z"
 sourcing: []

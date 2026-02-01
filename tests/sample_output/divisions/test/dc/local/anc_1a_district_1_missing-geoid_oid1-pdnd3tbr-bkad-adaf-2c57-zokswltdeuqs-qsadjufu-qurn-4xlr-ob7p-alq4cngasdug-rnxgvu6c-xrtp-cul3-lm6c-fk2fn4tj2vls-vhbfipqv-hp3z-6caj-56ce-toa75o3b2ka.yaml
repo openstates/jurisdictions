@@ -2,17 +2,36 @@ id: "oid1-pdnd3tbr-bkad-adaf-2c57-zokswltdeuqs-qsadjufu-qurn-4xlr-ob7p-alq4cngas
 ocdid: "ocd-division/country:us/district:dc/anc:1a/council_district:1"
 country: "us"
 display_name: "ANC 1A District 1"
-geometries: []
+geometries:
+  - start: null
+    end: null
+    boundary: null
+    children: null
+    arcGIS_address: https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54/query?where=ANC_ID=%271A%27&outFields=*&f=geojson
 also_known_as: []
+valid_thru: null
+valid_asof: "2023"
+accurate_asof: "2025-10-27T01:29:51Z"
 last_updated: "2025-10-27T01:29:51Z"
-sourcing: []
+sourcing:
+  - field: geometries
+    source_name: "DCGIS"
+    source_url: https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA
+    source_type: "human_researched"
+  - field: government_identifiers
+    source_name: "DCGIS"
+    source_url: "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54"
+    source_type: "human_researched"
+metadata:
+  - key: source
+    value: "DC Open Data ANC shapefile obtained via DCGIS. Not a Census designated area."
 government_identifiers:
-  namelsad: "missing-namelsad"
-  statefp: "missing-statefp"
+  namelsad: "ANC 1A"
+  statefp: "11"
   sldust: []
   sldlst: []
-  countyfp: []
+  countyfp: ["001"]
   county_names: []
-  lsad: "missing-lsad"
-  geoid: "missing-geoid"
+  lsad: null
+  geoid: null
 jurisdiction_id: "ocd-jurisdiction/country:us/district:dc/anc:1a/government"

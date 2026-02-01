@@ -38,12 +38,8 @@ tests/sample_data/testing_creyton_sample.csv
 ### Output files
 Each output should include the complete set of test records. 
 
-1. a python file containing the Divison model
-2. a python file containing the Jurisdication model 
-3. a json file containing the serialized json divisions from the Division model
-4. a json file containing the serialized json jurisdictions from the Jurisdiction model. 
-5. a .yaml file stored in  jurisdictions/test/<state>/local for each Jurisdiction 
-5. a .yaml file stored in  divisions/test/<state>/local for each Division 
+1. a .yaml file stored in  jurisdictions/test/<state>/local for each Jurisdiction 
+2. a .yaml file stored in  divisions/test/<state>/local for each Division 
 
 ### Output structure and data completeness
 The structure and the data must be consisted across all output types. 
@@ -56,6 +52,13 @@ in any of the source files:
 ### Output directory 
 All files should be stored here. 
 tests/sample_output
+
+### Reference links: 
+- [Census Fips
+Codes](https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt)
+- [Tiger ArcGIS Rest API](https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/)
+
+
 
 
 

@@ -16,11 +16,11 @@
     "id": "oid1-pdnd3dsb-blbt-adae-76rh-hcwj2wptdlxm-ascvukus-nqyk-k73p-ikql-oymyqx64anra-vyfqqraq-fsh2-gk2z-ef2b-edritvowp3aw-zsz5pchz-oyz3-nlge-yhpb-kkn7kiqxgpkh-w5heqpqt-jjvz-2l5s-vkb3-bwr7bo5yzksm-xst2ozbn-wdap-sawg-blpr-624mg2va",
     "ocdid": "ocd-jurisdiction/country:us/state:ca/county:marin/special_district:marin_city_community_services_district/governing_board",
     "name": "Marin City Community Services District Governing Board",
-    "url": "missing-url-marin-city-csd",
+    "url": "https://www.marincitycsd.com/board-members",
     "classification": "legislature",
     "legislative_sessions": {},
     "feature_flags": [],
-    "accurate_asof": null,
+    "accurate_asof": "2025-10-27T01:29:51Z",
     "last_updated": "2025-10-27T01:29:51Z",
     "sourcing": [],
     "metadata": {}
@@ -33,7 +33,7 @@
     "classification": "government",
     "legislative_sessions": {},
     "feature_flags": [],
-    "accurate_asof": null,
+    "accurate_asof": "2025-10-27T01:29:51Z",
     "last_updated": "2025-10-27T01:29:51Z",
     "sourcing": [],
     "metadata": {}
@@ -46,7 +46,7 @@
     "classification": "government",
     "legislative_sessions": {},
     "feature_flags": [],
-    "accurate_asof": null,
+    "accurate_asof": "2025-10-27T01:29:51Z",
     "last_updated": "2025-10-27T01:29:51Z",
     "sourcing": [],
     "metadata": {}
@@ -59,7 +59,7 @@
     "classification": "government",
     "legislative_sessions": {},
     "feature_flags": [],
-    "accurate_asof": null,
+    "accurate_asof": "2025-10-27T01:29:51Z",
     "last_updated": "2025-10-27T01:29:51Z",
     "sourcing": [],
     "metadata": {}
@@ -72,7 +72,7 @@
     "classification": "government",
     "legislative_sessions": {},
     "feature_flags": [],
-    "accurate_asof": null,
+    "accurate_asof": "2025-10-27T01:29:51Z",
     "last_updated": "2025-10-27T01:29:51Z",
     "sourcing": [],
     "metadata": {}

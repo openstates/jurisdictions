@@ -1,6 +1,5 @@
 
-
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 from datetime import datetime, timezone
 from src.models.source import SourceObj
@@ -27,16 +26,14 @@ class Boundary(BaseModel):
 
 class Population(BaseModel):
     population: int
-    source: SourceObj
 
-class DivMetadata(BaseModel):
+class DivisionMetadata(BaseModel):
+    model_config = ConfigDict(extra='allow')
     population: Optional[Population] = None
 
 class GovernmentIdentifiers(BaseModel):
     """
     Census designated identifiers for the locale.
-    TODO: Provide a reference(s) for census definitions of the codes below here
-    and in the docs.
     """
     namelsad: str = Field(description="The Census designated legal name for the geo political entity associated with a given locale.")
     statefp: str
@@ -73,7 +70,7 @@ class Division(BaseModel):
     accurate_asof: Optional[datetime] = Field(default=None, description="The datetime ('2025-05-01:00:00:00' ISO 8601 standard format when the data for the record is known to be accurate by the researcher. This may or may not be the same data as the 'last_updated' date below.")
     last_updated: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="The datetime that the data in the record was last updated by the researcher (or it's agent).")
     sourcing: List[SourceObj] = Field(default_factory=list, description="Describe how the data was sourced. Used to identify AI generated data.")
-    metadata: Optional[DivMetadata] = Field(None, description="Any other useful information that a researcher feels should be included.")
+    metadata: Optional[DivisionMetadata] = Field(None, description="Any other useful information that a researcher feels should be included.")
     government_identifiers: Optional[GovernmentIdentifiers] = Field(None, description="A dictionary of the  code(s) (i.e. Census state_code, fips_code, geoid, etc.) official name in snake_case and the value. Can include more than one key.")
     jurisdiction_id: str
 
