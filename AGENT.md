@@ -2,8 +2,7 @@ You are helping to build an ETL pipeline that will load data about local cities 
 
 ## Scope
 
-- Goal: Generate initial Division and Jurisdiction YAML files from the “Validation Research” CSV (exported from the linked Google Sheet).
-- Out of scope: Crawling/scraping for missing fields (handled in a later AI pass), FastAPI CRUDL API (to be added later).
+- Goal: Generate initial Division and Jurisdiction YAML files from the “Validation Research” CSV (ingested from the linked Google Sheet).
 
 ## Inputs and outputs
 

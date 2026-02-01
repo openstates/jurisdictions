@@ -43,7 +43,7 @@
 2. For each Open Civic Data request - run the GeneratorPipeline 
     - Request  = GeneratorReq 
     - Response = GeneratorResp 
-    - Runs the generator which will 
+    - Runs the generator which will perform the following tasks:
         1. Log to a file
         2. Load  Creyton's csv
         2. Setup quarantine to store records did not match

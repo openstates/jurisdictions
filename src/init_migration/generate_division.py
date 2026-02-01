@@ -13,6 +13,8 @@ from src.utils.state_lookup import load_state_code_lookup
 import logging
 from src.init_migration.models import GeneratorResp
 
+from src.init_migration.models import DIVISIONS_SHEET_CSV_URL
+
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
@@ -25,7 +27,6 @@ class DivGenerator:
         self.req = req
         self.data = req.data
         self.uuid = self.data.uuid
-        self.division_filepath = self.data.filepath
         self.parsed_ocdid = OCDidParsed(raw_ocdid=self.data.ocdid)
         self.raw_record = req.data
         self.state_lookup = load_state_code_lookup()

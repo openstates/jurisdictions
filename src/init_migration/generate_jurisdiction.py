@@ -1,5 +1,5 @@
 """
-This pipeline works on generating division objects and populating them with data
+This pipeline works on generating jurisdiction objects and populating them with data
 from validation data sets. If requested, it will also enrich the data with
 external API requests.
 """
@@ -17,7 +17,7 @@ import logging
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
-DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121"
+from src.init_migration.models import DIVISIONS_SHEET_CSV_URL
 
 TODAY = datetime.now(tz=UTC) # automatically generate current run date.
 
@@ -35,7 +35,6 @@ class JurGenerator:
         self.req = req
         self.data = req.data
         self.uuid = self.data.uuid
-        self.division_filepath = self.data.filepath
         self.parsed_ocdid = OCDidParsed(raw_ocdid=self.data.ocdid)
         self.raw_record = self.data  # Fix circular reference
         self.validation_load_fp = validation_data_filepath
