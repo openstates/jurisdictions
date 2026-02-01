@@ -4,9 +4,8 @@ from typing import Dict, List, Optional
 from datetime import datetime, timezone
 from .source import SourceObj
 import yaml
-from pathlib import Path
-# We can choose whichever UUID version is short but won't cause clashes.
 from uuid import UUID, uuid4
+from pathlib import Path
 
 import logging
 logger = logging.getLogger(__name__)
@@ -70,7 +69,7 @@ class Jurisdiction(BaseModel):
     Class for defining a Jurisdiction object.
     Reference: https://github.com/opencivicdata/docs.opencivicdata.org/blob/master/data/datatypes.rst#id3
     """
-    id: UUID = Field(default_factory=uuid4(), description = "The uuid associated with the object when it was generated for this project. This is a ddeterministic uuid based on the ocdid and version")
+    id: UUID = Field(default_factory=uuid4(), description = "The uuid associated with the object when it was generated for this project.")
     ocdid: str = Field(..., description="Jurisdictions IDs take the form ocd-jurisdiction/<jurisdiction_id>/<jurisdiction_type> where jurisdiction_id is the ID for the related division without the ocd-division/ prefix and jurisdiction_type is council, legislature, etc.")
     name: str = Field(..., description="Name of jurisdiction (e.g. North Carolina General Assembly). Should be sourced from official gov source data (i.e. Census) **(required)**")
     url: str = Field(..., description="URL pointing to jurisdiction's website. **(required)**")
@@ -102,9 +101,14 @@ class Jurisdiction(BaseModel):
             logger.error("Failed to load jurisdiction object", extras={"error":error}, exc_info=True)
             raise ValueError("Failed to load jurisdiction. Check filepath") from error
     # Untested
-    def dump_jurisdiction(self):
-        filepath = Path(f"{PROJECT_PATH}/{self.name}_{self.id}_{self._id}")
-        yaml.safe_dump(filepath)
+    def dump_jurisdiction(self, base_dir: str | Path = PROJECT_PATH):
+        base_path = Path(base_dir)
+        base_path.mkdir(parents=True, exist_ok=True)
+        filepath = base_path / f"{self.name}_{self.id}.yaml"
+        # Convert model to dict using JSON mode to convert enums to strings
+        data = self.model_dump(exclude_none=False, mode="json")
+        with open(filepath, "w") as f:
+            yaml.safe_dump(data, f)
         return filepath
 
     @classmethod

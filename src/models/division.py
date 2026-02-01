@@ -4,7 +4,6 @@ from typing import List, Optional
 from datetime import datetime, timezone
 from src.models.source import SourceObj
 import yaml
-# We can choose whichever UUID version is short but won't cause clashes.
 from uuid import UUID, uuid4
 from pathlib import Path
 import logging
@@ -59,7 +58,7 @@ class Geometry(BaseModel):
 
 
 class Division(BaseModel):
-    id: UUID | None = Field(default_factory=uuid4(), description="The uuid associated with the division object  when it was generated for this project. This is a ddeterministic uuid based on the ocdid and version.")
+    id: UUID | None = Field(default_factory=uuid4(), description="The uuid associated with the division object when it was generated for this project.")
     ocdid: str = Field(..., description = "The canonical OpenCivicData id for the political geo division. Should be sourced from the Open Civic Data repo. Example: ADD TKTK See: docs.opencivicdata.org")
     country: str = Field(..., description = "Two-letter ISO-3166 alpha-2 country code. (e.g. 'us', 'ca')")
     display_name: str = Field(..., description = "Human-readable name for division. Should be sourced from the Open Civic Data repo.")
@@ -85,11 +84,16 @@ class Division(BaseModel):
             raise ValueError("Failed to load division. Check filepath") from error
 
     # Untested
-    def dump_division(self):
+    def dump_division(self, base_dir: str | Path = PROJECT_PATH):
         if not self.government_identifiers:
             raise ValueError("A geoid is required to store a division obect.")
-        filepath = Path(f"{PROJECT_PATH}/{self.display_name}_{self.government_identifiers.geoid}_{self._id}")
-        yaml.safe_dump(filepath)
+        base_path = Path(base_dir)
+        base_path.mkdir(parents=True, exist_ok=True)
+        filepath = base_path / f"{self.display_name}_{self.government_identifiers.geoid}_{self.id}.yaml"
+        # Convert model to dict and ensure UUID is converted to string
+        data = self.model_dump(exclude_none=False, mode="json")
+        with open(filepath, "w") as f:
+            yaml.safe_dump(data, f)
         return filepath
 
     def flatten(self) -> dict:

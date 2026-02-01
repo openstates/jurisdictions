@@ -25,7 +25,7 @@ class GeneratorReq(BaseModel):
     division_population_req: bool = False # Wether or not to populate with Census population API call.
     asof_datetime: datetime = Field(default_factory=lambda: datetime.now(tz=UTC))
 
-class Status(Enum, str):
+class Status(str, Enum):
     SUCCESS = "success"
     SKIPPED = "skipped"
     FAILED = "failed"

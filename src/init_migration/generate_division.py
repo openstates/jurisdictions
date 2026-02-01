@@ -1,200 +1,314 @@
 """
-This pipeline works on generating division objects and populating them with data
-from validation data sets. If requested, it will also enrich the data with
-external API requests.
+This module handles Division object generation and serialization.
+
+Responsibilities:
+- Generate full Division objects from validation records
+- Generate stub Division objects when no validation match exists
+- Map validation record fields to Division model fields
+- Check Division idempotency/deduplication
+- Serialize Division objects to YAML files
 """
 
 from src.init_migration.models import GeneratorReq
-from src.models.ocdid import OCDidParsed
-from src.models.division import Division, Geometry
-from src.models.jurisdiction import Jurisdiction
-import polars as pl
+from src.utils.ocdid import ocdid_parser
+from src.models.division import Division
+from src.models.source import SourceType
 from src.utils.state_lookup import load_state_code_lookup
+from src.utils.place_name import namelsad_to_display_name
+from pathlib import Path
+from uuid import UUID
+from datetime import datetime, timezone
 import logging
-from src.init_migration.models import GeneratorResp
-
-from src.init_migration.models import DIVISIONS_SHEET_CSV_URL
+import yaml
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 
 class DivGenerator:
-    def __init__(
-            self,
-            req: GeneratorReq
-            ):
+    """Factory for generating Division objects with full/stub logic and persistence."""
+
+    def __init__(self, req: GeneratorReq):
+        """Initialize DivGenerator with request data.
+
+        Args:
+            req: GeneratorReq object with OCDid, UUID, and configuration
+        """
         self.req = req
         self.data = req.data
         self.uuid = self.data.uuid
-        self.parsed_ocdid = OCDidParsed(raw_ocdid=self.data.ocdid)
-        self.raw_record = req.data
+        self.parsed_ocdid = ocdid_parser(self.data.ocdid)
         self.state_lookup = load_state_code_lookup()
+        self.division: Division | None = None
 
-        self.division: Division | None  = None
+    def generate_division(self, val_rec: dict, uuid: UUID) -> Division:
+        """Generate a full Division object from a matched validation record.
 
+        Maps validation record fields to Division model fields. Checks for idempotency
+        (does not regenerate if Division already exists).
 
-    def load_division(self) -> Division:
+        Args:
+            val_rec: Validation record (dict) with fields like NAMELSAD, GEOID_Census, STATEFP, etc.
+            uuid: UUID for this Division (from GeneratorReq)
+
+        Returns:
+            Division object
+
+        Raises:
+            ValueError: If required fields are missing from validation record
         """
-        Load the Division .yaml file from self.filepath and convert it into a Division object.
-        """
-        # load division from dir
         try:
-            self.division = Division.load_division(self.division_filepath)
-            if self.division:
-                return self.division
-            else:
-                raise
-        except Exception as error:
-            logger.error("Failed to load division object", extras={"error":error}, exc_info=True)
-            raise ValueError("Failed to load division. Check filepath") from error
+            # Extract required fields from validation record
+            namelsad = val_rec.get("NAMELSAD", "")
+            geoid = val_rec.get("GEOID_Census", "")
+            statefp = str(val_rec.get("STATEFP", "")).zfill(2)
 
-    def load_jurisdiction(self):
-        try:
-            self.jurisdiction = Jurisdiction.load_jurisdiction(self.division_filepath)
-            if self.jurisdiction:
-                return self.jurisdiction
-            else:
-                raise
-        except Exception as error:
-            logger.error("Failed to load jurisdiction object", extras={"error":error}, exc_info=True)
-            raise ValueError("Failed to load jurisdiction. Check filepath") from error
+            if not namelsad or not geoid:
+                raise ValueError(f"Missing required fields in validation record: NAMELSAD={namelsad}, GEOID_Census={geoid}")
 
-    def load_state_validation_data(self) -> pl.DataFrame:
-        """
-        Given the parsed OCDid, load the relevant state data from the validation
-        data set.
-        """
-        validation_data = pl.read_csv(self.validation_load_fp)
-        state = self.parsed_ocdid.state
-        state_code = [item.get("statefps") for item in self.state_lookup if item.get("stateusps") == state]
-        if not state_code:
-            raise ValueError("Failed to lookup state code")
+            # Derive display name from NAMELSAD (strip LSAD)
+            display_name = namelsad_to_display_name(namelsad)
 
-        self.validation_df = validation_data.filter(pl.col("STATEFP") == state_code[0])
-        if self.validation_df.is_empty:
-            raise ValueError("Unable to filter state validation data.")
-        return self.validation_df
+            # Check if Division already exists
+            if self._division_exists(self.data.ocdid):
+                logger.info(f"Division already exists for {self.data.ocdid}, returning existing")
+                return self._load_existing_division(self.data.ocdid)
 
-    def match_division(self, state_val_df) -> pl.Series | None:
-        """
-        Given a parsed OCDid, match to the division object.
-        """
-
-        found = pl.Series()
-        # code here to match on the parsed ocdid.
-        match_candidates = pl.DataFrame()
-        if match_candidates.is_empty():
-            self.quarantine.ocdid_no_validation.append(self.division)
-        if len(match_candidates) > 0:
-            for match in match_candidates.iter_rows():
-                pass
-            # Need to determine how to manage these.
-            # Potentially mark the pl and create a div object for each one...
-            # Or just update the dataframe with Failed: More than one match...
-        elif len(match_candidates) == 0:
-            found = match_candidates[0]
-            # Update validation set
-            # Add ocd_id column if it doesn't exist
-            if "ocd_id" not in self.validation_df.columns:
-                self.validation_df = self.validation_df.with_columns(
-                    pl.lit(None).alias("ocd_id"),
-                    )
-
-            # Update the validation DataFrame to mark this record with the
-            # matching ocdid.
-            self.validation_df = self.validation_df.with_columns(
-                pl.when(pl.col("some_matching_column") == "matching_value")
-                .then(pl.lit(self.parsed_ocdid.raw_ocdid))
-                .otherwise(pl.col("ocd_id"))
-                .alias("ocd_id")
+            # Map validation fields to Division model
+            self.division = Division(
+                id=uuid,
+                ocdid=self.data.ocdid,
+                country="us",
+                display_name=display_name,
+                geometries=[],
+                also_known_as=[],
+                jurisdiction_id=self._derive_jurisdiction_id(self.data.ocdid),
+                government_identifiers={
+                    "namelsad": namelsad,
+                    "statefp": statefp,
+                    "sldust": [str(v) for v in (val_rec.get("SLDUST_list", "").split("|") if val_rec.get("SLDUST_list") else [])],
+                    "sldlst": [str(v) for v in (val_rec.get("SLDLST_list", "").split("|") if val_rec.get("SLDLST_list") else [])],
+                    "countyfp": [str(v) for v in (val_rec.get("COUNTYFP_list", "").split("|") if val_rec.get("COUNTYFP_list") else [])],
+                    "county_names": [str(v) for v in (val_rec.get("COUNTY_NAMES", "").split("|") if val_rec.get("COUNTY_NAMES") else [])],
+                    "lsad": val_rec.get("LSAD", ""),
+                    "geoid": geoid,
+                },
+                sourcing=[{
+                    "field": ["government_identifiers"],
+                    "source_name": "civicdata.tech",
+                    "source_url": {"civicdata": "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/"},
+                    "source_type": SourceType.HUMAN,
+                    "source_description": "Human-researched validation data from civicdata.tech"
+                }],
+                last_updated=datetime.now(timezone.utc)
             )
-            return found.to_series()
 
-    def _map_basedata_to_div_obj(self, val_rec: pl.Series) -> Division:
-        return Division()
+            logger.info(f"Division generated for {self.data.ocdid}")
+            return self.division
 
-    def _populate_geometry(self) -> Geometry:
-        geometry = Geometry()
-        return geometry
+        except Exception:
+            logger.error(f"Failed to generate Division for {self.data.ocdid}", exc_info=True)
+            raise
 
-    def _populate_census_population_request(self) -> str:
-        return "some_api_call"
+    def generate_division_stub(self, uuid: UUID) -> Division:
+        """Generate a minimal stub Division when no validation match exists.
 
-    def generate_division(self,val_rec: pl.Series) -> Division:
-        if not self.division or not isinstance(self.division, Division):
-            raise ValueError("No division object exists.")
-        if self.req.build_base_object:
-            self.division = self._map_basedata_to_div_obj(val_rec=val_rec)
-        if self.req.geo_req:
-            geometry: Geometry = self._populate_geometry()
-            self.division.geometries = [geometry]
-        return self.division
+        Creates Division with only required fields populated from the OCDid,
+        letting other fields use model defaults.
 
-    def save_division(self):
+        Args:
+            uuid: UUID for this Division (from GeneratorReq)
+
+        Returns:
+            Stub Division object
+
+        Raises:
+            ValueError: If OCDid cannot be parsed
         """
-        Store the populated division object to the divisions filepath.
+        try:
+            # Extract state and place from OCDid
+            parsed = ocdid_parser(self.data.ocdid)  # Returns dict
+
+            # Derive display name from place (titlecase)
+            place = parsed.get("place", "")
+            display_name = place.title() if place else "Unknown"
+
+            # Check if Division already exists
+            if self._division_exists(self.data.ocdid):
+                logger.info(f"Stub Division already exists for {self.data.ocdid}, returning existing")
+                return self._load_existing_division(self.data.ocdid)
+
+            # Create minimal stub Division with placeholder government identifiers
+            # Extract state FIPS from state code
+            state_code = parsed.get("state", "")
+            state_fips = ""
+            if state_code:
+                state_lookup = load_state_code_lookup()
+                fips_list = [item.get("statefps") for item in state_lookup if item.get("stateusps", "").upper() == state_code.upper()]
+                state_fips = str(fips_list[0]).zfill(2) if fips_list else ""
+
+            self.division = Division(
+                id=uuid,
+                ocdid=self.data.ocdid,
+                country="us",
+                display_name=display_name,
+                geometries=[],
+                also_known_as=[],
+                jurisdiction_id=self._derive_jurisdiction_id(self.data.ocdid),
+                government_identifiers={
+                    "namelsad": display_name,
+                    "statefp": state_fips,
+                    "sldust": [],
+                    "sldlst": [],
+                    "countyfp": [],
+                    "county_names": [],
+                    "lsad": "",
+                    "geoid": f"{state_fips}{place.zfill(5)}" if state_fips and place else "0000000",  # Placeholder geoid
+                },
+                sourcing=[{
+                    "field": ["ocdid"],
+                    "source_name": "ocdid_ingest",
+                    "source_url": {"ocd_repo": "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv"},
+                    "source_type": SourceType.HUMAN,
+                    "source_description": "Open Civic Data Master repo"
+                }],
+                last_updated=datetime.now(timezone.utc)
+            )
+
+            logger.info(f"Stub Division generated for {self.data.ocdid}")
+            return self.division
+
+        except Exception:
+            logger.error(f"Failed to generate stub Division for {self.data.ocdid}", exc_info=True)
+            raise
+
+    def _derive_jurisdiction_id(self, division_ocdid: str) -> str:
+        """Derive jurisdiction_id from division OCD ID.
+
+        Args:
+            division_ocdid: Division OCD ID
+
+        Returns:
+            Jurisdiction OCD ID
+        """
+        # Remove 'ocd-division/' prefix
+        division_part = division_ocdid.replace("ocd-division/", "")
+        # TODO: Implement proper jurisdiction type determination
+        jurisdiction_type = "government"  # Placeholder
+        return f"ocd-jurisdiction/{division_part}/{jurisdiction_type}"
+
+    def _division_exists(self, ocdid: str) -> bool:
+        """Check if a Division YAML file already exists for this OCD ID.
+
+        Args:
+            ocdid: The OCD division ID
+
+        Returns:
+            True if Division file exists, False otherwise
+        """
+        try:
+            # Extract state from ocdid (e.g., 'ca' from 'ocd-division/country:us/state:ca/place:sausalito')
+            parsed = ocdid_parser(ocdid)  # Returns dict
+            state = parsed.get("state", "").lower() if parsed.get("state") else ""
+
+            # Look for files in divisions/<state>/local/
+            div_dir = Path(f"divisions/{state}/local")
+            if not div_dir.exists():
+                return False
+
+            # Check if any file with this ocdid exists (would need to parse all files)
+            # For now, return False (full implementation would parse each YAML)
+            return False
+
+        except Exception as e:
+            logger.debug(f"Error checking if Division exists: {e}")
+            return False
+
+    def _load_existing_division(self, ocdid: str) -> Division:
+        """Load an existing Division YAML file.
+
+        Args:
+            ocdid: The OCD division ID
+
+        Returns:
+            Division object
+
+        Raises:
+            ValueError: If file cannot be loaded
+        """
+        try:
+            # TODO: Implement actual file loading
+            raise NotImplementedError("_load_existing_division not yet implemented")
+        except Exception:
+            logger.error(f"Failed to load existing Division for {ocdid}", exc_info=True)
+            raise
+
+    def dump_division(self, output_dir: Path | None = None) -> Path:
+        """Serialize and save Division object to YAML file.
+
+        Args:
+            output_dir: Base output directory (default: current directory)
+
+        Returns:
+            Path to saved YAML file
+
+        Raises:
+            ValueError: If Division object doesn't exist or required fields are missing
         """
         if not self.division:
-            raise ValueError("Division does not exist.")
-        filepath = self.division.dump_division()
-        logger.info("Division object stored", extras={"filepath": filepath})
+            raise ValueError("Division object does not exist")
 
-    def save_jurisdiction(self):
-        if not self.jurisdiction:
-            raise ValueError("Division does not exist.")
-        filepath = self.jurisdiction.dump_jurisdiction()
-        logger.info("Jurisdiction object stored", extras={"filepath": filepath})
+        if not self.division.government_identifiers:
+            raise ValueError("government_identifiers required to save Division")
 
-    def save_quarantine_data(self):
-        """
-        Save the data for which there were no matches to
-        .csv
-        """
-        ocdid_no_validation = self.quarantine.ocdid_no_validation
-        validation_no_ocdid = self.quarantine.validation_no_ocdid
+        geoid = self.division.government_identifiers.geoid
+        if not geoid:
+            raise ValueError("geoid required to generate filename")
 
-        validation_no_ocdid.write_csv(self.validation_no_ocdid_fp)
-        logger.info("Stored validation data missing OCDids", extra={"filepath":self.validation_no_ocdid_fp})
+        try:
+            # Import filename helper from generate_pipeline
+            from src.init_migration.generate_pipeline import get_division_filename
 
-        with open(self.ocdid_no_validation_fp, 'wb') as file:
-            file.write(ocdid_no_validation)
-        logger.info("Stored ocdids missing validation records", extra={"filepath":self.ocdid_no_validation_fp})
-
-    def save_validation_data(self):
-        """
-        Save the updated validation DataFrame to a local CSV file.
-        This can then be manually uploaded to update the shared Google Sheet.
-        """
-        self.validation_df.write_csv(self.validation_output_fp)
-        print(f"Validation data saved to: {self.validation_output_fp}")
-
-    async def run(self) -> GeneratorResp:
-        self.load_division()
-        state_val_df = self.load_state_validation_data()
-        matched_record = self.match_division(state_val_df=state_val_df)
-        if matched_record is None:
-            self.save_quarantine_data()
-            return GeneratorResp(
-                data=self.data,
-                division=self.division or None,
-                jurisdiction=self.jurisdiction or None
+            # Generate filename
+            filename = get_division_filename(
+                self.division.display_name,
+                geoid,
+                self.division.id
             )
-        self.generate_division(val_rec=matched_record)
-        if self.req.population_req:
-            self._populate_census_population_request()
-        self.save_division()
-        return division
+
+            # Determine state from ocdid
+            parsed = ocdid_parser(self.division.ocdid)  # Returns dict
+            state = parsed.get("state", "").lower() if parsed.get("state") else ""
+
+            # Create directory if needed
+            if output_dir is None:
+                output_dir = Path(".")
+
+            div_dir = output_dir / "divisions" / state / "local"
+            div_dir.mkdir(parents=True, exist_ok=True)
+
+            # Save to YAML
+            filepath = div_dir / filename
+            with open(filepath, 'w') as f:
+                yaml.dump(
+                    self.division.model_dump(exclude_none=False),
+                    f,
+                    default_flow_style=False,
+                    sort_keys=False
+                )
+
+            logger.info(f"Division saved to {filepath}")
+            return filepath
+
+        except Exception:
+            logger.error("Failed to save Division to YAML", exc_info=True)
+            raise
 
 
 
-if __name__  == "__main__":
-
-    import asyncio
-
-    dg = DivGenerator()
-
-    division = asyncio.run(dg.run())
+if __name__ == "__main__":
+    # Test division generation
+    pass
 
 
 
