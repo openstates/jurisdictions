@@ -842,6 +842,17 @@ def test_match_returns_ocdid_ingest_resp(populated_db):
         assert resp.ocdid.state == "wa"
 
 
+def test_raw_record_contains_master_data(populated_db):
+    """raw_record should contain master list columns, not local columns."""
+    matcher = OCDidMatcher(db_path=populated_db, states=["wa"])
+    results = matcher.run_matching()
+    for resp in results.matched:
+        # raw_record should have master columns (id, name) — not _local_state
+        assert "id" in resp.raw_record
+        assert "name" in resp.raw_record
+        assert "_local_state" not in resp.raw_record
+
+
 def test_match_generates_deterministic_uuids(populated_db):
     """Same OCD ID should produce the same UUID across runs."""
     matcher1 = OCDidMatcher(db_path=populated_db, states=["wa"])
@@ -969,16 +980,22 @@ class OCDidMatcher:
                 state_filter = ""
 
             # --- Matched records: inner join ---
+            # We select all master columns (m.*) because the master list is the
+            # source of truth. Local state files are only used to cross-check
+            # that the national list has all state OIDs and to detect drift.
+            # l.state is included for filtering/grouping but not in raw_record.
             matched_rows = conn.execute(f"""
-                SELECT l.id, l.name, l.state, m.name AS master_name
+                SELECT m.*, l.state AS _local_state
                 FROM local_ocdids l
                 INNER JOIN master_ocdids m ON l.id = m.id
                 {state_filter}
             """).fetchall()
 
-            columns = ["id", "name", "state", "master_name"]
+            # Get master column names dynamically from query description
+            col_names = [desc[0] for desc in conn.description]
             for row in matched_rows:
-                row_dict = dict(zip(columns, row))
+                row_dict = dict(zip(col_names, row))
+                local_state = row_dict.pop("_local_state")  # separate from raw_record
                 ocdid_str = row_dict["id"]
 
                 # Parse OCD ID
@@ -997,7 +1014,7 @@ class OCDidMatcher:
                 resp = OCDidIngestResp(
                     uuid=det_id,
                     ocdid=parsed,
-                    raw_record=row_dict,
+                    raw_record=row_dict,  # master record data only
                 )
                 results.matched.append(resp)
 

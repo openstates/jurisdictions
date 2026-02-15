@@ -92,7 +92,11 @@ DuckDB location: `data/ocdid_pipeline.duckdb` (committed to repo).
 
 Matching and UUID generation. Responsibilities:
 
-- Query DuckDB: exact join of local records against master on `id` column
+- Query DuckDB: exact join of local records against master on `id` column.
+  The **master list is the source of truth**. Local state files are used as a
+  cross-check to verify that the national list captured all state OIDs and to
+  detect temporal drift (OIDs added to states but not yet derived into the
+  national file, or vice versa).
 - Classify each record into one of three outcomes:
   - **Match** — local record found in master. Happy path.
   - **Local orphan** — local record has no master match (drift detected).
@@ -100,7 +104,8 @@ Matching and UUID generation. Responsibilities:
 - For each matched record:
   - Parse OCD ID into `OCDidParsed` model
   - Generate deterministic UUID via `deterministic_id.generate_id()`
-  - Build `OCDidIngestResp(uuid, ocdid_parsed, raw_record)`
+  - Build `OCDidIngestResp(uuid, ocdid_parsed, raw_record)` where `raw_record`
+    contains the **master** record's columns (not local)
 - Store results:
   - **UUID↔OCD-ID lookup table** in DuckDB (`ocdid_uuid_lookup`)
   - **CSV backup** of the lookup table to `data/ocdid_uuid_lookup.csv`
