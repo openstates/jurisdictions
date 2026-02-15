@@ -98,17 +98,23 @@ class DownloadManager:
                 tmp.write(csv_bytes)
                 tmp_path = tmp.name
             try:
+                # Local CSVs have no header row — specify column names explicitly
+                read_expr = (
+                    f"read_csv_auto('{tmp_path}', header=false, "
+                    f"names=['id', 'name'], ignore_errors=true)"
+                )
+
                 # Create table if it doesn't exist
                 tables = [row[0] for row in conn.execute("SHOW TABLES").fetchall()]
                 if "local_ocdids" not in tables:
                     conn.execute(
                         f"CREATE TABLE local_ocdids AS "
-                        f"SELECT *, '{state}' AS state FROM read_csv_auto('{tmp_path}', ignore_errors=true) WHERE 1=0"
+                        f"SELECT *, '{state}' AS state FROM {read_expr} WHERE 1=0"
                     )
 
                 conn.execute(
                     f"INSERT INTO local_ocdids "
-                    f"SELECT *, '{state}' AS state FROM read_csv_auto('{tmp_path}', ignore_errors=true)"
+                    f"SELECT *, '{state}' AS state FROM {read_expr}"
                 )
             finally:
                 Path(tmp_path).unlink(missing_ok=True)

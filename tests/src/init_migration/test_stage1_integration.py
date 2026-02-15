@@ -15,14 +15,12 @@ ocd-division/country:us/state:tx/place:austin,Austin
 ocd-division/country:us/state:tx/place:houston,Houston
 """
 
-LOCAL_WA_CSV = b"""id,name
-ocd-division/country:us/state:wa/place:seattle,Seattle
+LOCAL_WA_CSV = b"""ocd-division/country:us/state:wa/place:seattle,Seattle
 ocd-division/country:us/state:wa/place:tacoma,Tacoma
 ocd-division/country:us/state:wa/place:olympia,Olympia
 """
 
-LOCAL_TX_CSV = b"""id,name
-ocd-division/country:us/state:tx/place:austin,Austin
+LOCAL_TX_CSV = b"""ocd-division/country:us/state:tx/place:austin,Austin
 ocd-division/country:us/state:tx/place:houston,Houston
 """
 

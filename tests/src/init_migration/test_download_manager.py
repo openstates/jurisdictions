@@ -55,11 +55,14 @@ def test_load_master_csv_to_duckdb(tmp_path):
 
 
 def test_load_local_csv_to_duckdb(tmp_path):
-    """Loading a local CSV should insert rows into local_ocdids table with state column."""
+    """Loading a local CSV should insert rows into local_ocdids table with state column.
+
+    Note: Real local CSVs from the OCD repo have no header row.
+    """
     db_path = str(tmp_path / "test.duckdb")
     dm = DownloadManager(states=["wa"], db_path=db_path)
 
-    csv_bytes = b"id,name\nocd-division/country:us/state:wa/place:seattle,Seattle\n"
+    csv_bytes = b"ocd-division/country:us/state:wa/place:seattle,Seattle\n"
     dm.load_local_csv(csv_bytes, state="wa")
 
     conn = duckdb.connect(db_path)
@@ -69,12 +72,15 @@ def test_load_local_csv_to_duckdb(tmp_path):
 
 
 def test_load_multiple_states_to_duckdb(tmp_path):
-    """Loading CSVs for multiple states should combine into one local_ocdids table."""
+    """Loading CSVs for multiple states should combine into one local_ocdids table.
+
+    Note: Real local CSVs from the OCD repo have no header row.
+    """
     db_path = str(tmp_path / "test.duckdb")
     dm = DownloadManager(states=["wa", "tx"], db_path=db_path)
 
-    wa_csv = b"id,name\nocd-division/country:us/state:wa/place:seattle,Seattle\n"
-    tx_csv = b"id,name\nocd-division/country:us/state:tx/place:austin,Austin\n"
+    wa_csv = b"ocd-division/country:us/state:wa/place:seattle,Seattle\n"
+    tx_csv = b"ocd-division/country:us/state:tx/place:austin,Austin\n"
     dm.load_local_csv(wa_csv, state="wa")
     dm.load_local_csv(tx_csv, state="tx")
 
@@ -93,7 +99,7 @@ async def test_run_downloads_fetches_and_loads(tmp_path, respx_mock):
     dm = DownloadManager(states=["wa"], db_path=db_path)
 
     master_csv = b"id,name\nocd-division/country:us/state:wa/place:seattle,Seattle\n"
-    local_csv = b"id,name\nocd-division/country:us/state:wa/place:seattle,Seattle\n"
+    local_csv = b"ocd-division/country:us/state:wa/place:seattle,Seattle\n"
 
     respx_mock.get(dm.master_url()).mock(
         return_value=httpx.Response(200, content=master_csv)
@@ -116,7 +122,7 @@ async def test_run_downloads_handles_missing_local(tmp_path, respx_mock):
     dm = DownloadManager(states=["wa", "zz"], db_path=db_path)
 
     master_csv = b"id,name\nocd-division/country:us/state:wa/place:seattle,Seattle\n"
-    local_wa = b"id,name\nocd-division/country:us/state:wa/place:seattle,Seattle\n"
+    local_wa = b"ocd-division/country:us/state:wa/place:seattle,Seattle\n"
 
     respx_mock.get(dm.master_url()).mock(
         return_value=httpx.Response(200, content=master_csv)
