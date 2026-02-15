@@ -36,7 +36,7 @@ def populated_db(tmp_path):
 
 def test_match_finds_matching_records(populated_db):
     """Records in both master and local should be classified as matches."""
-    matcher = OCDidMatcher(db_path=populated_db, states=["wa"])
+    matcher = OCDidMatcher(db_path=populated_db, states=["wa"], csv_backup_path="")
     results = matcher.run_matching()
     matched_ocdids = {r.ocdid.raw_ocdid for r in results.matched}
     assert "ocd-division/country:us/state:wa/place:seattle" in matched_ocdids
@@ -45,7 +45,7 @@ def test_match_finds_matching_records(populated_db):
 
 def test_match_detects_local_orphans(populated_db):
     """Records in local but not master should be local orphans."""
-    matcher = OCDidMatcher(db_path=populated_db, states=["wa"])
+    matcher = OCDidMatcher(db_path=populated_db, states=["wa"], csv_backup_path="")
     results = matcher.run_matching()
     orphan_ids = {r["id"] for r in results.local_orphans}
     assert "ocd-division/country:us/state:wa/place:olympia" in orphan_ids
@@ -53,7 +53,7 @@ def test_match_detects_local_orphans(populated_db):
 
 def test_match_returns_ocdid_ingest_resp(populated_db):
     """Each matched record should produce a valid OCDidIngestResp."""
-    matcher = OCDidMatcher(db_path=populated_db, states=["wa"])
+    matcher = OCDidMatcher(db_path=populated_db, states=["wa"], csv_backup_path="")
     results = matcher.run_matching()
     for resp in results.matched:
         assert isinstance(resp, OCDidIngestResp)
@@ -64,7 +64,7 @@ def test_match_returns_ocdid_ingest_resp(populated_db):
 
 def test_raw_record_contains_master_data(populated_db):
     """raw_record should contain master list columns, not local columns."""
-    matcher = OCDidMatcher(db_path=populated_db, states=["wa"])
+    matcher = OCDidMatcher(db_path=populated_db, states=["wa"], csv_backup_path="")
     results = matcher.run_matching()
     for resp in results.matched:
         assert "id" in resp.raw_record
@@ -74,10 +74,10 @@ def test_raw_record_contains_master_data(populated_db):
 
 def test_match_generates_deterministic_uuids(populated_db):
     """Same OCD ID should produce the same UUID across runs."""
-    matcher1 = OCDidMatcher(db_path=populated_db, states=["wa"])
+    matcher1 = OCDidMatcher(db_path=populated_db, states=["wa"], csv_backup_path="")
     results1 = matcher1.run_matching()
 
-    matcher2 = OCDidMatcher(db_path=populated_db, states=["wa"])
+    matcher2 = OCDidMatcher(db_path=populated_db, states=["wa"], csv_backup_path="")
     results2 = matcher2.run_matching()
 
     uuids1 = {r.ocdid.raw_ocdid: str(r.uuid) for r in results1.matched}
@@ -87,7 +87,7 @@ def test_match_generates_deterministic_uuids(populated_db):
 
 def test_lookup_table_created_in_duckdb(populated_db):
     """run_matching() should create an ocdid_uuid_lookup table."""
-    matcher = OCDidMatcher(db_path=populated_db, states=["wa"])
+    matcher = OCDidMatcher(db_path=populated_db, states=["wa"], csv_backup_path="")
     matcher.run_matching()
 
     conn = duckdb.connect(populated_db)
@@ -110,7 +110,7 @@ def test_lookup_csv_backup_created(populated_db, tmp_path):
 
 def test_orphan_tables_created_in_duckdb(populated_db):
     """run_matching() should create local_orphans and master_orphans tables."""
-    matcher = OCDidMatcher(db_path=populated_db, states=["wa"])
+    matcher = OCDidMatcher(db_path=populated_db, states=["wa"], csv_backup_path="")
     matcher.run_matching()
 
     conn = duckdb.connect(populated_db)
