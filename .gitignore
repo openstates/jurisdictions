@@ -166,3 +166,6 @@ cython_debug/
 # ETag cache files
 .etag_cache.json
 
+# Claude Code local config
+.claude/
+
