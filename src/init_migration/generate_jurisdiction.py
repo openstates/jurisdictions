@@ -9,7 +9,7 @@ Responsibilities:
 - Serialize Jurisdiction objects to YAML files
 """
 
-from src.init_migration.models import GeneratorReq
+from src.init_migration.pipeline_models import GeneratorReq
 from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
 from src.models.source import SourceType

@@ -9,7 +9,7 @@ Responsibilities:
 - Serialize Division objects to YAML files
 """
 
-from src.init_migration.models import GeneratorReq
+from src.init_migration.pipeline_models import GeneratorReq
 from src.utils.ocdid import ocdid_parser
 from src.models.division import Division
 from src.models.source import SourceType

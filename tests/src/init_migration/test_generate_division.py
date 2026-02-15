@@ -3,7 +3,7 @@
 
 import pytest
 
-from src.init_migration.models import GeneratorReq, OCDidIngestResp
+from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp
 from src.init_migration.generate_division import DivGenerator
 import uuid
 from pathlib import Path

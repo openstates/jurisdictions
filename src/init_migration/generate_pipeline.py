@@ -16,7 +16,7 @@ import logging
 from pathlib import Path
 from uuid import UUID
 
-from src.init_migration.models import OCDidIngestResp, GeneratorReq, GeneratorResp, GeneratorStatus, Status, DIVISIONS_SHEET_CSV_URL
+from src.init_migration.pipeline_models import OCDidIngestResp, GeneratorReq, GeneratorResp, GeneratorStatus, Status, DIVISIONS_SHEET_CSV_URL
 from src.init_migration.generate_division import DivGenerator
 from src.init_migration.generate_jurisdiction import JurGenerator
 from src.utils.ocdid import ocdid_parser
