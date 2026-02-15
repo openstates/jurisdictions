@@ -23,7 +23,7 @@ from rich.table import Table
 
 from src.utils.state_lookup import load_state_code_lookup
 from src.init_migration.download_manager import DownloadManager
-from src.init_migration.ocdid_matcher import OCDidMatcher
+from src.init_migration.ocdid_matcher import OCDidMatcher, MatchResults
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -106,8 +106,13 @@ def print_summary(
     console.print(table)
 
 
-async def run_pipeline(args: argparse.Namespace) -> None:
-    """Run the full Stage 1 pipeline."""
+async def run_pipeline(args: argparse.Namespace) -> MatchResults:
+    """Run the full Stage 1 pipeline.
+
+    Returns:
+        MatchResults containing matched, local_orphan, and master_orphan records
+        for Stage 2 consumption.
+    """
     console = Console()
     states = resolve_states(args.state)
 
@@ -126,12 +131,19 @@ async def run_pipeline(args: argparse.Namespace) -> None:
     print_summary(console, download_stats, match_results)
     logger.info("Pipeline complete")
 
+    return match_results
 
-def main() -> None:
-    """CLI entry point."""
+
+def main() -> MatchResults | None:
+    """CLI entry point.
+
+    Returns:
+        MatchResults when called programmatically, None is not returned
+        but asyncio.run returns the coroutine result.
+    """
     args = parse_args()
     configure_logging(args.log_dir)
-    asyncio.run(run_pipeline(args))
+    return asyncio.run(run_pipeline(args))
 
 
 if __name__ == "__main__":
