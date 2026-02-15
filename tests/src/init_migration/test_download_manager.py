@@ -1,6 +1,7 @@
 """Tests for DownloadManager — URL building and DuckDB loading."""
 import pytest
 import duckdb
+import httpx
 
 from src.init_migration.download_manager import DownloadManager
 
@@ -81,3 +82,53 @@ def test_load_multiple_states_to_duckdb(tmp_path):
     count = conn.execute("SELECT COUNT(*) FROM local_ocdids").fetchone()[0]
     conn.close()
     assert count == 2
+
+
+# --- Async Download Orchestration ---
+
+@pytest.mark.asyncio
+async def test_run_downloads_fetches_and_loads(tmp_path, respx_mock):
+    """run_downloads() should fetch all URLs and load into DuckDB."""
+    db_path = str(tmp_path / "test.duckdb")
+    dm = DownloadManager(states=["wa"], db_path=db_path)
+
+    master_csv = b"id,name\nocd-division/country:us/state:wa/place:seattle,Seattle\n"
+    local_csv = b"id,name\nocd-division/country:us/state:wa/place:seattle,Seattle\n"
+
+    respx_mock.get(dm.master_url()).mock(
+        return_value=httpx.Response(200, content=master_csv)
+    )
+    respx_mock.get(dm.local_urls()[0]).mock(
+        return_value=httpx.Response(200, content=local_csv)
+    )
+
+    stats = await dm.run_downloads(force=True, show_progress=False)
+
+    assert stats["master_rows"] > 0
+    assert stats["local_rows"] > 0
+    assert stats["files_downloaded"] >= 1
+
+
+@pytest.mark.asyncio
+async def test_run_downloads_handles_missing_local(tmp_path, respx_mock):
+    """run_downloads() should continue if a state's local CSV returns 404."""
+    db_path = str(tmp_path / "test.duckdb")
+    dm = DownloadManager(states=["wa", "zz"], db_path=db_path)
+
+    master_csv = b"id,name\nocd-division/country:us/state:wa/place:seattle,Seattle\n"
+    local_wa = b"id,name\nocd-division/country:us/state:wa/place:seattle,Seattle\n"
+
+    respx_mock.get(dm.master_url()).mock(
+        return_value=httpx.Response(200, content=master_csv)
+    )
+    respx_mock.get(dm.local_urls()[0]).mock(
+        return_value=httpx.Response(200, content=local_wa)
+    )
+    respx_mock.get(dm.local_urls()[1]).mock(
+        return_value=httpx.Response(404)
+    )
+
+    stats = await dm.run_downloads(force=True, show_progress=False)
+
+    assert stats["files_failed"] == 1
+    assert stats["local_rows"] > 0

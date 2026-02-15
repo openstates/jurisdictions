@@ -7,11 +7,15 @@ Responsibilities:
 - Orchestrate async downloads with progress display (see run_downloads())
 """
 
+import asyncio
 import tempfile
 from pathlib import Path
 
 import duckdb
 from loguru import logger
+from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn, TimeElapsedColumn
+
+from src.init_migration.downloader import AsyncDownloader, DownloaderConfig
 
 RAW_BASE = "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers"
 MASTER_PATH = "country-us.csv"
@@ -116,3 +120,102 @@ class DownloadManager:
             return count
         finally:
             conn.close()
+
+    async def run_downloads(
+        self,
+        force: bool = False,
+        show_progress: bool = True,
+        downloader_config: DownloaderConfig | None = None,
+    ) -> dict:
+        """Fetch all CSVs concurrently and load into DuckDB.
+
+        Args:
+            force: Bypass ETag cache and re-download everything.
+            show_progress: Show rich progress bars (disable for testing).
+            downloader_config: Optional custom downloader config.
+
+        Returns:
+            dict with stats: files_downloaded, files_cached, files_failed,
+            master_rows, local_rows.
+        """
+        cfg = downloader_config or DownloaderConfig(
+            concurrency=12,
+            max_retries=3,
+            http2=True,
+            etag_cache_path=".etag_cache.json",
+        )
+
+        stats = {
+            "files_downloaded": 0,
+            "files_cached": 0,
+            "files_failed": 0,
+            "master_rows": 0,
+            "local_rows": 0,
+        }
+
+        total_files = 1 + len(self.states)
+        progress = Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+            TimeElapsedColumn(),
+            disable=not show_progress,
+        )
+        download_task = progress.add_task("Downloading", total=total_files)
+        load_task = progress.add_task("Loading to DuckDB", total=total_files)
+
+        with progress:
+            async with AsyncDownloader(cfg) as downloader:
+                # --- Download master ---
+                master_bytes = None
+                try:
+                    master_bytes = await downloader.fetch_bytes(
+                        self.master_url(), force=force
+                    )
+                    if master_bytes is None:
+                        logger.info("Master CSV unchanged (ETag cache hit)")
+                        stats["files_cached"] += 1
+                    else:
+                        stats["files_downloaded"] += 1
+                except Exception as e:
+                    logger.error(f"Failed to download master CSV: {e}")
+                    stats["files_failed"] += 1
+                progress.advance(download_task)
+
+                # --- Download locals concurrently ---
+                local_results: dict[str, bytes | None] = {}
+                local_urls = self.local_urls()
+
+                async def fetch_local(state: str, url: str):
+                    try:
+                        data = await downloader.fetch_bytes(url, force=force)
+                        if data is None:
+                            logger.info(f"Local CSV for {state} unchanged (cache hit)")
+                            stats["files_cached"] += 1
+                        else:
+                            stats["files_downloaded"] += 1
+                        local_results[state] = data
+                    except Exception as e:
+                        logger.warning(f"Failed to download local CSV for {state}: {e}")
+                        stats["files_failed"] += 1
+                        local_results[state] = None
+                    progress.advance(download_task)
+
+                await asyncio.gather(
+                    *(fetch_local(s, u) for s, u in zip(self.states, local_urls))
+                )
+
+            # --- Load into DuckDB ---
+            if master_bytes:
+                stats["master_rows"] = self.load_master_csv(master_bytes)
+            progress.advance(load_task)
+
+            for state in self.states:
+                csv_bytes = local_results.get(state)
+                if csv_bytes:
+                    rows = self.load_local_csv(csv_bytes, state)
+                    stats["local_rows"] += rows
+                progress.advance(load_task)
+
+        return stats
