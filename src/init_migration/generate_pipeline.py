@@ -14,9 +14,7 @@ Responsibilities:
 
 import logging
 from pathlib import Path
-from uuid import UUID
-
-from src.init_migration.models import OCDidIngestResp, GeneratorReq, GeneratorResp, GeneratorStatus, Status, DIVISIONS_SHEET_CSV_URL
+from src.init_migration.pipeline_models import GeneratorReq, GeneratorResp, GeneratorStatus, Status
 from src.init_migration.generate_division import DivGenerator
 from src.init_migration.generate_jurisdiction import JurGenerator
 from src.utils.ocdid import ocdid_parser
@@ -48,7 +46,7 @@ DIVISION_OUTPUT_DIR = "divisions"
 JURISDICTION_OUTPUT_DIR = "jurisdictions"
 
 
-def get_division_filename(display_name: str, geoid: str, uuid: UUID) -> str:
+def get_division_filename(display_name: str, geoid: str, uuid: str) -> str:
     """Generate Division YAML filename from components.
 
     Args:
@@ -63,7 +61,7 @@ def get_division_filename(display_name: str, geoid: str, uuid: UUID) -> str:
     return f"{safe_display_name}_{geoid}_{uuid}.yaml"
 
 
-def get_jurisdiction_filename(name: str, uuid: UUID) -> str:
+def get_jurisdiction_filename(name: str, uuid: str) -> str:
     """Generate Jurisdiction YAML filename from components.
 
     Args:
@@ -116,12 +114,8 @@ class GeneratePipeline:
         self.division_output_dir = Path(division_output_dir)
         self.jurisdiction_output_dir = Path(jurisdiction_output_dir)
 
-        # Parse the OCDid
-        try:
-            self.parsed_ocdid = ocdid_parser(self.data.ocdid)
-        except Exception as e:
-            logger.error(f"Failed to parse OCDid: {self.data.ocdid}", exc_info=True)
-            raise ValueError(f"Invalid OCDid: {self.data.ocdid}") from e
+        # OCDid is already parsed as OCDidParsed from Stage 1
+        self.parsed_ocdid = self.data.ocdid
 
         # Initialize generated objects
         self.division: Division | None = None
@@ -135,7 +129,7 @@ class GeneratePipeline:
         self.validation_df: pl.DataFrame = self._load_validation_csv()
         self.validation_df = self._normalize_validation_data()
 
-        logger.info(f"Pipeline initialized for OCDid: {self.data.ocdid}", extra={"uuid": str(self.uuid)})
+        logger.info(f"Pipeline initialized for OCDid: {self.data.ocdid.raw_ocdid}", extra={"uuid": str(self.uuid)})
 
     def _load_validation_csv(self) -> pl.DataFrame:
         """Load validation research CSV from URL or filepath.
@@ -285,15 +279,15 @@ class GeneratePipeline:
 
         try:
             # Find matches in validation data
-            matches_df = self.find_matches(self.data.ocdid)
+            matches_df = self.find_matches(self.data.ocdid.raw_ocdid)
             match_count = len(matches_df)
 
-            logger.info(f"Matching result for {self.data.ocdid}: {match_count} match(es)")
+            logger.info(f"Matching result for {self.data.ocdid.raw_ocdid}: {match_count} match(es)")
 
             # Branch on match count
             if match_count == 1:
                 # Single match: generate full Division
-                logger.info(f"Single match found for {self.data.ocdid}")
+                logger.info(f"Single match found for {self.data.ocdid.raw_ocdid}")
                 matched_row = matches_df.row(0, named=True)
 
                 div_gen = DivGenerator(self.req)
@@ -327,7 +321,7 @@ class GeneratePipeline:
 
             elif match_count == 0:
                 # No match: generate stub Division and add to quarantine
-                logger.info(f"No matches found for {self.data.ocdid}, creating stub Division")
+                logger.info(f"No matches found for {self.data.ocdid.raw_ocdid}, creating stub Division")
 
                 div_gen = DivGenerator(self.req)
                 self.division = div_gen.generate_division_stub(uuid=self.uuid)
@@ -339,7 +333,7 @@ class GeneratePipeline:
 
                 # Add to quarantine
                 self.quarantine.ocdid_no_validation_div.append({
-                    "ocdid": self.data.ocdid,
+                    "ocdid": self.data.ocdid.raw_ocdid,
                     "reason": "no_validation_match",
                     "matched_records": []
                 })
@@ -348,13 +342,13 @@ class GeneratePipeline:
 
             else:
                 # Multiple matches: add to quarantine, skip Division generation
-                logger.warning(f"Multiple matches found for {self.data.ocdid}, flagging for review")
+                logger.warning(f"Multiple matches found for {self.data.ocdid.raw_ocdid}, flagging for review")
 
                 # Convert matched rows to dicts for quarantine storage
                 matched_records = [dict(row) for row in matches_df.iter_rows(named=True)]
 
                 self.quarantine.ocdid_no_validation_div.append({
-                    "ocdid": self.data.ocdid,
+                    "ocdid": self.data.ocdid.raw_ocdid,
                     "reason": "multiple_matches",
                     "matched_records": matched_records,
                     "match_count": match_count
@@ -365,7 +359,7 @@ class GeneratePipeline:
             return response
 
         except Exception as e:
-            logger.exception(f"Pipeline failed for {self.data.ocdid}")
+            logger.exception(f"Pipeline failed for {self.data.ocdid.raw_ocdid}")
             response.status = GeneratorStatus(status=Status.FAILED, error=str(e))
             return response
 
@@ -448,152 +442,4 @@ class GeneratePipeline:
         except Exception:
             logger.error("Failed to save quarantine data", exc_info=True)
 
-
-if __name__ == "__main__":
-    import asyncio
-
-    # Sample OCDids that match the test CSV data (WA, TX, OH places)
-    SAMPLE_OCDIDS = [
-        {
-            "ocdid": "ocd-division/country:us/state:oh/place:parma",
-            "uuid": UUID("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
-            "state": "oh",
-        },
-        {
-            "ocdid": "ocd-division/country:us/state:oh/place:miamisburg",
-            "uuid": UUID("3fa85f64-5717-4562-b3fc-2c963f66afa7"),
-            "state": "oh",
-        },
-    ]
-
-    # Use local sample CSV for testing (avoids network calls)
-    # Note: CSV contains only WA (53), TX (48), OH (39) data
-    SAMPLE_CSV_PATH = "tests/sample_data/WA_TX_OH_sample.csv"
-    EXAMPLES_DIVISION_DIR = "divisions/examples"
-    EXAMPLES_JURISDICTION_DIR = "jurisdictions/examples"
-
-    async def test_pipeline():
-        """Test pipeline by running sample OCDids and comparing output to sample files."""
-
-        print("=" * 80)
-        print("TESTING GENERATE PIPELINE")
-        print("=" * 80)
-
-        # Clean up example directories for idempotent runs
-        print("\nCleaning up previous example files...")
-        import shutil
-        for example_dir in [EXAMPLES_DIVISION_DIR, EXAMPLES_JURISDICTION_DIR]:
-            dir_path = Path(example_dir)
-            if dir_path.exists():
-                shutil.rmtree(dir_path)
-                print(f"  Removed {example_dir}/")
-
-        # Create initial pipeline instance (loads/caches validation CSV once)
-        sample_req = GeneratorReq(
-            data=OCDidIngestResp(
-                uuid=SAMPLE_OCDIDS[0]["uuid"],
-                ocdid=SAMPLE_OCDIDS[0]["ocdid"],
-                raw_record={}
-            ),
-            validation_data_filepath=SAMPLE_CSV_PATH,
-            build_base_object=True,
-            jurisdiction_ai_url=False,
-            division_geo_req=False,
-            division_population_req=False,
-        )
-
-        pipeline = GeneratePipeline(
-            sample_req,
-            division_output_dir=EXAMPLES_DIVISION_DIR,
-            jurisdiction_output_dir=EXAMPLES_JURISDICTION_DIR,
-        )
-
-        test_results = {"passed": 0, "failed": 0, "details": []}
-
-        for sample in SAMPLE_OCDIDS:
-            print(f"\nTesting: {sample['ocdid']}")
-            print("-" * 80)
-
-            try:
-                # Create request for this OCDid
-                req = GeneratorReq(
-                    data=OCDidIngestResp(
-                        uuid=sample["uuid"],
-                        ocdid=sample["ocdid"],
-                        raw_record={}
-                    ),
-                    validation_data_filepath=SAMPLE_CSV_PATH,
-                    build_base_object=True,
-                    jurisdiction_ai_url=False,
-                    division_geo_req=False,
-                    division_population_req=False,
-                )
-
-                # Create fresh pipeline for this OCDid
-                pipeline = GeneratePipeline(
-                    req,
-                    division_output_dir=EXAMPLES_DIVISION_DIR,
-                    jurisdiction_output_dir=EXAMPLES_JURISDICTION_DIR,
-                )
-
-                # Run pipeline
-                response = await pipeline.run()
-
-                if response.status.status in [Status.SUCCESS, Status.SKIPPED]:
-                    print(f"✓ Pipeline completed: {response.status.status.value}")
-                    if response.division_path:
-                        print(f"  Division: {response.division_path}")
-                    if response.jurisdiction_path:
-                        print(f"  Jurisdiction: {response.jurisdiction_path}")
-
-                    test_results["passed"] += 1
-                    test_results["details"].append({
-                        "ocdid": sample["ocdid"],
-                        "status": "PASS",
-                        "reason": response.status.status.value
-                    })
-                else:
-                    print(f"✗ Pipeline failed: {response.status.status.value}")
-                    if response.status.error:
-                        print(f"  Error: {response.status.error}")
-
-                    test_results["failed"] += 1
-                    test_results["details"].append({
-                        "ocdid": sample["ocdid"],
-                        "status": "FAIL",
-                        "reason": response.status.error or response.status.status.value
-                    })
-
-            except Exception as e:
-                print(f"✗ Exception: {str(e)}")
-                test_results["failed"] += 1
-                test_results["details"].append({
-                    "ocdid": sample["ocdid"],
-                    "status": "FAIL",
-                    "reason": str(e)
-                })
-
-        # Save quarantine data
-        print(f"\n{'=' * 80}")
-        print("SAVING QUARANTINE DATA")
-        print("=" * 80)
-        pipeline.save_quarantine_data()
-
-        # Print summary
-        print(f"\n{'=' * 80}")
-        print("TEST SUMMARY")
-        print("=" * 80)
-        print(f"Total: {test_results['passed'] + test_results['failed']}")
-        print(f"Passed: {test_results['passed']}")
-        print(f"Failed: {test_results['failed']}")
-        print()
-
-        for detail in test_results["details"]:
-            symbol = "✓" if detail["status"] == "PASS" else "✗"
-            print(f"{symbol} {detail['ocdid']}: {detail['reason']}")
-
-        print(f"{'=' * 80}")
-
-    # Run async test
-    asyncio.run(test_pipeline())
 

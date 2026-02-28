@@ -1,207 +1,150 @@
 """
-Main runs the initial ingestion pipeline that generates Divisions and
-Jurisdiction objects from our source files and research.
+Stage 1 OCDid Pipeline — Orchestrator
+
+Entry point for the init_migration pipeline. Parses CLI arguments,
+loads state list, calls DownloadManager and OCDidMatcher in sequence,
+and reports summary stats.
+
+Usage:
+    uv run python src/init_migration/main.py
+    uv run python src/init_migration/main.py --state wa
+    uv run python src/init_migration/main.py --state wa,tx,oh --force
+    uv run python src/init_migration/main.py --log-dir /tmp/logs
 """
 
+import argparse
 import asyncio
-import os
+import sys
 from pathlib import Path
-from urllib.parse import urlparse
-import duckdb
 
-from downloader import DownloaderConfig, AsyncDownloader
+from loguru import logger
+from rich.console import Console
+from rich.table import Table
+
+from src.utils.state_lookup import load_state_code_lookup
+from src.init_migration.download_manager import DownloadManager
+from src.init_migration.ocdid_matcher import OCDidMatcher, MatchResults
 
 
-def load_csv_to_duckdb(
-    csv_path: Path,
-    table_name: str,
-    db_path: str = "data.duckdb"
-) -> dict:
-    """Load CSV into DuckDB and return summary stats
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Stage 1 OCDid Pipeline — fetch, match, and generate lookup table"
+    )
+    parser.add_argument(
+        "--state",
+        type=str,
+        default=None,
+        help="Comma-separated state codes to process (e.g., wa,tx,oh). "
+             "Default: all states from state_lookup.json.",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        default=False,
+        help="Bypass ETag cache and force re-download of all files.",
+    )
+    parser.add_argument(
+        "--log-dir",
+        type=str,
+        default="logs",
+        help="Directory for log files (default: logs/).",
+    )
+    return parser.parse_args(argv)
 
-    Valid rows are loaded into the main table. Rows with errors (e.g., too many columns)
-    are loaded into a quarantine table for later analysis.
+
+def resolve_states(state_arg: str | None) -> list[str]:
+    """Resolve state list from CLI argument or state_lookup.json.
 
     Args:
-        csv_path: Path to the CSV file to load
-        table_name: Name for the DuckDB table (will be sanitized)
-        db_path: Path to the DuckDB database file
+        state_arg: Comma-separated state codes, or None for all states.
 
     Returns:
-        dict with keys: table_name, row_count, column_count, columns, file_path,
-        quarantine_table, quarantine_count
-
-    Raises:
-        FileNotFoundError: If CSV file doesn't exist
-        ValueError: If table_name contains invalid characters
+        List of lowercase two-letter state codes.
     """
-    if not csv_path.exists():
-        raise FileNotFoundError(f"CSV file not found: {csv_path}")
+    if state_arg:
+        return [s.strip().lower() for s in state_arg.split(",")]
 
-    # Sanitize table name (alphanumeric and underscore only)
-    sanitized_name = "".join(c if c.isalnum() or c == "_" else "_" for c in table_name)
+    lookup = load_state_code_lookup()
+    return [entry["stusps"].lower() for entry in lookup]
 
-    # Ensure table name is not empty and doesn't start with a number
-    if not sanitized_name or not sanitized_name.replace("_", ""):
-        raise ValueError(f"Invalid table name: {table_name}")
 
-    # Prepend 't_' if name starts with a digit (SQL requirement)
-    if sanitized_name[0].isdigit():
-        sanitized_name = "t_" + sanitized_name
+def configure_logging(log_dir: str) -> None:
+    """Configure loguru to write to the specified log directory."""
+    log_path = Path(log_dir)
+    log_path.mkdir(parents=True, exist_ok=True)
 
-    quarantine_name = f"{sanitized_name}_quarantine"
-
-    conn = duckdb.connect(db_path)
-
-    try:
-        # First, load all valid rows with ignore_errors=true
-        conn.execute(f"""
-            CREATE OR REPLACE TABLE {sanitized_name} AS
-            SELECT * FROM read_csv_auto('{csv_path}', ignore_errors=true)
-        """)
-
-        # Gather statistics for main table
-        row_count = conn.execute(f"SELECT COUNT(*) FROM {sanitized_name}").fetchone()[0]
-        columns_info = conn.execute(f"DESCRIBE {sanitized_name}").fetchall()
-        column_names = [col[0] for col in columns_info]
-
-        # Read the CSV as all text columns to capture problematic rows
-        # We'll read with maximum columns to catch rows with extra data
-        conn.execute(f"""
-            CREATE OR REPLACE TABLE {quarantine_name} AS
-            SELECT * FROM read_csv(
-                '{csv_path}',
-                ALL_VARCHAR=true,
-                ignore_errors=false,
-                max_line_size=1048576
-            )
-            EXCEPT
-            SELECT * FROM read_csv(
-                '{csv_path}',
-                ALL_VARCHAR=true,
-                ignore_errors=true,
-                max_line_size=1048576
-            )
-        """)
-
-        quarantine_count = conn.execute(f"SELECT COUNT(*) FROM {quarantine_name}").fetchone()[0]
-
-        return {
-            "table_name": sanitized_name,
-            "row_count": row_count,
-            "column_count": len(column_names),
-            "columns": column_names,
-            "file_path": str(csv_path),
-            "quarantine_table": quarantine_name,
-            "quarantine_count": quarantine_count
-        }
-    except Exception as e:
-        # If the quarantine approach fails, fall back to basic ignore_errors
-        try:
-            conn.execute(f"""
-                CREATE OR REPLACE TABLE {sanitized_name} AS
-                SELECT * FROM read_csv_auto('{csv_path}', ignore_errors=true)
-            """)
-
-            row_count = conn.execute(f"SELECT COUNT(*) FROM {sanitized_name}").fetchone()[0]
-            columns_info = conn.execute(f"DESCRIBE {sanitized_name}").fetchall()
-            column_names = [col[0] for col in columns_info]
-
-            return {
-                "table_name": sanitized_name,
-                "row_count": row_count,
-                "column_count": len(column_names),
-                "columns": column_names,
-                "file_path": str(csv_path),
-                "quarantine_table": None,
-                "quarantine_count": 0,
-                "error": str(e)
-            }
-        except Exception as fallback_error:
-            raise Exception(f"Failed to load CSV even with error handling: {fallback_error}") from e
-    finally:
-        conn.close()
-
-async def main() -> None:
-    # Build *your* list of URLs here (outside the downloader).
-    urls = [
-        "https://api.github.com/repos/opencivicdata/ocd-division-ids/contents/identifiers/country-us.csv?ref=master",
-    ]
-
-    cfg = DownloaderConfig(
-        concurrency=12,
-        max_retries=3,
-        http2=True,  # auto-disables if 'h2' not installed
-        use_github_auth=False,
-        etag_cache_path=".etag_cache.json",
+    logger.remove()  # Remove default stderr handler
+    logger.add(sys.stderr, level="INFO")  # Console: INFO and above
+    logger.add(
+        str(log_path / "pipeline_{time}.log"),
+        rotation="10 MB",
+        retention=5,
+        level="DEBUG",
     )
 
-    async with AsyncDownloader(cfg) as d:
-        blobs = await d.fetch_many(urls)
-        sizes = [len(b) if b else 0 for b in blobs]
-        print("bytes fetched:", sizes)
 
-        # Updated: strip query params from filename
-        url_to_path = {
-            u: Path("downloads") / os.path.basename(urlparse(u).path)
-            for u in urls
-        }
-        results = await d.download_many(url_to_path)
-        print("downloads:", results)
+def print_summary(
+    console: Console,
+    download_stats: dict,
+    match_results,
+) -> None:
+    """Print a summary table using rich."""
+    table = Table(title="Pipeline Summary")
+    table.add_column("Metric", style="bold")
+    table.add_column("Count", justify="right")
 
-        # Load each downloaded CSV into DuckDB
-        for url, csv_path in url_to_path.items():
-            # Use stem of filename as table name (e.g., "country-us" from "country-us.csv")
-            table_name = csv_path.stem
+    table.add_row("Files downloaded", str(download_stats.get("files_downloaded", 0)))
+    table.add_row("Files cached (ETag)", str(download_stats.get("files_cached", 0)))
+    table.add_row("Files failed", str(download_stats.get("files_failed", 0)))
+    table.add_row("Master rows loaded", str(download_stats.get("master_rows", 0)))
+    table.add_row("Local rows loaded", str(download_stats.get("local_rows", 0)))
+    table.add_row("Matched records", str(len(match_results.matched)))
+    table.add_row("Local orphans", str(len(match_results.local_orphans)))
+    table.add_row("Master orphans", str(len(match_results.master_orphans)))
 
-            try:
-                stats = load_csv_to_duckdb(csv_path, table_name)
-                print(f"\n✓ Loaded {stats['row_count']:,} rows into table '{stats['table_name']}'")
-                print(f"  Columns ({stats['column_count']}): {', '.join(stats['columns'][:5])}", end="")
-                if stats['column_count'] > 5:
-                    print(f", ... +{stats['column_count'] - 5} more")
-                else:
-                    print()
+    console.print(table)
 
-                # Report on quarantined rows
-                if stats.get('quarantine_count', 0) > 0:
-                    print(f"  ⚠️  {stats['quarantine_count']:,} problematic rows saved to '{stats['quarantine_table']}'")
-                elif stats.get('error'):
-                    print(f"  ⚠️  Warning: {stats['error']}")
-            except Exception as e:
-                print(f"\n✗ Failed to load {csv_path}: {e}")
-# async def main() -> None:
-#     # Build *your* list of URLs here (outside the downloader).
-#     urls = [
-#         "https://api.github.com/repos/opencivicdata/ocd-division-ids/contents/identifiers/country-us.csv?ref=master",
-#     ]
-#
-#     cfg = DownloaderConfig(
-#         concurrency=12,
-#         max_retries=3,
-#         http2=True,  # auto-disables if 'h2' not installed
-#         use_github_auth=False,
-#         etag_cache_path=".etag_cache.json",
-#     )
-#
-#     async with AsyncDownloader(cfg) as d:
-#         blobs = await d.fetch_many(urls)
-#         sizes = [len(b) if b else 0 for b in blobs]
-#         print("bytes fetched:", sizes)
-#
-#         # Updated: strip query params from filename
-#         url_to_path = {
-#             u: Path("downloads") / os.path.basename(urlparse(u).path)
-#             for u in urls
-#         }
-#         results = await d.download_many(url_to_path)
-#         print("downloads:", results)
-#         # To force a fresh re-download ignoring ETag/Last-Modified for a single URL:
-#         path, status = await d.download_to(
-#             urls[0], Path("downloads") / os.path.basename(urlparse(urls[0]).path), force=True
-#         )
-#         print("forced:", path, status)
+
+async def run_pipeline(args: argparse.Namespace) -> MatchResults:
+    """Run the full Stage 1 pipeline.
+
+    Returns:
+        MatchResults containing matched, local_orphan, and master_orphan records
+        for Stage 2 consumption.
+    """
+    console = Console()
+    states = resolve_states(args.state)
+
+    logger.info(f"Starting pipeline for {len(states)} state(s)")
+    console.print(f"Processing {len(states)} state(s): {', '.join(states)}")
+
+    # Phase 1: Download and load
+    dm = DownloadManager(states=states)
+    download_stats = await dm.run_downloads(force=args.force)
+
+    # Phase 2: Match and build
+    matcher = OCDidMatcher(states=states)
+    match_results = matcher.run_matching(show_progress=True)
+
+    # Summary
+    print_summary(console, download_stats, match_results)
+    logger.info("Pipeline complete")
+
+    return match_results
+
+
+def main() -> MatchResults | None:
+    """CLI entry point.
+
+    Returns:
+        MatchResults when called programmatically, None is not returned
+        but asyncio.run returns the coroutine result.
+    """
+    args = parse_args()
+    configure_logging(args.log_dir)
+    return asyncio.run(run_pipeline(args))
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

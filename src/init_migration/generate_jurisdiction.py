@@ -9,13 +9,12 @@ Responsibilities:
 - Serialize Jurisdiction objects to YAML files
 """
 
-from src.init_migration.models import GeneratorReq
+from src.init_migration.pipeline_models import GeneratorReq
 from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
 from src.models.source import SourceType
 from src.utils.ocdid import ocdid_parser
 from pathlib import Path
-from uuid import UUID
 from datetime import datetime, timezone
 import logging
 import yaml
@@ -42,7 +41,7 @@ class JurGenerator:
         self.division = division
         self.jurisdiction: Jurisdiction | None = None
 
-    def generate_jurisdiction(self, division: Division, uuid: UUID) -> Jurisdiction:
+    def generate_jurisdiction(self, division: Division, uuid: str) -> Jurisdiction:
         """Generate a Jurisdiction object from a Division object.
 
         Derives jurisdiction_id from division OCDid, maps Division fields to
@@ -77,7 +76,7 @@ class JurGenerator:
 
             # Create Jurisdiction object
             self.jurisdiction = Jurisdiction(
-                id=uuid,
+                deterministic_id=str(uuid),
                 ocdid=jurisdiction_ocdid,
                 name=jurisdiction_name,
                 url="missing-url-" + (division.display_name.lower().replace(" ", "-")) if division.display_name else "missing-url",

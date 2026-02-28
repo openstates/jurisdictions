@@ -9,14 +9,13 @@ Responsibilities:
 - Serialize Division objects to YAML files
 """
 
-from src.init_migration.models import GeneratorReq
+from src.init_migration.pipeline_models import GeneratorReq
 from src.utils.ocdid import ocdid_parser
 from src.models.division import Division
 from src.models.source import SourceType
 from src.utils.state_lookup import load_state_code_lookup
 from src.utils.place_name import namelsad_to_display_name
 from pathlib import Path
-from uuid import UUID
 from datetime import datetime, timezone
 import logging
 import yaml
@@ -37,11 +36,11 @@ class DivGenerator:
         self.req = req
         self.data = req.data
         self.uuid = self.data.uuid
-        self.parsed_ocdid = ocdid_parser(self.data.ocdid)
+        self.parsed_ocdid = ocdid_parser(self.data.ocdid.raw_ocdid)
         self.state_lookup = load_state_code_lookup()
         self.division: Division | None = None
 
-    def generate_division(self, val_rec: dict, uuid: UUID) -> Division:
+    def generate_division(self, val_rec: dict, uuid: str) -> Division:
         """Generate a full Division object from a matched validation record.
 
         Maps validation record fields to Division model fields. Checks for idempotency
@@ -70,19 +69,20 @@ class DivGenerator:
             display_name = namelsad_to_display_name(namelsad)
 
             # Check if Division already exists
-            if self._division_exists(self.data.ocdid):
-                logger.info(f"Division already exists for {self.data.ocdid}, returning existing")
-                return self._load_existing_division(self.data.ocdid)
+            raw_ocdid = self.data.ocdid.raw_ocdid
+            if self._division_exists(raw_ocdid):
+                logger.info(f"Division already exists for {raw_ocdid}, returning existing")
+                return self._load_existing_division(raw_ocdid)
 
             # Map validation fields to Division model
             self.division = Division(
-                id=uuid,
-                ocdid=self.data.ocdid,
+                deterministic_id=str(uuid),
+                ocdid=raw_ocdid,
                 country="us",
                 display_name=display_name,
                 geometries=[],
                 also_known_as=[],
-                jurisdiction_id=self._derive_jurisdiction_id(self.data.ocdid),
+                jurisdiction_id=self._derive_jurisdiction_id(raw_ocdid),
                 government_identifiers={
                     "namelsad": namelsad,
                     "statefp": statefp,
@@ -103,14 +103,14 @@ class DivGenerator:
                 last_updated=datetime.now(timezone.utc)
             )
 
-            logger.info(f"Division generated for {self.data.ocdid}")
+            logger.info(f"Division generated for {raw_ocdid}")
             return self.division
 
         except Exception:
-            logger.error(f"Failed to generate Division for {self.data.ocdid}", exc_info=True)
+            logger.error(f"Failed to generate Division for {self.data.ocdid.raw_ocdid}", exc_info=True)
             raise
 
-    def generate_division_stub(self, uuid: UUID) -> Division:
+    def generate_division_stub(self, uuid: str) -> Division:
         """Generate a minimal stub Division when no validation match exists.
 
         Creates Division with only required fields populated from the OCDid,
@@ -127,16 +127,17 @@ class DivGenerator:
         """
         try:
             # Extract state and place from OCDid
-            parsed = ocdid_parser(self.data.ocdid)  # Returns dict
+            raw_ocdid = self.data.ocdid.raw_ocdid
+            parsed = ocdid_parser(raw_ocdid)  # Returns dict
 
             # Derive display name from place (titlecase)
             place = parsed.get("place", "")
             display_name = place.title() if place else "Unknown"
 
             # Check if Division already exists
-            if self._division_exists(self.data.ocdid):
-                logger.info(f"Stub Division already exists for {self.data.ocdid}, returning existing")
-                return self._load_existing_division(self.data.ocdid)
+            if self._division_exists(raw_ocdid):
+                logger.info(f"Stub Division already exists for {raw_ocdid}, returning existing")
+                return self._load_existing_division(raw_ocdid)
 
             # Create minimal stub Division with placeholder government identifiers
             # Extract state FIPS from state code
@@ -148,13 +149,13 @@ class DivGenerator:
                 state_fips = str(fips_list[0]).zfill(2) if fips_list else ""
 
             self.division = Division(
-                id=uuid,
-                ocdid=self.data.ocdid,
+                deterministic_id=str(uuid),
+                ocdid=raw_ocdid,
                 country="us",
                 display_name=display_name,
                 geometries=[],
                 also_known_as=[],
-                jurisdiction_id=self._derive_jurisdiction_id(self.data.ocdid),
+                jurisdiction_id=self._derive_jurisdiction_id(raw_ocdid),
                 government_identifiers={
                     "namelsad": display_name,
                     "statefp": state_fips,
@@ -175,11 +176,11 @@ class DivGenerator:
                 last_updated=datetime.now(timezone.utc)
             )
 
-            logger.info(f"Stub Division generated for {self.data.ocdid}")
+            logger.info(f"Stub Division generated for {raw_ocdid}")
             return self.division
 
         except Exception:
-            logger.error(f"Failed to generate stub Division for {self.data.ocdid}", exc_info=True)
+            logger.error(f"Failed to generate stub Division for {self.data.ocdid.raw_ocdid}", exc_info=True)
             raise
 
     def _derive_jurisdiction_id(self, division_ocdid: str) -> str:

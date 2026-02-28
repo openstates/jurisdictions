@@ -1,14 +1,13 @@
 import json
-import os
+from pathlib import Path
 
 def load_state_code_lookup():
     """
-    Loads the json stored here: data/state_lookup.json
+    Loads state lookup data from src/data/state_lookup.json.
     Returns:
-        dict: State code lookup dictionary.
+        list[dict]: State code lookup records.
     """
-
-    utils_dir = os.path.dirname(__file__)
-    path = os.path.join(os.path.dirname(utils_dir), "state_lookup.json")
+    data_dir = Path(__file__).resolve().parents[1] / "data"
+    path = data_dir / "state_lookup.json"
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)

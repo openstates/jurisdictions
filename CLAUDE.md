@@ -27,8 +27,11 @@ uv run pytest -m "not integration and not slow"
 # Lint
 uv run ruff check .
 
-# Run the ingestion pipeline entry point
+# Run Stage 1 pipeline (all states)
 uv run python src/init_migration/main.py
+
+# Run Stage 1 pipeline (specific states, force re-download)
+uv run python src/init_migration/main.py --state wa,tx,oh --force
 ```
 
 ## Architecture
@@ -44,23 +47,29 @@ Core Pydantic v2 models that define the YAML output schema. **Do not modify with
 
 ### Pipeline (`src/init_migration/`)
 
-Two-stage pipeline that processes OCD IDs into Division + Jurisdiction YAML pairs:
+Multi-stage pipeline that processes OCD IDs into Division + Jurisdiction YAML pairs:
 
-- `models.py` — Pipeline-specific request/response models: `GeneratorReq`, `GeneratorResp`, `OCDidIngestResp`, `GeneratorStatus`. `GeneratorReq` carries feature flags (`jurisdiction_ai_url`, `division_geo_req`, etc.) controlling what enrichment to perform.
+**Stage 1 — OCD ID Ingestion** (download, match, lookup table):
+
+- `main.py` — Stage 1 orchestrator and CLI entry point. Parses `--state`, `--force`, `--log-dir` arguments, chains DownloadManager → OCDidMatcher, prints rich summary table.
+- `download_manager.py` — `DownloadManager`: builds URLs for master (`country-us.csv`) and per-state local CSVs from GitHub raw, fetches concurrently via `AsyncDownloader`, loads into DuckDB (`master_ocdids` and `local_ocdids` tables) using temp-file bridge (DuckDB requires file paths, not bytes).
+- `ocdid_matcher.py` — `OCDidMatcher`: exact-joins local against master on `id` column, classifies as match/local-orphan/master-orphan, generates deterministic `oid1-` UUIDs, stores UUID-OCD-ID lookup in DuckDB + CSV backup. Master data is source of truth; local files cross-check for temporal drift.
+- `downloader.py` — `AsyncDownloader`: async HTTP client with bounded concurrency, ETag/Last-Modified caching, retry with exponential backoff, GitHub API response decoding (base64 content or download_url fallback).
+- `pipeline_models.py` — Pipeline-specific request/response models: `GeneratorReq`, `GeneratorResp`, `OCDidIngestResp` (with `uuid: str` for oid1- IDs and `ocdid: OCDidParsed`), `GeneratorStatus`.
+
+**Stage 2 — Division/Jurisdiction Generation** (fuzzy match, YAML output):
+
 - `generate_pipeline.py` — `GeneratePipeline` orchestrator: loads validation CSV via Polars, fuzzy-matches OCD IDs to research records (using rapidfuzz with 0.85 threshold), branches on 0/1/2+ matches, delegates to `DivGenerator` and `JurGenerator`. Tracks unmatched records in `NoMatch` quarantine for researcher review.
 - `generate_division.py` — `DivGenerator`: produces full Divisions from matched validation records or stub Divisions when no match exists. Maps Census fields (NAMELSAD, GEOID, STATEFP, LSAD, SLDUST, SLDLST, COUNTYFP) to the Division model.
 - `generate_jurisdiction.py` — `JurGenerator`: derives Jurisdictions from Divisions. Jurisdiction OCD ID schema: `ocd-jurisdiction/<division_id_without_prefix>/<type>`.
-- `downloader.py` — `AsyncDownloader`: async HTTP client with bounded concurrency, ETag/Last-Modified caching, retry with exponential backoff, GitHub API response decoding (base64 content or download_url fallback).
-- `orchestrator.py` — Fetches OCD ID CSVs from GitHub (master + per-state local files), merges with Polars.
 - `parsers.py` — CSV bytes to Polars DataFrame conversion utilities.
-- `main.py` — Entry point: downloads the country-us.csv from GitHub API, loads into DuckDB with quarantine for malformed rows.
 
 ### Utilities (`src/utils/`)
 
 - `ocdid.py` — `ocdid_parser()`: splits OCD ID strings into component dict (base, country, state, place, etc.). `generate_ocdids()`: generates state-level OCD IDs using i18naddress validation rules.
 - `place_name.py` — `namelsad_to_display_name()`: strips Census LSAD suffixes (city, town, village, borough, etc.) from NAMELSAD to get display names. Used heavily in fuzzy matching.
 - `deterministic_id.py` — `generate_id()`/`decode_id()`: creates decodable, uuid-like IDs with `oid1-` prefix. Encodes OCD ID + version into zlib-compressed, base32-encoded, hyphen-grouped tokens.
-- `state_lookup.py` — State abbreviation to FIPS code lookup from `src/state_lookup.json`.
+- `state_lookup.py` — State abbreviation to FIPS code lookup from `src/data/state_lookup.json`.
 
 ### Key Domain Concepts
 
