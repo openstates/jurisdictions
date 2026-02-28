@@ -1,4 +1,16 @@
-You are helping to build an ETL pipeline that will load data about local cities into a GitHub repository. The data will be stored in YAML files. The structure of the data is defined by Pydantic v2 models.
+You are helping to build an ETL pipeline that will load data about local cities
+into a GitHub repository. The data will be stored in YAML files. The structure
+of the data is defined by Pydantic v2 models.
+
+## Workflow 
+Many contributors may commit code to this open source repo. When beginning work,
+always follow these steps.
+- Check the Github repo for existing issues 
+- If an existing issue does not exist for the work you plan to undertake, create one.
+- If starting work on an existing issue, 
+  - checkout a branch referencing the issue
+  - assign the issue to your Github User 
+  - set the issue to "in progress" 
 
 ## Agent Permissions
 
