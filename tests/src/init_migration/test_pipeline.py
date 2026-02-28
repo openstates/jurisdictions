@@ -9,7 +9,8 @@ import pytest
 import yaml
 
 from src.init_migration.generate_pipeline import GeneratePipeline
-from src.init_migration.models import GeneratorReq, OCDidIngestResp, Status
+from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp, Status
+from src.models.ocdid import OCDidParsed
 from src.utils.ocdid import ocdid_parser
 from src.utils.state_lookup import load_state_code_lookup
 
@@ -124,10 +125,17 @@ def test_generate_pipeline_main_style_integration(tmp_path: Path) -> None:
 	async def run_all() -> list:
 		responses = []
 		for ocdid in division_ocdids:
+			parsed = ocdid_parser(ocdid)
 			req = GeneratorReq(
 				data=OCDidIngestResp(
-					uuid=uuid5(NAMESPACE_URL, ocdid),
-					ocdid=ocdid,
+					uuid=str(uuid5(NAMESPACE_URL, ocdid)),
+					ocdid=OCDidParsed(
+						raw_ocdid=ocdid,
+						country=parsed.get("country", "us"),
+						state=parsed.get("state"),
+						county=parsed.get("county"),
+						place=parsed.get("place"),
+					),
 					raw_record={},
 				),
 				validation_data_filepath=str(validation_csv),
