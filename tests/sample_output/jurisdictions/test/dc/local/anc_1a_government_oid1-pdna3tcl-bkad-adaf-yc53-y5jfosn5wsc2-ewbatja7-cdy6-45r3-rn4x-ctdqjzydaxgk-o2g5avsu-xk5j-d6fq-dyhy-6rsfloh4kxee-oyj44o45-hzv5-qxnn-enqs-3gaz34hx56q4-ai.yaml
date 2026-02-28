@@ -1,4 +1,5 @@
-id: "oid1-pdna3tcl-bkad-adaf-yc53-y5jfosn5wsc2-ewbatja7-cdy6-45r3-rn4x-ctdqjzydaxgk-o2g5avsu-xk5j-d6fq-dyhy-6rsfloh4kxee-oyj44o45-hzv5-qxnn-enqs-3gaz34hx56q4-ai"
+id: "7a2f1d8b-7c48-4a50-9b0a-b7b5c6d9e3a1"
+deterministic_id: "oid1-pdna3tcl-bkad-adaf-yc53-y5jfosn5wsc2-ewbatja7-cdy6-45r3-rn4x-ctdqjzydaxgk-o2g5avsu-xk5j-d6fq-dyhy-6rsfloh4kxee-oyj44o45-hzv5-qxnn-enqs-3gaz34hx56q4-ai"
 ocdid: "ocd-jurisdiction/country:us/district:dc/anc:1a/government"
 name: "ANC 1A Government"
 url: "https://oanc.dc.gov/anc-profile/anc-1a"
@@ -6,12 +7,31 @@ classification: "government"
 legislative_sessions: {}
 feature_flags: []
 term:
-  - duration: null
-    term_description: null
-    number_of_positions: null
-    term_limits: null
-    last_known_term_end_date: null
-accurate_asof: null
+  duration: 2
+  term_description: "Each member of an Advisory Neighborhood Commission serves a term of 2 years, beginning at noon on January 2 following the election (or the day after certification, whichever is later). ANC 1A is composed of Single Member District (SMD) commissioners (currently SMDs 1A01 through 1A10)."
+  number_of_positions: 10
+  term_limits: null
+  last_known_term_end_date: null
+accurate_asof: "2025-10-27T01:29:51Z"
 last_updated: "2025-10-27T01:29:51Z"
-sourcing: []
-metadata: {}
+sourcing:
+  - field: "url"
+    source_url: "https://oanc.dc.gov/anc-profile/anc-1a"
+    source_type: "human_researched"
+  - field: "term"
+    source_url: "https://code.dccouncil.gov/us/dc/council/code/sections/1-309.06"
+    source_type: "human_researched"
+  - field: "term.number_of_positions"
+    source_url: "https://openanc.org/map_2022/ancs/1A.html"
+    source_type: "human_researched"
+  - field: "metadata.urls"
+    source_url: "https://anc1a.org/"
+    source_type: "human_researched"
+metadata:
+  urls:
+    - url_type: "people"
+      url: "https://openanc.org/map_2022/ancs/1A.html"
+    - url_type: "meetings"
+      url: "https://oanc.dc.gov/anc-meetings"
+  official_website: "https://anc1a.org/"
+  mailing_address: "3400 11th Street NW, Suite #200, Washington, DC 20010"
