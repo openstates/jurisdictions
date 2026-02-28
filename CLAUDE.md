@@ -79,7 +79,7 @@ Multi-stage pipeline that processes OCD IDs into Division + Jurisdiction YAML pa
 
 ## Testing Conventions
 
-- Test files mirror source paths: `tests/src/init_migration/test_pipeline.py` tests `src/init_migration/generate_pipeline.py`.
+- Test files mirror source paths: `tests/src/init_migration/test_generate_pipeline.py` tests `src/init_migration/generate_pipeline.py`.
 - Async tests use `@pytest.mark.asyncio` with a custom runner in `conftest.py` (not pytest-asyncio).
 - HTTP mocking uses `respx` library.
 - Pytest markers: `integration`, `slow`, `asyncio` (configured in pyproject.toml with `--strict-markers`).

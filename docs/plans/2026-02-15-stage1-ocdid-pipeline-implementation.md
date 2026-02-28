@@ -99,7 +99,7 @@ git commit -m "chore: scaffold stage 1 — move state_lookup.json, add rich dep,
 - Modify: `src/init_migration/generate_pipeline.py`
 - Modify: `src/init_migration/generate_division.py`
 - Modify: `src/init_migration/generate_jurisdiction.py`
-- Modify: `tests/src/init_migration/test_pipeline.py`
+- Modify: `tests/src/init_migration/test_generate_pipeline.py`
 - Modify: `tests/src/init_migration/test_generate_division.py`
 - Test: `tests/src/init_migration/test_pipeline_models.py` (new)
 
@@ -231,7 +231,7 @@ In each of these files, replace `from src.init_migration.models import` with
 - `src/init_migration/generate_division.py:12`
 - `src/init_migration/generate_jurisdiction.py` (if it imports from models)
 - `tests/src/init_migration/test_generate_division.py:6`
-- `tests/src/init_migration/test_pipeline.py` (check for imports)
+- `tests/src/init_migration/test_generate_pipeline.py` (check for imports)
 
 **Step 5: Run tests to verify they pass**
 
