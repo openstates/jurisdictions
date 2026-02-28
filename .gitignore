@@ -175,3 +175,6 @@ logs/
 # Downloader log (legacy location)
 src/init_migration/downloader.log
 
+# VSCode settings
+.vscode/
+
