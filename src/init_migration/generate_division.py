@@ -19,6 +19,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 import logging
 import yaml
+import re
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -194,6 +195,7 @@ class DivGenerator:
         """
         # Remove 'ocd-division/' prefix
         division_part = division_ocdid.replace("ocd-division/", "")
+        division_part = re.sub(r"/council_district:[^/]+", "", division_part)
         # TODO: Implement proper jurisdiction type determination
         jurisdiction_type = "government"  # Placeholder
         return f"ocd-jurisdiction/{division_part}/{jurisdiction_type}"

@@ -14,6 +14,7 @@ Responsibilities:
 
 import logging
 from pathlib import Path
+import re
 from src.init_migration.pipeline_models import GeneratorReq, GeneratorResp, GeneratorStatus, Status
 from src.init_migration.generate_division import DivGenerator
 from src.init_migration.generate_jurisdiction import JurGenerator
@@ -185,6 +186,16 @@ class GeneratePipeline:
             state = parsed.get("state")
             place = parsed.get("place")
 
+            if not state:
+                state = parsed.get("district")
+            if not place:
+                anc = parsed.get("anc")
+                council_district = parsed.get("council_district")
+                if anc and council_district:
+                    place = f"anc {anc} district {council_district}"
+                elif anc:
+                    place = f"anc {anc}"
+
             if not state or not place:
                 logger.warning(f"Missing state or place in OCDid: {ocdid}")
                 return pl.DataFrame()
@@ -195,7 +206,11 @@ class GeneratePipeline:
             # Look up state FIPS code
             from src.utils.state_lookup import load_state_code_lookup
             state_lookup = load_state_code_lookup()
-            state_fips_list = [item.get("statefps") for item in state_lookup if item.get("stateusps", "").upper() == state_upper]
+            state_fips_list = [
+                item.get("statefps") or item.get("statefp")
+                for item in state_lookup
+                if (item.get("stateusps") or item.get("stusps") or "").upper() == state_upper
+            ]
 
             if not state_fips_list:
                 logger.warning(f"State code not found: {state_upper}")
@@ -204,7 +219,9 @@ class GeneratePipeline:
             state_fips = str(state_fips_list[0]).zfill(2)
 
             # Filter validation data by state
-            state_df = self.validation_df.filter(pl.col("STATEFP").cast(pl.Utf8) == state_fips)
+            state_df = self.validation_df.filter(
+                pl.col("STATEFP").cast(pl.Utf8).str.zfill(2) == state_fips
+            )
 
             if state_df.is_empty():
                 logger.debug(f"No validation records found for state: {state_upper} (FIPS: {state_fips})")
@@ -376,6 +393,7 @@ class GeneratePipeline:
         """
         # Remove 'ocd-division/' prefix and add jurisdiction type
         division_part = division_ocdid.replace("ocd-division/", "")
+        division_part = re.sub(r"/council_district:[^/]+", "", division_part)
         # TODO: Implement proper jurisdiction type determination
         jurisdiction_type = "government"  # Placeholder
         return f"ocd-jurisdiction/{division_part}/{jurisdiction_type}"

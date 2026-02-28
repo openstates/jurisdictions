@@ -18,6 +18,8 @@ from pathlib import Path
 from datetime import datetime, timezone
 import logging
 import yaml
+import re
+from urllib.parse import quote
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -86,7 +88,9 @@ class JurGenerator:
                 sourcing=[{
                     "field": ["ocdid", "name", "classification"],
                     "source_name": "derived_from_division",
-                    "source_url": {"division": division.ocdid},
+                    "source_url": {
+                        "division": f"https://opencivicdata.org/division/{quote(division.ocdid, safe='')}"
+                    },
                     "source_type": SourceType.HUMAN,
                     "source_description": "Jurisdiction derived from Division object"
                 }],
@@ -113,6 +117,7 @@ class JurGenerator:
         """
         # Remove 'ocd-division/' prefix
         division_part = division_ocdid.replace("ocd-division/", "")
+        division_part = re.sub(r"/council_district:[^/]+", "", division_part)
 
         # Determine jurisdiction type (placeholder)
         jurisdiction_type = "government"  # TODO: Implement proper type determination
