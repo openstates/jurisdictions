@@ -14,6 +14,8 @@ Use this order of precedence for agent behavior:
 4. `ai_tools/prompts/**/*.prompt.md` (invocation templates)
 
 If there is any conflict, follow `AGENTS.md`.
+Always include `=ai_tools/system/contributor-workflows.instruction.md` in
+context when instructed to make code changes.
 
 ## Canonical Instruction Index
 Treat this file as a policy index. Detailed operational guidance lives in:

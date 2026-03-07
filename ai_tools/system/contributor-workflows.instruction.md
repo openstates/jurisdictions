@@ -17,11 +17,14 @@ Apply this instruction when preparing or reviewing contributor-facing changes.
 
 ## Standard Flow
 1. Link work to an issue (create one if missing).
-2. For non-trivial changes, create design and implementation planning artifacts.
-3. Implement in small, reviewable tasks.
-4. Run targeted validation and required checks before PR.
-5. Update contributor-facing documentation with behavior/process changes.
-6. Code changes should be committed on a branch. Never commit changes directly to
+2. Create an issue-linked branch before making code changes.
+3. Use a branch name that includes the issue number and short summary
+   (for example `issue-28-replace-loguru-with-logging-module`).
+4. For non-trivial changes, create design and implementation planning artifacts.
+5. Implement in small, reviewable tasks.
+6. Run targeted validation and required checks before PR.
+7. Update contributor-facing documentation with behavior/process changes.
+8. Code changes should be committed on a branch. Never commit changes directly to
    protected branches (i.e. "main").
 
 ## Contributor-Facing Documentation Requirements

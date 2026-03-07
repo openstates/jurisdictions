@@ -8,7 +8,8 @@ local governments.
 ## Before You Start
 1. Check for an existing issue related to your change.
 2. If no issue exists, open one describing the problem and proposed approach.
-3. Create a feature branch for your work.
+3. Follow the AGENTS.md and ai_tools/system/contributor-workflows.instruction.md
+   when making code changes.
 
 ## Local Setup
 See `README.md` for full setup instructions. Quick commands:

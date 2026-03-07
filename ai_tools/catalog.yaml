@@ -23,7 +23,7 @@ assets:
     status: active
     owner: maintainers
     path: ai_tools/system/contributor-workflows.instruction.md
-    tags: [system, contributors, workflow]
+    tags: [system, contributors, workflow, branching]
   - id: feature-delivery-task
     type: instruction
     status: active
