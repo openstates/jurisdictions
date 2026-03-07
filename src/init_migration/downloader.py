@@ -3,6 +3,7 @@ import asyncio
 import base64
 import importlib.util
 import json
+import logging
 import os
 import random
 import time
@@ -14,7 +15,6 @@ from urllib.parse import urlparse
 from typing import Literal as _LiteralForAlias
 
 import httpx
-from loguru import logger
 
 # Import custom errors from parent package
 from src.errors import (
@@ -24,28 +24,7 @@ from src.errors import (
     CacheError,
 )
 
-# Provide an optional helper to configure logging externally (no import-time side effects)
-
-def configure_downloader_logging(
-    *,
-    sink: str | os.PathLike = "downloader.log",
-    level: str = "DEBUG",
-    rotation: str = "1 MB",
-    retention: int | str = 10,
-) -> None:
-    """Optionally configure Loguru logging for the downloader module.
-
-    This avoids adding handlers at import-time. Call from application code if desired.
-    """
-    logger.add(
-        str(sink),
-        rotation=rotation,
-        retention=retention,
-        enqueue=True,
-        backtrace=True,
-        diagnose=True,
-        level=level,
-    )
+logger = logging.getLogger(__name__)
 
 
 # -----------------------------
@@ -156,7 +135,11 @@ class AsyncDownloader:
                 cache_content = self.cfg.etag_cache_path.read_text("utf-8")
                 self._etag_cache = json.loads(cache_content)
                 logger.debug(
-                    f"Loaded ETag cache from {self.cfg.etag_cache_path} ({len(self._etag_cache)} entries)"
+                    "Loaded ETag cache",
+                    extra={
+                        "etag_cache_path": str(self.cfg.etag_cache_path),
+                        "entry_count": len(self._etag_cache),
+                    },
                 )
             except json.JSONDecodeError as e:
                 # Corrupted cache file - this is a problem we should raise
@@ -167,8 +150,11 @@ class AsyncDownloader:
             except (OSError, IOError) as e:
                 # File read error - warn but continue with empty cache
                 logger.warning(
-                    f"Failed to read ETag cache from {self.cfg.etag_cache_path}: {e}. "
-                    "Starting with empty cache."
+                    "Failed to read ETag cache; starting with empty cache",
+                    extra={
+                        "etag_cache_path": str(self.cfg.etag_cache_path),
+                        "error": str(e),
+                    },
                 )
                 self._etag_cache = {}
         return self
@@ -190,20 +176,30 @@ class AsyncDownloader:
                 tmp_path.write_text(cache_json, encoding="utf-8")
                 os.replace(tmp_path, self.cfg.etag_cache_path)
                 logger.debug(
-                    f"Saved ETag cache to {self.cfg.etag_cache_path} ({len(self._etag_cache)} entries)"
+                    "Saved ETag cache",
+                    extra={
+                        "etag_cache_path": str(self.cfg.etag_cache_path),
+                        "entry_count": len(self._etag_cache),
+                    },
                 )
             except (OSError, IOError) as e:
                 # File write error during cleanup
                 # Log as error but don't raise - we're in cleanup phase
                 logger.error(
-                    f"Failed to save ETag cache to {self.cfg.etag_cache_path}: {e}. "
-                    "Cache will not be persisted for next run."
+                    "Failed to save ETag cache; cache will not persist",
+                    extra={
+                        "etag_cache_path": str(self.cfg.etag_cache_path),
+                        "error": str(e),
+                    },
                 )
             except Exception as e:
                 # Unexpected error (e.g., serialization issue)
                 logger.error(
-                    f"Unexpected error while saving ETag cache: {type(e).__name__}: {e}. "
-                    "Cache will not be persisted for next run."
+                    "Unexpected error while saving ETag cache; cache will not persist",
+                    extra={
+                        "error_type": type(e).__name__,
+                        "error": str(e),
+                    },
                 )
 
     async def fetch_bytes(self, url: str, *, force: bool = False) -> Optional[bytes]:
@@ -246,7 +242,10 @@ class AsyncDownloader:
 
                 # Handle HTTP 304 response
                 if resp.status_code == 304:
-                    logger.info(f"HTTP 304 for {url}; no new content to download.")
+                    logger.info(
+                        "HTTP 304; no new content to download",
+                        extra={"url": url},
+                    )
                     return None  # Gracefully return None for 304 response
 
                 resp.raise_for_status()
@@ -272,7 +271,10 @@ class AsyncDownloader:
 
                 # Decode GitHub API responses or return raw bytes
                 content = await self._decode_github_response(resp, url)
-                logger.success(f"Downloaded {url} ({len(content)} bytes)")
+                logger.info(
+                    "Downloaded content",
+                    extra={"url": url, "bytes_downloaded": len(content)},
+                )
                 return content
 
             except (
@@ -283,13 +285,25 @@ class AsyncDownloader:
             ) as e:
                 if attempt >= self.cfg.max_retries:
                     logger.error(
-                        f"Network error for {url} after {attempt + 1} attempt(s); giving up: {type(e).__name__}: {e}"
+                        "Network error after retries; giving up",
+                        extra={
+                            "url": url,
+                            "attempt": attempt + 1,
+                            "error_type": type(e).__name__,
+                            "error": str(e),
+                        },
                     )
                     raise APIRetryError(
                         f"Failed to fetch {url} after {self.cfg.max_retries + 1} attempts: {type(e).__name__}: {e}"
                     ) from e
                 logger.warning(
-                    f"Transient network error for {url} on attempt {attempt + 1}; will retry: {type(e).__name__}: {e}"
+                    "Transient network error; retrying",
+                    extra={
+                        "url": url,
+                        "attempt": attempt + 1,
+                        "error_type": type(e).__name__,
+                        "error": str(e),
+                    },
                 )
                 await asyncio.sleep(backoff + random.random() * 0.25)
                 backoff = min(float(self.cfg.max_backoff), backoff * 2)
@@ -329,20 +343,34 @@ class AsyncDownloader:
 
                 if retry and attempt < self.cfg.max_retries:
                     logger.warning(
-                        f"HTTP {status} for {url} on attempt {attempt + 1}; retrying after {delay:.2f}s"
+                        "Retryable HTTP error; retrying",
+                        extra={
+                            "url": url,
+                            "status_code": status,
+                            "attempt": attempt + 1,
+                            "retry_delay_seconds": round(delay, 2),
+                        },
                     )
                     await asyncio.sleep(delay + random.random() * 0.25)
                     backoff = min(float(self.cfg.max_backoff), backoff * 2)
                     continue
                 elif retry:
                     logger.error(
-                        f"HTTP {status} for {url} after {attempt + 1} attempt(s); giving up"
+                        "Retryable HTTP error after retries; giving up",
+                        extra={
+                            "url": url,
+                            "status_code": status,
+                            "attempt": attempt + 1,
+                        },
                     )
                     raise APIRetryError(
                         f"HTTP {status} error for {url} after {self.cfg.max_retries + 1} attempts"
                     ) from e
                 else:
-                    logger.error(f"HTTP {status} for {url}; not retryable: {e}")
+                    logger.error(
+                        "Non-retryable HTTP error",
+                        extra={"url": url, "status_code": status, "error": str(e)},
+                    )
                     raise
 
         # This line should never be reached, but satisfies type checker
@@ -488,6 +516,9 @@ class AsyncDownloader:
                 return dl_resp.content
 
         except (ValueError, json.JSONDecodeError) as e:
-            logger.debug(f"JSON decode failed for {url}, using raw content: {e}")
+            logger.debug(
+                "JSON decode failed; using raw content",
+                extra={"url": url, "error": str(e)},
+            )
 
         return resp.content

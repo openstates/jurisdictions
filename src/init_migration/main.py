@@ -14,16 +14,19 @@ Usage:
 
 import argparse
 import asyncio
+import logging
+import logging.handlers
 import sys
 from pathlib import Path
 
-from loguru import logger
 from rich.console import Console
 from rich.table import Table
 
 from src.utils.state_lookup import load_state_code_lookup
 from src.init_migration.download_manager import DownloadManager
 from src.init_migration.ocdid_matcher import OCDidMatcher, MatchResults
+
+logger = logging.getLogger(__name__)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -70,18 +73,34 @@ def resolve_states(state_arg: str | None) -> list[str]:
 
 
 def configure_logging(log_dir: str) -> None:
-    """Configure loguru to write to the specified log directory."""
+    """Configure stdlib logging for console and rotating file output."""
     log_path = Path(log_dir)
     log_path.mkdir(parents=True, exist_ok=True)
 
-    logger.remove()  # Remove default stderr handler
-    logger.add(sys.stderr, level="INFO")  # Console: INFO and above
-    logger.add(
-        str(log_path / "pipeline_{time}.log"),
-        rotation="10 MB",
-        retention=5,
-        level="DEBUG",
+    # Reset handlers so repeated invocations do not duplicate log output.
+    root = logging.getLogger()
+    root.handlers.clear()
+    root.setLevel(logging.DEBUG)
+
+    formatter = logging.Formatter(
+        "%(asctime)s %(levelname)s %(name)s %(message)s"
     )
+
+    console_handler = logging.StreamHandler(sys.stderr)
+    console_handler.setLevel(logging.INFO)
+    console_handler.setFormatter(formatter)
+
+    file_handler = logging.handlers.RotatingFileHandler(
+        log_path / "pipeline.log",
+        maxBytes=10 * 1024 * 1024,
+        backupCount=5,
+        encoding="utf-8",
+    )
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
+
+    root.addHandler(console_handler)
+    root.addHandler(file_handler)
 
 
 def print_summary(
@@ -116,7 +135,7 @@ async def run_pipeline(args: argparse.Namespace) -> MatchResults:
     console = Console()
     states = resolve_states(args.state)
 
-    logger.info(f"Starting pipeline for {len(states)} state(s)")
+    logger.info("Starting pipeline", extra={"state_count": len(states)})
     console.print(f"Processing {len(states)} state(s): {', '.join(states)}")
 
     # Phase 1: Download and load

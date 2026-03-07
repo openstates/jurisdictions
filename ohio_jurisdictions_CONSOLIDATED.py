@@ -1,5 +1,12 @@
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Literal
+from typing import Optional, Literal
+
+from src.models.jurisdiction import (
+    ClassificationEnum,
+    Jurisdiction,
+    SessionDetail,
+    TermDetail,
+)
 
 # --- Assumed project imports ---
 # from .sourcing import SourceObj

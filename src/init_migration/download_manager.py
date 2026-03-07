@@ -8,11 +8,11 @@ Responsibilities:
 """
 
 import asyncio
+import logging
 import tempfile
 from pathlib import Path
 
 import duckdb
-from loguru import logger
 from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn, TimeElapsedColumn
 
 from src.init_migration.downloader import AsyncDownloader, DownloaderConfig
@@ -22,6 +22,8 @@ MASTER_PATH = "country-us.csv"
 LOCAL_TEMPLATE = "country-us/state-{state}-local_gov.csv"
 
 DEFAULT_DB_PATH = "data/ocdid_pipeline.duckdb"
+
+logger = logging.getLogger(__name__)
 
 
 class DownloadManager:
@@ -77,7 +79,10 @@ class DownloadManager:
                 "SELECT * FROM read_csv_auto(?csv_path?, ignore_errors=true)"
             )
             count = conn.execute("SELECT COUNT(*) FROM master_ocdids").fetchone()[0]
-            logger.info(f"Loaded {count} rows into master_ocdids")
+            logger.info(
+                "Loaded rows into master_ocdids",
+                extra={"row_count": count},
+            )
             return count
         finally:
             conn.close()
@@ -122,7 +127,10 @@ class DownloadManager:
             count = conn.execute(
                 "SELECT COUNT(*) FROM local_ocdids WHERE state = ?", [state]
             ).fetchone()[0]
-            logger.info(f"Loaded {count} rows for state '{state}' into local_ocdids")
+            logger.info(
+                "Loaded rows into local_ocdids",
+                extra={"row_count": count, "state": state},
+            )
             return count
         finally:
             conn.close()
@@ -184,8 +192,8 @@ class DownloadManager:
                         stats["files_cached"] += 1
                     else:
                         stats["files_downloaded"] += 1
-                except Exception as e:
-                    logger.error(f"Failed to download master CSV: {e}")
+                except Exception:
+                    logger.exception("Failed to download master CSV")
                     stats["files_failed"] += 1
                 progress.advance(download_task)
 
@@ -197,13 +205,19 @@ class DownloadManager:
                     try:
                         data = await downloader.fetch_bytes(url, force=force)
                         if data is None:
-                            logger.info(f"Local CSV for {state} unchanged (cache hit)")
+                            logger.info(
+                                "Local CSV unchanged (cache hit)",
+                                extra={"state": state},
+                            )
                             stats["files_cached"] += 1
                         else:
                             stats["files_downloaded"] += 1
                         local_results[state] = data
-                    except Exception as e:
-                        logger.warning(f"Failed to download local CSV for {state}: {e}")
+                    except Exception:
+                        logger.exception(
+                            "Failed to download local CSV",
+                            extra={"state": state},
+                        )
                         stats["files_failed"] += 1
                         local_results[state] = None
                     progress.advance(download_task)

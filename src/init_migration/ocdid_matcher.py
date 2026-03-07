@@ -11,10 +11,10 @@ Responsibilities:
 """
 
 from dataclasses import dataclass, field
+import logging
 from pathlib import Path
 
 import duckdb
-from loguru import logger
 
 from src.init_migration.pipeline_models import OCDidIngestResp
 from src.models.ocdid import OCDidParsed
@@ -23,6 +23,8 @@ from src.utils.deterministic_id import generate_id
 
 DEFAULT_DB_PATH = "data/ocdid_pipeline.duckdb"
 DEFAULT_CSV_BACKUP = "data/ocdid_uuid_lookup.csv"
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -105,7 +107,10 @@ class OCDidMatcher:
                 )
                 results.matched.append(resp)
 
-            logger.info(f"Matched {len(results.matched)} records")
+            logger.info(
+                "Matched records",
+                extra={"matched_count": len(results.matched)},
+            )
 
             # --- Local orphans: left anti-join ---
             local_orphan_rows = conn.execute(f"""
@@ -121,7 +126,10 @@ class OCDidMatcher:
                 dict(zip(orphan_cols, row)) for row in local_orphan_rows
             ]
             if results.local_orphans:
-                logger.warning(f"Found {len(results.local_orphans)} local orphan(s)")
+                logger.warning(
+                    "Found local orphans",
+                    extra={"local_orphan_count": len(results.local_orphans)},
+                )
 
             # --- Master orphans: right anti-join (for selected states) ---
             if self.states:
@@ -148,7 +156,8 @@ class OCDidMatcher:
             ]
             if results.master_orphans:
                 logger.warning(
-                    f"Found {len(results.master_orphans)} master orphan(s)"
+                    "Found master orphans",
+                    extra={"master_orphan_count": len(results.master_orphans)},
                 )
 
             # --- Store lookup table ---
@@ -199,7 +208,10 @@ class OCDidMatcher:
             conn.execute(
                 f"COPY ocdid_uuid_lookup TO '{self.csv_backup_path}' (HEADER, DELIMITER ',')"
             )
-            logger.info(f"CSV backup written to {self.csv_backup_path}")
+            logger.info(
+                "CSV backup written",
+                extra={"csv_backup_path": self.csv_backup_path},
+            )
 
     def _store_orphan_tables(
         self, conn: duckdb.DuckDBPyConnection, results: MatchResults
