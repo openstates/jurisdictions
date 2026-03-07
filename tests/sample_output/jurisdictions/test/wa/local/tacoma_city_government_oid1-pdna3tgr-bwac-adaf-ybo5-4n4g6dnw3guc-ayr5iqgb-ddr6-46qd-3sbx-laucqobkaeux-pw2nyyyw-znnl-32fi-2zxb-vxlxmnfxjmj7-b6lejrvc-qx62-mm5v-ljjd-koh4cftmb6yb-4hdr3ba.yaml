@@ -1,17 +1,40 @@
-id: "oid1-pdna3tgr-bwac-adaf-ybo5-4n4g6dnw3guc-ayr5iqgb-ddr6-46qd-3sbx-laucqobkaeux-pw2nyyyw-znnl-32fi-2zxb-vxlxmnfxjmj7-b6lejrvc-qx62-mm5v-ljjd-koh4cftmb6yb-4hdr3ba"
+id: "8f0c6a2e-6b7c-4b8d-9e31-2d59f0f4c1aa"
+deterministic_id: "oid1-pdna3tgr-bwac-adaf-ybo5-4n4g6dnw3guc-ayr5iqgb-ddr6-46qd-3sbx-laucqobkaeux-pw2nyyyw-znnl-32fi-2zxb-vxlxmnfxjmj7-b6lejrvc-qx62-mm5v-ljjd-koh4cftmb6yb-4hdr3ba"
 ocdid: "ocd-jurisdiction/country:us/state:wa/place:tacoma/government"
 name: "Tacoma City Government"
 url: "https://tacoma.gov/"
 classification: "government"
+
 legislative_sessions: {}
+
 feature_flags: []
+
 term:
-  - duration: null
-    term_description: null
-    number_of_positions: null
-    term_limits: null
-    last_known_term_end_date: null
-accurate_asof: null
-last_updated: "2025-10-27T01:29:51Z"
-sourcing: []
-metadata: {}
+  duration: 4
+  term_description: "The City Council consists of the Mayor and eight Council Members elected to four-year terms. Five positions are elected from council districts and three positions are elected at large."
+  number_of_positions: 9
+  term_limits: null
+  source_url: "https://cms.tacoma.gov/cityclerk/Files/Documents/CityCharter.pdf"
+  last_known_term_end_date: null
+accurate_asof: "2026-03-07T00:00:00Z"
+last_updated: "2026-03-07T00:00:00Z"
+sourcing:
+  - field: "url"
+    source_url: "https://tacoma.gov/"
+    source_type: "human_researched"
+  - field: "term"
+    source_url: "https://cms.tacoma.gov/cityclerk/Files/Documents/CityCharter.pdf"
+    source_type: "human_researched"
+  - field: "term.number_of_positions"
+    source_url: "https://tacoma.gov/government/departments/city-council/"
+    source_type: "human_researched"
+  - field: "metadata.urls"
+    source_url: "https://tacoma.gov/government/departments/city-council/"
+    source_type: "human_researched"
+
+metadata:
+  urls:
+    - url_type: "people"
+      url: "https://tacoma.gov/government/departments/city-council/"
+    - url_type: "meetings"
+      url: "https://cityoftacoma.legistar.com/Calendar.aspx"
