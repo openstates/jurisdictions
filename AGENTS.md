@@ -86,7 +86,6 @@ Do not add new AI tooling content under proprietary IDE code paths such as
 3. If using an existing issue, use an issue-linked branch and keep status updated.
 
 ## References
-- `CLAUDE.md`
 - `docs/init_research_pipeline.md`
 - `docs/contributor-workflows.md`
 - `ai_tools/system/pre-commit-checks.instruction.md`
