@@ -13,8 +13,8 @@ Use this instruction when implementing non-trivial repository changes.
 
 ## Workflow
 1. Confirm or create the linked issue.
-2. Write a design doc in `docs/plans/`.
-3. Write an implementation plan in `docs/plans/`.
+2. Write a design doc in `ai_tools/planning/`.
+3. Write an implementation plan in `ai_tools/planning/`.
 4. Implement in small, testable tasks.
 5. Run targeted tests and lint checks.
 6. Document outcomes and follow-ups.

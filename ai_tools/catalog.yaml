@@ -1,5 +1,11 @@
 version: 1
 assets:
+  - id: agent-permissions
+    type: instruction
+    status: draft
+    owner: maintainers
+    path: ai_tools/system/agent-permissions.instruction.md
+    tags: [system, safety, permissions]
   - id: repo-agent-system
     type: instruction
     status: active

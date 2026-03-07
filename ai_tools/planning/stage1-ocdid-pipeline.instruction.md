@@ -21,9 +21,9 @@ Stage 1 should ingest OCD division data, reconcile local and national records,
 and produce stable machine-readable outputs for downstream pipeline stages.
 
 ## Authoritative Inputs
-- `docs/plans/2026-02-13-stage1-ocdid-pipeline-design.md`
-- `docs/plans/2026-02-15-stage1-ocdid-pipeline-implementation.md`
-- `docs/plans/2026-02-15-stage1-verification-analysis.md`
+- `ai_tools/planning/stage1-ocdid-pipeline-detailed-plans/2026-02-13-stage1-ocdid-pipeline-design.md`
+- `ai_tools/planning/stage1-ocdid-pipeline-detailed-plans/2026-02-15-stage1-ocdid-pipeline-implementation.md`
+- `ai_tools/planning/stage1-ocdid-pipeline-detailed-plans/2026-02-15-stage1-verification-analysis.md`
 
 ## Pipeline Module References
 - Stage 1 ingestion pipeline: `src/init_migration/main.py`,
@@ -47,7 +47,7 @@ and produce stable machine-readable outputs for downstream pipeline stages.
 4. Keep Stage 1 outputs consumable by Stage 2 without ad hoc transformations.
 
 ## Implementation Workflow
-1. Create or update a design doc entry in `docs/plans/` for non-trivial changes.
+1. Create or update a design doc entry in `ai_tools/planning/` for non-trivial changes.
 2. Break implementation into scoped tasks with validation gates.
 3. Apply changes in this order when possible:
    - interfaces and models

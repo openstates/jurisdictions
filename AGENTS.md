@@ -1,40 +1,36 @@
 # Overview
-`jurisdictions` is an open source repository that generates and Division and Jurisdiction YAML for US local governments.
+`jurisdictions` is an open source repository that generates and maintains Division and Jurisdiction YAML for US local governments.
 
 Primary goals:
 1. Keep model contracts stable and valid.
 2. Make contributor workflows predictable.
 3. Make agentic workflows discoverable, repeatable, and safe.
 
-
-## Instruction Model and Precedence
+## Instruction Precedence
 Use this order of precedence for agent behavior:
 1. `AGENTS.md` (authoritative repo policy)
-2. `ai_tools/system/*.instruction.md` (always-on reusable system guidance)
-3. `ai_tools/tasks/*.instruction.md` (task/workflow-specific instructions)
+2. `ai_tools/system/*.instruction.md` (always-on reusable guidance)
+3. `ai_tools/tasks/*.instruction.md` (task/workflow-specific guidance)
 4. `ai_tools/prompts/**/*.prompt.md` (invocation templates)
 
 If there is any conflict, follow `AGENTS.md`.
 
-## AI Tooling Canonical Paths
-- Directory conventions and usage: `ai_tools/README.md`
-- System (always-on): `ai_tools/system/repo-agent-system.instruction.md`
-- System (commit checks): `ai_tools/system/pre-commit-checks.instruction.md`
-- Task guides: `ai_tools/tasks/`
-- Prompt library: `ai_tools/prompts/`
-- Planning instructions: `ai_tools/planning/`
-- Skills/examples: `ai_tools/skills/`
+## Canonical Instruction Index
+Treat this file as a policy index. Detailed operational guidance lives in:
+- Repository execution baseline: `ai_tools/system/repo-agent-system.instruction.md`
+- Safety and approval boundaries: `ai_tools/system/agent-permissions.instruction.md`
+- Validation checklist: `ai_tools/system/pre-commit-checks.instruction.md`
+- Contributor process: `ai_tools/system/contributor-workflows.instruction.md`
+- Feature implementation workflow: `ai_tools/tasks/feature-delivery.instruction.md`
+- Planning guides: `ai_tools/planning/`
+- Prompt templates: `ai_tools/prompts/`
 - Asset index: `ai_tools/catalog.yaml`
 
-## Task Instruction Routing (Required)
-- Before implementation, review `ai_tools/catalog.yaml` and load relevant task guides and planning instructions into context.
-- Selection rules:
-  - If a direct task guide match exists, load it first.
-  - If multiple assets match, choose the closest fit and state assumptions (or ask one focused clarifying question).
-  - If request maps to prompt-driven planning/review workflows, load the relevant prompt from `ai_tools/prompts/`.
-
-Do not add new AI tooling content under proprietary IDE code paths such as
-`.github/prompts`, `.vscode`, etc.
+## Required Instruction Routing
+- Before implementation, review `ai_tools/catalog.yaml` and load relevant task/planning assets.
+- If a direct task guide exists, use it first.
+- If multiple assets match, choose the closest fit and state assumptions (or ask one focused clarifying question).
+- If a request maps to prompt-driven planning/review, load the relevant prompt from `ai_tools/prompts/`.
 
 ## Repository Scope
 - Data contracts: `src/models/division.py`, `src/models/jurisdiction.py`, `src/models/ocdid.py`, `src/models/source.py`
@@ -55,7 +51,7 @@ Do not add new AI tooling content under proprietary IDE code paths such as
 - Record breaking changes and migrations clearly in `CHANGELOG.md`.
 
 ## Git Safety and Change Control
-- Do not perform write git operations without explicit user authorization.
+- Do not run any remote push command (for example, `git push`, `git push --force`, or `git push --tags`) unless the user has explicitly authorized that push action.
 - Read-only git operations are allowed.
 - Never use destructive commands unless explicitly requested.
 
@@ -108,4 +104,7 @@ Do not add new AI tooling content under proprietary IDE code paths such as
 ## Maintenance
 If any instruction appears inaccurate or outdated, flag it and propose a specific update.
 - Whenever instructions are added or changed under `ai_tools/`, update `ai_tools/catalog.yaml` in the same change.
-- Treat catalog and documentation updates as part of the pre-commit checklist (including `CONTRIBUTING.md` when contributor workflow guidance changes).
+- Treat catalog and documentation updates as part of the pre-commit checklist
+  (including `CONTRIBUTING.md` when contributor workflow guidance changes and
+  README.md changes when project requirements or installation instructions
+  should change.)

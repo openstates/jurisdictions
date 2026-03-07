@@ -2,9 +2,8 @@
 
 This directory stores feature-specific planning instructions and references.
 
+Use these assets for non-trivial implementation work that needs design context,
+implementation sequencing, or explicit verification gates.
 
-- Stage 2 generation pipeline: `src/init_migration/generate_pipeline.py`, `src/init_migration/generate_division.py`, `src/init_migration/generate_jurisdiction.py`
+Planning docs may be removed when a feature is fully implemented with maintainer permission.
 
-## Current Planning Instructions
-- `stage1-ocdid-pipeline.instruction.md`
-- `stage2-generation-pipeline.instruction.md`

@@ -26,7 +26,7 @@ Apply this instruction when preparing or reviewing contributor-facing changes.
 
 ## Contributor-Facing Documentation Requirements
 1. Keep `CONTRIBUTING.md` current when process expectations change.
-2. Keep `AGENTS.md` and `ai_tools/system/*.md` guidance consistent.
+2. Keep `AGENTS.md` and `ai_tools/system/*.instruction.md` guidance consistent.
 3. Keep `ai_tools/catalog.yaml` synchronized with instruction/prompt/skill additions.
 4. Include clear references to runbooks/checklists for verification.
 
