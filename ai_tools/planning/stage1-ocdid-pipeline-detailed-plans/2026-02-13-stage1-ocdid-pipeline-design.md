@@ -185,18 +185,6 @@ class OCDidParsed(BaseModel):
     raw_ocdid: str
 ```
 
-## Logging
-
-- Standardize on **loguru** for all new and modified code.
-- Log destination: `logs/` at project root (gitignored), overridable via
-  `--log-dir` CLI flag.
-- Log levels:
-  - INFO: download starts/completions, ETag cache hits, match counts, summary
-    stats
-  - WARNING: orphan records detected, download retries
-  - ERROR: download failures, DuckDB errors
-  - DEBUG: per-record matching details, HTTP headers
-
 ## Progress Display (rich)
 
 Three phase-level progress bars (up to 58 items for download/load — 1 master +
@@ -241,7 +229,7 @@ logs/                           ← new: log directory (gitignored)
 ## Dependencies
 
 Current `pyproject.toml` already includes: `duckdb`, `httpx`, `polars`,
-`pydantic`, `loguru`, `rapidfuzz`. New dependency needed:
+`pydantic`, `rapidfuzz`. New dependency needed:
 
 - `rich` — progress bars and terminal display
 

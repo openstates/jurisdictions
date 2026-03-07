@@ -6,9 +6,9 @@
 
 **Architecture:** `main.py` orchestrator calls `DownloadManager` (async fetch + DuckDB load) then `OCDidMatcher` (join + UUID generation). `AsyncDownloader` is cleaned up as a pure HTTP library. Rich progress bars for all three phases.
 
-**Tech Stack:** Python 3.12+, DuckDB (persistent), httpx (async HTTP), loguru (logging), rich (progress), pydantic v2 (models), deterministic_id.py (UUIDs)
+**Tech Stack:** Python 3.12+, DuckDB (persistent), httpx (async HTTP), rich (progress), pydantic v2 (models), deterministic_id.py (UUIDs)
 
-**Design doc:** `docs/plans/2026-02-13-stage1-ocdid-pipeline-design.md`
+**Design doc:** `ai_tools/planning/stage1-ocdid-pipeline-detailed-plans/2026-02-13-stage1-ocdid-pipeline-design.md`
 
 ---
 
@@ -461,7 +461,9 @@ Responsibilities:
 """
 
 import duckdb
-from loguru import logger
+import logging
+
+logger = logging.getLogger(__name__)
 
 RAW_BASE = "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers"
 MASTER_PATH = "country-us.csv"
@@ -926,8 +928,10 @@ Responsibilities:
 
 from dataclasses import dataclass, field
 import duckdb
-from loguru import logger
+import logging
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 from src.init_migration.pipeline_models import OCDidIngestResp
 from src.models.ocdid import OCDidParsed
@@ -1233,16 +1237,18 @@ Usage:
 
 import argparse
 import asyncio
+import logging
 import sys
 from pathlib import Path
 
-from loguru import logger
 from rich.console import Console
 from rich.table import Table
 
 from src.utils.state_lookup import load_state_code_lookup
 from src.init_migration.download_manager import DownloadManager
 from src.init_migration.ocdid_matcher import OCDidMatcher
+
+logger = logging.getLogger(__name__)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -1289,18 +1295,28 @@ def resolve_states(state_arg: str | None) -> list[str]:
 
 
 def configure_logging(log_dir: str) -> None:
-    """Configure loguru to write to the specified log directory."""
+    """Configure logging to write to the specified log directory."""
     log_path = Path(log_dir)
     log_path.mkdir(parents=True, exist_ok=True)
 
-    logger.remove()  # Remove default stderr handler
-    logger.add(sys.stderr, level="INFO")  # Console: INFO and above
-    logger.add(
-        str(log_path / "pipeline_{time}.log"),
-        rotation="10 MB",
-        retention=5,
-        level="DEBUG",
+    root = logging.getLogger()
+    root.handlers.clear()
+    root.setLevel(logging.DEBUG)
+
+    console_handler = logging.StreamHandler(sys.stderr)
+    console_handler.setLevel(logging.INFO)
+
+    file_handler = logging.FileHandler(log_path / "pipeline.log")
+    file_handler.setLevel(logging.DEBUG)
+
+    formatter = logging.Formatter(
+        "%(asctime)s %(levelname)s %(name)s %(message)s"
     )
+    console_handler.setFormatter(formatter)
+    file_handler.setFormatter(formatter)
+
+    root.addHandler(console_handler)
+    root.addHandler(file_handler)
 
 
 def print_summary(

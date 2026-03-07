@@ -12,9 +12,9 @@ to ensure no requirements were lost in translation.
 
 1. **Original spec**: `docs/init_research_pipeline.md` — working notes describing
    the full three-stage pipeline architecture
-2. **Design doc**: `docs/plans/2026-02-13-stage1-ocdid-pipeline-design.md` —
+2. **Design doc**: `ai_tools/planning/stage1-ocdid-pipeline-detailed-plans/2026-02-13-stage1-ocdid-pipeline-design.md` —
    architectural decisions for Stage 1 only
-3. **Implementation plan**: `docs/plans/2026-02-15-stage1-ocdid-pipeline-implementation.md` —
+3. **Implementation plan**: `ai_tools/planning/stage1-ocdid-pipeline-detailed-plans/2026-02-15-stage1-ocdid-pipeline-implementation.md` —
    10-task TDD plan for building Stage 1
 
 ## Stage 1 Requirements — Coverage Matrix
@@ -78,7 +78,6 @@ These were added during design discussions and are not in the original spec.
 | Orphan quarantine tables in DuckDB (`local_orphans`, `master_orphans`) | Quarantine unmatched records for human review |
 | Rich progress bars (3 phases: download, load, match) | UX: visibility into pipeline progress for long-running state-by-state processing |
 | ETag/Last-Modified caching with `--force` override | Performance: skip re-downloading unchanged files on repeat runs |
-| Loguru logging with `--log-dir` CLI flag | Standardization: team decision to migrate from stdlib `logging` to loguru |
 | `models.py` renamed to `pipeline_models.py` | Clarity: distinguish pipeline DTOs from domain models in `src/models/` |
 | `state_lookup.json` moved to `src/data/` | Convention: data files belong in a data directory, not alongside source code |
 

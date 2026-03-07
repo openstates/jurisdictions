@@ -1,0 +1,50 @@
+version: 1
+assets:
+  - id: agent-permissions
+    type: instruction
+    status: draft
+    owner: maintainers
+    path: ai_tools/system/agent-permissions.instruction.md
+    tags: [system, safety, permissions]
+  - id: repo-agent-system
+    type: instruction
+    status: active
+    owner: maintainers
+    path: ai_tools/system/repo-agent-system.instruction.md
+    tags: [system, safety, standards]
+  - id: pre-commit-checks
+    type: instruction
+    status: active
+    owner: maintainers
+    path: ai_tools/system/pre-commit-checks.instruction.md
+    tags: [system, validation, pre-commit]
+  - id: contributor-workflows
+    type: instruction
+    status: active
+    owner: maintainers
+    path: ai_tools/system/contributor-workflows.instruction.md
+    tags: [system, contributors, workflow]
+  - id: feature-delivery-task
+    type: instruction
+    status: active
+    owner: maintainers
+    path: ai_tools/tasks/feature-delivery.instruction.md
+    tags: [workflow, execution]
+  - id: stage1-ocdid-planning
+    type: instruction
+    status: active
+    owner: maintainers
+    path: ai_tools/planning/stage1-ocdid-pipeline.instruction.md
+    tags: [planning, stage1, ocdid]
+  - id: stage2-generation-planning
+    type: instruction
+    status: active
+    owner: maintainers
+    path: ai_tools/planning/stage2-generation-pipeline.instruction.md
+    tags: [planning, stage2, generation]
+  - id: create-design-and-implementation-plan
+    type: prompt
+    status: active
+    owner: maintainers
+    path: ai_tools/prompts/create-design-and-implementation-plan.prompt.md
+    tags: [planning, docs]
