@@ -21,6 +21,8 @@ Apply this instruction when preparing or reviewing contributor-facing changes.
 3. Implement in small, reviewable tasks.
 4. Run targeted validation and required checks before PR.
 5. Update contributor-facing documentation with behavior/process changes.
+6. Code changes should be committed on a branch. Never commit changes directly to
+   protected branches (i.e. "main").
 
 ## Contributor-Facing Documentation Requirements
 1. Keep `CONTRIBUTING.md` current when process expectations change.
