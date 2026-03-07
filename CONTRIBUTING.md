@@ -1,34 +1,61 @@
 # Contributing to OpenStates Jurisdictions
 
-Thank you for your interest in contributing! Please follow these guidelines:
+Thanks for contributing.
 
-- Use YAML format for all division and jurisdiction files.
-- Place division files in the `divisions/` directory and jurisdiction files in the `jurisdictions/` directory.
-- Follow the structure and naming conventions as described in the project README
-  and the OpenStates/people repository.
+This repository stores and generates Division and Jurisdiction YAML data for US
+local governments.
 
+## Before You Start
+1. Check for an existing issue related to your change.
+2. If no issue exists, open one describing the problem and proposed approach.
+3. Create a feature branch for your work.
 
-Opportunities to contribute:
-- Develop the data engineering pipeline to generate .yaml files from the civic
-  data team's research:
-  [https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362"](https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362)
+## Local Setup
+See `README.md` for full setup instructions. Quick commands:
 
-  Use existing Open Civic Data identifiers as a starting place:
-  https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/refs/heads/master/identifiers/country-us.csv
+```sh
+uv venv .venv
+source .venv/bin/activate
+uv sync --all-extras
+```
 
-- Reference:
-  - [Difference between an Jurisdiction and a Division]
-    https://drive.google.com/drive/u/0/folders/1E0EJsfVTBA_vvlPuqx_P6tmsoO1TDACj
-  -
+## Making Changes
+1. Keep changes focused and small.
+2. Add or update tests for code changes.
+3. Keep model contract changes in `src/models/` explicit and discussed with maintainers.
+4. Use `src` package-root imports (for example `from src.models.division import Division`).
 
-- Develop and test AI prompts to gather urls related to municipalities:
-    - main website
-    - officials
-    - election updates
-    - legislative sessions
+## Validation Before PR
+Run the checks below before opening or updating a PR:
 
-- Develop the arcGiS call to add enable users to quickly retrieve geometries related to divisions.
-- Add documentation to enable users to understand the scope and purpose of the data collected here.
+```sh
+uv run ruff check .
+uv run pytest -m "not integration and not slow"
+```
 
+If your change affects cross-module behavior, pipeline orchestration, or output
+artifacts, also run relevant integration tests.
 
-For questions, open an issue or contact the maintainers.
+For the full checklist, see `ai_tools/system/pre-commit-checks.instruction.md`.
+
+## Documentation Expectations
+When behavior or workflows change:
+1. Update `README.md` if setup/run guidance changed.
+2. Update this file (`CONTRIBUTING.md`) if contributor process changed.
+3. Update `AGENTS.md` and `ai_tools/` assets if agent workflow changed.
+4. Record breaking changes in `CHANGELOG.md`.
+
+## Pull Request Guidelines
+Include the following in your PR:
+1. Linked issue.
+2. Summary of what changed and why.
+3. Tests and validation commands run.
+4. Notes on data/output impact (for example `divisions/`, `jurisdictions/`).
+
+## Where to Put Docs
+- Human-facing documentation belongs in `docs/`.
+- Agent-facing instructions belong in `AGENTS.md` and `ai_tools/`.
+
+## Questions
+Open an issue and tag maintainers if you are unsure about scope, data modeling,
+or output conventions.
