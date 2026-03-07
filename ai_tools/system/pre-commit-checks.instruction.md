@@ -18,8 +18,8 @@ uv run pytest -m "not integration and not slow"
 ```
 
 ## Change-Scoped Validation
-- If Stage 1 files changed, run relevant tests under `tests/src/init_migration/` and downloader test modules.
-- If Stage 2 files changed, run relevant tests under `tests/src/init_migration/` for generation pipeline behavior.
+- Run relevant `pytest` modules for all changed code paths.
+- Run integration tests for changes that affect cross-module behavior, pipeline orchestration, external I/O, or persisted artifacts.
 - If model-adjacent behavior changed, verify generated YAML still validates against Pydantic contracts.
 
 ## Artifact Validation
@@ -30,5 +30,6 @@ uv run pytest -m "not integration and not slow"
 
 ## Catalog and Documentation Checks
 - If any instruction, prompt, planning guide, or skill is added/changed in `ai_tools/`, update `ai_tools/catalog.yaml` in the same change.
-- Update related documentation when behavior/workflow changes.
+- Update related documentation when behavior/workflow changes. This includes
+  asking permission to remove documentation that is no longer relevant.
 - Review `CONTRIBUTING.md` and update it when contributor process expectations changed.

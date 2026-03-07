@@ -12,6 +12,12 @@ assets:
     owner: maintainers
     path: ai_tools/system/pre-commit-checks.instruction.md
     tags: [system, validation, pre-commit]
+  - id: contributor-workflows
+    type: instruction
+    status: active
+    owner: maintainers
+    path: ai_tools/system/contributor-workflows.instruction.md
+    tags: [system, contributors, workflow]
   - id: feature-delivery-task
     type: instruction
     status: active

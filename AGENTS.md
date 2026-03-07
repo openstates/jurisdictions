@@ -87,7 +87,7 @@ Do not add new AI tooling content under proprietary IDE code paths such as
 
 ## References
 - `docs/init_research_pipeline.md`
-- `docs/contributor-workflows.md`
+- `ai_tools/system/contributor-workflows.instruction.md`
 - `ai_tools/system/pre-commit-checks.instruction.md`
 
 ## Maintenance

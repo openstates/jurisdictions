@@ -25,6 +25,11 @@ and produce stable machine-readable outputs for downstream pipeline stages.
 - `docs/plans/2026-02-15-stage1-ocdid-pipeline-implementation.md`
 - `docs/plans/2026-02-15-stage1-verification-analysis.md`
 
+## Pipeline Module References
+- Stage 1 ingestion pipeline: `src/init_migration/main.py`,
+  `src/init_migration/download_manager.py`,
+  `src/init_migration/ocdid_matcher.py`, `src/init_migration/downloader.py`
+
 ## Architecture Expectations
 1. `main.py` is orchestration-only (argument parsing, sequencing, summaries).
 2. `download_manager.py` owns fetch + load business logic.
