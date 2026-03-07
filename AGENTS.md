@@ -40,6 +40,20 @@ Do not add new AI tooling content under proprietary IDE code paths such as
 - Data contracts: `src/models/division.py`, `src/models/jurisdiction.py`, `src/models/ocdid.py`, `src/models/source.py`
 - Output directories: `divisions/<state>/local/`, `jurisdictions/<state>/local/`
 
+## Documentation Rules
+- `/docs`: human-facing project documentation (purpose, Open Civic Data context, data provenance, domain explanations).
+- `README.md`: setup, install, run, and repository requirements.
+- `CONTRIBUTING.md`: contributor process, PR expectations, and workflow guidance.
+- `CHANGELOG.md`: release notes and breaking changes.
+- `AGENTS.md` + `ai_tools/`: agent-facing operational instructions for semi-autonomous work.
+- `ai_tools/planning/`: feature-specific planning, design, and implementation instructions.
+- Keep human docs out of `ai_tools/`, and keep agent instruction assets out of `/docs`.
+
+### Open Source Best Practices
+- Keep docs close to the workflow they support and update them in the same PR as behavior changes.
+- Prefer short, stable docs that link to detailed references instead of duplicating content.
+- Record breaking changes and migrations clearly in `CHANGELOG.md`.
+
 ## Git Safety and Change Control
 - Do not perform write git operations without explicit user authorization.
 - Read-only git operations are allowed.
@@ -84,6 +98,7 @@ Do not add new AI tooling content under proprietary IDE code paths such as
 1. Check for an existing issue before implementation.
 2. If no issue exists, create one.
 3. If using an existing issue, use an issue-linked branch and keep status updated.
+4. For full workflow details, follow `ai_tools/system/contributor-workflows.instruction.md`.
 
 ## References
 - `docs/init_research_pipeline.md`
