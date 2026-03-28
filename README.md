@@ -77,6 +77,13 @@ uv run python src/init_migration/main.py --state wa,tx,oh --force
 - Pre-commit checklist: `ai_tools/system/pre-commit-checks.instruction.md`
 - UV setup details and migration notes: `docs/setup_uv.md`
 
+
+## To Review Pull requests from forked repos, reference the pull request #: 
+Example: 
+`git fetch origin pull/38/head:create-crudl-module` 
+
 ## Notes
 - Use `src` package-root imports in code and tests.
-- Do not modify core model contracts in `src/models/` without maintainer approval.
+- Do not modify core model contracts in `src/models/` without maintainer
+  approval.
+
