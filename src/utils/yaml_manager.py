@@ -34,8 +34,24 @@ class YamlManager:
 
         Args:
             base_path: Optional base path to prepend to relative file paths.
+
+        Raises:
+            ValueError: If base_path is None.
+            FileNotFoundError: If base_path does not exist.
+            NotADirectoryError: If base_path is not a directory.
         """
         self.base_path = Path(base_path) if base_path else None
+        if not self.base_path:
+            logger.exception("Initialized YamlManager with no base path.", extra={"base_path": base_path})
+            raise ValueError("Base path must be provided for YamlManager.")
+
+        if not self.base_path.exists():
+            logger.error("Base path does not exist.", extra={"base_path": str(self.base_path)})
+            raise FileNotFoundError(f"Base path does not exist: {self.base_path}")
+
+        if not self.base_path.is_dir():
+            logger.error("Base path is not a directory.", extra={"base_path": str(self.base_path)})
+            raise NotADirectoryError(f"Base path is not a directory: {self.base_path}")
 
     def _resolve_path(self, path: str | Path) -> Path:
         """Resolve a path, prepending base_path if set."""
@@ -109,15 +125,16 @@ class YamlManager:
         self,
         filepath: str | Path,
         data: dict[str, Any],
-        merge: bool = True
+        merge: bool = False
     ) -> dict[str, Any]:
         """
-        Update an existing YAML file.
+        Update an existing YAML file. If using "merge", be sure to create a deep
+        copy of the original data if you want to preserve it, as this method will modify the original dict in place.
 
         Args:
             filepath: Path to the file to update.
             data: Dictionary with updates.
-            merge: If True, merge with existing data. If False, replace entirely.
+            merge: If True, merge with existing data. If False, replace entirely. Default False.
 
         Returns:
             The updated data.
@@ -143,15 +160,16 @@ class YamlManager:
         logger.info(f"Updated YAML file: {path}")
         return result
 
-    def delete(self, filepath: str | Path) -> bool:
+    def delete(self, filepath: str | Path, confirm: bool = False) -> bool:
         """
         Delete a YAML file.
 
         Args:
             filepath: Path to the file to delete.
+            confirm: If True, prompt for user confirmation before deleting.
 
         Returns:
-            True if file was deleted.
+            True if file was deleted, False if user declined deletion.
 
         Raises:
             FileNotFoundError: If the file does not exist.
@@ -160,6 +178,12 @@ class YamlManager:
 
         if not path.exists():
             raise FileNotFoundError(f"File not found: {path}")
+
+        if confirm:
+            response = input(f"Delete {path}? (y/n): ").strip().lower()
+            if response not in ('y', 'yes'):
+                logger.info("Deletion cancelled by user.", extra={"path": str(path)})
+                return False
 
         path.unlink()
         logger.info(f"Deleted file: {path}")
@@ -183,9 +207,13 @@ class YamlManager:
             Sorted list of Path objects for matching files.
 
         Raises:
+            FileNotFoundError: If the directory does not exist.
             NotADirectoryError: If the path is not a directory.
         """
         path = self._resolve_path(directory)
+
+        if not path.exists():
+            raise FileNotFoundError(f"Directory not found: {path}")
 
         if not path.is_dir():
             raise NotADirectoryError(f"Not a directory: {path}")

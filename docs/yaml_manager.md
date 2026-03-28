@@ -6,6 +6,8 @@ A **C**reate, **R**ead, **U**pdate, **D**elete, **L**ist module for managing YAM
 
 The `YamlManager` class provides file I/O operations for Division and Jurisdiction YAML files, with built-in serialization (YAML ↔ JSON/dict) and Pydantic model validation.
 
+**Note:** Default values for some methods have changed. See below for details.
+
 ## Installation
 
 The module is part of the `jurisdictions` package. No additional installation required.
@@ -15,10 +17,7 @@ The module is part of the `jurisdictions` package. No additional installation re
 ```python
 from src.utils import YamlManager
 
-# Initialize the manager
-manager = YamlManager()
-
-# Or with a base path for relative file operations
+# Initialize the manager (base_path is now required and must exist as a directory)
 manager = YamlManager(base_path="data/divisions")
 ```
 
@@ -47,23 +46,27 @@ print(data["name"])  # "Columbus"
 ### Update
 
 ```python
-# Update with merge (default) - preserves existing fields
-manager.update("columbus.yaml", {"url": "https://new-url.gov"})
+# Update with merge (set merge=True) - preserves existing fields
+manager.update("columbus.yaml", {"url": "https://new-url.gov"}, merge=True)
 
-# Update with replace - overwrites entire file
-manager.update("columbus.yaml", new_data, merge=False)
+# Update with replace (default: merge=False) - overwrites entire file
+manager.update("columbus.yaml", new_data)
 ```
 
 ### Delete
 
 ```python
+# Delete with optional confirmation prompt
+manager.delete("columbus.yaml", confirm=True)  # Prompts user for confirmation
+
+# Delete without confirmation (default)
 manager.delete("columbus.yaml")
 ```
 
 ### List
 
 ```python
-# List all YAML files in a directory
+# List all YAML files in a directory (non-recursive by default)
 files = manager.list_files("data/divisions")
 
 # With custom pattern
