@@ -169,7 +169,7 @@ def _generate_field_diff_report(
 		return diffs
 
 	# Different types - mismatch
-	if type(expected) != type(generated):
+	if type(expected) is not type(generated):
 		diffs.append(f"{path or 'root'}: type mismatch - expected {type(expected).__name__}={expected!r}, generated {type(generated).__name__}={generated!r}")
 		return diffs
 

@@ -81,6 +81,7 @@ uv run python src/init_migration/main.py --state wa,tx,oh --force
 ## To Review Pull requests from forked repos, reference the pull request #: 
 Example: 
 `git fetch origin pull/38/head:create-crudl-module` 
+`git fetch origin pull/39/head:fix-update-merge-default`
 
 ## Notes
 - Use `src` package-root imports in code and tests.
