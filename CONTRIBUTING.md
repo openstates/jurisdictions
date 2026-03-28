@@ -7,7 +7,7 @@ local governments.
 
 ## Ways to Contribute
 
-### Update YAML data
+### Update YAML data directly - No coding required.
 If you know that a division or jurisdiction file contains incorrect or outdated information — wrong district boundaries, a renamed office, a bad URL — you can edit the relevant file directly under `divisions/` or `jurisdictions/` and open a pull request with your correction.
 1. Fork this repo
 2. On your forked repo, update a file under the `data` folder
@@ -16,7 +16,7 @@ If you know that a division or jurisdiction file contains incorrect or outdated 
 5. Follow the [Pull Request Guidelines](#pull-request-guidelines)
 6. Click "Create pull request"
 
-### Pick up an existing issue
+### Pick up an existing issue - Coding required. (Python)
 Browse the [issues tracker](https://github.com/openstates/jurisdictions/issues) and pick up an issue. Labels marked as 'good first issue' are a good place to start.
 
 ## Before You Start
