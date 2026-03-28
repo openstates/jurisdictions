@@ -1,23 +1,7 @@
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Literal
+from .src.models.source import SourceObj
+from .src.models.jurisdiction import Jurisdiction, TermDetail, SessionDetail, ClassificationEnum
 
-# --- Assumed project imports ---
-# from .sourcing import SourceObj
-# from your_models import Jurisdiction, ClassificationEnum, SessionDetail, TermDetail
-
-# --- Temporary fallback SourceObj to keep this file runnable if your class isn't importable ---
-try:
-    from .sourcing import SourceObj  # type: ignore
-except Exception:
-    from pydantic import BaseModel
-    class SourceObj(BaseModel):  # type: ignore
-        name: str
-        url: str
-        source_type: Literal["statute","city_site","county_site","charter","census_glossary","sos","clerk","boe","other"]
-        accessed_at: datetime
-        notes: Optional[str] = None
-        evidence_version: Optional[str] = None
-        content_locator: Optional[str] = None
 
 # Helper to make UTC datetimes
 def ymd(y: int, m: int, d: int) -> datetime:
