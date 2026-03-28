@@ -7,7 +7,7 @@ import pytest
 import tempfile
 from pathlib import Path
 
-from src.crudl import YamlManager
+from src.utils.yaml_manager import YamlManager
 
 
 @pytest.fixture

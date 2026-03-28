@@ -13,7 +13,7 @@ The module is part of the `jurisdictions` package. No additional installation re
 ## Quick Start
 
 ```python
-from src.crudl import YamlManager
+from src.utils import YamlManager
 
 # Initialize the manager
 manager = YamlManager()
