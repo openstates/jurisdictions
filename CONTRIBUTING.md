@@ -5,6 +5,20 @@ Thanks for contributing.
 This repository stores and generates Division and Jurisdiction YAML data for US
 local governments.
 
+## Ways to Contribute
+
+### Update YAML data
+If you know that a division or jurisdiction file contains incorrect or outdated information — wrong district boundaries, a renamed office, a bad URL — you can edit the relevant file directly under `divisions/` or `jurisdictions/` and open a pull request with your correction.
+1. Fork this repo
+2. On your forked repo, update a file under the `data` folder
+3. Update the file, then `Commit changes` via `Commit directly to the main branch`.
+4. Go back to your forked repo,  "Contribute" -> "Open pull request"
+5. Follow the [Pull Request Guidelines](#pull-request-guidelines)
+6. Click "Create pull request"
+
+### Pick up an existing issue
+Browse the [issues tracker](https://github.com/openstates/jurisdictions/issues) and pick up an issue. Labels marked as 'good first issue' are a good place to start.
+
 ## Before You Start
 1. Check for an existing issue related to your change.
 2. If no issue exists, open one describing the problem and proposed approach.
@@ -59,3 +73,12 @@ Include the following in your PR:
 ## Questions
 Open an issue and tag maintainers if you are unsure about scope, data modeling,
 or output conventions.
+
+### Reference links: 
+- [Census Fips
+Codes](https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt) - 
+Census FIPS Codes — Federal Information Processing Standards (FIPS) codes are numeric identifiers assigned by the US Census Bureau to uniquely identify geographic and political entities. Every state has a 2-digit FIPS code, and every county has a 5-digit code (2-digit state + 3-digit county). 
+- [Open Civic Data (OCD)](https://github.com/opencivicdata/ocd-division-ids) — standard identifiers and schemas for political divisions; the OCD-ID format is used throughout this repo
+- [US Census Bureau TIGER/Line](https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html) — authoritative geographic boundaries for counties, municipalities, districts, and more
+ArcGIS Hub — aggregates open geospatial datasets from governments and agencies, often the source for local boundary files
+  - [Tiger ArcGIS Rest API](https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/)
