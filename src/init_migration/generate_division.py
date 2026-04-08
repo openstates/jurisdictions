@@ -17,6 +17,7 @@ from src.utils.state_lookup import load_state_code_lookup
 from src.utils.place_name import namelsad_to_display_name
 from pathlib import Path
 from datetime import datetime, timezone
+from uuid import UUID
 import logging
 import yaml
 import re
@@ -41,7 +42,7 @@ class DivGenerator:
         self.state_lookup = load_state_code_lookup()
         self.division: Division | None = None
 
-    def generate_division(self, val_rec: dict, uuid: str) -> Division:
+    def generate_division(self, val_rec: dict, uuid: UUID) -> Division:
         """Generate a full Division object from a matched validation record.
 
         Maps validation record fields to Division model fields. Checks for idempotency
@@ -111,7 +112,7 @@ class DivGenerator:
             logger.error(f"Failed to generate Division for {self.data.ocdid.raw_ocdid}", exc_info=True)
             raise
 
-    def generate_division_stub(self, uuid: str) -> Division:
+    def generate_division_stub(self, uuid: UUID) -> Division:
         """Generate a minimal stub Division when no validation match exists.
 
         Creates Division with only required fields populated from the OCDid,
