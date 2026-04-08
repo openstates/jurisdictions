@@ -81,7 +81,7 @@ class JurGenerator:
                 deterministic_id=str(uuid),
                 ocdid=jurisdiction_ocdid,
                 name=jurisdiction_name,
-                url="missing-url-" + (division.display_name.lower().replace(" ", "-")) if division.display_name else "missing-url",
+                url=self.ai_lookup_url(division),
                 classification=jurisdiction_type,
                 legislative_sessions={},
                 feature_flags=[],
@@ -258,6 +258,27 @@ class JurGenerator:
             logger.error("Failed to save Jurisdiction to YAML", exc_info=True)
             raise
 
+    def ai_lookup_url(self, division: Division) -> str:
+        """Generate an AI lookup URL for the given Division.
+
+        This URL can be used to query an AI service for additional information
+        about the Jurisdiction based on the Division data.
+        This method should call a separate module that handles the AI service
+        integration, passing relevant Division information and returning a URL.
+
+
+
+        Args:
+            division: The Division object to generate the URL for
+
+        Returns:
+            A dictionary representing the AI lookup URLs or None if lookup
+            returns no data.
+        Raises:
+            AILookupError: If there is an error during the AI lookup process
+        """
+        NotImplementedError("ai_lookup_url is a placeholder and needs implementation based on AI service requirements")
+        pass
 
 
 if __name__ == "__main__":
