@@ -16,6 +16,7 @@ from src.models.source import SourceType
 from src.utils.ocdid import ocdid_parser
 from pathlib import Path
 from datetime import datetime, timezone
+from uuid import UUID
 import logging
 import yaml
 import re
@@ -43,7 +44,7 @@ class JurGenerator:
         self.division = division
         self.jurisdiction: Jurisdiction | None = None
 
-    def generate_jurisdiction(self, division: Division, uuid: str) -> Jurisdiction:
+    def generate_jurisdiction(self, division: Division, uuid: UUID) -> Jurisdiction:
         """Generate a Jurisdiction object from a Division object.
 
         Derives jurisdiction_id from division OCDid, maps Division fields to
@@ -81,7 +82,7 @@ class JurGenerator:
                 deterministic_id=str(uuid),
                 ocdid=jurisdiction_ocdid,
                 name=jurisdiction_name,
-                url="missing-url-" + (division.display_name.lower().replace(" ", "-")) if division.display_name else "missing-url",
+                url=self.ai_lookup_url(division),
                 classification=jurisdiction_type,
                 legislative_sessions={},
                 feature_flags=[],
@@ -258,6 +259,12 @@ class JurGenerator:
             logger.error("Failed to save Jurisdiction to YAML", exc_info=True)
             raise
 
+    def ai_lookup_url(self, division: Division) -> str:
+        """Return a stable placeholder URL until AI lookup integration exists."""
+        if division.display_name:
+            slug = division.display_name.lower().replace(" ", "-")
+            return f"https://example.invalid/jurisdiction/{slug}"
+        return "https://example.invalid/jurisdiction/unknown"
 
 
 if __name__ == "__main__":

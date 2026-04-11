@@ -2,13 +2,14 @@ from pydantic import BaseModel, Field
 from typing import Any
 from datetime import datetime, UTC
 from enum import Enum
+from uuid import UUID
 from src.models.ocdid import OCDidParsed
 
 
 DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121"
 
 class OCDidIngestResp(BaseModel):
-    uuid: str  # oid1- deterministic ID from deterministic_id.generate_id()
+    uuid: UUID  # UUID5 deterministic ID from deterministic_id.generate_id()
     ocdid: OCDidParsed
     raw_record: dict[str, Any]
 

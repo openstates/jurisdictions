@@ -15,6 +15,7 @@ Responsibilities:
 import logging
 from pathlib import Path
 import re
+from uuid import UUID
 from src.init_migration.pipeline_models import GeneratorReq, GeneratorResp, GeneratorStatus, Status
 from src.init_migration.generate_division import DivGenerator
 from src.init_migration.generate_jurisdiction import JurGenerator
@@ -47,7 +48,7 @@ DIVISION_OUTPUT_DIR = "divisions"
 JURISDICTION_OUTPUT_DIR = "jurisdictions"
 
 
-def get_division_filename(display_name: str, geoid: str, uuid: str) -> str:
+def get_division_filename(display_name: str, geoid: str, uuid: UUID) -> str:
     """Generate Division YAML filename from components.
 
     Args:
@@ -62,7 +63,7 @@ def get_division_filename(display_name: str, geoid: str, uuid: str) -> str:
     return f"{safe_display_name}_{geoid}_{uuid}.yaml"
 
 
-def get_jurisdiction_filename(name: str, uuid: str) -> str:
+def get_jurisdiction_filename(name: str, uuid: UUID) -> str:
     """Generate Jurisdiction YAML filename from components.
 
     Args:

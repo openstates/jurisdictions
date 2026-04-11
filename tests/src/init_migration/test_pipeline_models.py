@@ -1,4 +1,6 @@
 """Tests for pipeline_models — specifically the OCDidIngestResp model changes."""
+from uuid import UUID
+
 import pytest
 from src.init_migration.pipeline_models import OCDidIngestResp
 from src.models.ocdid import OCDidParsed
@@ -24,8 +26,8 @@ def test_ocdid_ingest_resp_accepts_ocdid_parsed():
     assert resp.ocdid.raw_ocdid == "ocd-division/country:us/state:wa/place:seattle"
 
 
-def test_ocdid_ingest_resp_uuid_is_oid1_string():
-    """OCDidIngestResp.uuid should accept an oid1- deterministic ID string."""
+def test_ocdid_ingest_resp_uuid_is_uuid5_string():
+    """OCDidIngestResp.uuid should parse to a UUID5 object."""
     parsed = OCDidParsed(
         country="us",
         state="wa",
@@ -38,15 +40,15 @@ def test_ocdid_ingest_resp_uuid_is_oid1_string():
         ocdid=parsed,
         raw_record={},
     )
-    assert isinstance(resp.uuid, str)
-    assert resp.uuid.startswith("oid1-")
+    assert isinstance(resp.uuid, UUID)
+    assert resp.uuid.version == 5
 
 
 def test_ocdid_ingest_resp_rejects_plain_string_for_ocdid():
     """OCDidIngestResp.ocdid should not accept a plain string."""
     with pytest.raises(Exception):
         OCDidIngestResp(
-            uuid="oid1-fake",
+            uuid="not-a-valid-ocdid",
             ocdid="ocd-division/country:us/state:wa/place:seattle",
             raw_record={},
         )

@@ -25,6 +25,7 @@ dev = [
     "respx>=0.22.0",
     "ruff>=0.13.2",
     "pytest-pythonpath>=0.7",
+    "hypothesis>=6.151.11",
 ]
 
 [tool.pytest.ini_options]

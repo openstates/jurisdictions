@@ -1,4 +1,5 @@
 import pytest
+from uuid import UUID
 
 from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp
 from src.init_migration.generate_division import DivGenerator
@@ -50,9 +51,9 @@ def test_div_generator_initializes(sample_req):
     assert isinstance(dg.state_lookup, list)
     assert len(dg.state_lookup) > 0
 
-    # uuid should be an oid1- string
-    assert isinstance(dg.uuid, str)
-    assert dg.uuid.startswith("oid1-")
+    # uuid should be a UUID5 object
+    assert isinstance(dg.uuid, UUID)
+    assert dg.uuid.version == 5
 
     # division should be None before generation
     assert dg.division is None
