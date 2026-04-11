@@ -29,7 +29,7 @@ to ensure no requirements were lost in translation.
 | 6 | For each local record, pull full data from master | Inner join on `id` column | Task 7 SQL join | Covered |
 | 7 | "We will work from the master list" | `raw_record` contains master columns only | Task 7 `m.*` select | Covered |
 | 8 | Parse OCDid in OCDidParsed model | `ocdid_parser()` → `OCDidParsed` | Task 7 | Covered |
-| 9 | Generate a UUID | `deterministic_id.generate_id()` → `oid1-` string | Task 7 | Covered (see note A) |
+| 9 | Generate a UUID | `uuid5_id.generate_id()` → `oid1-` string | Task 7 | Covered (see note A) |
 | 10 | Store UUID/OCD-ID in DuckDB lookup table | `ocdid_uuid_lookup` table | Task 7 `_store_lookup_table()` | Covered |
 | 11 | "Can be run once, skipped in future runs" | `INSERT ... WHERE NOT EXISTS` idempotency | Task 7 | Covered |
 | 12 | "Backup to a .csv file as well" | `data/ocdid_uuid_lookup.csv` | Task 7 `COPY ... TO` | Covered |
@@ -38,7 +38,7 @@ to ensure no requirements were lost in translation.
 ### Notes
 
 **A. UUID generation** — The spec says "Generate a UUID (timestamp)." During
-design, the team decided to use the existing `deterministic_id.py` system
+design, the team decided to use the existing `uuid5_id.py` system
 (`oid1-` prefixed, deterministic, decodable IDs) instead of standard timestamp
 UUIDs. The `OCDidIngestResp.uuid` field type was changed from `UUID` to `str`
 to hold these IDs. If the team later reverts to standard UUIDs, only this one

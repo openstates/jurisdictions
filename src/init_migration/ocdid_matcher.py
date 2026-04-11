@@ -5,13 +5,14 @@ lookup table management.
 Responsibilities:
 - Exact join of local_ocdids against master_ocdids on `id` column
 - Classify records: match, local orphan, master orphan
-- Generate deterministic UUIDs via deterministic_id.py
+- Generate UUID5 values from OCD IDs
 - Store UUID-OCD-ID lookup table in DuckDB + CSV backup
 - Support idempotent re-runs
 """
 
 from dataclasses import dataclass, field
 from pathlib import Path
+from uuid import NAMESPACE_URL, uuid5
 
 import duckdb
 from loguru import logger
@@ -19,7 +20,6 @@ from loguru import logger
 from src.init_migration.pipeline_models import OCDidIngestResp
 from src.models.ocdid import OCDidParsed
 from src.utils.ocdid import ocdid_parser
-from src.utils.deterministic_id import generate_id
 
 DEFAULT_DB_PATH = "data/ocdid_pipeline.duckdb"
 DEFAULT_CSV_BACKUP = "data/ocdid_uuid_lookup.csv"
@@ -95,8 +95,8 @@ class OCDidMatcher:
                     place=parsed_dict.get("place"),
                 )
 
-                # Generate deterministic UUID
-                det_id = generate_id(ocdid_str)
+                # Generate UUID5 from OCD ID
+                det_id = uuid5(NAMESPACE_URL, ocdid_str)
 
                 resp = OCDidIngestResp(
                     uuid=det_id,

@@ -6,7 +6,7 @@
 
 **Architecture:** `main.py` orchestrator calls `DownloadManager` (async fetch + DuckDB load) then `OCDidMatcher` (join + UUID generation). `AsyncDownloader` is cleaned up as a pure HTTP library. Rich progress bars for all three phases.
 
-**Tech Stack:** Python 3.12+, DuckDB (persistent), httpx (async HTTP), rich (progress), pydantic v2 (models), deterministic_id.py (UUIDs)
+**Tech Stack:** Python 3.12+, DuckDB (persistent), httpx (async HTTP), rich (progress), pydantic v2 (models), uuid5_id.py (UUIDs)
 
 **Design doc:** `ai_tools/planning/stage1-ocdid-pipeline-detailed-plans/2026-02-13-stage1-ocdid-pipeline-design.md`
 
@@ -112,7 +112,7 @@ Create `tests/src/init_migration/test_pipeline_models.py`:
 import pytest
 from src.init_migration.pipeline_models import OCDidIngestResp
 from src.models.ocdid import OCDidParsed
-from src.utils.deterministic_id import generate_id
+from src.utils.uuid5_id import generate_id
 
 
 def test_ocdid_ingest_resp_accepts_ocdid_parsed():
@@ -186,7 +186,7 @@ from src.models.ocdid import OCDidParsed
 DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121"
 
 class OCDidIngestResp(BaseModel):
-    uuid: str             # oid1- deterministic ID from deterministic_id.generate_id()
+    uuid: str             # oid1- deterministic ID from uuid5_id.generate_id()
     ocdid: OCDidParsed
     raw_record: dict[str, Any]
 
@@ -921,7 +921,7 @@ lookup table management.
 Responsibilities:
 - Exact join of local_ocdids against master_ocdids on `id` column
 - Classify records: match, local orphan, master orphan
-- Generate deterministic UUIDs via deterministic_id.py
+- Generate deterministic UUIDs via uuid5_id.py
 - Store UUID↔OCD-ID lookup table in DuckDB + CSV backup
 - Support idempotent re-runs
 """
@@ -936,7 +936,7 @@ logger = logging.getLogger(__name__)
 from src.init_migration.pipeline_models import OCDidIngestResp
 from src.models.ocdid import OCDidParsed
 from src.utils.ocdid import ocdid_parser
-from src.utils.deterministic_id import generate_id
+from src.utils.uuid5_id import generate_id
 
 DEFAULT_DB_PATH = "data/ocdid_pipeline.duckdb"
 DEFAULT_CSV_BACKUP = "data/ocdid_uuid_lookup.csv"

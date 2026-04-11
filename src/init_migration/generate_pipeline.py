@@ -40,12 +40,13 @@ logger = logging.getLogger(__name__)
 FUZZY_MATCH_THRESHOLD = 0.85
 
 # Filename pattern constants
-DIVISION_FILENAME_PATTERN = "{display_name}_{geoid}_{uuid}.yaml"
+DIVISION_FILENAME_PATTERN = "{display_name}_{uuid}.yaml"
 JURISDICTION_FILENAME_PATTERN = "{name}_{uuid}.yaml"
 
 # Output directory constants
 DIVISION_OUTPUT_DIR = "divisions"
 JURISDICTION_OUTPUT_DIR = "jurisdictions"
+
 
 
 def get_division_filename(display_name: str, geoid: str, uuid: UUID) -> str:

@@ -77,15 +77,17 @@ class JurGenerator:
             jurisdiction_type = self._determine_jurisdiction_type(division)
             jurisdiction_name = self._generate_jurisdiction_name(division, jurisdiction_type)
 
+            now = datetime.now(timezone.utc)
             # Create Jurisdiction object
             self.jurisdiction = Jurisdiction(
-                deterministic_id=str(uuid),
+                id=uuid,
                 ocdid=jurisdiction_ocdid,
                 name=jurisdiction_name,
                 url=self.ai_lookup_url(division),
                 classification=jurisdiction_type,
                 legislative_sessions={},
                 feature_flags=[],
+                metadata={"urls": []},
                 sourcing=[{
                     "field": ["ocdid", "name", "classification"],
                     "source_name": "derived_from_division",
@@ -95,7 +97,8 @@ class JurGenerator:
                     "source_type": SourceType.HUMAN,
                     "source_description": "Jurisdiction derived from Division object"
                 }],
-                last_updated=datetime.now(timezone.utc)
+                accurate_asof=self.req.asof_datetime,
+                last_updated=now,
             )
 
             logger.info(f"Jurisdiction generated: {jurisdiction_ocdid}")

@@ -24,7 +24,7 @@ main.py (orchestrator + CLI)
   └─► OCDidMatcher (new module)
         • Exact join on `id` column: local records ↔ master records
         • Three outcomes: match, local orphan, master orphan
-        • Generates UUID per matched record via deterministic_id.py
+        • Generates UUID per matched record via uuid5_id.py
         • Stores UUID↔OCD-ID lookup table in DuckDB + CSV backup
         • Returns list[OCDidIngestResp]
 ```
@@ -103,7 +103,7 @@ Matching and UUID generation. Responsibilities:
   - **Master orphan** — master record for a given state has no local match.
 - For each matched record:
   - Parse OCD ID into `OCDidParsed` model
-  - Generate deterministic UUID via `deterministic_id.generate_id()`
+  - Generate deterministic UUID via `uuid5_id.generate_id()`
   - Build `OCDidIngestResp(uuid, ocdid_parsed, raw_record)` where `raw_record`
     contains the **master** record's columns (not local)
 - Store results:
@@ -167,7 +167,7 @@ class OCDidIngestResp(BaseModel):
 ```
 
 - `uuid` is now `str` to hold the `oid1-` prefixed deterministic ID from
-  `deterministic_id.generate_id()`. If we later revert to standard UUIDs,
+  `uuid5_id.generate_id()`. If we later revert to standard UUIDs,
   this is the only field to change.
 - The raw OCD ID string remains accessible via `resp.ocdid.raw_ocdid`.
 
@@ -218,7 +218,7 @@ src/
     parsers.py                 ← keep as-is (CSV bytes → Polars utility)
   utils/
     state_lookup.py            ← update path to src/data/state_lookup.json
-    deterministic_id.py        ← no changes (used by ocdid_matcher)
+    uuid5_id.py        ← no changes (used by ocdid_matcher)
     ocdid.py                   ← no changes (ocdid_parser used by matcher)
 data/
   ocdid_pipeline.duckdb        ← new: persistent DuckDB (committed to repo)

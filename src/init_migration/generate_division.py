@@ -77,8 +77,9 @@ class DivGenerator:
                 return self._load_existing_division(raw_ocdid)
 
             # Map validation fields to Division model
+            now = datetime.now(timezone.utc)
             self.division = Division(
-                deterministic_id=str(uuid),
+                id=uuid,
                 ocdid=raw_ocdid,
                 country="us",
                 display_name=display_name,
@@ -88,10 +89,10 @@ class DivGenerator:
                 government_identifiers={
                     "namelsad": namelsad,
                     "statefp": statefp,
-                    "sldust": [str(v) for v in (val_rec.get("SLDUST_list", "").split("|") if val_rec.get("SLDUST_list") else [])],
-                    "sldlst": [str(v) for v in (val_rec.get("SLDLST_list", "").split("|") if val_rec.get("SLDLST_list") else [])],
-                    "countyfp": [str(v) for v in (val_rec.get("COUNTYFP_list", "").split("|") if val_rec.get("COUNTYFP_list") else [])],
-                    "county_names": [str(v) for v in (val_rec.get("COUNTY_NAMES", "").split("|") if val_rec.get("COUNTY_NAMES") else [])],
+                    "sldust": [str(v).strip() for v in (val_rec.get("SLDUST_list", "").split("|") if val_rec.get("SLDUST_list") else [])],
+                    "sldlst": [str(v).strip() for v in (val_rec.get("SLDLST_list", "").split("|") if val_rec.get("SLDLST_list") else [])],
+                    "countyfp": [str(v).strip() for v in (val_rec.get("COUNTYFP_list", "").split("|") if val_rec.get("COUNTYFP_list") else [])],
+                    "county_names": [str(v).strip() for v in (val_rec.get("COUNTY_NAMES", "").split("|") if val_rec.get("COUNTY_NAMES") else [])],
                     "lsad": val_rec.get("LSAD", ""),
                     "geoid": geoid,
                 },
@@ -102,7 +103,8 @@ class DivGenerator:
                     "source_type": SourceType.HUMAN,
                     "source_description": "Human-researched validation data from civicdata.tech"
                 }],
-                last_updated=datetime.now(timezone.utc)
+                accurate_asof=self.req.asof_datetime,
+                last_updated=now,
             )
 
             logger.info(f"Division generated for {raw_ocdid}")
@@ -150,8 +152,9 @@ class DivGenerator:
                 fips_list = [item.get("statefps") for item in state_lookup if item.get("stateusps", "").upper() == state_code.upper()]
                 state_fips = str(fips_list[0]).zfill(2) if fips_list else ""
 
+            now = datetime.now(timezone.utc)
             self.division = Division(
-                deterministic_id=str(uuid),
+                id=uuid,
                 ocdid=raw_ocdid,
                 country="us",
                 display_name=display_name,
@@ -175,7 +178,8 @@ class DivGenerator:
                     "source_type": SourceType.HUMAN,
                     "source_description": "Open Civic Data Master repo"
                 }],
-                last_updated=datetime.now(timezone.utc)
+                accurate_asof=self.req.asof_datetime,
+                last_updated=now,
             )
 
             logger.info(f"Stub Division generated for {raw_ocdid}")
