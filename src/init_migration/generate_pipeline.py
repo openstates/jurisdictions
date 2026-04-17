@@ -19,6 +19,7 @@ from uuid import UUID
 from src.init_migration.pipeline_models import GeneratorReq, GeneratorResp, GeneratorStatus, Status
 from src.init_migration.generate_division import DivGenerator
 from src.init_migration.generate_jurisdiction import JurGenerator
+from src.init_migration.jurisdiction_seed import infer_jurisdiction_seed
 from src.utils.ocdid import ocdid_parser
 from src.utils.place_name import namelsad_to_display_name
 from src.models.division import Division
@@ -40,41 +41,12 @@ logger = logging.getLogger(__name__)
 FUZZY_MATCH_THRESHOLD = 0.85
 
 # Filename pattern constants
-DIVISION_FILENAME_PATTERN = "{display_name}_{geoid}_{uuid}.yaml"
+DIVISION_FILENAME_PATTERN = "{display_name}_{uuid}.yaml"
 JURISDICTION_FILENAME_PATTERN = "{name}_{uuid}.yaml"
 
 # Output directory constants
 DIVISION_OUTPUT_DIR = "divisions"
 JURISDICTION_OUTPUT_DIR = "jurisdictions"
-
-
-def get_division_filename(display_name: str, geoid: str, uuid: UUID) -> str:
-    """Generate Division YAML filename from components.
-
-    Args:
-        display_name: Human-readable name (e.g., 'Sausalito')
-        geoid: Census GEOID (e.g., '0670364')
-        uuid: UUID from GeneratorReq
-
-    Returns:
-        Filename string (e.g., 'sausalito_0670364_3fa85f64-5717-4562-b3fc-2c963f66afa6.yaml')
-    """
-    safe_display_name = display_name.lower().replace(" ", "_")
-    return f"{safe_display_name}_{geoid}_{uuid}.yaml"
-
-
-def get_jurisdiction_filename(name: str, uuid: UUID) -> str:
-    """Generate Jurisdiction YAML filename from components.
-
-    Args:
-        name: Jurisdiction name (e.g., 'Sausalito City Government')
-        uuid: UUID from GeneratorReq (same as corresponding Division)
-
-    Returns:
-        Filename string (e.g., 'sausalito_city_government_3fa85f64-5717-4562-b3fc-2c963f66afa6.yaml')
-    """
-    safe_name = name.lower().replace(" ", "_")
-    return f"{safe_name}_{uuid}.yaml"
 
 
 
@@ -107,6 +79,8 @@ class GeneratePipeline:
 
         Args:
             req: GeneratorReq object containing OCDid, UUID, flags, and validation data filepath
+            division_output_dir: Directory for generated Division YAML files
+            jurisdiction_output_dir: Directory for generated Jurisdiction YAML files
         """
         self.req = req
         self.data = req.data
@@ -143,7 +117,7 @@ class GeneratePipeline:
             ValueError: If CSV cannot be loaded
         """
         try:
-            df = pl.read_csv(self.validation_data_filepath)
+            df = pl.read_csv(self.validation_data_filepath, infer_schema_length=0)
             logger.info(f"Loaded validation CSV: {df.shape[0]} rows, {df.shape[1]} columns")
             return df
         except Exception as e:
@@ -256,21 +230,6 @@ class GeneratePipeline:
             logger.error(f"Error in find_matches for {ocdid}", exc_info=True)
             return pl.DataFrame()
 
-    def should_create_jurisdiction(self, division: Division) -> bool:
-        """Determine if a Jurisdiction should be created for this Division.
-
-        TODO: Define jurisdiction creation rules based on Division classification/type.
-        Currently: Create jurisdiction for most cases (placeholder logic).
-
-        Args:
-            division: The Division object to evaluate
-
-        Returns:
-            True if Jurisdiction should be created, False otherwise
-        """
-        # Placeholder: Create jurisdiction for all Divisions
-        return True
-
     def jurisdiction_exists(self, jurisdiction_ocdid: str) -> bool:
         """Check if a Jurisdiction with this ocd_id has already been created.
 
@@ -292,88 +251,98 @@ class GeneratePipeline:
             data=self.data,
             status=GeneratorStatus(status=Status.SUCCESS),
             division_path=None,
-            jurisdiction_path=None
+            jurisdiction_path=None,
         )
 
         try:
-            # Find matches in validation data
             matches_df = self.find_matches(self.data.ocdid.raw_ocdid)
             match_count = len(matches_df)
-
             logger.info(f"Matching result for {self.data.ocdid.raw_ocdid}: {match_count} match(es)")
-
-            # Branch on match count
-            if match_count == 1:
-                # Single match: generate full Division
-                logger.info(f"Single match found for {self.data.ocdid.raw_ocdid}")
-                matched_row = matches_df.row(0, named=True)
-
+            # Handle match outcomes
+            if matches_df.is_empty():
+                logger.info(f"No matches found for {self.data.ocdid.raw_ocdid}, creating stub Division")
                 div_gen = DivGenerator(self.req)
-                self.division = div_gen.generate_division(val_rec=matched_row, uuid=self.uuid)
-                response.division_path = (
-                    str(self.division.dump_division(base_dir=self.division_output_dir))
-                    if self.division
-                    else None
+                self.division = div_gen.generate_division_stub(uuid=self.uuid)
+                if self.division:
+                    response.division_path = str(
+                        div_gen.dump_division(output_dir=self.division_output_dir)
+                    )
+                self.quarantine.ocdid_no_validation_div.append({
+                    "ocdid": self.data.ocdid.raw_ocdid,
+                    "reason": "no_validation_match",
+                    "matched_records": [],
+                })
+                response.status = GeneratorStatus(status=Status.PARTIAL, error="No validation match found")
+                return response
+
+            if match_count > 1:
+                logger.warning(f"Multiple matches found for {self.data.ocdid.raw_ocdid}, flagging for review")
+                div_gen = DivGenerator(self.req)
+                self.division = div_gen.generate_division_stub(uuid=self.uuid)
+                if self.division and self.division.ocdid:
+                    response.division_path = str(
+                        div_gen.dump_division(output_dir=self.division_output_dir)
+                    )
+                matched_records = [dict(row) for row in matches_df.iter_rows(named=True)]
+                self.quarantine.ocdid_no_validation_div.append({
+                    "ocdid": self.data.ocdid.raw_ocdid,
+                    "reason": "multiple_matches",
+                    "matched_records": matched_records,
+                    "match_count": match_count,
+                })
+                response.status = GeneratorStatus(
+                    status=Status.PARTIAL,
+                    error=f"Multiple matches ({match_count}) found, flagged for review",
                 )
+                return response
 
-                # Generate Jurisdiction if appropriate
-                if self.division and self.should_create_jurisdiction(self.division):
-                    # Derive jurisdiction ocdid
-                    jurisdiction_ocdid = self._derive_jurisdiction_ocdid(self.division.ocdid)
+            # Handle successful match (exact or fuzzy)
+            matched_row = matches_df.row(0, named=True)
 
+            # Generate full Division from the matched validation record
+            div_gen = DivGenerator(self.req)
+            self.division = div_gen.generate_division(val_rec=matched_row, uuid=self.uuid)
+            if self.division:
+                response.division_path = str(
+                    div_gen.dump_division(output_dir=self.division_output_dir)
+                )
+            # Determine whether and what kind of Jurisdiction to create (issue #41)
+            if self.division:
+                seed = infer_jurisdiction_seed(
+                    ocdid=self.division.ocdid,
+                    lsad_code=self.division.government_identifiers.lsad if self.division.government_identifiers else None,
+                )
+                if seed.has_jurisdiction:
+                    classification = seed.classification or "government"
+                    jurisdiction_ocdid = self._derive_jurisdiction_ocdid(
+                        self.division.ocdid, classification
+                    )
                     if not self.jurisdiction_exists(jurisdiction_ocdid):
-                        jur_gen = JurGenerator(self.req, division=self.division)
-                        self.jurisdiction = jur_gen.generate_jurisdiction(division=self.division, uuid=self.uuid)
+                        jur_gen = JurGenerator(
+                            self.req,
+                            division=self.division,
+                        )
+                        self.jurisdiction = jur_gen.generate_jurisdiction(
+                            division=self.division,
+                            uuid=self.uuid,
+                            classification=classification,
+                        )
                         if self.jurisdiction:
                             response.jurisdiction_path = str(
-                                self.jurisdiction.dump_jurisdiction(
-                                    base_dir=self.jurisdiction_output_dir
+                                jur_gen.dump_jurisdiction(
+                                    output_dir=self.jurisdiction_output_dir
                                 )
                             )
                             self.created_jurisdictions.add(jurisdiction_ocdid)
                             logger.info(f"Jurisdiction created: {jurisdiction_ocdid}")
                     else:
                         logger.info(f"Jurisdiction already exists: {jurisdiction_ocdid}")
+                else:
+                    logger.info(
+                        f"No jurisdiction created for {self.division.ocdid}: {seed.reason}"
+                    )
 
-                response.status = GeneratorStatus(status=Status.SUCCESS)
-
-            elif match_count == 0:
-                # No match: generate stub Division and add to quarantine
-                logger.info(f"No matches found for {self.data.ocdid.raw_ocdid}, creating stub Division")
-
-                div_gen = DivGenerator(self.req)
-                self.division = div_gen.generate_division_stub(uuid=self.uuid)
-                response.division_path = (
-                    str(self.division.dump_division(base_dir=self.division_output_dir))
-                    if self.division
-                    else None
-                )
-
-                # Add to quarantine
-                self.quarantine.ocdid_no_validation_div.append({
-                    "ocdid": self.data.ocdid.raw_ocdid,
-                    "reason": "no_validation_match",
-                    "matched_records": []
-                })
-
-                response.status = GeneratorStatus(status=Status.SUCCESS, error="No validation match found")
-
-            else:
-                # Multiple matches: add to quarantine, skip Division generation
-                logger.warning(f"Multiple matches found for {self.data.ocdid.raw_ocdid}, flagging for review")
-
-                # Convert matched rows to dicts for quarantine storage
-                matched_records = [dict(row) for row in matches_df.iter_rows(named=True)]
-
-                self.quarantine.ocdid_no_validation_div.append({
-                    "ocdid": self.data.ocdid.raw_ocdid,
-                    "reason": "multiple_matches",
-                    "matched_records": matched_records,
-                    "match_count": match_count
-                })
-
-                response.status = GeneratorStatus(status=Status.SKIPPED, error=f"Multiple matches ({match_count}) found, flagged for review")
-
+            response.status = GeneratorStatus(status=Status.SUCCESS)
             return response
 
         except Exception as e:
@@ -381,23 +350,21 @@ class GeneratePipeline:
             response.status = GeneratorStatus(status=Status.FAILED, error=str(e))
             return response
 
-    def _derive_jurisdiction_ocdid(self, division_ocdid: str) -> str:
+    def _derive_jurisdiction_ocdid(self, division_ocdid: str, classification: str = "government") -> str:
         """Derive jurisdiction ocd_id from division ocd_id.
 
-        Schema: ocd-jurisdiction/<division_without_prefix>/<type>
+        Schema: ocd-jurisdiction/<division_without_prefix>/<classification>
 
         Args:
             division_ocdid: Division OCD ID
+            classification: Jurisdiction classification (from JurisdictionSeed)
 
         Returns:
             Jurisdiction OCD ID
         """
-        # Remove 'ocd-division/' prefix and add jurisdiction type
         division_part = division_ocdid.replace("ocd-division/", "")
         division_part = re.sub(r"/council_district:[^/]+", "", division_part)
-        # TODO: Implement proper jurisdiction type determination
-        jurisdiction_type = "government"  # Placeholder
-        return f"ocd-jurisdiction/{division_part}/{jurisdiction_type}"
+        return f"ocd-jurisdiction/{division_part}/{classification}"
 
     def save_quarantine_data(self, output_dir: Path | None = None) -> None:
         """Save quarantine data to CSV files for researcher review.

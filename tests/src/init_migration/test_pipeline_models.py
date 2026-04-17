@@ -1,10 +1,10 @@
 """Tests for pipeline_models — specifically the OCDidIngestResp model changes."""
 from uuid import UUID
+from uuid import NAMESPACE_URL, uuid5
 
 import pytest
 from src.init_migration.pipeline_models import OCDidIngestResp
 from src.models.ocdid import OCDidParsed
-from src.utils.deterministic_id import generate_id
 
 
 def test_ocdid_ingest_resp_accepts_ocdid_parsed():
@@ -15,7 +15,7 @@ def test_ocdid_ingest_resp_accepts_ocdid_parsed():
         place="seattle",
         raw_ocdid="ocd-division/country:us/state:wa/place:seattle",
     )
-    det_id = generate_id("ocd-division/country:us/state:wa/place:seattle")
+    det_id = uuid5(NAMESPACE_URL, "ocd-division/country:us/state:wa/place:seattle")
     resp = OCDidIngestResp(
         uuid=det_id,
         ocdid=parsed,
@@ -34,7 +34,7 @@ def test_ocdid_ingest_resp_uuid_is_uuid5_string():
         place="seattle",
         raw_ocdid="ocd-division/country:us/state:wa/place:seattle",
     )
-    det_id = generate_id("ocd-division/country:us/state:wa/place:seattle")
+    det_id = uuid5(NAMESPACE_URL, "ocd-division/country:us/state:wa/place:seattle")
     resp = OCDidIngestResp(
         uuid=det_id,
         ocdid=parsed,

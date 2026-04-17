@@ -3,7 +3,7 @@ ocdid: "ocd-jurisdiction/country:us/state:tx/place:austin/government"
 name: "City of Austin"
 url: "https://www.austintexas.gov"
 classification: "government"
-legislative_sessions: []
+legislative_sessions: {}
 feature_flags: []
 term:
   - duration: 4
@@ -30,7 +30,9 @@ sourcing:
     source_type: "human_researched"
 metadata:
   urls:
-    - meeting: https://www.austintexas.gov/department/city-council/council/council_meeting_info_center.htm
-    - people: https://www.austintexas.gov/government
+    - url_type: "meetings"
+      url: "https://www.austintexas.gov/department/city-council/council/council_meeting_info_center.htm"
+    - url_type: "people"
+      url: "https://www.austintexas.gov/government"
 
 
