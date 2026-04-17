@@ -36,8 +36,6 @@ government_identifiers:
     - "Hays"
     - "Travis"
     - "Williamson"
-  placefp: "02860"
-  lsad:
-    - "22"
+  lsad: "22"
   geoid: "4845390165"
 jurisdiction_id: "ocd-jurisdiction/country:us/state:tx/place:austin/government"

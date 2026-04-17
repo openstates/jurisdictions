@@ -32,6 +32,6 @@ government_identifiers:
   sldlst: []
   countyfp: ["001"]
   county_names: []
-  lsad: null
-  geoid: null
+  lsad: ""
+  geoid: "11001"
 jurisdiction_id: "ocd-jurisdiction/country:us/district:dc/anc:1a/government"

@@ -4,9 +4,12 @@ This module handles Jurisdiction object generation and serialization.
 Responsibilities:
 - Generate Jurisdiction objects from Division objects
 - Derive jurisdiction_id from division OCDid
-- Map Division fields to Jurisdiction model fields
-- Check Jurisdiction idempotency/deduplication
+- Resolve jurisdiction name and URL via AI lookup or deterministic fallback
 - Serialize Jurisdiction objects to YAML files
+
+Name and URL resolution order:
+    1. AI lookup (when req.jurisdiction_ai_url is True — stub, not yet implemented)
+    2. Deterministic fallback from Division data
 """
 
 from src.init_migration.pipeline_models import GeneratorReq
@@ -20,23 +23,41 @@ from uuid import UUID
 import logging
 import yaml
 import re
-from urllib.parse import quote
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
+def get_jurisdiction_filename(ocdid: str, uuid: UUID) -> str:
+    """Generate Jurisdiction YAML filename from components.
 
+    Derives the name segment from the second-to-last path component of the
+    jurisdiction OCD ID (e.g. 'place:seattle' → 'place_seattle').
 
+    Args:
+        ocdid: Jurisdiction OCD ID (e.g., 'ocd-jurisdiction/country:us/state:wa/place:seattle/government')
+        uuid: UUID from GeneratorReq (same as corresponding Division)
+
+    Returns:
+        Filename string (e.g., 'place_seattle_3fa85f64-5717-4562-b3fc-2c963f66afa6.yaml')
+    """
+    parts = ocdid.rstrip("/").split("/")
+    segment = parts[-2] if len(parts) >= 2 else parts[-1]
+    safe_segment = segment.replace(":", "_")
+    return f"{safe_segment}_{uuid}.yaml"
 
 class JurGenerator:
     """Factory for generating Jurisdiction objects from Division objects with persistence."""
 
-    def __init__(self, req: GeneratorReq, division: Division | None = None):
+    def __init__(
+        self,
+        req: GeneratorReq,
+        division: Division | None = None,
+    ):
         """Initialize JurGenerator with request data and optional Division.
 
         Args:
-            req: GeneratorReq object with OCDid, UUID, and configuration
-            division: Optional Division object (can be passed later in generate_jurisdiction)
+            req: GeneratorReq object with OCDid, UUID, and configuration.
+            division: Optional Division object.
         """
         self.req = req
         self.data = req.data
@@ -44,58 +65,98 @@ class JurGenerator:
         self.division = division
         self.jurisdiction: Jurisdiction | None = None
 
-    def generate_jurisdiction(self, division: Division, uuid: UUID) -> Jurisdiction:
-        """Generate a Jurisdiction object from a Division object.
+    def _ai_lookup(self, division: Division) -> dict | None:
+        """Look up official jurisdiction name and URL via AI agent.
 
-        Derives jurisdiction_id from division OCDid, maps Division fields to
-        Jurisdiction model fields. Checks for idempotency.
+        Returns a dict with at minimum 'name' and 'url' keys when the lookup
+        succeeds, or None when AI lookup is disabled (req.jurisdiction_ai_url
+        is False).
+
+        This is a stub.  Full AI integration is tracked separately.  When
+        enabled the implementation should:
+          - Query the AI with division identifiers (ocdid, display_name,
+            government_identifiers.namelsad, state/county/place context).
+          - Parse the structured response for the official governing body name
+            and its primary website URL.
+          - Return {'name': <str>, 'url': <str>} on success.
 
         Args:
-            division: Division object to generate Jurisdiction from
-            uuid: UUID for this Jurisdiction (same as Division UUID)
+            division: Division object whose jurisdiction is being generated.
 
         Returns:
-            Jurisdiction object
+            dict with 'name'/'url' keys, or None if AI lookup is disabled.
 
         Raises:
-            ValueError: If required Division fields are missing
+            NotImplementedError: When jurisdiction_ai_url=True (not yet built).
+        """
+        if not self.req.jurisdiction_ai_url:
+            return None
+        raise NotImplementedError(
+            "AI jurisdiction lookup is not yet implemented. "
+            "Set jurisdiction_ai_url=False to use deterministic fallback values."
+        )
+
+    def generate_jurisdiction(self, division: Division, uuid: UUID, classification: str = "government") -> Jurisdiction:
+        """Generate a Jurisdiction object from a Division object.
+
+        Name and URL are resolved from AI lookup first, then deterministic
+        fallback values derived from Division data.
+
+        Args:
+            division: Division object to generate Jurisdiction from.
+            uuid: UUID for this Jurisdiction.
+            classification: Jurisdiction classification (from JurisdictionSeed).
+
+        Returns:
+            Jurisdiction object.
+
+        Raises:
+            ValueError: If required Division fields are missing.
         """
         try:
-            # Validate Division
             if not division or not division.ocdid:
                 raise ValueError("Division object or ocdid is missing")
 
-            # Derive jurisdiction_id from division ocdid
-            jurisdiction_ocdid = self._derive_jurisdiction_ocdid(division.ocdid)
+            jurisdiction_ocdid = self._derive_jurisdiction_ocdid(division.ocdid, classification)
 
-            # Check if Jurisdiction already exists
             if self._jurisdiction_exists(jurisdiction_ocdid):
                 logger.info(f"Jurisdiction already exists: {jurisdiction_ocdid}, returning existing")
                 return self._load_existing_jurisdiction(jurisdiction_ocdid)
 
-            # Determine jurisdiction type and name
-            jurisdiction_type = self._determine_jurisdiction_type(division)
-            jurisdiction_name = self._generate_jurisdiction_name(division, jurisdiction_type)
+            ai = self._ai_lookup(division)
+
+            if classification == "government":
+                fallback_name = f"{division.display_name} Government"
+            else:
+                fallback_name = f"{division.display_name} {classification.replace('_', ' ').title()}"
+            fallback_url = f"https://opencivicdata.org/division/{division.ocdid}"
+
+            # --- Name / URL ---
+            name = (ai or {}).get("name") or fallback_name
+            url = (ai or {}).get("url") or fallback_url
+
+            # --- Term / Metadata ---
+            term = None
+            metadata: dict = {"urls": []}
 
             now = datetime.now(timezone.utc)
-            # Create Jurisdiction object
             self.jurisdiction = Jurisdiction(
-                id=uuid,
                 ocdid=jurisdiction_ocdid,
-                name=jurisdiction_name,
-                url=self.ai_lookup_url(division),
-                classification=jurisdiction_type,
+                name=name,
+                url=url,
+                classification=classification,
                 legislative_sessions={},
                 feature_flags=[],
-                metadata={"urls": []},
+                term=term,
+                metadata=metadata,
                 sourcing=[{
                     "field": ["ocdid", "name", "classification"],
                     "source_name": "derived_from_division",
                     "source_url": {
-                        "division": f"https://opencivicdata.org/division/{quote(division.ocdid, safe='')}"
+                        "division": f"https://opencivicdata.org/division/{division.ocdid}"
                     },
                     "source_type": SourceType.HUMAN,
-                    "source_description": "Jurisdiction derived from Division object"
+                    "source_description": "Jurisdiction derived from Division object",
                 }],
                 accurate_asof=self.req.asof_datetime,
                 last_updated=now,
@@ -105,155 +166,65 @@ class JurGenerator:
             return self.jurisdiction
 
         except Exception:
-            logger.error(f"Failed to generate Jurisdiction from Division {division.ocdid if division else 'unknown'}", exc_info=True)
+            logger.error(
+                f"Failed to generate Jurisdiction from Division {division.ocdid if division else 'unknown'}",
+                exc_info=True,
+            )
             raise
 
-    def _derive_jurisdiction_ocdid(self, division_ocdid: str) -> str:
-        """Derive jurisdiction ocd_id from division ocd_id.
-
-        Schema: ocd-jurisdiction/<division_without_prefix>/<type>
-
-        Args:
-            division_ocdid: Division OCD ID
-
-        Returns:
-            Jurisdiction OCD ID
-        """
-        # Remove 'ocd-division/' prefix
+    def _derive_jurisdiction_ocdid(self, division_ocdid: str, classification: str = "government") -> str:
+        """Derive jurisdiction ocd_id from division ocd_id."""
         division_part = division_ocdid.replace("ocd-division/", "")
         division_part = re.sub(r"/council_district:[^/]+", "", division_part)
-
-        # Determine jurisdiction type (placeholder)
-        jurisdiction_type = "government"  # TODO: Implement proper type determination
-
-        return f"ocd-jurisdiction/{division_part}/{jurisdiction_type}"
-
-    def _determine_jurisdiction_type(self, division: Division) -> str:
-        """Determine jurisdiction type/classification based on Division.
-
-        TODO: Define jurisdiction type rules based on Division classification/type.
-        Currently: Placeholder returning 'government'.
-
-        Args:
-            division: Division object
-
-        Returns:
-            Jurisdiction classification (e.g., 'government', 'legislature', 'school_system')
-        """
-        # Placeholder logic - rules to be defined separately
-        return "government"
-
-    def _generate_jurisdiction_name(self, division: Division, jurisdiction_type: str) -> str:
-        """Generate jurisdiction name from Division.
-
-        Args:
-            division: Division object
-            jurisdiction_type: Jurisdiction type/classification
-
-        Returns:
-            Jurisdiction name
-        """
-        base_name = division.display_name or "Unknown"
-
-        # TODO: Implement proper name generation based on jurisdiction type
-        if jurisdiction_type == "legislature":
-            return f"{base_name} City Council"
-        elif jurisdiction_type == "school_system":
-            return f"{base_name} School District"
-        else:
-            return f"{base_name} {jurisdiction_type.title()}"
+        return f"ocd-jurisdiction/{division_part}/{classification}"
 
     def _jurisdiction_exists(self, jurisdiction_ocdid: str) -> bool:
-        """Check if a Jurisdiction YAML file already exists for this OCD ID.
-
-        Args:
-            jurisdiction_ocdid: The OCD jurisdiction ID
-
-        Returns:
-            True if Jurisdiction file exists, False otherwise
-        """
         try:
-            # Extract state from jurisdiction_ocdid
-            parsed = ocdid_parser(jurisdiction_ocdid)  # Returns dict
+            parsed = ocdid_parser(jurisdiction_ocdid)
             state = parsed.get("state", "").lower() if parsed.get("state") else ""
-
-            # Look for files in jurisdictions/<state>/local/
             jur_dir = Path(f"jurisdictions/{state}/local")
             if not jur_dir.exists():
                 return False
-
-            # Check if any file with this ocdid exists (would need to parse all files)
-            # For now, return False (full implementation would parse each YAML)
             return False
-
         except Exception as e:
             logger.debug(f"Error checking if Jurisdiction exists: {e}")
             return False
 
     def _load_existing_jurisdiction(self, jurisdiction_ocdid: str) -> Jurisdiction:
-        """Load an existing Jurisdiction YAML file.
-
-        Args:
-            jurisdiction_ocdid: The OCD jurisdiction ID
-
-        Returns:
-            Jurisdiction object
-
-        Raises:
-            ValueError: If file cannot be loaded
-        """
         try:
-            # TODO: Implement actual file loading
             raise NotImplementedError("_load_existing_jurisdiction not yet implemented")
         except Exception:
             logger.error(f"Failed to load existing Jurisdiction for {jurisdiction_ocdid}", exc_info=True)
             raise
 
     def dump_jurisdiction(self, output_dir: Path | None = None) -> Path:
-        """Serialize and save Jurisdiction object to YAML file.
-
-        Args:
-            output_dir: Base output directory (default: current directory)
-
-        Returns:
-            Path to saved YAML file
-
-        Raises:
-            ValueError: If Jurisdiction object doesn't exist or required fields are missing
-        """
+        """Serialize and save Jurisdiction object to YAML file."""
         if not self.jurisdiction:
             raise ValueError("Jurisdiction object does not exist")
 
         try:
-            # Import filename helper from generate_pipeline
-            from src.init_migration.generate_pipeline import get_jurisdiction_filename
-
-            # Generate filename
             filename = get_jurisdiction_filename(
-                self.jurisdiction.name,
-                self.jurisdiction.id
+                self.jurisdiction.ocdid,
+                self.jurisdiction.id,
             )
 
-            # Determine state from jurisdiction ocdid
-            parsed = ocdid_parser(self.jurisdiction.ocdid)  # Returns dict
-            state = parsed.get("state", "").lower() if parsed.get("state") else ""
+            # Use the division OCD ID (from the request) to extract state —
+            # jurisdiction OCD IDs end with an unkeyed "/government" segment
+            # that ocdid_parser cannot handle.
+            div_parsed = ocdid_parser(self.req.data.ocdid.raw_ocdid)
+            state = (div_parsed.get("state") or div_parsed.get("district") or "").lower()
 
-            # Create directory if needed
             if output_dir is None:
                 output_dir = Path(".")
 
             jur_dir = output_dir / "jurisdictions" / state / "local"
             jur_dir.mkdir(parents=True, exist_ok=True)
 
-            # Save to YAML
+            data = self.jurisdiction.model_dump(mode="json", exclude_none=False)
+
             filepath = jur_dir / filename
-            with open(filepath, 'w') as f:
-                yaml.dump(
-                    self.jurisdiction.model_dump(exclude_none=False),
-                    f,
-                    default_flow_style=False,
-                    sort_keys=False
-                )
+            with open(filepath, "w") as f:
+                yaml.dump(data, f, default_flow_style=False, sort_keys=False)
 
             logger.info(f"Jurisdiction saved to {filepath}")
             return filepath
@@ -262,23 +233,6 @@ class JurGenerator:
             logger.error("Failed to save Jurisdiction to YAML", exc_info=True)
             raise
 
-    def ai_lookup_url(self, division: Division) -> str:
-        """Return a stable placeholder URL until AI lookup integration exists."""
-        if division.display_name:
-            slug = division.display_name.lower().replace(" ", "-")
-            return f"https://example.invalid/jurisdiction/{slug}"
-        return "https://example.invalid/jurisdiction/unknown"
-
 
 if __name__ == "__main__":
-    # Test jurisdiction generation
     pass
-
-
-
-
-
-
-
-
-

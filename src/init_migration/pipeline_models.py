@@ -29,6 +29,7 @@ class GeneratorReq(BaseModel):
 class Status(str, Enum):
     SUCCESS = "success"
     SKIPPED = "skipped"
+    PARTIAL = "partial"
     FAILED = "failed"
 
 class GeneratorStatus(BaseModel):
