@@ -45,7 +45,7 @@
     - Response = GeneratorResp 
     - Runs the generator which will perform the following tasks:
         1. Log to a file
-        2. Load  Creyton's csv
+        2. Load  Creyton's csv (# Master Validation Set for initial load DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121")
         2. Setup quarantine to store records did not match
             - tab in Creyton's file with a run date.
         3. Given the parsed OCDid, find a "place" match in the research 
@@ -67,6 +67,7 @@
                     - Indicates we found a 
                     - update OCDID add UUID 
            If fail to match... 
+            - Create a stub Division record, Jurisdiction record 
             - Store in quarantine tab of Creyton spreadsheet with error message / reason code
 
         7. Return status in GeneratorResp
