@@ -5,7 +5,7 @@ from enum import Enum
 from uuid import UUID
 from src.models.ocdid import OCDidParsed
 
-
+# Master Validation Set for initial load
 DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121"
 
 class OCDidIngestResp(BaseModel):
