@@ -5,10 +5,25 @@ Thanks for contributing.
 This repository stores and generates Division and Jurisdiction YAML data for US
 local governments.
 
+## Why Your Contribution Matters
+
+When you contribute to this project, your work directly improves the civic data infrastructure that powers transparency, research, and public engagement across the United States.
+
+**Here's what happens:**
+- Your corrections and updates to jurisdiction and division data become the authoritative source used by OpenStates.org and its API
+- Researchers, journalists, and civic tech developers rely on this data to track legislation, analyze government accountability, find local representatives and build tools that serve the public
+- Your knowledge of your local government (boundaries, officials, contact information) fills critical gaps that automated systems can't solve
+- The improvements you make help ensure that civic technology actually works for the communities it serves
+
+Think of it like this: just as Open States volunteers understood that better data on their website meant better tools for their state's civic engagement, your contributions here create the foundation that makes all downstream civic tech work correctly.
+
 ## Ways to Contribute
 
 ### Update YAML data directly - No coding required.
 If you know that a division or jurisdiction file contains incorrect or outdated information — wrong district boundaries, a renamed office, a bad URL — you can edit the relevant file directly under `divisions/` or `jurisdictions/` and open a pull request with your correction.
+
+**Your impact:** Your local knowledge flows directly into OpenStates.org and its API. When you fix a contact URL, update district boundaries, or correct an official's name, journalists and civic technologists immediately get better data. This type of contribution is especially valuable because you know things about your local government that no automated system can discover.
+
 1. Fork this repo
 2. On your forked repo, update a file under the `data` folder
 3. Update the file, then `Commit changes` via `Commit directly to the main branch`.
@@ -18,6 +33,8 @@ If you know that a division or jurisdiction file contains incorrect or outdated 
 
 ### Pick up an existing issue - Coding required. (Python)
 Browse the [issues tracker](https://github.com/openstates/jurisdictions/issues) and pick up an issue. Labels marked as 'good first issue' are a good place to start.
+
+**Your impact:** These issues often involve building tools or fixing processes that affect how hundreds or thousands of jurisdiction records are generated and validated. Your code changes improve the pipeline that feeds OpenStates' data infrastructure, making it faster, more reliable, and more comprehensive.
 
 ## Before You Start
 1. Check for an existing issue related to your change.
@@ -69,6 +86,17 @@ Include the following in your PR:
 ## Where to Put Docs
 - Human-facing documentation belongs in `docs/`.
 - Agent-facing instructions belong in `AGENTS.md` and `ai_tools/`.
+
+## What Happens to Your Contribution
+
+Once your PR is reviewed and merged:
+
+1. **Data updates** (YAML files) are immediately available in this repository and automatically flow into OpenStates.org and its API on the next data update cycle
+2. **Code improvements** help the team maintain, scale, and improve the pipeline that generates and validates all jurisdiction and division records
+3. **Your contribution is credited** in the repository's git history and pull request records, creating a transparent record of who improved the civic data infrastructure
+4. **Downstream users benefit** — researchers running studies, journalists investigating government, civic tech developers building tools, and citizens looking up their representatives all get more accurate and complete data
+
+The improvements you make are permanent infrastructure improvements. They don't disappear after one election cycle or get overwritten—they become part of the foundation that civic technology builds on.
 
 ## Questions
 Open an issue and tag maintainers if you are unsure about scope, data modeling,
