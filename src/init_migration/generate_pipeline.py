@@ -15,7 +15,6 @@ Responsibilities:
 import logging
 from pathlib import Path
 import re
-from uuid import UUID
 from src.init_migration.pipeline_models import GeneratorReq, GeneratorResp, GeneratorStatus, Status
 from src.init_migration.generate_division import DivGenerator
 from src.init_migration.generate_jurisdiction import JurGenerator
