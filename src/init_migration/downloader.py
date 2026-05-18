@@ -15,7 +15,6 @@ from typing import Literal as _LiteralForAlias
 
 import httpx
 from logging import getLogger
-logger =getLogger(__name__)
 
 # Import custom errors from parent package
 from src.errors import (
@@ -24,6 +23,8 @@ from src.errors import (
     DownloaderNotInitializedError,
     CacheError,
 )
+
+logger = getLogger(__name__)
 
 # Provide an optional helper to configure logging externally (no import-time side effects)
 
