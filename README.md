@@ -17,31 +17,44 @@ local governments in the OpenStates ecosystem.
 - macOS/Linux shell examples below (adapt for Windows as needed)
 
 ## Quickstart (New Contributor)
-1. Clone and enter repo.
+1. Fork this repo on GitHub -> Owner (you) -> Create fork
+
+2. Clone and enter repo.
 ```sh
-git clone <repo-url>
+git clone <your-repo-url>
 cd jurisdictions
 ```
 
-2. Install `uv` (if needed).
+3. Install `uv` (if needed).
 ```sh
 brew install uv
 # or
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-3. Create virtual environment and install dependencies.
+4. Create virtual environment and install dependencies.
 ```sh
 uv venv .venv
 source .venv/bin/activate
 uv sync --all-extras
 ```
 
-4. Verify local setup.
+5. Verify local setup.
 ```sh
 uv run ruff check .
 uv run pytest -m "not integration and not slow"
 ```
+
+6. Make changes and push
+```sh
+git checkout -b <your-new-branch>
+<make changes>
+git add .
+git commit -m "Information about your changes."
+git push origin <your-new-branch>
+```
+
+7. Create pull request by going to https://github.com/<your-username>/jurisdictions/tree/<your-new-branch> -> Contribute -> Open Pull Request
 
 ## Common Commands
 - Full test suite:
