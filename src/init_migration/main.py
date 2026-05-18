@@ -17,7 +17,7 @@ import asyncio
 import sys
 from pathlib import Path
 
-from loguru import logger
+from logging import getLogger
 from rich.console import Console
 from rich.table import Table
 
@@ -25,6 +25,7 @@ from src.utils.state_lookup import load_state_code_lookup
 from src.init_migration.download_manager import DownloadManager
 from src.init_migration.ocdid_matcher import OCDidMatcher, MatchResults
 
+logger = getLogger(__name__)
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     """Parse command-line arguments."""
