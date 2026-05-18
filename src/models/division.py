@@ -3,7 +3,6 @@ from pydantic import BaseModel, Field, ConfigDict, model_validator
 from typing import List, Optional
 from datetime import datetime, timezone
 from src.models.source import SourceObj
-import yaml
 from uuid import NAMESPACE_URL, UUID, uuid5
 from pathlib import Path
 import logging
@@ -83,8 +82,11 @@ class Division(BaseModel):
     # Untested
     @classmethod
     def load_division(cls, filepath):
+        from src.utils.yaml_manager import YamlManager  # deferred to break import cycle
         try:
-            data = yaml.safe_load(filepath)
+            filepath = Path(filepath)
+            yaml_manager = YamlManager(base_path=filepath.parent)
+            data = yaml_manager.read(filepath)
             cls = cls(**data)
         except Exception as error:
             logger.error("Failed to load division object", extras={"error":error}, exc_info=True)
@@ -92,6 +94,7 @@ class Division(BaseModel):
 
     # Untested
     def dump_division(self, base_dir: str | Path = PROJECT_PATH):
+        from src.utils.yaml_manager import YamlManager  # deferred to break import cycle
         if not self.government_identifiers:
             raise ValueError("A geoid is required to store a division obect.")
         base_path = Path(base_dir)
@@ -99,8 +102,11 @@ class Division(BaseModel):
         filepath = base_path / f"{self.display_name}_{self.government_identifiers.geoid}_{self.id}.yaml"
         # Convert model to dict and ensure UUID is converted to string
         data = self.model_dump(exclude_none=False, mode="json")
-        with open(filepath, "w") as f:
-            yaml.safe_dump(data, f)
+        yaml_manager = YamlManager(base_path=base_path)
+        if yaml_manager.exists(filepath):
+            yaml_manager.update(filepath, data)
+        else:
+            yaml_manager.create(filepath, data)
         return filepath
 
     def flatten(self) -> dict:

@@ -7,15 +7,15 @@ from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
 import pytest
-import yaml
 
 from src.init_migration.generate_pipeline import GeneratePipeline
 from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp, Status
-from src.models.division import Division
-from src.models.jurisdiction import Jurisdiction
 from src.models.ocdid import OCDidParsed
 from src.utils.ocdid import ocdid_parser
 from src.utils.state_lookup import load_state_code_lookup
+from src.models.division import Division
+from src.models.jurisdiction import Jurisdiction
+from src.utils.yaml_manager import YamlManager
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -59,11 +59,10 @@ def _load_target_rows() -> list[dict[str, str]]:
 
 def _load_fixture_index(base_dir: Path) -> dict[str, dict]:
     index: dict[str, dict] = {}
-    for yaml_path in base_dir.glob("**/*.yaml"):
-        with yaml_path.open(encoding="utf-8") as handle:
-            data = yaml.safe_load(handle)
-            if isinstance(data, dict) and data.get("ocdid"):
-                index[str(data["ocdid"])] = data
+    yaml_manager = YamlManager(base_path=base_dir)
+    for _, data in yaml_manager.iter_files(base_dir, recursive=True):
+        if data.get("ocdid"):
+            index[str(data["ocdid"])] = data
     return index
 
 
@@ -364,9 +363,9 @@ def test_generate_pipeline_main_style_integration(tmp_path: Path) -> None:
     assert len(generated_division_paths) == 5
     assert len(generated_jurisdiction_paths) == 5
 
+    division_manager = YamlManager(base_path=division_output_dir)
     for division_path in generated_division_paths:
-        with division_path.open(encoding="utf-8") as handle:
-            generated_division = yaml.safe_load(handle)
+        generated_division = division_manager.read(division_path)
 
         expected_division = division_fixtures[generated_division["ocdid"]]
         assert generated_division["ocdid"] == expected_division["ocdid"]
@@ -376,9 +375,9 @@ def test_generate_pipeline_main_style_integration(tmp_path: Path) -> None:
         if expected_geoid and expected_geoid != "missing-geoid":
             assert generated_geoid == expected_geoid
 
+    jurisdiction_manager = YamlManager(base_path=jurisdiction_output_dir)
     for jurisdiction_path in generated_jurisdiction_paths:
-        with jurisdiction_path.open(encoding="utf-8") as handle:
-            generated_jurisdiction = yaml.safe_load(handle)
+        generated_jurisdiction = jurisdiction_manager.read(jurisdiction_path)
 
         expected_jurisdiction = jurisdiction_fixtures[generated_jurisdiction["ocdid"]]
         assert generated_jurisdiction["ocdid"] == expected_jurisdiction["ocdid"]

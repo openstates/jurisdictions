@@ -3,7 +3,6 @@ from pydantic import BaseModel, Field, ConfigDict, model_validator
 from typing import Dict, List, Optional
 from datetime import datetime, timezone
 from .source import SourceObj
-import yaml
 from uuid import NAMESPACE_URL, UUID, uuid5
 from pathlib import Path
 
@@ -105,21 +104,28 @@ class Jurisdiction(BaseModel):
     # Untested
     @classmethod
     def load_jurisdiction(cls, filepath):
+        from src.utils.yaml_manager import YamlManager  # deferred to break import cycle
         try:
-            data = yaml.safe_load(filepath)
+            filepath = Path(filepath)
+            yaml_manager = YamlManager(base_path=filepath.parent)
+            data = yaml_manager.read(filepath)
             cls = cls(**data)
         except Exception as error:
             logger.error("Failed to load jurisdiction object", extras={"error":error}, exc_info=True)
             raise ValueError("Failed to load jurisdiction. Check filepath") from error
     # Untested
     def dump_jurisdiction(self, base_dir: str | Path = PROJECT_PATH):
+        from src.utils.yaml_manager import YamlManager  # deferred to break import cycle
         base_path = Path(base_dir)
         base_path.mkdir(parents=True, exist_ok=True)
         filepath = base_path / f"{self.name}_{self.id}.yaml"
         # Convert model to dict using JSON mode to convert enums to strings
         data = self.model_dump(exclude_none=False, mode="json")
-        with open(filepath, "w") as f:
-            yaml.safe_dump(data, f)
+        yaml_manager = YamlManager(base_path=base_path)
+        if yaml_manager.exists(filepath):
+            yaml_manager.update(filepath, data)
+        else:
+            yaml_manager.create(filepath, data)
         return filepath
 
     @classmethod

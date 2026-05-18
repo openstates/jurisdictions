@@ -19,7 +19,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 from uuid import UUID
 import logging
-import yaml
+from src.utils.yaml_manager import YamlManager
 import re
 
 logging.basicConfig()
@@ -298,8 +298,11 @@ class DivGenerator:
                 data.pop("metadata", None)
 
             filepath = div_dir / filename
-            with open(filepath, "w") as f:
-                yaml.dump(data, f, default_flow_style=False, sort_keys=False)
+            yaml_manager = YamlManager(base_path=div_dir)
+            if yaml_manager.exists(filepath):
+                yaml_manager.update(filepath, data)
+            else:
+                yaml_manager.create(filepath, data)
 
             logger.info(f"Division saved to {filepath}")
             return filepath
