@@ -22,9 +22,6 @@ from typing import Literal as _LiteralForAlias
 import httpx
 from logging import getLogger
 logger =getLogger(__name__)
-
-# Import custom errors from parent package
-
 # Provide an optional helper to configure logging externally (no import-time side effects)
 
 def configure_downloader_logging(
