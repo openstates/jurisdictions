@@ -12,10 +12,12 @@ import tempfile
 from pathlib import Path
 
 import duckdb
-from loguru import logger
+from logging import getLogger
 from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn, TimeElapsedColumn
 
 from src.init_migration.downloader import AsyncDownloader, DownloaderConfig
+
+logger = getLogger(__name__)
 
 RAW_BASE = "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers"
 MASTER_PATH = "country-us.csv"
