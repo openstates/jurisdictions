@@ -338,7 +338,9 @@ def test_generate_pipeline_main_style_integration(tmp_path: Path) -> None:
                 jurisdiction_output_dir=jurisdiction_output_dir,
             )
 
-            responses.append(await pipeline.run())
+            responses.append(pipeline.run())
+        
+        responses = await asyncio.gather(*responses)
         return responses
 
     responses = asyncio.run(run_all())
