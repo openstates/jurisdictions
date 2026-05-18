@@ -13,8 +13,6 @@ from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp, St
 from src.models.ocdid import OCDidParsed
 from src.utils.ocdid import ocdid_parser
 from src.utils.state_lookup import load_state_code_lookup
-from src.models.division import Division
-from src.models.jurisdiction import Jurisdiction
 from src.utils.yaml_manager import YamlManager
 
 
