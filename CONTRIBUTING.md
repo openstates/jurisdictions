@@ -19,18 +19,6 @@ Think of it like this: just as Open States volunteers understood that better dat
 
 ## Ways to Contribute
 
-### Update YAML data directly - No coding required.
-If you know that a division or jurisdiction file contains incorrect or outdated information — wrong district boundaries, a renamed office, a bad URL — you can edit the relevant file directly under `divisions/` or `jurisdictions/` and open a pull request with your correction.
-
-**Your impact:** Your local knowledge flows directly into OpenStates.org and its API. When you fix a contact URL, update district boundaries, or correct an official's name, journalists and civic technologists immediately get better data. This type of contribution is especially valuable because you know things about your local government that no automated system can discover.
-
-1. Fork this repo
-2. On your forked repo, update a file under the `data` folder
-3. Update the file, then `Commit changes` via `Commit directly to the main branch`.
-4. Go back to your forked repo,  "Contribute" -> "Open pull request"
-5. Follow the [Pull Request Guidelines](#pull-request-guidelines)
-6. Click "Create pull request"
-
 ### Pick up an existing issue - Coding required. (Python)
 Browse the [issues tracker](https://github.com/openstates/jurisdictions/issues) and pick up an issue. Labels marked as 'good first issue' are a good place to start.
 
