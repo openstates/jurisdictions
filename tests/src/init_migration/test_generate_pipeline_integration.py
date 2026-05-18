@@ -11,8 +11,6 @@ import yaml
 
 from src.init_migration.generate_pipeline import GeneratePipeline
 from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp, Status
-from src.models.division import Division
-from src.models.jurisdiction import Jurisdiction
 from src.models.ocdid import OCDidParsed
 from src.utils.ocdid import ocdid_parser
 from src.utils.state_lookup import load_state_code_lookup
