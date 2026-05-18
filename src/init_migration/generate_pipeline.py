@@ -18,6 +18,7 @@ import re
 from src.init_migration.pipeline_models import GeneratorReq, GeneratorResp, GeneratorStatus, Status
 from src.init_migration.generate_division import DivGenerator
 from src.init_migration.generate_jurisdiction import JurGenerator
+from src.init_migration.generate_recursive import ensure_ancestor_stubs
 from src.init_migration.jurisdiction_seed import infer_jurisdiction_seed
 from src.utils.ocdid import ocdid_parser
 from src.utils.place_name import namelsad_to_display_name
@@ -252,6 +253,30 @@ class GeneratePipeline:
             division_path=None,
             jurisdiction_path=None,
         )
+
+        # Ensure placeholder stubs exist for every ancestor level (state, county,
+        # etc.) before processing the leaf.  Failures here are non-fatal so that
+        # a transient I/O error does not abort the main generation work.
+        try:
+            ancestor_results = ensure_ancestor_stubs(
+                self.data.ocdid.raw_ocdid,
+                self.division_output_dir,
+                self.jurisdiction_output_dir,
+            )
+            logger.info(
+                "Ancestor stub check complete",
+                extra={
+                    "ocdid": self.data.ocdid.raw_ocdid,
+                    "ancestor_count": len(ancestor_results),
+                    "created": sum(1 for r in ancestor_results if r["action"] == "created"),
+                },
+            )
+        except Exception:
+            logger.error(
+                "Ancestor stub generation failed for %s",
+                self.data.ocdid.raw_ocdid,
+                exc_info=True,
+            )
 
         try:
             matches_df = self.find_matches(self.data.ocdid.raw_ocdid)
