@@ -6,6 +6,8 @@ from datetime import datetime
 from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
+import os
+import sys
 import pytest
 import yaml
 
@@ -58,7 +60,9 @@ def _load_target_rows() -> list[dict[str, str]]:
 def _load_fixture_index(base_dir: Path) -> dict[str, dict]:
     index: dict[str, dict] = {}
     for yaml_path in base_dir.glob("**/*.yaml"):
-        with yaml_path.open(encoding="utf-8") as handle:
+        if sys.platform.startswith("win"):
+            yaml_path = r"\\?\\" + os.path.abspath(yaml_path)
+        with open(yaml_path, 'r', encoding="utf-8") as handle:
             data = yaml.safe_load(handle)
             if isinstance(data, dict) and data.get("ocdid"):
                 index[str(data["ocdid"])] = data
