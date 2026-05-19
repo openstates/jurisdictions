@@ -1,0 +1,63 @@
+accurate_asof: '2025-10-27T01:29:51Z'
+also_known_as:
+- Marin City Census Designated Place
+country: us
+display_name: Marin City
+geometries:
+- arcGIS_address: https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/5/query?where=GEOID%3D'0645820'&outFields=*&outSR=4326&f=geojson
+  boundary:
+    centroid: null
+    extent: null
+  children: []
+  end: '2025-10-27T01:29:51Z'
+  start: '2025-10-27T01:29:51Z'
+government_identifiers:
+  common_name: null
+  county_names:
+  - Marin
+  countyfp:
+  - '041'
+  cousubfp: null
+  geoid: 0645820
+  geoid_12: null
+  geoid_14: null
+  lsad: '57'
+  namelsad: Marin City CDP
+  placefp: '46420'
+  sldlst:
+  - '012'
+  sldust:
+  - '002'
+  statefp: '06'
+id: 322f0412-0108-59a7-b29d-5f807672da64
+jurisdiction_id: ocd-jurisdiction/country:us/state:ca/county:marin/cdp:marin_city/special_district:marin_city_community_services_district/governing_board
+last_updated: '2025-10-27T01:29:51Z'
+metadata:
+  population:
+    population: 2993
+ocdid: ocd-division/country:us/state:ca/county:marin/cdp:marin_city
+sourcing:
+- field:
+  - geometries
+  source_description: null
+  source_name: Census TIGER/Line
+  source_type: human_researched
+  source_url:
+    url: https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer
+- field:
+  - government_identifiers
+  source_description: null
+  source_name: civicdata.tech
+  source_type: human_researched
+  source_url:
+    url: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362
+- field:
+  - metadata
+  - metadata.population
+  source_description: null
+  source_name: Census 2020 Decceennial Census
+  source_type: human_researched
+  source_url:
+    url: https://data.census.gov/profile/Marin_City_CDP,_California?g=160XX00US0645820
+valid_asof: null
+valid_thru: null
