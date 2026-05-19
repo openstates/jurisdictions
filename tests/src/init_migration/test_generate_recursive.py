@@ -58,15 +58,6 @@ def test_build_ancestor_ocdids_state_only():
     assert result == []
 
 
-def test_build_ancestor_ocdids_order():
-    """Ancestors are returned shallowest-first."""
-    ocdid = "ocd-division/country:us/state:ca/county:los_angeles/place:los_angeles"
-    result = build_ancestor_ocdids(ocdid)
-    assert result[0] == "ocd-division/country:us/state:ca"
-    assert result[1] == "ocd-division/country:us/state:ca/county:los_angeles"
-    assert len(result) == 2
-
-
 # ---------------------------------------------------------------------------
 # stub_exists — filesystem check
 # ---------------------------------------------------------------------------

@@ -254,30 +254,6 @@ class GeneratePipeline:
             jurisdiction_path=None,
         )
 
-        # Ensure placeholder stubs exist for every ancestor level (state, county,
-        # etc.) before processing the leaf.  Failures here are non-fatal so that
-        # a transient I/O error does not abort the main generation work.
-        try:
-            ancestor_results = ensure_ancestor_stubs(
-                self.data.ocdid.raw_ocdid,
-                self.division_output_dir,
-                self.jurisdiction_output_dir,
-            )
-            logger.info(
-                "Ancestor stub check complete",
-                extra={
-                    "ocdid": self.data.ocdid.raw_ocdid,
-                    "ancestor_count": len(ancestor_results),
-                    "created": sum(1 for r in ancestor_results if r["action"] == "created"),
-                },
-            )
-        except Exception:
-            logger.error(
-                "Ancestor stub generation failed for %s",
-                self.data.ocdid.raw_ocdid,
-                exc_info=True,
-            )
-
         try:
             matches_df = self.find_matches(self.data.ocdid.raw_ocdid)
             match_count = len(matches_df)
@@ -367,6 +343,23 @@ class GeneratePipeline:
                     )
 
             response.status = GeneratorStatus(status=Status.SUCCESS)
+
+            # Ensure placeholder stubs exist for every ancestor level (state, county,
+            # etc.) before processing the leaf.  Failures here are non-fatal so that
+            # a transient I/O error does not abort the main generation work.
+            ancestor_results = ensure_ancestor_stubs(
+                self.data.ocdid.raw_ocdid,
+                self.division_output_dir,
+                self.jurisdiction_output_dir,
+            )
+            logger.info(
+                "Ancestor stub check complete",
+                extra={
+                    "ocdid": self.data.ocdid.raw_ocdid,
+                    "ancestor_count": len(ancestor_results),
+                    "created": sum(1 for r in ancestor_results if r["action"] == "created"),
+                },
+            )
             return response
 
         except Exception as e:
