@@ -1,5 +1,5 @@
 """
-Recursively ensure ancestor Divisions and Jurisdictions exist for a given OCDid.
+Recursively ensures ancestor Divisions and Jurisdictions exist for a given OCDid.
 
 When the pipeline processes a local-government OCDid (e.g. place:seattle under
 state:wa), this module guarantees that each ancestor level (state, county, etc.)
@@ -7,7 +7,7 @@ has at least a placeholder Division and Jurisdiction YAML file on disk.
 
 Ancestors are stub quality — a separate enrichment pipeline is responsible for
 filling in their full data.  The only contract enforced here is:
-  - The ``ocdid`` field is correct and matches the OCD hierarchy.
+  - The `ocdid` field is correct and matches the OCD hierarchy.
   - Stubs are idempotent: running twice produces no second write.
 """
 from __future__ import annotations
@@ -32,11 +32,11 @@ ANCESTOR_START_IND = 3
 def build_ancestor_ocdids(ocdid: str) -> list[str]:
     """Return intermediate ancestor OCD IDs, excluding the country root and the leaf.
 
-    For ``ocd-division/country:us/state:wa/place:seattle`` returns::
+    For `ocd-division/country:us/state:wa/place:seattle` returns::
 
         ["ocd-division/country:us/state:wa"]
 
-    For ``ocd-division/country:us/state:ca/county:marin/place:sausalito`` returns::
+    For `ocd-division/country:us/state:ca/county:marin/place:sausalito` returns::
 
         ["ocd-division/country:us/state:ca",
          "ocd-division/country:us/state:ca/county:marin"]
@@ -60,9 +60,9 @@ def build_ancestor_ocdids(ocdid: str) -> list[str]:
 
 
 def stub_exists(ocdid: str, search_dir: Path) -> bool:
-    """Return True if a YAML file in ``search_dir`` has an ``ocdid`` matching ``ocdid``.
+    """Return True if a YAML file in `search_dir` has an `ocdid` matching `ocdid`.
 
-    Scans only the immediate contents of ``search_dir`` (non-recursive).
+    Scans only the immediate contents of `search_dir` (non-recursive).
 
     Args:
         ocdid: The OCD ID to search for.
@@ -84,7 +84,7 @@ def stub_exists(ocdid: str, search_dir: Path) -> bool:
 
 
 def _resolve_state_info(state_code: str, state_lookup: list[dict]) -> tuple[str, str]:
-    """Return ``(state_fips_2digit, full_name)`` for a lower-case state abbreviation."""
+    """Return `(state_fips_2digit, full_name)` for a lower-case state abbreviation."""
     for item in state_lookup:
         abbr = (item.get("stusps") or item.get("stateusps") or "").lower()
         if abbr == state_code:
@@ -100,12 +100,12 @@ def _ancestor_dirs(
     division_output_dir: Path,
     jurisdiction_output_dir: Path,
 ) -> tuple[Path, Path]:
-    """Return ``(div_dir, jur_dir)`` for the given ancestor level.
+    """Return ``(div_dir, jur_dir)` for the given ancestor level.
 
-    Mirrors the ``DivGenerator.dump_division`` convention of prepending
-    ``"divisions"`` / ``"jurisdictions"`` to the shared output directory root.
-    State stubs go directly under ``{state}/``.
-    County (and other sub-state) stubs go under ``{state}/{level}/``.
+    Mirrors the `DivGenerator.dump_division` convention of prepending
+    "divisions" / "jurisdictions" to the shared output directory root.
+    State stubs go directly under {state}.
+    County (and other sub-state) stubs go under `{state}/{level}/`.
     """
     if level in ("state", "district", "territory"):
         return (
