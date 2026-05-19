@@ -16,19 +16,23 @@ import argparse
 import asyncio
 import logging
 import sys
+import tempfile
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
+import httpx
 from rich.console import Console
 from rich.table import Table
 
 from src.utils.state_lookup import load_state_code_lookup
 from src.init_migration.download_manager import DownloadManager
 from src.init_migration.ocdid_matcher import OCDidMatcher, MatchResults
+from src.init_migration.generate_pipeline import GeneratePipeline
+from src.init_migration.pipeline_models import DIVISIONS_SHEET_CSV_URL, GeneratorReq
 
 logger = logging.getLogger(__name__)
 
-def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None ) -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
         description="Stage 1 OCDid Pipeline — fetch, match, and generate lookup table"
@@ -107,6 +111,7 @@ def print_summary(
     console: Console,
     download_stats: dict,
     match_results,
+    phase3_stats: dict | None = None,
 ) -> None:
     """Print a summary table using rich."""
     table = Table(title="Pipeline Summary")
@@ -122,7 +127,29 @@ def print_summary(
     table.add_row("Local orphans", str(len(match_results.local_orphans)))
     table.add_row("Master orphans", str(len(match_results.master_orphans)))
 
+    if phase3_stats:
+        table.add_section()
+        table.add_row("YAML generated", str(phase3_stats.get("success", 0)))
+        table.add_row("YAML skipped",   str(phase3_stats.get("skipped", 0)))
+        table.add_row("YAML partial",   str(phase3_stats.get("partial", 0)))
+        table.add_row("YAML failed",    str(phase3_stats.get("failed", 0)))
+
     console.print(table)
+
+
+def _cache_validation_csv() -> Path:
+    """Download the validation CSV once and cache it to a tmp file.
+
+    Without this, GeneratePipeline re-downloads the full sheet for every record.
+    """
+    cache_path = Path(tempfile.gettempdir()) / "phase3_validation.csv"
+    logger.info(f"Caching validation CSV from {DIVISIONS_SHEET_CSV_URL}")
+    with httpx.Client(timeout=120, follow_redirects=True) as client:
+        resp = client.get(DIVISIONS_SHEET_CSV_URL)
+        resp.raise_for_status()
+    cache_path.write_bytes(resp.content)
+    logger.info(f"Validation CSV cached at {cache_path} ({len(resp.content)} bytes)")
+    return cache_path
 
 
 async def run_pipeline(args: argparse.Namespace) -> MatchResults:
@@ -146,11 +173,25 @@ async def run_pipeline(args: argparse.Namespace) -> MatchResults:
     matcher = OCDidMatcher(states=states)
     match_results = matcher.run_matching(show_progress=True)
 
-    # Phase 3: Generate output Jurisdicton, Division yamls
-    # Pick up data from Duckdb and generate Jurisdiction and Division objects, then dump to yaml files for Stage 2 pipeline to consume.
+    # Phase 3: Generate Division and Jurisdiction YAML for every matched record
+    phase3_stats = {"success": 0, "skipped": 0, "partial": 0, "failed": 0}
+    if match_results.matched:
+        validation_csv_path = _cache_validation_csv()
+        for ingest_resp in match_results.matched:
+            req = GeneratorReq(
+                data=ingest_resp,
+                validation_data_filepath=str(validation_csv_path),
+            )
+            pipeline = GeneratePipeline(req)
+            try:
+                response = await pipeline.run()
+                phase3_stats[response.status.status.value] += 1
+            except Exception:
+                logger.exception(f"Phase 3 failed for {ingest_resp.ocdid.raw_ocdid}")
+                phase3_stats["failed"] += 1
 
     # Summary
-    print_summary(console, download_stats, match_results)
+    print_summary(console, download_stats, match_results, phase3_stats)
     logger.info("Pipeline complete")
 
     return match_results
