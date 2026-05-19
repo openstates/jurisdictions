@@ -8,7 +8,6 @@ dependencies = [
     "duckdb>=1.4.1",
     "google-i18n-address>=3.1.1",
     "httpx[http2]>=0.28.1",
-    "loguru>=0.7.3",
     "pandas>=2.3.2",
     "polars>=1.33.1",
     "pyarrow>=21.0.0",

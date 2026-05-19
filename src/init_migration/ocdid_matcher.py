@@ -15,11 +15,13 @@ from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
 import duckdb
-from loguru import logger
+from logging import getLogger
 
 from src.init_migration.pipeline_models import OCDidIngestResp
 from src.models.ocdid import OCDidParsed
 from src.utils.ocdid import ocdid_parser
+
+logger = getLogger(__name__)
 
 DEFAULT_DB_PATH = "data/ocdid_pipeline.duckdb"
 DEFAULT_CSV_BACKUP = "data/ocdid_uuid_lookup.csv"

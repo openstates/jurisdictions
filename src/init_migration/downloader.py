@@ -14,7 +14,7 @@ from urllib.parse import urlparse
 from typing import Literal as _LiteralForAlias
 
 import httpx
-from loguru import logger
+from logging import getLogger
 
 # Import custom errors from parent package
 from src.errors import (
@@ -23,6 +23,8 @@ from src.errors import (
     DownloaderNotInitializedError,
     CacheError,
 )
+
+logger = getLogger(__name__)
 
 # Provide an optional helper to configure logging externally (no import-time side effects)
 
@@ -272,7 +274,7 @@ class AsyncDownloader:
 
                 # Decode GitHub API responses or return raw bytes
                 content = await self._decode_github_response(resp, url)
-                logger.success(f"Downloaded {url} ({len(content)} bytes)")
+                logger.info(f"Downloaded {url} ({len(content)} bytes)")
                 return content
 
             except (
