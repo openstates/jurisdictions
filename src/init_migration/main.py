@@ -33,7 +33,7 @@ from src.init_migration.pipeline_models import DIVISIONS_SHEET_CSV_URL, Generato
 logger = logging.getLogger(__name__)
 
 
-def parse_args(argv: list[str] | None = None ) -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
         description="Stage 1 OCDid Pipeline — fetch, match, and generate lookup table"
@@ -131,9 +131,9 @@ def print_summary(
     if phase3_stats:
         table.add_section()
         table.add_row("YAML generated", str(phase3_stats.get("success", 0)))
-        table.add_row("YAML skipped",   str(phase3_stats.get("skipped", 0)))
-        table.add_row("YAML partial",   str(phase3_stats.get("partial", 0)))
-        table.add_row("YAML failed",    str(phase3_stats.get("failed", 0)))
+        table.add_row("YAML skipped", str(phase3_stats.get("skipped", 0)))
+        table.add_row("YAML partial", str(phase3_stats.get("partial", 0)))
+        table.add_row("YAML failed", str(phase3_stats.get("failed", 0)))
 
     console.print(table)
 
