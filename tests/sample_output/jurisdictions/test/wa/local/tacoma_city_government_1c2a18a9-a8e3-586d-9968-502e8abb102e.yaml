@@ -1,0 +1,47 @@
+accurate_asof: '2026-03-07T00:00:00Z'
+classification: government
+feature_flags: []
+id: 1c2a18a9-a8e3-586d-9968-502e8abb102e
+last_updated: '2026-03-07T00:00:00Z'
+legislative_sessions: {}
+metadata:
+  urls:
+  - url: https://tacoma.gov/government/departments/city-council/
+    url_type: people
+  - url: https://cityoftacoma.legistar.com/Calendar.aspx
+    url_type: meetings
+name: Tacoma City Government
+ocdid: ocd-jurisdiction/country:us/state:wa/place:tacoma/government
+sourcing:
+- field:
+  - url
+  source_description: null
+  source_name: Tacoma Official Site
+  source_type: human_researched
+  source_url:
+    url: https://tacoma.gov/
+- field:
+  - term
+  source_description: null
+  source_name: Tacoma City Charter
+  source_type: human_researched
+  source_url:
+    url: https://cms.tacoma.gov/cityclerk/Files/Documents/CityCharter.pdf
+- field:
+  - term
+  - term.number_of_positions
+  source_description: null
+  source_name: Tacoma Council
+  source_type: human_researched
+  source_url:
+    url: https://tacoma.gov/government/departments/city-council/
+term:
+  duration: 4
+  last_known_term_end_date: null
+  number_of_positions: 9
+  source_url: https://cms.tacoma.gov/cityclerk/Files/Documents/CityCharter.pdf
+  term_description: The City Council consists of the Mayor and eight Council Members
+    elected to four-year terms. Five positions are elected from council districts
+    and three positions are elected at large.
+  term_limits: null
+url: https://tacoma.gov/
