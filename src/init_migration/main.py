@@ -127,6 +127,9 @@ async def run_pipeline(args: argparse.Namespace) -> MatchResults:
     matcher = OCDidMatcher(states=states)
     match_results = matcher.run_matching(show_progress=True)
 
+    # Phase 3: Generate output Jurisdicton, Division yamls
+    # Pick up data from Duckdb and generate Jurisdiction and Division objects, then dump to yaml files for Stage 2 pipeline to consume.
+
     # Summary
     print_summary(console, download_stats, match_results)
     logger.info("Pipeline complete")
