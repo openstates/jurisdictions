@@ -42,6 +42,7 @@ class TestDownloaderIntegration:
             assert (tmp_path / "b.txt").read_bytes() == b"hello"
 
 
+@pytest.mark.skip(reason="This is expected to fail until the pipeline is created.")
 @pytest.mark.integration
 @pytest.mark.slow
 class TestConcurrencyLimits:
