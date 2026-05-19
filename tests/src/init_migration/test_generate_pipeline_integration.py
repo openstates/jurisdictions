@@ -67,7 +67,7 @@ def _load_fixture_index(base_dir: Path) -> dict[str, dict]:
     for yaml_path in base_dir.glob("**/*.yaml"):
         if sys.platform.startswith("win"):
             yaml_path = r"\\?\\" + os.path.abspath(yaml_path)
-        with open(yaml_path, 'r', encoding="utf-8") as handle:
+        with open(yaml_path, "r", encoding="utf-8") as handle:
             data = yaml.safe_load(handle)
             if isinstance(data, dict) and data.get("ocdid"):
                 index[str(data["ocdid"])] = data
