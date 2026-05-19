@@ -1,0 +1,34 @@
+id: 64d77d19-ad71-557f-b6d5-600b68ecca35
+ocdid: ocd-division/country:us/state:wa/place:kennewick
+country: us
+display_name: Washington
+geometries: []
+also_known_as: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-05-19T21:02:14.892720Z'
+last_updated: '2026-05-19T21:02:14.892720Z'
+sourcing:
+- field:
+  - ocdid
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata: null
+government_identifiers:
+  namelsad: Washington
+  statefp: '53'
+  sldust: []
+  sldlst: []
+  countyfp: []
+  county_names: []
+  cousubfp: null
+  placefp: null
+  lsad: ''
+  geoid: '53'
+  geoid_12: null
+  geoid_14: null
+  common_name: null
+jurisdiction_id: ocd-jurisdiction/country:us/state:wa/place:kennewick/government
