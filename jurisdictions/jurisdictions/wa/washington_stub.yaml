@@ -1,0 +1,20 @@
+ocdid: ocd-jurisdiction/country:us/state:wa/place:kennewick/government
+name: Washington Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/place:kennewick
+classification: government
+legislative_sessions: {}
+feature_flags: []
+metadata:
+  urls: []
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_url:
+    ocd_repo: https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv
+  source_type: human_researched
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+accurate_asof: '2026-05-19T21:02:14.893648+00:00'
+last_updated: '2026-05-19T21:02:14.893648+00:00'
