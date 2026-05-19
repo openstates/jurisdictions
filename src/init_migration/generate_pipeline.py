@@ -344,22 +344,31 @@ class GeneratePipeline:
 
             response.status = GeneratorStatus(status=Status.SUCCESS)
 
-            # Ensure placeholder stubs exist for every ancestor level (state, county,
-            # etc.) before processing the leaf.  Failures here are non-fatal so that
-            # a transient I/O error does not abort the main generation work.
-            ancestor_results = ensure_ancestor_stubs(
-                self.data.ocdid.raw_ocdid,
-                self.division_output_dir,
-                self.jurisdiction_output_dir,
-            )
-            logger.info(
-                "Ancestor stub check complete",
-                extra={
-                    "ocdid": self.data.ocdid.raw_ocdid,
-                    "ancestor_count": len(ancestor_results),
-                    "created": sum(1 for r in ancestor_results if r["action"] == "created"),
-                },
-            )
+            # Once the leaf Division/Jurisdiction is generated, ensure placeholder
+            # stubs exist for every ancestor level (state, county, etc.).
+            # Failures here are non-fatal — a transient I/O error must not abort
+            # a successful leaf generation.
+            try:
+                ancestor_results = ensure_ancestor_stubs(
+                    self.parsed_ocdid,
+                    self.division_output_dir,
+                    self.jurisdiction_output_dir,
+                )
+                logger.info(
+                    "Ancestor stub check complete",
+                    extra={
+                        "ocdid": self.data.ocdid.raw_ocdid,
+                        "ancestor_count": len(ancestor_results),
+                        "created": sum(1 for r in ancestor_results if r["action"] == "created"),
+                    },
+                )
+            except Exception:
+                logger.error(
+                    "Ancestor stub generation failed for %s",
+                    self.data.ocdid.raw_ocdid,
+                    exc_info=True,
+                )
+
             return response
 
         except Exception as e:
