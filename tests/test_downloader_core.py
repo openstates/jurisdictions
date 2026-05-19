@@ -1,4 +1,5 @@
 """Core functionality tests for AsyncDownloader"""
+
 import pytest
 from httpx import Response
 from pathlib import Path
@@ -23,7 +24,11 @@ class TestBasicDownloads:
     @pytest.mark.asyncio
     async def test_fetch_and_download(self, respx_mock, tmp_path, sample_csv_content):
         url = "https://example.com/file.csv"
-        route = respx_mock.get(url).mock(return_value=Response(200, content=sample_csv_content, headers={"etag": "W/\"123\""}))
+        route = respx_mock.get(url).mock(
+            return_value=Response(
+                200, content=sample_csv_content, headers={"etag": 'W/"123"'}
+            )
+        )
         async with AsyncDownloader() as d:
             data = await d.fetch_bytes(url)
             assert data == sample_csv_content
@@ -57,10 +62,12 @@ class TestConditionalRequests:
     async def test_etag_304_handling(self, respx_mock, sample_csv_content):
         url = "https://example.com/etag.csv"
         # First call returns 200 with etag
-        respx_mock.get(url).mock(side_effect=[
-            Response(200, content=sample_csv_content, headers={"etag": "\"abc\""}),
-            Response(304, content=b""),
-        ])
+        respx_mock.get(url).mock(
+            side_effect=[
+                Response(200, content=sample_csv_content, headers={"etag": '"abc"'}),
+                Response(304, content=b""),
+            ]
+        )
         async with AsyncDownloader() as d:
             b1 = await d.fetch_bytes(url)
             assert b1 == sample_csv_content

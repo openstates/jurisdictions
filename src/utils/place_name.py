@@ -39,6 +39,7 @@ LSAD_RE = re.compile(
     re.IGNORECASE | re.VERBOSE,
 )
 
+
 def namelsad_to_display_name(namelsad: str) -> str:
     """
     Strip the LSAD phrase from a Census NAMELSAD to get the human display name.
@@ -55,6 +56,7 @@ def namelsad_to_display_name(namelsad: str) -> str:
     if s2 == s:
         s2 = LSAD_RE.sub("", s.title())
     return s2.strip()
+
 
 def build_place_names_by_state(country_us_csv: Path):
     """

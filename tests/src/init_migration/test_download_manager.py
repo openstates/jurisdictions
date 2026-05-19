@@ -1,4 +1,5 @@
 """Tests for DownloadManager — URL building and DuckDB loading."""
+
 import pytest
 import duckdb
 import httpx
@@ -7,6 +8,7 @@ from src.init_migration.download_manager import DownloadManager
 
 
 # --- URL Building ---
+
 
 def test_build_master_url():
     """Master URL should point to country-us.csv on GitHub raw."""
@@ -39,6 +41,7 @@ def test_all_urls_includes_master_plus_locals():
 
 
 # --- DuckDB Loading ---
+
 
 def test_load_master_csv_to_duckdb(tmp_path):
     """Loading master CSV bytes should create master_ocdids table in DuckDB."""
@@ -92,6 +95,7 @@ def test_load_multiple_states_to_duckdb(tmp_path):
 
 # --- Async Download Orchestration ---
 
+
 @pytest.mark.asyncio
 async def test_run_downloads_fetches_and_loads(tmp_path, respx_mock):
     """run_downloads() should fetch all URLs and load into DuckDB."""
@@ -130,9 +134,7 @@ async def test_run_downloads_handles_missing_local(tmp_path, respx_mock):
     respx_mock.get(dm.local_urls()[0]).mock(
         return_value=httpx.Response(200, content=local_wa)
     )
-    respx_mock.get(dm.local_urls()[1]).mock(
-        return_value=httpx.Response(404)
-    )
+    respx_mock.get(dm.local_urls()[1]).mock(return_value=httpx.Response(404))
 
     stats = await dm.run_downloads(force=True, show_progress=False)
 

@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+
 def load_state_code_lookup():
     """
     Loads state lookup data from src/data/state_lookup.json.

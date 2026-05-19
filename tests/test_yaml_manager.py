@@ -264,8 +264,16 @@ class TestYamlManagerIntegration:
     def test_municipalities_yaml_structure(self, manager, temp_dir):
         """Test with structure similar to municipalities_yaml directory."""
         municipalities = [
-            {"ocdid": "ocd-division/country:us/state:al/place:oakridge", "name": "Oakridge", "url": "https://www.oakridge-al.gov"},
-            {"ocdid": "ocd-division/country:us/state:ca/place:bayview", "name": "Bayview", "url": "https://www.bayview-ca.gov"},
+            {
+                "ocdid": "ocd-division/country:us/state:al/place:oakridge",
+                "name": "Oakridge",
+                "url": "https://www.oakridge-al.gov",
+            },
+            {
+                "ocdid": "ocd-division/country:us/state:ca/place:bayview",
+                "name": "Bayview",
+                "url": "https://www.bayview-ca.gov",
+            },
         ]
 
         # Create files

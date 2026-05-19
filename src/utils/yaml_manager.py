@@ -42,15 +42,23 @@ class YamlManager:
         """
         self.base_path = Path(base_path) if base_path else None
         if not self.base_path:
-            logger.exception("Initialized YamlManager with no base path.", extra={"base_path": base_path})
+            logger.exception(
+                "Initialized YamlManager with no base path.",
+                extra={"base_path": base_path},
+            )
             raise ValueError("Base path must be provided for YamlManager.")
 
         if not self.base_path.exists():
-            logger.error("Base path does not exist.", extra={"base_path": str(self.base_path)})
+            logger.error(
+                "Base path does not exist.", extra={"base_path": str(self.base_path)}
+            )
             raise FileNotFoundError(f"Base path does not exist: {self.base_path}")
 
         if not self.base_path.is_dir():
-            logger.error("Base path is not a directory.", extra={"base_path": str(self.base_path)})
+            logger.error(
+                "Base path is not a directory.",
+                extra={"base_path": str(self.base_path)},
+            )
             raise NotADirectoryError(f"Base path is not a directory: {self.base_path}")
 
     def _resolve_path(self, path: str | Path) -> Path:
@@ -117,15 +125,14 @@ class YamlManager:
             return {}
 
         if not isinstance(data, dict):
-            raise ValueError(f"Expected YAML mapping at top level, got {type(data).__name__}")
+            raise ValueError(
+                f"Expected YAML mapping at top level, got {type(data).__name__}"
+            )
 
         return data
 
     def update(
-        self,
-        filepath: str | Path,
-        data: dict[str, Any],
-        merge: bool = False
+        self, filepath: str | Path, data: dict[str, Any], merge: bool = False
     ) -> dict[str, Any]:
         """
         Update an existing YAML file. If using "merge", be sure to create a deep
@@ -181,7 +188,7 @@ class YamlManager:
 
         if confirm:
             response = input(f"Delete {path}? (y/n): ").strip().lower()
-            if response not in ('y', 'yes'):
+            if response not in ("y", "yes"):
                 logger.info("Deletion cancelled by user.", extra={"path": str(path)})
                 return False
 
@@ -190,10 +197,7 @@ class YamlManager:
         return True
 
     def list_files(
-        self,
-        directory: str | Path,
-        pattern: str = "*.yaml",
-        recursive: bool = False
+        self, directory: str | Path, pattern: str = "*.yaml", recursive: bool = False
     ) -> list[Path]:
         """
         List YAML files in a directory.
@@ -240,10 +244,7 @@ class YamlManager:
         return self._resolve_path(filepath).exists()
 
     def count(
-        self,
-        directory: str | Path,
-        pattern: str = "*.yaml",
-        recursive: bool = False
+        self, directory: str | Path, pattern: str = "*.yaml", recursive: bool = False
     ) -> int:
         """
         Count YAML files in a directory.
@@ -257,7 +258,6 @@ class YamlManager:
             Number of matching files.
         """
         return len(self.list_files(directory, pattern=pattern, recursive=recursive))
-
 
     def load_division(self, filepath: str | Path) -> Division:
         """
@@ -294,10 +294,7 @@ class YamlManager:
         return Jurisdiction.model_validate(data)
 
     def dump_division(
-        self,
-        filepath: str | Path,
-        division: Division,
-        overwrite: bool = False
+        self, filepath: str | Path, division: Division, overwrite: bool = False
     ) -> Path:
         """
         Serialize a Division model to a YAML file.
@@ -317,10 +314,7 @@ class YamlManager:
         return self.create(filepath, data)
 
     def dump_jurisdiction(
-        self,
-        filepath: str | Path,
-        jurisdiction: Jurisdiction,
-        overwrite: bool = False
+        self, filepath: str | Path, jurisdiction: Jurisdiction, overwrite: bool = False
     ) -> Path:
         """
         Serialize a Jurisdiction model to a YAML file.
@@ -359,10 +353,7 @@ class YamlManager:
         return results
 
     def list_and_load(
-        self,
-        directory: str | Path,
-        pattern: str = "*.yaml",
-        recursive: bool = False
+        self, directory: str | Path, pattern: str = "*.yaml", recursive: bool = False
     ) -> list[dict[str, Any]]:
         """
         List YAML files in a directory and load them all.
@@ -379,10 +370,7 @@ class YamlManager:
         return self.read_all(filepaths)
 
     def iter_files(
-        self,
-        directory: str | Path,
-        pattern: str = "*.yaml",
-        recursive: bool = False
+        self, directory: str | Path, pattern: str = "*.yaml", recursive: bool = False
     ) -> Iterator[tuple[Path, dict[str, Any]]]:
         """
         Iterate over YAML files, yielding (path, data) tuples.
@@ -395,7 +383,9 @@ class YamlManager:
         Yields:
             Tuples of (Path, dict) for each file.
         """
-        for filepath in self.list_files(directory, pattern=pattern, recursive=recursive):
+        for filepath in self.list_files(
+            directory, pattern=pattern, recursive=recursive
+        ):
             data = self.read(filepath)
             yield filepath, data
 
@@ -430,10 +420,7 @@ class YamlManager:
         return self.to_json(data)
 
     def list_and_load_as_json(
-        self,
-        directory: str | Path,
-        pattern: str = "*.yaml",
-        recursive: bool = False
+        self, directory: str | Path, pattern: str = "*.yaml", recursive: bool = False
     ) -> str:
         """
         List YAML files, load them all, and return as JSON string.

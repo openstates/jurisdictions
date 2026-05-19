@@ -22,16 +22,19 @@ SAMPLE_OUTPUT_DIVISIONS = REPO_ROOT / "tests" / "sample_output" / "divisions"
 SAMPLE_OUTPUT_JURISDICTIONS = REPO_ROOT / "tests" / "sample_output" / "jurisdictions"
 
 
+DIVISION_SKIP_FIELDS: frozenset[str] = frozenset(
+    {
+        "geometries",  # geo lookup disabled via division_geo_req=False — intentional in test
+        "metadata",  # fixture uses [{key,value}] list; model uses DivisionMetadata object
+    }
+)
 
-DIVISION_SKIP_FIELDS: frozenset[str] = frozenset({
-    "geometries",    # geo lookup disabled via division_geo_req=False — intentional in test
-    "metadata",      # fixture uses [{key,value}] list; model uses DivisionMetadata object
-})
-
-JURISDICTION_SKIP_FIELDS: frozenset[str] = frozenset({
-   #  "sourcing",         # same structural format mismatch as divisions
-    "term",             # DC ANC fixture missing source_url; Austin fixture uses list — format mismatch
-})
+JURISDICTION_SKIP_FIELDS: frozenset[str] = frozenset(
+    {
+        #  "sourcing",         # same structural format mismatch as divisions
+        "term",  # DC ANC fixture missing source_url; Austin fixture uses list — format mismatch
+    }
+)
 
 
 def _load_target_rows() -> list[dict[str, str]]:
@@ -51,7 +54,9 @@ def _load_target_rows() -> list[dict[str, str]]:
         ]
 
     # The five sample jurisdictions in fixtures are government classifications.
-    government_rows = [r for r in rows if r["jurisdiction_ocdid"].endswith("/government")]
+    government_rows = [
+        r for r in rows if r["jurisdiction_ocdid"].endswith("/government")
+    ]
     return government_rows
 
 
@@ -73,9 +78,12 @@ def _build_validation_csv(
     """Build validation CSV in the schema expected by GeneratePipeline."""
     state_lookup = load_state_code_lookup()
     state_to_fips = {
-        (entry.get("stusps") or entry.get("stateusps") or "").lower(): str(entry.get("statefp") or entry.get("statefps") or "").zfill(2)
+        (entry.get("stusps") or entry.get("stateusps") or "").lower(): str(
+            entry.get("statefp") or entry.get("statefps") or ""
+        ).zfill(2)
         for entry in state_lookup
-        if (entry.get("stusps") or entry.get("stateusps")) and (entry.get("statefp") or entry.get("statefps"))
+        if (entry.get("stusps") or entry.get("stateusps"))
+        and (entry.get("statefp") or entry.get("statefps"))
     }
 
     records: list[dict[str, str]] = []
@@ -102,7 +110,9 @@ def _build_validation_csv(
         records.append(
             {
                 "STATEFP": statefp,
-                "NAMELSAD": str(identifiers.get("namelsad", fixture.get("display_name", ""))),
+                "NAMELSAD": str(
+                    identifiers.get("namelsad", fixture.get("display_name", ""))
+                ),
                 "GEOID_Census": geoid_str,
                 "SLDUST_list": " | ".join(identifiers.get("sldust", [])),
                 "SLDLST_list": " | ".join(identifiers.get("sldlst", [])),
@@ -142,7 +152,7 @@ def _normalize_timestamp(value: str | datetime | None) -> datetime | None:
     try:
         if isinstance(value, str):
             # Remove 'Z' suffix and parse
-            timestamp_str = value.rstrip('Z')
+            timestamp_str = value.rstrip("Z")
             dt = datetime.fromisoformat(timestamp_str)
             return dt
     except (ValueError, AttributeError) as e:
@@ -151,8 +161,14 @@ def _normalize_timestamp(value: str | datetime | None) -> datetime | None:
 
 def _is_timestamp_field(path: str) -> bool:
     """Check if field path represents a timestamp field."""
-    timestamp_fields = {'accurate_asof', 'last_updated', 'accessed_at', 'valid_asof', 'valid_thru'}
-    path_parts = path.split('.')
+    timestamp_fields = {
+        "accurate_asof",
+        "last_updated",
+        "accessed_at",
+        "valid_asof",
+        "valid_thru",
+    }
+    path_parts = path.split(".")
     return any(part in timestamp_fields for part in path_parts)
 
 
@@ -191,12 +207,16 @@ def _generate_field_diff_report(
 
     # One None, one not - mismatch
     if expected is None or generated is None:
-        diffs.append(f"{path or 'root'}: expected={expected!r}, generated={generated!r}")
+        diffs.append(
+            f"{path or 'root'}: expected={expected!r}, generated={generated!r}"
+        )
         return diffs
 
     # Different types - mismatch (with special case for [] vs missing key handled at dict level)
     if type(expected) is not type(generated):
-        diffs.append(f"{path or 'root'}: type mismatch - expected {type(expected).__name__}={expected!r}, generated {type(generated).__name__}={generated!r}")
+        diffs.append(
+            f"{path or 'root'}: type mismatch - expected {type(expected).__name__}={expected!r}, generated {type(generated).__name__}={generated!r}"
+        )
         return diffs
 
     # Compare dicts recursively
@@ -214,32 +234,50 @@ def _generate_field_diff_report(
                 # the model initialises list fields with [] but the fixture omits them.
                 if isinstance(generated[key], list) and len(generated[key]) == 0:
                     continue
-                diffs.append(f"{new_path}: unexpected field in generated (value={generated[key]!r})")
+                diffs.append(
+                    f"{new_path}: unexpected field in generated (value={generated[key]!r})"
+                )
             elif key not in generated:
-                diffs.append(f"{new_path}: missing field in generated (expected={expected[key]!r})")
+                diffs.append(
+                    f"{new_path}: missing field in generated (expected={expected[key]!r})"
+                )
             else:
-                diffs.extend(_generate_field_diff_report(
-                    expected[key], generated[key], new_path, skip_fields=skip_fields
-                ))
+                diffs.extend(
+                    _generate_field_diff_report(
+                        expected[key], generated[key], new_path, skip_fields=skip_fields
+                    )
+                )
         return diffs
 
     # Compare lists recursively
     if isinstance(expected, list):
         if len(expected) != len(generated):
-            diffs.append(f"{path or 'root'}: list length mismatch - expected {len(expected)}, generated {len(generated)}")
+            diffs.append(
+                f"{path or 'root'}: list length mismatch - expected {len(expected)}, generated {len(generated)}"
+            )
             # Still compare common elements
             for i in range(min(len(expected), len(generated))):
                 new_path = f"{path}.{i}" if path else f"[{i}]"
-                diffs.extend(_generate_field_diff_report(expected[i], generated[i], new_path, skip_fields=skip_fields))
+                diffs.extend(
+                    _generate_field_diff_report(
+                        expected[i], generated[i], new_path, skip_fields=skip_fields
+                    )
+                )
         else:
             for i, (exp_item, gen_item) in enumerate(zip(expected, generated)):
                 new_path = f"{path}.{i}" if path else f"[{i}]"
-                diffs.extend(_generate_field_diff_report(exp_item, gen_item, new_path, skip_fields=skip_fields))
+                diffs.extend(
+                    _generate_field_diff_report(
+                        exp_item, gen_item, new_path, skip_fields=skip_fields
+                    )
+                )
         return diffs
 
     # Compare primitives
     if expected != generated:
-        diffs.append(f"{path or 'root'}: expected={expected!r}, generated={generated!r}")
+        diffs.append(
+            f"{path or 'root'}: expected={expected!r}, generated={generated!r}"
+        )
 
     return diffs
 
@@ -265,7 +303,7 @@ def _compare_yaml_exact(
         AssertionError: If any fields mismatch (with detailed diff report)
     """
     # First validate timestamp fields are populated (don't compare exact values)
-    timestamp_fields = ['accurate_asof', 'last_updated']
+    timestamp_fields = ["accurate_asof", "last_updated"]
     for field in timestamp_fields:
         if field in expected:  # Only check if expected has the field
             gen_value = generated.get(field)
@@ -275,7 +313,9 @@ def _compare_yaml_exact(
             try:
                 _normalize_timestamp(gen_value)
             except ValueError as e:
-                raise AssertionError(f"{label}: timestamp field '{field}' is not valid: {e}") from e
+                raise AssertionError(
+                    f"{label}: timestamp field '{field}' is not valid: {e}"
+                ) from e
 
     # Generate diff report for all non-timestamp, non-skipped fields
     diffs = _generate_field_diff_report(expected, generated, skip_fields=skip_fields)
@@ -338,7 +378,9 @@ def test_generate_pipeline_main_style_integration(tmp_path: Path) -> None:
                 jurisdiction_output_dir=jurisdiction_output_dir,
             )
 
-            responses.append(await pipeline.run())
+            responses.append(pipeline.run())
+
+        responses = await asyncio.gather(*responses)
         return responses
 
     responses = asyncio.run(run_all())
@@ -348,7 +390,11 @@ def test_generate_pipeline_main_style_integration(tmp_path: Path) -> None:
     generated_jurisdiction_paths: list[Path] = []
 
     for response in responses:
-        assert response.status.status in (Status.SUCCESS, Status.SKIPPED, Status.PARTIAL)
+        assert response.status.status in (
+            Status.SUCCESS,
+            Status.SKIPPED,
+            Status.PARTIAL,
+        )
         assert response.status.status is not Status.FAILED
         if response.division_path:
             division_path = Path(response.division_path)
@@ -369,8 +415,12 @@ def test_generate_pipeline_main_style_integration(tmp_path: Path) -> None:
         expected_division = division_fixtures[generated_division["ocdid"]]
         assert generated_division["ocdid"] == expected_division["ocdid"]
 
-        expected_geoid = expected_division.get("government_identifiers", {}).get("geoid")
-        generated_geoid = generated_division.get("government_identifiers", {}).get("geoid")
+        expected_geoid = expected_division.get("government_identifiers", {}).get(
+            "geoid"
+        )
+        generated_geoid = generated_division.get("government_identifiers", {}).get(
+            "geoid"
+        )
         if expected_geoid and expected_geoid != "missing-geoid":
             assert generated_geoid == expected_geoid
 
@@ -380,6 +430,7 @@ def test_generate_pipeline_main_style_integration(tmp_path: Path) -> None:
 
         expected_jurisdiction = jurisdiction_fixtures[generated_jurisdiction["ocdid"]]
         assert generated_jurisdiction["ocdid"] == expected_jurisdiction["ocdid"]
-        assert generated_jurisdiction["classification"] == expected_jurisdiction["classification"]
-
-
+        assert (
+            generated_jurisdiction["classification"]
+            == expected_jurisdiction["classification"]
+        )

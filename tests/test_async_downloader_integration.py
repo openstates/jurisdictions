@@ -1,4 +1,5 @@
 """Integration tests for AsyncDownloader"""
+
 import pytest
 import base64
 from httpx import Response
@@ -15,8 +16,18 @@ class TestDownloaderIntegration:
         # Simulate a mix of raw and GitHub API URLs
         raw1 = "https://raw.githubusercontent.com/o/r/main/a.csv"
         api1 = "https://api.github.com/repos/o/r/contents/b.txt"
-        respx_mock.get(raw1).mock(return_value=Response(200, content=b"c1\nc2\n", headers={"etag": '"e1"'}))
-        respx_mock.get(api1).mock(return_value=Response(200, json={"content": base64.b64encode(b"hello").decode(), "encoding": "base64"}))
+        respx_mock.get(raw1).mock(
+            return_value=Response(200, content=b"c1\nc2\n", headers={"etag": '"e1"'})
+        )
+        respx_mock.get(api1).mock(
+            return_value=Response(
+                200,
+                json={
+                    "content": base64.b64encode(b"hello").decode(),
+                    "encoding": "base64",
+                },
+            )
+        )
 
         cfg = DownloaderConfig(etag_cache_path=tmp_path / ".etag.json")
         async with AsyncDownloader(cfg) as d:

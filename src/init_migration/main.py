@@ -28,6 +28,7 @@ from src.init_migration.ocdid_matcher import OCDidMatcher, MatchResults
 
 logger = logging.getLogger(__name__)
 
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
@@ -38,7 +39,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=str,
         default=None,
         help="Comma-separated state codes to process (e.g., wa,tx,oh). "
-             "Default: all states from state_lookup.json.",
+        "Default: all states from state_lookup.json.",
     )
     parser.add_argument(
         "--force",

@@ -1,4 +1,5 @@
 """Tests for DownloaderConfig"""
+
 from httpx import Timeout
 
 from src.init_migration.downloader import DownloaderConfig, _http2_available
@@ -6,7 +7,7 @@ from src.init_migration.downloader import DownloaderConfig, _http2_available
 
 class TestDownloaderConfig:
     """Test configuration object initialization and defaults"""
-    
+
     def test_default_config(self):
         """Test default configuration values"""
         cfg = DownloaderConfig()

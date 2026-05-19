@@ -1,4 +1,5 @@
 """Tests for pipeline_models — specifically the OCDidIngestResp model changes."""
+
 from uuid import UUID
 from uuid import NAMESPACE_URL, uuid5
 
@@ -19,7 +20,10 @@ def test_ocdid_ingest_resp_accepts_ocdid_parsed():
     resp = OCDidIngestResp(
         uuid=det_id,
         ocdid=parsed,
-        raw_record={"id": "ocd-division/country:us/state:wa/place:seattle", "name": "Seattle"},
+        raw_record={
+            "id": "ocd-division/country:us/state:wa/place:seattle",
+            "name": "Seattle",
+        },
     )
     assert resp.ocdid.state == "wa"
     assert resp.ocdid.place == "seattle"
