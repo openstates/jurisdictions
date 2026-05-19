@@ -1,4 +1,5 @@
 """Tests for OCDidMatcher — join logic, UUID generation, lookup table."""
+
 import pytest
 import duckdb
 from pathlib import Path
@@ -114,8 +115,8 @@ def test_orphan_tables_created_in_duckdb(populated_db):
     matcher.run_matching()
 
     conn = duckdb.connect(populated_db)
-    local_orphan_count = conn.execute(
-        "SELECT COUNT(*) FROM local_orphans"
-    ).fetchone()[0]
+    local_orphan_count = conn.execute("SELECT COUNT(*) FROM local_orphans").fetchone()[
+        0
+    ]
     conn.close()
     assert local_orphan_count >= 1  # olympia

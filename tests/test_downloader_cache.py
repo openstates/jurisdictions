@@ -1,4 +1,5 @@
 """ETag cache functionality tests"""
+
 import pytest
 from httpx import Response
 
@@ -14,10 +15,19 @@ class TestETagCache:
         cache_path = tmp_cache_dir / "etag.json"
         url = "https://example.com/cached.csv"
         # First session: 200 with validators
-        respx_mock.get(url).mock(side_effect=[
-            Response(200, content=b"abc", headers={"etag": "\"zz\"", "last-modified": "Fri, 01 Jan 2021 00:00:00 GMT"}),
-            Response(304, content=b""),
-        ])
+        respx_mock.get(url).mock(
+            side_effect=[
+                Response(
+                    200,
+                    content=b"abc",
+                    headers={
+                        "etag": '"zz"',
+                        "last-modified": "Fri, 01 Jan 2021 00:00:00 GMT",
+                    },
+                ),
+                Response(304, content=b""),
+            ]
+        )
         cfg = DownloaderConfig(etag_cache_path=cache_path)
         async with AsyncDownloader(cfg) as d:
             b1 = await d.fetch_bytes(url)

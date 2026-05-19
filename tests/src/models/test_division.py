@@ -39,5 +39,7 @@ def test_division_id_defaults_to_uuid5_from_ocdid_and_date(ocdid: str) -> None:
 
 def test_division_accepts_explicit_id() -> None:
     explicit_id = uuid4()
-    division = _build_division("ocd-division/country:us/state:wa/place:seattle", id_value=explicit_id)
+    division = _build_division(
+        "ocd-division/country:us/state:wa/place:seattle", id_value=explicit_id
+    )
     assert division.id == explicit_id

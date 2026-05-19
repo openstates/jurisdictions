@@ -1,12 +1,10 @@
 """Error handling tests for AsyncDownloader"""
+
 import pytest
 from httpx import Response
 
 from src.init_migration.downloader import AsyncDownloader, DownloaderConfig
-from src.errors import (
-    APIRetryError,
-    UnexpectedContentError
-)
+from src.errors import APIRetryError, UnexpectedContentError
 
 
 class TestErrorHandling:
@@ -29,7 +27,13 @@ class TestHTMLDetection:
     @pytest.mark.asyncio
     async def test_html_content_type_raises(self, respx_mock):
         url = "https://example.com/page"
-        respx_mock.get(url).mock(return_value=Response(200, content=b"<html><body>oops</body></html>", headers={"content-type": "text/html"}))
+        respx_mock.get(url).mock(
+            return_value=Response(
+                200,
+                content=b"<html><body>oops</body></html>",
+                headers={"content-type": "text/html"},
+            )
+        )
         async with AsyncDownloader() as d:
             with pytest.raises(UnexpectedContentError):
                 await d.fetch_bytes(url)
@@ -38,7 +42,9 @@ class TestHTMLDetection:
     async def test_html_sniffing_raises(self, respx_mock):
         url = "https://example.com/page2"
         # No content-type but HTML-looking body
-        respx_mock.get(url).mock(return_value=Response(200, content=b"<!doctype html><title>t</title>"))
+        respx_mock.get(url).mock(
+            return_value=Response(200, content=b"<!doctype html><title>t</title>")
+        )
         async with AsyncDownloader() as d:
             with pytest.raises(UnexpectedContentError):
                 await d.fetch_bytes(url)
