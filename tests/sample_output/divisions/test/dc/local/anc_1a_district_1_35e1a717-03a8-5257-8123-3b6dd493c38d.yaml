@@ -1,0 +1,51 @@
+accurate_asof: '2025-10-27T01:29:51Z'
+also_known_as: []
+country: us
+display_name: ANC 1A District 1
+geometries:
+- arcGIS_address: https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54/query?where=ANC_ID=%271A%27&outFields=*&f=geojson
+  boundary:
+    centroid: null
+    extent: null
+  children: []
+  end: '2025-10-27T01:29:51Z'
+  start: '2025-10-27T01:29:51Z'
+government_identifiers:
+  common_name: null
+  county_names: []
+  countyfp:
+  - '001'
+  cousubfp: null
+  geoid: '11001'
+  geoid_12: null
+  geoid_14: null
+  lsad: ''
+  namelsad: ANC 1A
+  placefp: null
+  sldlst: []
+  sldust: []
+  statefp: '11'
+id: 35e1a717-03a8-5257-8123-3b6dd493c38d
+jurisdiction_id: ocd-jurisdiction/country:us/district:dc/anc:1a/government
+last_updated: '2025-10-27T01:29:51Z'
+metadata:
+  population: null
+  source: DC Open Data ANC shapefile obtained via DCGIS. Not a Census designated area.
+ocdid: ocd-division/country:us/district:dc/anc:1a/council_district:1
+sourcing:
+- field:
+  - geometries
+  source_description: null
+  source_name: DCGIS
+  source_type: human_researched
+  source_url:
+    url: https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA
+- field:
+  - government_identifiers
+  source_description: null
+  source_name: DCGIS
+  source_type: human_researched
+  source_url:
+    url: https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54
+valid_asof: '2023-01-01T00:00:00Z'
+valid_thru: null
