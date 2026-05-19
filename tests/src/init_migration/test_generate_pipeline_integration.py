@@ -26,21 +26,21 @@ SAMPLE_OUTPUT_JURISDICTIONS = REPO_ROOT / "tests" / "sample_output" / "jurisdict
 
 
 DIVISION_SKIP_FIELDS: frozenset[str] = frozenset({
-    "id",            # oid1- string in fixtures vs UUID5 from model — flagged for human review
-    "sourcing",      # field:str vs list[str], source_url:str vs dict — model format mismatch
     "geometries",    # geo lookup disabled via division_geo_req=False — intentional in test
     "metadata",      # fixture uses [{key,value}] list; model uses DivisionMetadata object
 })
 
 JURISDICTION_SKIP_FIELDS: frozenset[str] = frozenset({
-    "id",               # oid1-/UUID4 in fixtures vs UUID5 from model
-    "sourcing",         # same structural format mismatch as divisions
+   #  "sourcing",         # same structural format mismatch as divisions
     "term",             # DC ANC fixture missing source_url; Austin fixture uses list — format mismatch
 })
 
 
 def _load_target_rows() -> list[dict[str, str]]:
-    """Load the five government-jurisdiction rows from testing_ocd_sample.csv."""
+    """
+    Load the five government-division and jurisdiction rows from
+    testing_ocd_sample.csv.
+    """
     with OCD_SAMPLE_CSV.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
         rows = [
@@ -92,7 +92,7 @@ def _build_validation_csv(
         geoid_val = identifiers.get("geoid")
         geoid_str = str(geoid_val) if geoid_val is not None else ""
 
-        # Handle lsad — fixture may store it as a list (legacy format); extract first element
+        # Handle lsad
         lsad_val = identifiers.get("lsad")
         if isinstance(lsad_val, list):
             lsad_str = lsad_val[0] if lsad_val else ""
@@ -329,9 +329,9 @@ def test_generate_pipeline_main_style_integration(tmp_path: Path) -> None:
                 ),
                 validation_data_filepath=str(validation_csv),
                 build_base_object=True,
-                jurisdiction_ai_url=False,
-                division_geo_req=False,
-                division_population_req=False,
+                jurisdiction_ai_url=True,
+                division_geo_req=True,
+                division_population_req=True,
             )
 
             pipeline = GeneratePipeline(
