@@ -26,30 +26,6 @@ from src.errors import (
 
 logger = getLogger(__name__)
 
-# Provide an optional helper to configure logging externally (no import-time side effects)
-
-def configure_downloader_logging(
-    *,
-    sink: str | os.PathLike = "downloader.log",
-    level: str = "DEBUG",
-    rotation: str = "1 MB",
-    retention: int | str = 10,
-) -> None:
-    """Optionally configure Loguru logging for the downloader module.
-
-    This avoids adding handlers at import-time. Call from application code if desired.
-    """
-    logger.add(
-        str(sink),
-        rotation=rotation,
-        retention=retention,
-        enqueue=True,
-        backtrace=True,
-        diagnose=True,
-        level=level,
-    )
-
-
 # -----------------------------
 # Config
 # -----------------------------

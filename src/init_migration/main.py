@@ -14,10 +14,11 @@ Usage:
 
 import argparse
 import asyncio
+import logging
 import sys
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from logging import getLogger
 from rich.console import Console
 from rich.table import Table
 
@@ -25,7 +26,7 @@ from src.utils.state_lookup import load_state_code_lookup
 from src.init_migration.download_manager import DownloadManager
 from src.init_migration.ocdid_matcher import OCDidMatcher, MatchResults
 
-logger = getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     """Parse command-line arguments."""
@@ -71,18 +72,35 @@ def resolve_states(state_arg: str | None) -> list[str]:
 
 
 def configure_logging(log_dir: str) -> None:
-    """Configure loguru to write to the specified log directory."""
+    """Configure standard Python logging with console and file output."""
     log_path = Path(log_dir)
     log_path.mkdir(parents=True, exist_ok=True)
 
-    logger.remove()  # Remove default stderr handler
-    logger.add(sys.stderr, level="INFO")  # Console: INFO and above
-    logger.add(
-        str(log_path / "pipeline_{time}.log"),
-        rotation="10 MB",
-        retention=5,
-        level="DEBUG",
+    # Get root logger and clear existing handlers
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.DEBUG)
+    for handler in root_logger.handlers[:]:
+        root_logger.removeHandler(handler)
+
+    # Console handler (INFO and above)
+    console_handler = logging.StreamHandler(sys.stderr)
+    console_handler.setLevel(logging.INFO)
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
+    console_handler.setFormatter(formatter)
+    root_logger.addHandler(console_handler)
+
+    # File handler (DEBUG and above, with rotation at 10 MB, keep 5 backups)
+    log_file = str(log_path / "pipeline.log")
+    file_handler = RotatingFileHandler(
+        log_file,
+        maxBytes=10 * 1024 * 1024,  # 10 MB
+        backupCount=5,
+    )
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
+    root_logger.addHandler(file_handler)
 
 
 def print_summary(
