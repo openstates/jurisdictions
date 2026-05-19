@@ -1,4 +1,12 @@
 from __future__ import annotations
+# Import custom errors from parent package
+from src.errors import (
+    APIRetryError,
+    UnexpectedContentError,
+    DownloaderNotInitializedError,
+    CacheError,
+)
+
 import asyncio
 import base64
 import importlib.util
@@ -16,14 +24,6 @@ from typing import Literal as _LiteralForAlias
 import httpx
 from logging import getLogger
 logger =getLogger(__name__)
-
-# Import custom errors from parent package
-from src.errors import (
-    APIRetryError,
-    UnexpectedContentError,
-    DownloaderNotInitializedError,
-    CacheError,
-)
 
 # Provide an optional helper to configure logging externally (no import-time side effects)
 
