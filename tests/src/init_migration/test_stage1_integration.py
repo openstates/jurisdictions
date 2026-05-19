@@ -1,4 +1,5 @@
 """Integration test for the full Stage 1 pipeline with mocked HTTP."""
+
 import pytest
 import duckdb
 import httpx
@@ -64,7 +65,10 @@ async def test_full_stage1_pipeline(tmp_path, respx_mock):
 
     # Verify local orphan (olympia — in local but not master)
     assert len(results.local_orphans) == 1
-    assert results.local_orphans[0]["id"] == "ocd-division/country:us/state:wa/place:olympia"
+    assert (
+        results.local_orphans[0]["id"]
+        == "ocd-division/country:us/state:wa/place:olympia"
+    )
 
     # Verify lookup table in DuckDB
     conn = duckdb.connect(db_path)

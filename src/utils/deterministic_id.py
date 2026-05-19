@@ -11,6 +11,7 @@ from datetime import date, datetime, timezone
 from typing import Optional
 from uuid import NAMESPACE_URL, UUID, uuid5
 
+
 @dataclass(frozen=True)
 class DecodedID:
     identifier: str

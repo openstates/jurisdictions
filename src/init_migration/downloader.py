@@ -26,6 +26,7 @@ from src.errors import (
 
 logger = getLogger(__name__)
 
+
 # -----------------------------
 # Config
 # -----------------------------
@@ -83,6 +84,7 @@ DEFAULT_HEADERS = {"Accept": "*/*"}
 
 
 DownloadStatus = _LiteralForAlias["downloaded", "unchanged", "skipped"]
+
 
 def _is_github_host(host: str | None) -> bool:
     return host in {"api.github.com", "raw.githubusercontent.com"}
@@ -301,7 +303,9 @@ class AsyncDownloader:
                                 dt = parsedate_to_datetime(ra)
                                 if dt is not None:
                                     now_ts = time.time()
-                                    delay = max(delay, max(0.0, dt.timestamp() - now_ts))
+                                    delay = max(
+                                        delay, max(0.0, dt.timestamp() - now_ts)
+                                    )
                             except Exception:
                                 pass
 

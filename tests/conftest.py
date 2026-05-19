@@ -1,4 +1,5 @@
 """Shared test fixtures and configuration for downloader tests"""
+
 import pytest
 import respx
 from pathlib import Path
@@ -18,7 +19,9 @@ pytest.register_assert_rewrite(__name__)
 
 
 def pytest_configure(config):
-    config.addinivalue_line("markers", "asyncio: mark test as async and run in event loop")
+    config.addinivalue_line(
+        "markers", "asyncio: mark test as async and run in event loop"
+    )
 
 
 def pytest_pyfunc_call(pyfuncitem):
@@ -71,10 +74,11 @@ def sample_json_content():
 def github_api_response():
     """Sample GitHub API response"""
     import base64
+
     content = b"Hello, World!"
     return {
         "name": "file.txt",
         "content": base64.b64encode(content).decode("utf-8"),
         "encoding": "base64",
-        "download_url": "https://raw.githubusercontent.com/test/repo/main/file.txt"
+        "download_url": "https://raw.githubusercontent.com/test/repo/main/file.txt",
     }
