@@ -7,6 +7,9 @@ import json
 import sys
 import asyncio
 import inspect
+import duckdb
+
+from src.init_migration.ocdid_matcher import DEFAULT_DB_PATH
 
 # Ensure project root is on sys.path so `import src` works without installation
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -82,3 +85,42 @@ def github_api_response():
         "encoding": "base64",
         "download_url": "https://raw.githubusercontent.com/test/repo/main/file.txt",
     }
+
+# NOTE:
+# The Stage 1 pipeline writes into persistent DuckDB tables using append-style
+# inserts. Without clearing tables between integration tests, data from prior
+# test runs can accumulate and inflate match/orphan counts unexpectedly.
+#
+# This fixture resets pipeline tables before each test to ensure deterministic
+# integration test behavior and isolated test state.
+#
+# Maintainers may want to revisit whether the pipeline itself should enforce
+# idempotent ingestion semantics (e.g. per-state replacement, deduplication,
+# or transactional rebuilds) rather than relying on test-level cleanup.
+
+@pytest.fixture
+def clean_duckdb():
+
+    # NOTE:
+    # Tests currently reset the default pipeline DuckDB database directly.
+    # We cannot yet inject a dedicated test DB path cleanly because the
+    # main.py orchestration flow does not consistently support passing a
+    # custom db_path through all pipeline components.
+    db_path = DEFAULT_DB_PATH
+
+    conn = duckdb.connect(db_path)
+
+    tables = [
+        "local_ocdids",
+        "master_ocdids",
+        "ocdid_uuid_lookup",
+        "local_orphans",
+        "master_orphans",
+    ]
+
+    for table in tables:
+        conn.execute(f"DROP TABLE IF EXISTS {table}")
+
+    conn.close()
+
+    yield
