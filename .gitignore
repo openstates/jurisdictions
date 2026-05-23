@@ -48,6 +48,13 @@ nosetests.xml
 coverage.xml
 *.cover
 *.py,cover
+
+### Project-specific files
+# Temporary CSV files from pipeline runs
+ocdid_no_validation_asof_*.csv
+
+# Sample data files
+sample_data/
 .hypothesis/
 .pytest_cache/
 cover/
