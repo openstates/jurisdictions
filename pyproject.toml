@@ -54,6 +54,8 @@ Documentation = "https://docs.openstates.org"
 Issues = "https://github.com/openstates/jurisdictions/issues"
 Changelog = "https://github.com/openstates/jurisdictions/blob/main/CHANGELOG.md"
 
+[project.scripts]
+jurisdictions = "src.init_migration.main:main"
 
 [dependency-groups]
 dev = [
