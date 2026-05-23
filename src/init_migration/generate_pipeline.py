@@ -51,9 +51,11 @@ FUZZY_MATCH_THRESHOLD = 0.85
 DIVISION_FILENAME_PATTERN = "{display_name}_{uuid}.yaml"
 JURISDICTION_FILENAME_PATTERN = "{name}_{uuid}.yaml"
 
-# Output directory constants
-DIVISION_OUTPUT_DIR = "divisions"
-JURISDICTION_OUTPUT_DIR = "jurisdictions"
+# Output directory constants — base dir only. dump_division()/dump_jurisdiction()
+# append the "divisions"/"jurisdictions" segment themselves, so do NOT repeat it
+# here or the path becomes divisions/divisions/<state>/local.
+DIVISION_OUTPUT_DIR = "."
+JURISDICTION_OUTPUT_DIR = "."
 
 
 class NoMatch(BaseModel):
