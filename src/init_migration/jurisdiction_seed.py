@@ -54,8 +54,24 @@ class JurisdictionSeed:
 STATISTICAL_LSADS = {
     "05",  # AK Census Area
     "15",  # CDP (Census Designated Place — unincorporated, no government)
-    "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38",
-    "39", "42", "46", "47", "54", "55", "56",
+    "28",
+    "29",
+    "30",
+    "31",
+    "32",
+    "33",
+    "34",
+    "35",
+    "36",
+    "37",
+    "38",
+    "39",
+    "42",
+    "46",
+    "47",
+    "54",
+    "55",
+    "56",
 }
 
 # OCD division segment keys that indicate a legislative district.
@@ -63,8 +79,16 @@ LEGISLATIVE_TYPES = {"cd", "sldu", "sldl"}
 
 # Division types that are purely geographic / statistical with no governing body.
 NON_JURISDICTION_DIVISION_TYPES = {
-    "vtd", "zcta", "tract", "blockgroup", "block",
-    "ua", "msa", "csa", "division", "region",
+    "vtd",
+    "zcta",
+    "tract",
+    "blockgroup",
+    "block",
+    "ua",
+    "msa",
+    "csa",
+    "division",
+    "region",
 }
 
 # Division types that correspond to elected school boards.
@@ -79,8 +103,15 @@ SCHOOL_CLASSES = {
 # Division types that create a general government jurisdiction.
 # `anc` = DC Advisory Neighborhood Commission — an elected governing body.
 GOVERNMENT_TYPES = {
-    "country", "state", "county", "place",
-    "cousub", "submcd", "aiannh", "aits", "anc",
+    "country",
+    "state",
+    "county",
+    "place",
+    "cousub",
+    "submcd",
+    "aiannh",
+    "aits",
+    "anc",
 }
 
 # Division segment keys that indicate a sub-division whose jurisdiction belongs

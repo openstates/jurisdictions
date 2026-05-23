@@ -27,6 +27,7 @@ import re
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
+
 def get_jurisdiction_filename(ocdid: str, uuid: UUID) -> str:
     """Generate Jurisdiction YAML filename from components.
 
@@ -44,6 +45,7 @@ def get_jurisdiction_filename(ocdid: str, uuid: UUID) -> str:
     segment = parts[-2] if len(parts) >= 2 else parts[-1]
     safe_segment = segment.replace(":", "_")
     return f"{safe_segment}_{uuid}.yaml"
+
 
 class JurGenerator:
     """Factory for generating Jurisdiction objects from Division objects with persistence."""
@@ -96,7 +98,9 @@ class JurGenerator:
             "Set jurisdiction_ai_url=False to use deterministic fallback values."
         )
 
-    def generate_jurisdiction(self, division: Division, uuid: UUID, classification: str = "government") -> Jurisdiction:
+    def generate_jurisdiction(
+        self, division: Division, uuid: UUID, classification: str = "government"
+    ) -> Jurisdiction:
         """Generate a Jurisdiction object from a Division object.
 
         Name and URL are resolved from AI lookup first, then deterministic
@@ -117,10 +121,14 @@ class JurGenerator:
             if not division or not division.ocdid:
                 raise ValueError("Division object or ocdid is missing")
 
-            jurisdiction_ocdid = self._derive_jurisdiction_ocdid(division.ocdid, classification)
+            jurisdiction_ocdid = self._derive_jurisdiction_ocdid(
+                division.ocdid, classification
+            )
 
             if self._jurisdiction_exists(jurisdiction_ocdid):
-                logger.info(f"Jurisdiction already exists: {jurisdiction_ocdid}, returning existing")
+                logger.info(
+                    f"Jurisdiction already exists: {jurisdiction_ocdid}, returning existing"
+                )
                 return self._load_existing_jurisdiction(jurisdiction_ocdid)
 
             ai = self._ai_lookup(division)
@@ -149,15 +157,17 @@ class JurGenerator:
                 feature_flags=[],
                 term=term,
                 metadata=metadata,
-                sourcing=[{
-                    "field": ["ocdid", "name", "classification"],
-                    "source_name": "derived_from_division",
-                    "source_url": {
-                        "division": f"https://opencivicdata.org/division/{division.ocdid}"
-                    },
-                    "source_type": SourceType.HUMAN,
-                    "source_description": "Jurisdiction derived from Division object",
-                }],
+                sourcing=[
+                    {
+                        "field": ["ocdid", "name", "classification"],
+                        "source_name": "derived_from_division",
+                        "source_url": {
+                            "division": f"https://opencivicdata.org/division/{division.ocdid}"
+                        },
+                        "source_type": SourceType.HUMAN,
+                        "source_description": "Jurisdiction derived from Division object",
+                    }
+                ],
                 accurate_asof=self.req.asof_datetime,
                 last_updated=now,
             )
@@ -172,7 +182,9 @@ class JurGenerator:
             )
             raise
 
-    def _derive_jurisdiction_ocdid(self, division_ocdid: str, classification: str = "government") -> str:
+    def _derive_jurisdiction_ocdid(
+        self, division_ocdid: str, classification: str = "government"
+    ) -> str:
         """Derive jurisdiction ocd_id from division ocd_id."""
         division_part = division_ocdid.replace("ocd-division/", "")
         division_part = re.sub(r"/council_district:[^/]+", "", division_part)
@@ -194,7 +206,10 @@ class JurGenerator:
         try:
             raise NotImplementedError("_load_existing_jurisdiction not yet implemented")
         except Exception:
-            logger.error(f"Failed to load existing Jurisdiction for {jurisdiction_ocdid}", exc_info=True)
+            logger.error(
+                f"Failed to load existing Jurisdiction for {jurisdiction_ocdid}",
+                exc_info=True,
+            )
             raise
 
     def dump_jurisdiction(self, output_dir: Path | None = None) -> Path:
@@ -212,7 +227,9 @@ class JurGenerator:
             # jurisdiction OCD IDs end with an unkeyed "/government" segment
             # that ocdid_parser cannot handle.
             div_parsed = ocdid_parser(self.req.data.ocdid.raw_ocdid)
-            state = (div_parsed.get("state") or div_parsed.get("district") or "").lower()
+            state = (
+                div_parsed.get("state") or div_parsed.get("district") or ""
+            ).lower()
 
             if output_dir is None:
                 output_dir = Path(".")

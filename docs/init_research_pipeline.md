@@ -28,6 +28,12 @@
       have the master list of OCDids we are good to go for future runs.
     - In the future we're going to have to run this pipeline but hopefully we
       can add the cousub and other missing ocdIDs to the civic data repo.
+        - Generate a UUID
+        - Store OCDid and UUID in DuckDB lookup table for re-runs. 
+
+    - NOTE: Because we are storing this in DuckDB this can be run once... and
+      skipped in future runs. 
+    - @Matt: It might be helpful to backup to a .csv file as well... 
 
     -Return:
         OCDidIngestResp() model
@@ -48,6 +54,7 @@
         2. Load  Creyton's csv (# Master Validation Set for initial load DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121")
         2. Setup quarantine to store records did not match
             - tab in Creyton's file with a run date.
+            - can be a tab in Creyton's file with a run date.
         3. Given the parsed OCDid, find a "place" match in the research 
             - Match defined by state + place_name (.to_lower())
             - Fuzzy string matching. 
@@ -68,6 +75,10 @@
                     - update OCDID add UUID 
            If fail to match... 
             - Create a stub Division record, Jurisdiction record 
+                - Update Creyton's spreadsheet with the OCDid for the record
+                    - Indicates we found a 
+                    - update OCDID add UUID 
+           If fail to match... 
             - Store in quarantine tab of Creyton spreadsheet with error message / reason code
 
         7. Return status in GeneratorResp
@@ -80,4 +91,8 @@
     - Add them to the quarantine ("missing OCDid, not found in Open Civic Data")
     - Run stats: 
         - Total files 
+3. Resolve Match Pipeline 
+    - Once all of the child workflows have completed 
+    - Determine which records are in Creyton's sheet that were not in an OCDid
+    - Add them to the quarantine 
 

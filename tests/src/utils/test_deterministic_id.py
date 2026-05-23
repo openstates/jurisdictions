@@ -1,6 +1,11 @@
 from uuid import UUID
 
-from src.utils.deterministic_id import build_uuid5_name, decode_id, generate_id, verify_id
+from src.utils.deterministic_id import (
+    build_uuid5_name,
+    decode_id,
+    generate_id,
+    verify_id,
+)
 
 
 def test_generate_id_from_ocdid_and_date_is_deterministic():

@@ -25,6 +25,7 @@ import re
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
+
 def get_division_filename(display_name: str, geoid: str, uuid: UUID) -> str:
     """Generate Division YAML filename from components.
 
@@ -38,6 +39,7 @@ def get_division_filename(display_name: str, geoid: str, uuid: UUID) -> str:
     """
     safe_display_name = display_name.lower().replace(" ", "_")
     return f"{safe_display_name}_{geoid}_{uuid}.yaml"
+
 
 def _council_district_display_name(parsed_ocdid: dict) -> str | None:
     """Return the display name for a council_district division, or None if not applicable.
@@ -81,7 +83,9 @@ class DivGenerator:
             statefp = str(val_rec.get("STATEFP", "")).zfill(2)
 
             if not namelsad:
-                raise ValueError(f"Missing required NAMELSAD in validation record: {val_rec}")
+                raise ValueError(
+                    f"Missing required NAMELSAD in validation record: {val_rec}"
+                )
 
             # council_district override takes precedence over NAMELSAD-derived name
             cd_name = _council_district_display_name(self.parsed_ocdid)
@@ -99,7 +103,9 @@ class DivGenerator:
 
             raw_ocdid = self.data.ocdid.raw_ocdid
             if self._division_exists(raw_ocdid):
-                logger.info(f"Division already exists for {raw_ocdid}, returning existing")
+                logger.info(
+                    f"Division already exists for {raw_ocdid}, returning existing"
+                )
                 return self._load_existing_division(raw_ocdid)
 
             now = datetime.now(timezone.utc)
@@ -136,15 +142,17 @@ class DivGenerator:
                     "lsad": lsad,
                     "geoid": geoid,
                 },
-                sourcing=[{
-                    "field": ["government_identifiers"],
-                    "source_name": "civicdata.tech",
-                    "source_url": {
-                        "civicdata": "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/"
-                    },
-                    "source_type": SourceType.HUMAN,
-                    "source_description": "Human-researched validation data from civicdata.tech",
-                }],
+                sourcing=[
+                    {
+                        "field": ["government_identifiers"],
+                        "source_name": "civicdata.tech",
+                        "source_url": {
+                            "civicdata": "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/"
+                        },
+                        "source_type": SourceType.HUMAN,
+                        "source_description": "Human-researched validation data from civicdata.tech",
+                    }
+                ],
                 accurate_asof=self.req.asof_datetime,
                 last_updated=now,
             )
@@ -153,7 +161,10 @@ class DivGenerator:
             return self.division
 
         except Exception:
-            logger.error(f"Failed to generate Division for {self.data.ocdid.raw_ocdid}", exc_info=True)
+            logger.error(
+                f"Failed to generate Division for {self.data.ocdid.raw_ocdid}",
+                exc_info=True,
+            )
             raise
 
     def generate_division_stub(self, uuid: UUID) -> Division:
@@ -170,7 +181,9 @@ class DivGenerator:
                 display_name = place.replace("_", " ").title() if place else "Unknown"
 
             if self._division_exists(raw_ocdid):
-                logger.info(f"Stub Division already exists for {raw_ocdid}, returning existing")
+                logger.info(
+                    f"Stub Division already exists for {raw_ocdid}, returning existing"
+                )
                 return self._load_existing_division(raw_ocdid)
 
             state_code = parsed.get("state", "")
@@ -202,20 +215,20 @@ class DivGenerator:
                     "county_names": [],
                     "lsad": "",
                     "geoid": (
-                        f"{state_fips}{place.zfill(5)}"
-                        if state_fips and place
-                        else ""
+                        f"{state_fips}{place.zfill(5)}" if state_fips and place else ""
                     ),
                 },
-                sourcing=[{
-                    "field": ["ocdid"],
-                    "source_name": "ocdid_ingest",
-                    "source_url": {
-                        "ocd_repo": "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv"
-                    },
-                    "source_type": SourceType.HUMAN,
-                    "source_description": "Open Civic Data Master repo",
-                }],
+                sourcing=[
+                    {
+                        "field": ["ocdid"],
+                        "source_name": "ocdid_ingest",
+                        "source_url": {
+                            "ocd_repo": "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv"
+                        },
+                        "source_type": SourceType.HUMAN,
+                        "source_description": "Open Civic Data Master repo",
+                    }
+                ],
                 accurate_asof=self.req.asof_datetime,
                 last_updated=now,
             )
@@ -224,7 +237,10 @@ class DivGenerator:
             return self.division
 
         except Exception:
-            logger.error(f"Failed to generate stub Division for {self.data.ocdid.raw_ocdid}", exc_info=True)
+            logger.error(
+                f"Failed to generate stub Division for {self.data.ocdid.raw_ocdid}",
+                exc_info=True,
+            )
             raise
 
     def _derive_jurisdiction_id(self, division_ocdid: str) -> str:
@@ -265,10 +281,11 @@ class DivGenerator:
 
         geoid = self.division.government_identifiers.geoid
         if not geoid:
-            raise ValueError("geoid required to generate filename — record should have been quarantined")
+            raise ValueError(
+                "geoid required to generate filename — record should have been quarantined"
+            )
 
         try:
-
             filename = get_division_filename(
                 self.division.display_name,
                 geoid,

@@ -14,7 +14,7 @@ from urllib.parse import urlparse
 from typing import Literal as _LiteralForAlias
 
 import httpx
-from loguru import logger
+from logging import getLogger
 
 # Import custom errors from parent package
 from src.errors import (
@@ -24,28 +24,7 @@ from src.errors import (
     CacheError,
 )
 
-# Provide an optional helper to configure logging externally (no import-time side effects)
-
-def configure_downloader_logging(
-    *,
-    sink: str | os.PathLike = "downloader.log",
-    level: str = "DEBUG",
-    rotation: str = "1 MB",
-    retention: int | str = 10,
-) -> None:
-    """Optionally configure Loguru logging for the downloader module.
-
-    This avoids adding handlers at import-time. Call from application code if desired.
-    """
-    logger.add(
-        str(sink),
-        rotation=rotation,
-        retention=retention,
-        enqueue=True,
-        backtrace=True,
-        diagnose=True,
-        level=level,
-    )
+logger = getLogger(__name__)
 
 
 # -----------------------------
@@ -105,6 +84,7 @@ DEFAULT_HEADERS = {"Accept": "*/*"}
 
 
 DownloadStatus = _LiteralForAlias["downloaded", "unchanged", "skipped"]
+
 
 def _is_github_host(host: str | None) -> bool:
     return host in {"api.github.com", "raw.githubusercontent.com"}
@@ -272,7 +252,7 @@ class AsyncDownloader:
 
                 # Decode GitHub API responses or return raw bytes
                 content = await self._decode_github_response(resp, url)
-                logger.success(f"Downloaded {url} ({len(content)} bytes)")
+                logger.info(f"Downloaded {url} ({len(content)} bytes)")
                 return content
 
             except (
@@ -323,7 +303,9 @@ class AsyncDownloader:
                                 dt = parsedate_to_datetime(ra)
                                 if dt is not None:
                                     now_ts = time.time()
-                                    delay = max(delay, max(0.0, dt.timestamp() - now_ts))
+                                    delay = max(
+                                        delay, max(0.0, dt.timestamp() - now_ts)
+                                    )
                             except Exception:
                                 pass
 

@@ -15,11 +15,13 @@ from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
 import duckdb
-from loguru import logger
+from logging import getLogger
 
 from src.init_migration.pipeline_models import OCDidIngestResp
 from src.models.ocdid import OCDidParsed
 from src.utils.ocdid import ocdid_parser
+
+logger = getLogger(__name__)
 
 DEFAULT_DB_PATH = "data/ocdid_pipeline.duckdb"
 DEFAULT_CSV_BACKUP = "data/ocdid_uuid_lookup.csv"
@@ -28,6 +30,7 @@ DEFAULT_CSV_BACKUP = "data/ocdid_uuid_lookup.csv"
 @dataclass
 class MatchResults:
     """Container for matching results."""
+
     matched: list[OCDidIngestResp] = field(default_factory=list)
     local_orphans: list[dict] = field(default_factory=list)
     master_orphans: list[dict] = field(default_factory=list)
@@ -147,9 +150,7 @@ class OCDidMatcher:
                 dict(zip(master_orphan_cols, row)) for row in master_orphan_rows
             ]
             if results.master_orphans:
-                logger.warning(
-                    f"Found {len(results.master_orphans)} master orphan(s)"
-                )
+                logger.warning(f"Found {len(results.master_orphans)} master orphan(s)")
 
             # --- Store lookup table ---
             self._store_lookup_table(conn, results)

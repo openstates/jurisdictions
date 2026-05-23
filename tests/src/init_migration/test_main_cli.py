@@ -1,4 +1,5 @@
 """Tests for main.py CLI argument parsing."""
+
 from src.init_migration.main import parse_args
 
 

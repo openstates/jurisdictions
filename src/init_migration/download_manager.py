@@ -12,10 +12,18 @@ import tempfile
 from pathlib import Path
 
 import duckdb
-from loguru import logger
-from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn, TimeElapsedColumn
+from logging import getLogger
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    BarColumn,
+    TextColumn,
+    TimeElapsedColumn,
+)
 
 from src.init_migration.downloader import AsyncDownloader, DownloaderConfig
+
+logger = getLogger(__name__)
 
 RAW_BASE = "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers"
 MASTER_PATH = "country-us.csv"
@@ -41,16 +49,19 @@ class DownloadManager:
 
     def local_urls(self) -> list[str]:
         """Return URLs for each state's local government CSV."""
-        return [
-            f"{RAW_BASE}/{LOCAL_TEMPLATE.format(state=s)}"
-            for s in self.states
-        ]
+        return [f"{RAW_BASE}/{LOCAL_TEMPLATE.format(state=s)}" for s in self.states]
 
     def all_urls(self) -> list[str]:
         """Return master URL + all local URLs."""
         return [self.master_url()] + self.local_urls()
 
-    def _load_csv_bytes(self, conn: duckdb.DuckDBPyConnection, csv_bytes: bytes, query: str, params: list | None = None) -> None:
+    def _load_csv_bytes(
+        self,
+        conn: duckdb.DuckDBPyConnection,
+        csv_bytes: bytes,
+        query: str,
+        params: list | None = None,
+    ) -> None:
         """Write CSV bytes to a temp file, then load via DuckDB read_csv_auto."""
         with tempfile.NamedTemporaryFile(suffix=".csv", delete=False) as tmp:
             tmp.write(csv_bytes)
@@ -72,9 +83,10 @@ class DownloadManager:
         conn = duckdb.connect(self.db_path)
         try:
             self._load_csv_bytes(
-                conn, csv_bytes,
+                conn,
+                csv_bytes,
                 "CREATE OR REPLACE TABLE master_ocdids AS "
-                "SELECT * FROM read_csv_auto(?csv_path?, ignore_errors=true)"
+                "SELECT * FROM read_csv_auto(?csv_path?, ignore_errors=true)",
             )
             count = conn.execute("SELECT COUNT(*) FROM master_ocdids").fetchone()[0]
             logger.info(f"Loaded {count} rows into master_ocdids")
