@@ -10,8 +10,11 @@ from src.models.division import Division
 @st.composite
 def division_ocdid_strategy(draw) -> str:
     state = draw(st.text(alphabet="abcdefghijklmnopqrstuvwxyz", min_size=2, max_size=2))
-    place = draw(st.text(alphabet="abcdefghijklmnopqrstuvwxyz", min_size=3, max_size=12))
+    place = draw(
+        st.text(alphabet="abcdefghijklmnopqrstuvwxyz", min_size=3, max_size=12)
+    )
     return f"ocd-division/country:us/state:{state}/place:{place}"
+
 
 def _build_division(ocdid: str, id_value=None) -> Division:
     kwargs = {

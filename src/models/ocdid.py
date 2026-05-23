@@ -13,10 +13,15 @@ def validate_ocdid(value: str) -> str:
         )
     if not value.count("/") >= 2:
         _, _, country_segment = value.partition("/")
-        if country_segment.startswith("country:") and country_segment.removeprefix("country:"):
+        if country_segment.startswith("country:") and country_segment.removeprefix(
+            "country:"
+        ):
             return value
-        raise ValueError("OCD ID must have at least two segments (e.g., 'ocd-division/country:us/state:wa')")
+        raise ValueError(
+            "OCD ID must have at least two segments (e.g., 'ocd-division/country:us/state:wa')"
+        )
     return value
+
 
 OCDIdStr = Annotated[str, AfterValidator(validate_ocdid)]
 OCDIdType = Literal["ocd-division", "ocd-jurisdiction"]
@@ -42,7 +47,7 @@ class OCDIdParsed(BaseModel):
 
     type: Optional[OCDIdType] = Field(
         default=None,
-        description="The Open Civic Data identifier namespace: 'ocd-division' or 'ocd-jurisdiction'."
+        description="The Open Civic Data identifier namespace: 'ocd-division' or 'ocd-jurisdiction'.",
     )
     country: str = "us"
     state: Optional[str] = None
@@ -65,7 +70,6 @@ class OCDIdParsed(BaseModel):
 
         return self
 
-
     @classmethod
     def parse_ocdid(cls, raw_ocdid: str) -> "OCDIdParsed":
         try:
@@ -81,9 +85,7 @@ class OCDIdParsed(BaseModel):
         handler accepts both parsed OCDidParsed objects and valid OCD ID
         strings.
         """
-        raw_ocdid: str = (
-            ocdid.raw_ocdid if isinstance(ocdid, cls) else str(ocdid)
-        )
+        raw_ocdid: str = ocdid.raw_ocdid if isinstance(ocdid, cls) else str(ocdid)
         parts = raw_ocdid.rstrip("/").split("/")
         return parts[-1]
 
@@ -106,5 +108,3 @@ class OCDIdParsed(BaseModel):
             return ancestors
         except Exception as error:
             raise OCDIdParsingError(error) from error
-
-

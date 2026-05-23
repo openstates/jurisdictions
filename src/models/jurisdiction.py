@@ -163,7 +163,9 @@ class Jurisdiction(BaseModel):
         ocd-division/ prefix and jurisdiction_type is council, legislature, as
         defined in the ClassificationEnum. This validator checks that the ocdid field is compliant with this structure and raises an error if not."""
         if get_ocdid_type(self.ocdid) != "ocd-jurisdiction":
-            raise ValueError("Jurisdiction ocdid must use the 'ocd-jurisdiction' prefix")
+            raise ValueError(
+                "Jurisdiction ocdid must use the 'ocd-jurisdiction' prefix"
+            )
 
         jurisdiction_type = OCDIdParsed.get_last_segment(self.ocdid)
         if jurisdiction_type != self.classification.value:

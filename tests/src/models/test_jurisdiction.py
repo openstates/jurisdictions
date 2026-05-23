@@ -15,7 +15,9 @@ classification_strategy = st.sampled_from(list(ClassificationEnum))
 def jurisdiction_input_strategy(draw) -> tuple[str, ClassificationEnum]:
     classification = draw(classification_strategy)
     state = draw(st.text(alphabet="abcdefghijklmnopqrstuvwxyz", min_size=2, max_size=2))
-    place = draw(st.text(alphabet="abcdefghijklmnopqrstuvwxyz", min_size=3, max_size=12))
+    place = draw(
+        st.text(alphabet="abcdefghijklmnopqrstuvwxyz", min_size=3, max_size=12)
+    )
     return (
         f"ocd-jurisdiction/country:us/state:{state}/place:{place}/{classification.value}",
         classification,
@@ -69,7 +71,9 @@ def test_jurisdiction_rejects_division_prefix() -> None:
 
 
 def test_jurisdiction_rejects_mismatched_classification_suffix() -> None:
-    with pytest.raises(ValidationError, match="suffix must match the classification value"):
+    with pytest.raises(
+        ValidationError, match="suffix must match the classification value"
+    ):
         Jurisdiction(
             ocdid="ocd-jurisdiction/country:us/state:wa/place:seattle/legislature",
             name="Sample Jurisdiction",
