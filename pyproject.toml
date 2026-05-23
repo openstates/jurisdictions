@@ -47,6 +47,13 @@ dependencies = [
     "rapidfuzz>=3.0.0",
     "rich>=14.0.0",
 ]
+[project.urls]
+Homepage = "https://openstates.org"
+Repository = "https://github.com/openstates/jurisdictions"
+Documentation = "https://docs.openstates.org"
+Issues = "https://github.com/openstates/jurisdictions/issues"
+Changelog = "https://github.com/openstates/jurisdictions/blob/main/CHANGELOG.md"
+
 
 [dependency-groups]
 dev = [
