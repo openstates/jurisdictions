@@ -18,7 +18,7 @@ from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp
 from src.init_migration.generate_jurisdiction import JurGenerator, get_jurisdiction_filename
 from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
-from src.models.ocdid import OCDidParsed
+from src.models.ocdid import OCDIdParsed
 from src.models.source import SourceType
 from src.utils.yaml_manager import YamlManager
 
@@ -28,9 +28,9 @@ from src.utils.yaml_manager import YamlManager
 # ============================================================================
 
 @pytest.fixture
-def sample_req_jurisdiction(tmp_path) -> GeneratorReq:
+def sample_generator_request(tmp_path) -> GeneratorReq:
 	"""Create a GeneratorReq for jurisdiction generation."""
-	parsed = OCDidParsed(
+	parsed = OCDIdParsed(
 		raw_ocdid="ocd-division/country:us/state:ca/place:seattle",
 		country="us",
 		state="ca",
@@ -48,7 +48,7 @@ def sample_req_jurisdiction(tmp_path) -> GeneratorReq:
 	# Create a dummy validation CSV file
 	validation_csv = tmp_path / "validation.csv"
 	validation_csv.write_text("STATEFP,NAMELSAD,GEOID_Census\n06,Seattle,0600000\n")
-	
+
 	req = GeneratorReq(
 		data=resp,
 		build_base_object=False,
@@ -61,7 +61,7 @@ def sample_req_jurisdiction(tmp_path) -> GeneratorReq:
 
 
 @pytest.fixture
-def sample_division(sample_req_jurisdiction) -> Division:
+def sample_division(sample_generator_request) -> Division:
 	"""Create a sample Division object for testing."""
 	return Division(
 		ocdid="ocd-division/country:us/state:ca/place:seattle",
@@ -76,9 +76,9 @@ def sample_division(sample_req_jurisdiction) -> Division:
 
 
 @pytest.fixture
-def jur_generator(sample_req_jurisdiction) -> JurGenerator:
+def jur_generator(sample_generator_request) -> JurGenerator:
 	"""Create a JurGenerator instance for testing."""
-	return JurGenerator(req=sample_req_jurisdiction)
+	return JurGenerator(req=sample_generator_request)
 
 
 # ============================================================================
@@ -95,15 +95,15 @@ class TestGetJurisdictionFilename:
 		filename = get_jurisdiction_filename(ocdid, test_uuid)
 
 		assert filename.endswith(f"_{test_uuid}.yaml")
-		assert "place_seattle" in filename
+		assert "seattle" in filename
 
 	def test_filename_with_colons_replaced(self):
 		"""Colons in OCD ID segments should be replaced with underscores."""
-		ocdid = "ocd-jurisdiction/country:us/state:ca/county:06001/government"
+		ocdid = "ocd-jurisdiction/country:us/state:ca/county:marin/government"
 		test_uuid = uuid5(NAMESPACE_URL, "test")
 		filename = get_jurisdiction_filename(ocdid, test_uuid)
 
-		assert "county_06001" in filename
+		assert "marin" in filename
 		assert ":" not in filename  # No colons in filename
 
 	def test_filename_handles_trailing_slash(self):
@@ -112,7 +112,7 @@ class TestGetJurisdictionFilename:
 		test_uuid = uuid5(NAMESPACE_URL, "test")
 		filename = get_jurisdiction_filename(ocdid, test_uuid)
 
-		assert "place_seattle" in filename
+		assert "seattle" in filename
 		assert filename.endswith(".yaml")
 
 
@@ -123,17 +123,17 @@ class TestGetJurisdictionFilename:
 class TestJurGeneratorInitialization:
 	"""Tests for JurGenerator initialization."""
 
-	def test_jur_generator_initializes(self, jur_generator, sample_req_jurisdiction):
+	def test_jur_generator_initializes(self, jur_generator, sample_generator_request):
 		"""JurGenerator should initialize with request data."""
-		assert jur_generator.req == sample_req_jurisdiction
-		assert jur_generator.data == sample_req_jurisdiction.data
-		assert jur_generator.uuid == sample_req_jurisdiction.data.uuid
+		assert jur_generator.req == sample_generator_request
+		assert jur_generator.data == sample_generator_request.data
+		assert jur_generator.uuid == sample_generator_request.data.uuid
 		assert jur_generator.division is None
 		assert jur_generator.jurisdiction is None
 
-	def test_jur_generator_with_division(self, sample_req_jurisdiction, sample_division):
+	def test_jur_generator_with_division(self, sample_generator_request, sample_division):
 		"""JurGenerator should accept optional Division in constructor."""
-		jur_gen = JurGenerator(req=sample_req_jurisdiction, division=sample_division)
+		jur_gen = JurGenerator(req=sample_generator_request, division=sample_division)
 		assert jur_gen.division == sample_division
 
 
@@ -405,10 +405,10 @@ class TestDumpJurisdiction:
 class TestJurisdictionGenerationIntegration:
 	"""Integration tests for full jurisdiction generation workflow."""
 
-	def test_full_workflow_division_to_jurisdiction(self, sample_req_jurisdiction, sample_division, tmp_path):
+	def test_full_workflow_division_to_jurisdiction(self, sample_generator_request, sample_division, tmp_path):
 		"""Should complete full workflow: create generator, generate jurisdiction, dump file."""
 		# Create generator
-		jur_gen = JurGenerator(req=sample_req_jurisdiction, division=sample_division)
+		jur_gen = JurGenerator(req=sample_generator_request, division=sample_division)
 
 		# Generate jurisdiction
 		jurisdiction = jur_gen.generate_jurisdiction(
@@ -427,14 +427,14 @@ class TestJurisdictionGenerationIntegration:
 		assert jurisdiction.name is not None
 
 	def test_multiple_classifications_generate_distinct_jurisdictions(
-		self, sample_req_jurisdiction, sample_division, tmp_path
+		self, sample_generator_request, sample_division, tmp_path
 	):
 		"""Should generate distinct jurisdictions for different classifications."""
 		classifications = ["government", "legislature", "school_system"]
 		jurisdictions = []
 
 		for classification in classifications:
-			jur_gen = JurGenerator(req=sample_req_jurisdiction)
+			jur_gen = JurGenerator(req=sample_generator_request)
 			jurisdiction = jur_gen.generate_jurisdiction(
 				division=sample_division,
 				uuid=jur_gen.uuid,

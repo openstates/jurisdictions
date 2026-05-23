@@ -20,7 +20,7 @@ from pathlib import Path
 import yaml
 
 from src.models.division import Division
-from src.models.ocdid import OCDidParsed
+from src.models.ocdid import OCDIdParsed
 from src.models.source import SourceType
 from src.utils.state_lookup import load_state_code_lookup
 
@@ -203,8 +203,8 @@ def ensure_ancestor_stubs(
             }
     """
     state_lookup = load_state_code_lookup()
-    parsed_ocdid = OCDidParsed.parse_ocdid(ocdid)
-    ancestors = OCDidParsed.build_ancestor_ocdids(parsed_ocdid)
+    parsed_ocdid = OCDIdParsed.parse_ocdid(ocdid)
+    ancestors = OCDIdParsed.build_ancestor_ocdids(parsed_ocdid)
     results: list[dict] = []
 
     for ancestor in ancestors:

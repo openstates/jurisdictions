@@ -5,12 +5,12 @@ from uuid import NAMESPACE_URL, uuid5
 
 import pytest
 from src.init_migration.pipeline_models import OCDidIngestResp
-from src.models.ocdid import OCDidParsed
+from src.models.ocdid import OCDIdParsed
 
 
 def test_ocdid_ingest_resp_accepts_ocdid_parsed():
     """OCDidIngestResp.ocdid should accept an OCDidParsed instance."""
-    parsed = OCDidParsed(
+    parsed = OCDIdParsed(
         country="us",
         state="wa",
         place="seattle",
@@ -32,7 +32,7 @@ def test_ocdid_ingest_resp_accepts_ocdid_parsed():
 
 def test_ocdid_ingest_resp_uuid_is_uuid5_string():
     """OCDidIngestResp.uuid should parse to a UUID5 object."""
-    parsed = OCDidParsed(
+    parsed = OCDIdParsed(
         country="us",
         state="wa",
         place="seattle",
