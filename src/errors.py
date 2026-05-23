@@ -32,7 +32,9 @@ class DownloaderNotInitializedError(Error):
     entering the async context manager.
     """
 
-    def __init__(self, message="AsyncDownloader must be used with 'async with' statement"):
+    def __init__(
+        self, message="AsyncDownloader must be used with 'async with' statement"
+    ):
         super().__init__(message)
         self.message = message
 
@@ -62,6 +64,7 @@ class OCDIdParsingError(Error):
     """
     Raised when an error is encountered parsing an OCDid string.
     """
+
     def __init__(self, message):
         super().__init__(message)
         self.message = message

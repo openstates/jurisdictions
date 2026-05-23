@@ -1,11 +1,17 @@
 from datetime import datetime, timezone
 from .src.models.source import SourceObj
-from .src.models.jurisdiction import Jurisdiction, TermDetail, SessionDetail, ClassificationEnum
+from .src.models.jurisdiction import (
+    Jurisdiction,
+    TermDetail,
+    SessionDetail,
+    ClassificationEnum,
+)
 
 
 # Helper to make UTC datetimes
 def ymd(y: int, m: int, d: int) -> datetime:
     return datetime(year=y, month=m, day=d, tzinfo=timezone.utc)
+
 
 # Session factories with exact dates
 def session_calendar_year(year: int) -> "SessionDetail":
@@ -17,6 +23,7 @@ def session_calendar_year(year: int) -> "SessionDetail":
         end_date=ymd(year, 12, 31),
     )
 
+
 def session_span(name_slug: str, start: datetime, end: datetime) -> "SessionDetail":
     return SessionDetail(
         name=name_slug,
@@ -25,6 +32,7 @@ def session_span(name_slug: str, start: datetime, end: datetime) -> "SessionDeta
         start_date=start,
         end_date=end,
     )
+
 
 if __name__ == "__main__":
     now = datetime.fromisoformat("2025-09-27T21:12:18.255687+00:00")
@@ -41,9 +49,15 @@ if __name__ == "__main__":
             # Calendar view
             "2025": session_calendar_year(2025),
             # Named seat windows from Licking County BOE (Commences / Expires)
-            "commissioner-rick_black-2023-2026": session_span("commissioner-rick_black-2023-2026", ymd(2023,1,1), ymd(2026,12,31)),
-            "commissioner-timothy_bubb-2025-2029": session_span("commissioner-timothy_bubb-2025-2029", ymd(2025,1,2), ymd(2029,1,1)),
-            "commissioner-duane_flowers-2025-2029": session_span("commissioner-duane_flowers-2025-2029", ymd(2025,1,3), ymd(2029,1,2)),
+            "commissioner-rick_black-2023-2026": session_span(
+                "commissioner-rick_black-2023-2026", ymd(2023, 1, 1), ymd(2026, 12, 31)
+            ),
+            "commissioner-timothy_bubb-2025-2029": session_span(
+                "commissioner-timothy_bubb-2025-2029", ymd(2025, 1, 2), ymd(2029, 1, 1)
+            ),
+            "commissioner-duane_flowers-2025-2029": session_span(
+                "commissioner-duane_flowers-2025-2029", ymd(2025, 1, 3), ymd(2029, 1, 2)
+            ),
         },
         feature_flags=[],
         term=TermDetail(
@@ -61,32 +75,32 @@ if __name__ == "__main__":
                 url="https://lookup.boe.ohio.gov/vtrapp/licking/cnm.aspx?prsid=0101__1&task=voter",
                 source_type="boe",
                 accessed_at=now,
-                notes="Commissioner commence/expire dates and next election years."
+                notes="Commissioner commence/expire dates and next election years.",
             ),
             SourceObj(
                 name="Licking County – Commissioners (official site)",
                 url="https://lickingcounty.gov/depts/commissioners/default.htm",
                 source_type="county_site",
                 accessed_at=now,
-                notes="Roster and office."
+                notes="Roster and office.",
             ),
             SourceObj(
                 name="Ohio Revised Code §305.01 (County Commissioners)",
                 url="https://codes.ohio.gov/ohio-revised-code/section-305.01",
                 source_type="statute",
                 accessed_at=now,
-                notes="Defines staggering and office commencement rules."
+                notes="Defines staggering and office commencement rules.",
             ),
             SourceObj(
                 name="Census – CDP Glossary",
                 url="https://www.census.gov/programs-surveys/geography/about/glossary.html#par_textimage_13",
                 source_type="census_glossary",
                 accessed_at=now,
-                notes="CDPs are unincorporated; no municipal government."
+                notes="CDPs are unincorporated; no municipal government.",
             ),
         ],
         metadata={
-            "geoid": "3933362",             # Harbor Hills CDP GEOID (for reference)
+            "geoid": "3933362",  # Harbor Hills CDP GEOID (for reference)
             "state": "OH",
             "state_fips": "39",
             "county": "Licking",
@@ -99,11 +113,29 @@ if __name__ == "__main__":
                 "lsad": "57",
             },
             "commissioners": [
-                {"name": "Rick Black", "party": "R", "commences": "2023-01-01", "expires": "2026-12-31", "next_election": "2026-11-03"},
-                {"name": "Timothy E. Bubb", "party": "R", "commences": "2025-01-02", "expires": "2029-01-01", "next_election": "2028-11-07"},
-                {"name": "Duane H. Flowers", "party": "R", "commences": "2025-01-03", "expires": "2029-01-02", "next_election": "2028-11-07"},
+                {
+                    "name": "Rick Black",
+                    "party": "R",
+                    "commences": "2023-01-01",
+                    "expires": "2026-12-31",
+                    "next_election": "2026-11-03",
+                },
+                {
+                    "name": "Timothy E. Bubb",
+                    "party": "R",
+                    "commences": "2025-01-02",
+                    "expires": "2029-01-01",
+                    "next_election": "2028-11-07",
+                },
+                {
+                    "name": "Duane H. Flowers",
+                    "party": "R",
+                    "commences": "2025-01-03",
+                    "expires": "2029-01-02",
+                    "next_election": "2028-11-07",
+                },
             ],
-            "commissioners_page_url": "https://lickingcounty.gov/depts/commissioners/default.htm"
+            "commissioners_page_url": "https://lickingcounty.gov/depts/commissioners/default.htm",
         },
     )
 
@@ -118,7 +150,7 @@ if __name__ == "__main__":
         classification=ClassificationEnum.LEGISLATURE,
         legislative_sessions={
             "2025": session_calendar_year(2025),
-            "2024-2025": session_span("2024-2025", ymd(2024,1,1), ymd(2025,12,31)),
+            "2024-2025": session_span("2024-2025", ymd(2024, 1, 1), ymd(2025, 12, 31)),
         },
         feature_flags=[],
         term=TermDetail(
@@ -136,21 +168,21 @@ if __name__ == "__main__":
                 url="https://cityofparma-oh.gov/221/City-Council",
                 source_type="city_site",
                 accessed_at=now,
-                notes="Council landing page."
+                notes="Council landing page.",
             ),
             SourceObj(
                 name="Parma Codified Ordinances (AMLegal)",
                 url="https://codelibrary.amlegal.com/codes/parma/latest/Parma_oh/0-0-0-193190",
                 source_type="charter",
                 accessed_at=now,
-                notes="Chapter 121 (Council); verify if Parma adopted 4-year terms."
+                notes="Chapter 121 (Council); verify if Parma adopted 4-year terms.",
             ),
             SourceObj(
                 name="Ohio Revised Code §731.03 (City council terms)",
                 url="https://codes.ohio.gov/ohio-revised-code/section-731.03",
                 source_type="statute",
                 accessed_at=now,
-                notes="Two-year terms by default; 4-year option via vote."
+                notes="Two-year terms by default; 4-year option via vote.",
             ),
         ],
         metadata={
@@ -172,7 +204,7 @@ if __name__ == "__main__":
         classification=ClassificationEnum.EXECUTIVE,
         legislative_sessions={
             "2025": session_calendar_year(2025),
-            "2024-2027": session_span("2024-2027", ymd(2024,1,1), ymd(2027,12,31)),
+            "2024-2027": session_span("2024-2027", ymd(2024, 1, 1), ymd(2027, 12, 31)),
         },
         feature_flags=[],
         term=TermDetail(
@@ -190,7 +222,7 @@ if __name__ == "__main__":
                 url="https://cityofparma-oh.gov/222/Mayors-Office",
                 source_type="city_site",
                 accessed_at=now,
-                notes="Mayor term reference."
+                notes="Mayor term reference.",
             ),
         ],
         metadata={
@@ -216,7 +248,7 @@ if __name__ == "__main__":
         classification=ClassificationEnum.LEGISLATURE,
         legislative_sessions={
             "2025": session_calendar_year(2025),
-            "2024-2027": session_span("2024-2027", ymd(2024,1,1), ymd(2027,12,31)),
+            "2024-2027": session_span("2024-2027", ymd(2024, 1, 1), ymd(2027, 12, 31)),
         },
         feature_flags=[],
         term=TermDetail(
@@ -234,21 +266,21 @@ if __name__ == "__main__":
                 url="https://www.valleyviewohio.org/",
                 source_type="village_site",
                 accessed_at=now,
-                notes="Primary municipal site."
+                notes="Primary municipal site.",
             ),
             SourceObj(
                 name="Valley View Codified Ordinances (AMLegal)",
                 url="https://codelibrary.amlegal.com/codes/valleyview/latest/overview",
                 source_type="charter",
                 accessed_at=now,
-                notes="Ordinances/charter portal."
+                notes="Ordinances/charter portal.",
             ),
             SourceObj(
                 name="Ohio Revised Code §731.09 (Village council terms)",
                 url="https://codes.ohio.gov/ohio-revised-code/section-731.09",
                 source_type="statute",
                 accessed_at=now,
-                notes="4-year council terms."
+                notes="4-year council terms.",
             ),
         ],
         metadata={
@@ -270,7 +302,7 @@ if __name__ == "__main__":
         classification=ClassificationEnum.EXECUTIVE,
         legislative_sessions={
             "2025": session_calendar_year(2025),
-            "2024-2027": session_span("2024-2027", ymd(2024,1,1), ymd(2027,12,31)),
+            "2024-2027": session_span("2024-2027", ymd(2024, 1, 1), ymd(2027, 12, 31)),
         },
         feature_flags=[],
         term=TermDetail(
@@ -288,14 +320,14 @@ if __name__ == "__main__":
                 url="https://www.valleyviewohio.org/",
                 source_type="village_site",
                 accessed_at=now,
-                notes="Primary municipal site."
+                notes="Primary municipal site.",
             ),
             SourceObj(
                 name="Ohio Revised Code §733.24 (Mayor; term; election)",
                 url="https://codes.ohio.gov/ohio-revised-code/section-733.24",
                 source_type="statute",
                 accessed_at=now,
-                notes="Village mayoral term = 4 years; starts Jan 1."
+                notes="Village mayoral term = 4 years; starts Jan 1.",
             ),
         ],
         metadata={
@@ -313,7 +345,9 @@ if __name__ == "__main__":
     # Smoke test
     for j in (
         licking_county_government,
-        parma_council, parma_mayor,
-        valleyview_council, valleyview_mayor
+        parma_council,
+        parma_mayor,
+        valleyview_council,
+        valleyview_mayor,
     ):
         print(j.id, "->", j.name)

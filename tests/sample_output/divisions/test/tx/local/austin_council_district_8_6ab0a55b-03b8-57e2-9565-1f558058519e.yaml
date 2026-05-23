@@ -1,0 +1,51 @@
+accurate_asof: '2025-10-27T01:29:51Z'
+also_known_as: []
+country: us
+display_name: Austin Council District 8
+geometries: []
+government_identifiers:
+  common_name: null
+  county_names:
+  - Hays
+  - Travis
+  - Williamson
+  countyfp:
+  - '209'
+  - '453'
+  - '491'
+  cousubfp: null
+  geoid: '4845390165'
+  geoid_12: null
+  geoid_14: null
+  lsad: '22'
+  namelsad: 'Austin city: council district 8'
+  placefp: null
+  sldlst:
+  - '047'
+  - 048
+  sldust:
+  - '25'
+  statefp: '48'
+id: 6ab0a55b-03b8-57e2-9565-1f558058519e
+jurisdiction_id: ocd-jurisdiction/country:us/state:tx/place:austin/government
+last_updated: '2025-10-27T01:29:51Z'
+metadata:
+  population: null
+ocdid: ocd-division/country:us/state:tx/place:austin/council_district:8
+sourcing:
+- field:
+  - geometries
+  source_description: null
+  source_name: City of Austin ArcGIS Hub
+  source_type: human_researched
+  source_url:
+    url: https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/
+- field:
+  - government_identifiers
+  source_description: null
+  source_name: civicdata.tech
+  source_type: human_researched
+  source_url:
+    url: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362
+valid_asof: null
+valid_thru: null

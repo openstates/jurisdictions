@@ -15,10 +15,15 @@ Responsibilities:
 import logging
 from pathlib import Path
 import re
-from uuid import UUID
-from src.init_migration.pipeline_models import GeneratorReq, GeneratorResp, GeneratorStatus, Status
+from src.init_migration.pipeline_models import (
+    GeneratorReq,
+    GeneratorResp,
+    GeneratorStatus,
+    Status,
+)
 from src.init_migration.generate_division import DivGenerator
 from src.init_migration.generate_jurisdiction import JurGenerator
+from src.init_migration.generate_recursive import ensure_ancestor_stubs
 from src.init_migration.jurisdiction_seed import infer_jurisdiction_seed
 from src.utils.ocdid import ocdid_parser
 from src.utils.place_name import namelsad_to_display_name
@@ -30,9 +35,11 @@ from pydantic import BaseModel
 # Try to import rapidfuzz, fall back to difflib if not available
 try:
     from rapidfuzz import fuzz
+
     HAS_RAPIDFUZZ = True
 except ImportError:
     import difflib
+
     HAS_RAPIDFUZZ = False
 
 logger = logging.getLogger(__name__)
@@ -49,12 +56,16 @@ DIVISION_OUTPUT_DIR = "divisions"
 JURISDICTION_OUTPUT_DIR = "jurisdictions"
 
 
-
 class NoMatch(BaseModel):
     """Tracks records that did not match during pipeline processing."""
+
     model_config = {"arbitrary_types_allowed": True}
-    validation_no_ocdid_div: pl.DataFrame = pl.DataFrame()  # Validation records with no matching OCD ID
-    ocdid_no_validation_div: list[dict] = []  # OCDids with no matching validation record or multiple matches
+    validation_no_ocdid_div: pl.DataFrame = (
+        pl.DataFrame()
+    )  # Validation records with no matching OCD ID
+    ocdid_no_validation_div: list[
+        dict
+    ] = []  # OCDids with no matching validation record or multiple matches
 
 
 class GeneratePipeline:
@@ -99,13 +110,18 @@ class GeneratePipeline:
 
         # Initialize quarantine and tracking
         self.quarantine = NoMatch()
-        self.created_jurisdictions: set[str] = set()  # Track jurisdiction ocd_ids already created
+        self.created_jurisdictions: set[str] = (
+            set()
+        )  # Track jurisdiction ocd_ids already created
 
         # Load and normalize validation CSV (synchronously, cached for all run() calls)
         self.validation_df: pl.DataFrame = self._load_validation_csv()
         self.validation_df = self._normalize_validation_data()
 
-        logger.info(f"Pipeline initialized for OCDid: {self.data.ocdid.raw_ocdid}", extra={"uuid": str(self.uuid)})
+        logger.info(
+            f"Pipeline initialized for OCDid: {self.data.ocdid.raw_ocdid}",
+            extra={"uuid": str(self.uuid)},
+        )
 
     def _load_validation_csv(self) -> pl.DataFrame:
         """Load validation research CSV from URL or filepath.
@@ -118,11 +134,18 @@ class GeneratePipeline:
         """
         try:
             df = pl.read_csv(self.validation_data_filepath, infer_schema_length=0)
-            logger.info(f"Loaded validation CSV: {df.shape[0]} rows, {df.shape[1]} columns")
+            logger.info(
+                f"Loaded validation CSV: {df.shape[0]} rows, {df.shape[1]} columns"
+            )
             return df
         except Exception as e:
-            logger.error(f"Failed to load validation CSV from {self.validation_data_filepath}", exc_info=True)
-            raise ValueError(f"Cannot load validation CSV: {self.validation_data_filepath}") from e
+            logger.error(
+                f"Failed to load validation CSV from {self.validation_data_filepath}",
+                exc_info=True,
+            )
+            raise ValueError(
+                f"Cannot load validation CSV: {self.validation_data_filepath}"
+            ) from e
 
     def _normalize_validation_data(self) -> pl.DataFrame:
         """Normalize validation data by adding normalized place names.
@@ -137,7 +160,10 @@ class GeneratePipeline:
             # Add normalized place name column (lowercase, LSAD stripped)
             df = self.validation_df.with_columns(
                 pl.col("NAMELSAD")
-                .map_elements(lambda x: namelsad_to_display_name(x).lower() if x else "", return_dtype=pl.Utf8)
+                .map_elements(
+                    lambda x: namelsad_to_display_name(x).lower() if x else "",
+                    return_dtype=pl.Utf8,
+                )
                 .alias("normalized_place_name")
             )
             logger.info("Normalized validation data with place names")
@@ -180,11 +206,13 @@ class GeneratePipeline:
 
             # Look up state FIPS code
             from src.utils.state_lookup import load_state_code_lookup
+
             state_lookup = load_state_code_lookup()
             state_fips_list = [
                 item.get("statefps") or item.get("statefp")
                 for item in state_lookup
-                if (item.get("stateusps") or item.get("stusps") or "").upper() == state_upper
+                if (item.get("stateusps") or item.get("stusps") or "").upper()
+                == state_upper
             ]
 
             if not state_fips_list:
@@ -199,7 +227,9 @@ class GeneratePipeline:
             )
 
             if state_df.is_empty():
-                logger.debug(f"No validation records found for state: {state_upper} (FIPS: {state_fips})")
+                logger.debug(
+                    f"No validation records found for state: {state_upper} (FIPS: {state_fips})"
+                )
                 return pl.DataFrame()
 
             # Fuzzy match on normalized place names
@@ -209,18 +239,26 @@ class GeneratePipeline:
                 if normalized_name:
                     # Use fuzzy matching (token_set_ratio if rapidfuzz available, else SequenceMatcher)
                     if HAS_RAPIDFUZZ:
-                        score = fuzz.token_set_ratio(place_lower, normalized_name) / 100  # Normalize to 0-1
+                        score = (
+                            fuzz.token_set_ratio(place_lower, normalized_name) / 100
+                        )  # Normalize to 0-1
                     else:
-                        score = difflib.SequenceMatcher(None, place_lower, normalized_name).ratio()
+                        score = difflib.SequenceMatcher(
+                            None, place_lower, normalized_name
+                        ).ratio()
                     if score >= FUZZY_MATCH_THRESHOLD:
                         matches.append((row, score))
 
             if not matches:
-                logger.debug(f"No fuzzy matches found for place: {place} in state {state}")
+                logger.debug(
+                    f"No fuzzy matches found for place: {place} in state {state}"
+                )
                 return pl.DataFrame()
 
             # Convert matches to DataFrame, sorted by score descending
-            match_dicts = [m[0] for m in sorted(matches, key=lambda x: x[1], reverse=True)]
+            match_dicts = [
+                m[0] for m in sorted(matches, key=lambda x: x[1], reverse=True)
+            ]
             result_df = pl.DataFrame(match_dicts)
             logger.info(f"Found {len(match_dicts)} match(es) for {ocdid}")
 
@@ -257,39 +295,53 @@ class GeneratePipeline:
         try:
             matches_df = self.find_matches(self.data.ocdid.raw_ocdid)
             match_count = len(matches_df)
-            logger.info(f"Matching result for {self.data.ocdid.raw_ocdid}: {match_count} match(es)")
+            logger.info(
+                f"Matching result for {self.data.ocdid.raw_ocdid}: {match_count} match(es)"
+            )
             # Handle match outcomes
             if matches_df.is_empty():
-                logger.info(f"No matches found for {self.data.ocdid.raw_ocdid}, creating stub Division")
+                logger.info(
+                    f"No matches found for {self.data.ocdid.raw_ocdid}, creating stub Division"
+                )
                 div_gen = DivGenerator(self.req)
                 self.division = div_gen.generate_division_stub(uuid=self.uuid)
                 if self.division:
                     response.division_path = str(
                         div_gen.dump_division(output_dir=self.division_output_dir)
                     )
-                self.quarantine.ocdid_no_validation_div.append({
-                    "ocdid": self.data.ocdid.raw_ocdid,
-                    "reason": "no_validation_match",
-                    "matched_records": [],
-                })
-                response.status = GeneratorStatus(status=Status.PARTIAL, error="No validation match found")
+                self.quarantine.ocdid_no_validation_div.append(
+                    {
+                        "ocdid": self.data.ocdid.raw_ocdid,
+                        "reason": "no_validation_match",
+                        "matched_records": [],
+                    }
+                )
+                response.status = GeneratorStatus(
+                    status=Status.PARTIAL, error="No validation match found"
+                )
                 return response
 
             if match_count > 1:
-                logger.warning(f"Multiple matches found for {self.data.ocdid.raw_ocdid}, flagging for review")
+                logger.warning(
+                    f"Multiple matches found for {self.data.ocdid.raw_ocdid}, flagging for review"
+                )
                 div_gen = DivGenerator(self.req)
                 self.division = div_gen.generate_division_stub(uuid=self.uuid)
                 if self.division and self.division.ocdid:
                     response.division_path = str(
                         div_gen.dump_division(output_dir=self.division_output_dir)
                     )
-                matched_records = [dict(row) for row in matches_df.iter_rows(named=True)]
-                self.quarantine.ocdid_no_validation_div.append({
-                    "ocdid": self.data.ocdid.raw_ocdid,
-                    "reason": "multiple_matches",
-                    "matched_records": matched_records,
-                    "match_count": match_count,
-                })
+                matched_records = [
+                    dict(row) for row in matches_df.iter_rows(named=True)
+                ]
+                self.quarantine.ocdid_no_validation_div.append(
+                    {
+                        "ocdid": self.data.ocdid.raw_ocdid,
+                        "reason": "multiple_matches",
+                        "matched_records": matched_records,
+                        "match_count": match_count,
+                    }
+                )
                 response.status = GeneratorStatus(
                     status=Status.PARTIAL,
                     error=f"Multiple matches ({match_count}) found, flagged for review",
@@ -301,7 +353,9 @@ class GeneratePipeline:
 
             # Generate full Division from the matched validation record
             div_gen = DivGenerator(self.req)
-            self.division = div_gen.generate_division(val_rec=matched_row, uuid=self.uuid)
+            self.division = div_gen.generate_division(
+                val_rec=matched_row, uuid=self.uuid
+            )
             if self.division:
                 response.division_path = str(
                     div_gen.dump_division(output_dir=self.division_output_dir)
@@ -310,7 +364,9 @@ class GeneratePipeline:
             if self.division:
                 seed = infer_jurisdiction_seed(
                     ocdid=self.division.ocdid,
-                    lsad_code=self.division.government_identifiers.lsad if self.division.government_identifiers else None,
+                    lsad_code=self.division.government_identifiers.lsad
+                    if self.division.government_identifiers
+                    else None,
                 )
                 if seed.has_jurisdiction:
                     classification = seed.classification or "government"
@@ -336,13 +392,34 @@ class GeneratePipeline:
                             self.created_jurisdictions.add(jurisdiction_ocdid)
                             logger.info(f"Jurisdiction created: {jurisdiction_ocdid}")
                     else:
-                        logger.info(f"Jurisdiction already exists: {jurisdiction_ocdid}")
+                        logger.info(
+                            f"Jurisdiction already exists: {jurisdiction_ocdid}"
+                        )
                 else:
                     logger.info(
                         f"No jurisdiction created for {self.division.ocdid}: {seed.reason}"
                     )
 
             response.status = GeneratorStatus(status=Status.SUCCESS)
+
+            # Ensure placeholder stubs exist for every ancestor level (state, county,
+            # etc.) before processing the leaf.  Failures here are non-fatal so that
+            # a transient I/O error does not abort the main generation work.
+            ancestor_results = ensure_ancestor_stubs(
+                self.data.ocdid.raw_ocdid,
+                self.division_output_dir,
+                self.jurisdiction_output_dir,
+            )
+            logger.info(
+                "Ancestor stub check complete",
+                extra={
+                    "ocdid": self.data.ocdid.raw_ocdid,
+                    "ancestor_count": len(ancestor_results),
+                    "created": sum(
+                        1 for r in ancestor_results if r["action"] == "created"
+                    ),
+                },
+            )
             return response
 
         except Exception as e:
@@ -350,7 +427,9 @@ class GeneratePipeline:
             response.status = GeneratorStatus(status=Status.FAILED, error=str(e))
             return response
 
-    def _derive_jurisdiction_ocdid(self, division_ocdid: str, classification: str = "government") -> str:
+    def _derive_jurisdiction_ocdid(
+        self, division_ocdid: str, classification: str = "government"
+    ) -> str:
         """Derive jurisdiction ocd_id from division ocd_id.
 
         Schema: ocd-jurisdiction/<division_without_prefix>/<classification>
@@ -395,30 +474,34 @@ class GeneratePipeline:
                     matched_records = entry.get("matched_records", [])
 
                     if reason == "no_validation_match":
-                        ocdid_records.append({
-                            "ocdid": ocdid,
-                            "reason": reason,
-                            "matched_count": 0
-                        })
+                        ocdid_records.append(
+                            {"ocdid": ocdid, "reason": reason, "matched_count": 0}
+                        )
                     else:  # multiple_matches
                         match_count = entry.get("match_count", len(matched_records))
                         if matched_records:
                             for i, record in enumerate(matched_records):
-                                ocdid_records.append({
+                                ocdid_records.append(
+                                    {
+                                        "ocdid": ocdid,
+                                        "reason": reason,
+                                        "matched_count": match_count,
+                                        "match_number": i + 1,
+                                        "matched_ocdid": record.get(
+                                            "division_ocdid", ""
+                                        ),
+                                        "matched_name": record.get("NAMELSAD", ""),
+                                        "matched_geoid": record.get("GEOID_Census", ""),
+                                    }
+                                )
+                        else:
+                            ocdid_records.append(
+                                {
                                     "ocdid": ocdid,
                                     "reason": reason,
                                     "matched_count": match_count,
-                                    "match_number": i + 1,
-                                    "matched_ocdid": record.get("division_ocdid", ""),
-                                    "matched_name": record.get("NAMELSAD", ""),
-                                    "matched_geoid": record.get("GEOID_Census", "")
-                                })
-                        else:
-                            ocdid_records.append({
-                                "ocdid": ocdid,
-                                "reason": reason,
-                                "matched_count": match_count
-                            })
+                                }
+                            )
 
                 ocdid_df = pl.DataFrame(ocdid_records)
                 filepath = output_dir / f"ocdid_no_validation_asof_{timestamp}.csv"
@@ -427,5 +510,3 @@ class GeneratePipeline:
 
         except Exception:
             logger.error("Failed to save quarantine data", exc_info=True)
-
-

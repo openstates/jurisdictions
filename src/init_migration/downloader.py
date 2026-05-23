@@ -26,29 +26,6 @@ from src.errors import (
 
 logger = getLogger(__name__)
 
-# Provide an optional helper to configure logging externally (no import-time side effects)
-
-def configure_downloader_logging(
-    *,
-    sink: str | os.PathLike = "downloader.log",
-    level: str = "DEBUG",
-    rotation: str = "1 MB",
-    retention: int | str = 10,
-) -> None:
-    """Optionally configure Loguru logging for the downloader module.
-
-    This avoids adding handlers at import-time. Call from application code if desired.
-    """
-    logger.add(
-        str(sink),
-        rotation=rotation,
-        retention=retention,
-        enqueue=True,
-        backtrace=True,
-        diagnose=True,
-        level=level,
-    )
-
 
 # -----------------------------
 # Config
@@ -107,6 +84,7 @@ DEFAULT_HEADERS = {"Accept": "*/*"}
 
 
 DownloadStatus = _LiteralForAlias["downloaded", "unchanged", "skipped"]
+
 
 def _is_github_host(host: str | None) -> bool:
     return host in {"api.github.com", "raw.githubusercontent.com"}
@@ -325,7 +303,9 @@ class AsyncDownloader:
                                 dt = parsedate_to_datetime(ra)
                                 if dt is not None:
                                     now_ts = time.time()
-                                    delay = max(delay, max(0.0, dt.timestamp() - now_ts))
+                                    delay = max(
+                                        delay, max(0.0, dt.timestamp() - now_ts)
+                                    )
                             except Exception:
                                 pass
 

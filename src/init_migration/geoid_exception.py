@@ -16,6 +16,7 @@ UMBRELLA_GEOID_MAP: dict[tuple[str, str], str] = {
     ("dc", "anc"): "11001",
 }
 
+
 def _resolve_umbrella_geoid(parsed_ocdid: dict) -> str | None:
     """Return an umbrella GEOID for divisions that lack a specific Census GEOID.
 
