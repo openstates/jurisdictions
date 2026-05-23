@@ -3,11 +3,38 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "jurisdictions"
+name = "openstates-jurisdictions"
 version = "0.1.0"
-description = "Add your description here"
+description = "Standardized Division and Jurisdiction data for US local governments in the OpenStates ecosystem"
 readme = "README.md"
 requires-python = ">=3.12"
+license = {text = "CC0 1.0 Universal"}
+authors = [
+    {name = "Open States Contributors", email = "hello@openstates.org"}
+]
+keywords = [
+    "civic-data",
+    "government",
+    "jurisdictions",
+    "divisions",
+    "open-civic-data",
+    "ocd",
+    "legislative-data",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Government",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
 dependencies = [
     "duckdb>=1.4.1",
     "google-i18n-address>=3.1.1",
@@ -20,6 +47,13 @@ dependencies = [
     "rapidfuzz>=3.0.0",
     "rich>=14.0.0",
 ]
+[project.urls]
+Homepage = "https://openstates.org"
+Repository = "https://github.com/openstates/jurisdictions"
+Documentation = "https://docs.openstates.org"
+Issues = "https://github.com/openstates/jurisdictions/issues"
+Changelog = "https://github.com/openstates/jurisdictions/blob/main/CHANGELOG.md"
+
 
 [dependency-groups]
 dev = [
