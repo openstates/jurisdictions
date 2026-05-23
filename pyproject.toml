@@ -59,6 +59,21 @@ dev = [
     "pytest-asyncio>=1.3.0",
 ]
 
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+include = [
+    "/src",
+    "/tests",
+    "/docs",
+    "pyproject.toml",
+    "README.md",
+    "LICENSE",
+    "CONTRIBUTING.md",
+]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/data/state_lookup.json" = "openstates_jurisdictions/data/state_lookup.json"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
