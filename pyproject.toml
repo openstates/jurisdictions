@@ -112,3 +112,32 @@ addopts = [
     "--verbose",
     "--color=yes",
 ]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = [
+    ".git",
+    ".venv",
+    ".pytest_cache",
+    "__pycache__",
+    "*.egg-info",
+    ".tox",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "C",      # flake8-comprehensions
+    "B",      # flake8-bugbear
+    "UP",     # pyupgrade
+]
+ignore = [
+    "E501",   # line too long (handled by line-length)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
