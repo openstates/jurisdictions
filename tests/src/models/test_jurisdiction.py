@@ -3,11 +3,23 @@ from uuid import NAMESPACE_URL, uuid4, uuid5
 
 from hypothesis import given
 from hypothesis import strategies as st
+import pytest
+from pydantic import ValidationError
 
 from src.models.jurisdiction import ClassificationEnum, Jurisdiction
 
-_OCDID_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789:/_-"
-ocdid_strategy = st.text(alphabet=_OCDID_CHARS, min_size=1, max_size=120)
+classification_strategy = st.sampled_from(list(ClassificationEnum))
+
+
+@st.composite
+def jurisdiction_input_strategy(draw) -> tuple[str, ClassificationEnum]:
+    classification = draw(classification_strategy)
+    state = draw(st.text(alphabet="abcdefghijklmnopqrstuvwxyz", min_size=2, max_size=2))
+    place = draw(st.text(alphabet="abcdefghijklmnopqrstuvwxyz", min_size=3, max_size=12))
+    return (
+        f"ocd-jurisdiction/country:us/state:{state}/place:{place}/{classification.value}",
+        classification,
+    )
 
 
 def _build_jurisdiction(ocdid: str, id_value=None) -> Jurisdiction:
@@ -23,14 +35,17 @@ def _build_jurisdiction(ocdid: str, id_value=None) -> Jurisdiction:
     return Jurisdiction(**kwargs)
 
 
-@given(ocdid=ocdid_strategy)
-def test_jurisdiction_id_defaults_to_uuid5_from_ocdid_and_date(ocdid: str) -> None:
+@given(jurisdiction_input=jurisdiction_input_strategy())
+def test_jurisdiction_id_defaults_to_uuid5_from_ocdid_and_date(
+    jurisdiction_input: tuple[str, ClassificationEnum],
+) -> None:
+    ocdid, classification = jurisdiction_input
     last_updated = datetime(2026, 4, 8, 12, 0, tzinfo=timezone.utc)
     jurisdiction = Jurisdiction(
         ocdid=ocdid,
         name="Sample Jurisdiction",
         url="https://example.gov",
-        classification=ClassificationEnum.GOVERNMENT,
+        classification=classification,
         metadata={"urls": []},
         last_updated=last_updated,
     )
@@ -46,3 +61,19 @@ def test_jurisdiction_accepts_explicit_id() -> None:
         id_value=explicit_id,
     )
     assert jurisdiction.id == explicit_id
+
+
+def test_jurisdiction_rejects_division_prefix() -> None:
+    with pytest.raises(ValidationError, match="must use the 'ocd-jurisdiction' prefix"):
+        _build_jurisdiction("ocd-division/country:us/state:wa/place:seattle")
+
+
+def test_jurisdiction_rejects_mismatched_classification_suffix() -> None:
+    with pytest.raises(ValidationError, match="suffix must match the classification value"):
+        Jurisdiction(
+            ocdid="ocd-jurisdiction/country:us/state:wa/place:seattle/legislature",
+            name="Sample Jurisdiction",
+            url="https://example.gov",
+            classification=ClassificationEnum.GOVERNMENT,
+            metadata={"urls": []},
+        )
