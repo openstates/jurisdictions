@@ -8,9 +8,9 @@ Across the United States, the same types of governing entities are described in 
 
 This project exists to fix that.
 
-A **jurisdiction** is a governing entity with authority — such as a state, county, or municipal government.
+A **[jurisdiction](#what-is-a-jurisdiction)** is a governing entity with authority — such as a state, county, or municipal government.
 
-A **division** is a geographic area — the land itself.
+A **[division](#what-is-a-division)** is a geographic area — the land itself.
 
 These are related, but not the same:
 
@@ -39,7 +39,7 @@ This project focuses on building a clean, consistent jurisdiction layer that can
 
 ### What is a jurisdiction?
 
-A jurisdiction is a governing entity with authority over a defined scope.
+A **jurisdiction** is a governing entity with authority over a defined scope.
 
 Examples include:
 
@@ -47,30 +47,75 @@ Examples include:
 * a county government
 * a municipal government
 
-It represents governance, not geography.
+It represents **governance**, not geography.
+
+**See also:** [What is a division?](#what-is-a-division) | [What is the difference between a jurisdiction and a division?](#what-is-the-difference-between-a-jurisdiction-and-a-division)
 
 ---
 
 ### What is a division?
 
-A division is a geographic area.
+A **division** is a geographic area.
 
 Examples include:
 
 * a state boundary
 * a county boundary
 * a city boundary
+* a [place](#what-is-a-place) boundary (census-designated area)
 
-It represents land, not authority.
+It represents **land**, not authority.
+
+**See also:** [What is a division?](#what-is-a-division) | [What is the difference between a jurisdiction and a division?](#what-is-the-difference-between-a-jurisdiction-and-a-division)
+
+---
+
+### What is a place?
+
+A **place** is a U.S. Census Bureau geographic classification for a populated locality.
+
+From the [U.S. Census Bureau](https://www.census.gov/content/dam/Census/data/developers/understandingplace.pdf):
+> Places are geographic entities used by the U.S. Census Bureau for data collection and tabulation. They represent concentrations of population, economic activity, or administrative centers.
+
+**Types of places include:**
+* **Incorporated cities** - Legally established municipalities with their own government
+* **Census-designated places (CDPs)** - Unincorporated communities recognized by the Census Bureau
+* **Towns** - In some states, legally incorporated towns
+* **Villages** - In some states, smaller incorporated municipalities
+
+**Important distinctions:**
+* A **place** is a Census Bureau geographic unit (for statistics and data)
+* A **division** in our system is the geographic boundary in the OCD system
+* A **jurisdiction** is the government that manages that area
+
+Many places are also jurisdictions (incorporated cities), but not all. Census-designated places (CDPs) are geographic areas without their own government—they don't have a corresponding jurisdiction.
+
+**Example:**
+- **Place:** "Los Angeles" (Census Bureau definition of the city's population center)
+- **Division:** `ocd-division/country:us/state:ca/place:los_angeles` (the geographic boundary)
+- **Jurisdiction:** `ocd-jurisdiction/country:us/state:ca/place:los_angeles/government` (the city government)
+
+**See also:** 
+- [U.S. Census Bureau - Understanding Place](https://www.census.gov/content/dam/Census/data/developers/understandingplace.pdf)
+- [What is a division?](#what-is-a-division)
+- [What is the difference between a jurisdiction and a division?](#what-is-the-difference-between-a-jurisdiction-and-a-division)
 
 ---
 
 ### What is the difference between a jurisdiction and a division?
 
-* Division = where something is
-* Jurisdiction = who governs it
+* **Division** = where something is (geographic boundary)
+* **Jurisdiction** = who governs it (governing entity)
 
 They are related, but not interchangeable.
+
+**Example:**
+- **Division:** The geographic boundary of Los Angeles County
+- **Jurisdiction:** The Los Angeles County Board of Supervisors (the entity that governs that area)
+
+A jurisdiction governs one or more divisions. A division may be governed by multiple jurisdictions (overlapping authorities).
+
+**See also:** [README.md - Core Concepts](README.md#core-concepts)
 
 ---
 
@@ -82,8 +127,9 @@ A map can show where something is, but it cannot tell you:
 
 * who governs it
 * how authority is structured
+* what decisions are made there
 
-Jurisdictions provide that missing layer.
+**Divisions** provide the geographic layer. **Jurisdictions** provide the governance layer.
 
 ---
 
@@ -95,8 +141,15 @@ The same name can refer to:
 
 * a geographic area (division)
 * a governing entity (jurisdiction)
+* multiple different entities in different contexts
 
 The system must distinguish between them explicitly.
+
+**Example:** "Los Angeles" could refer to:
+- The city boundary (division)
+- The city government (jurisdiction)
+- The county (different jurisdiction)
+- A region (broader geographic area)
 
 ---
 
@@ -104,12 +157,13 @@ The system must distinguish between them explicitly.
 
 Often, but not always.
 
-Examples:
+Examples where they diverge:
 
-* cities spanning multiple counties
-* overlapping governance structures
+* **Overlapping authorities:** A city may span multiple counties
+* **Multi-jurisdictional entities:** A regional authority governs parts of several counties
+* **Special districts:** Fire districts, water districts, park districts have boundaries that don't match county or city lines
 
-A jurisdiction may relate to multiple divisions.
+A jurisdiction may relate to multiple divisions, and a division may be governed by multiple jurisdictions.
 
 ---
 
@@ -117,9 +171,13 @@ A jurisdiction may relate to multiple divisions.
 
 This project focuses on core governing entities:
 
-* states
-* counties
-* municipalities
+* **States** - State governments
+* **Counties** - County governments
+* **Municipalities** - City and town governments
+* **Special Districts** - Fire, water, park, transit authorities
+* **Other** - Legislative bodies, executive offices, judicial bodies
+
+See also: [Classification Types](#what-classification-types-are-supported)
 
 ---
 
@@ -127,23 +185,30 @@ This project focuses on core governing entities:
 
 A jurisdiction is not:
 
-* a geographic area alone
-* an office
-* an election
-* a dataset label
+* a geographic area alone (that's a **division**)
+* an office or individual person
+* an election or voting precinct
+* a dataset label or administrative category
 
-It must represent a governing entity.
+It must represent a **governing entity with actual authority**.
 
 ---
 
 ### How are jurisdictions identified?
 
-Jurisdictions use standardized identifiers where available (such as OCDIDs for divisions).
+Jurisdictions use standardized identifiers where available.
 
-If missing:
+The system uses:
+
+* **OCDIDs** (Open Civic Data IDs) for divisions where available
+* **OCDIDs with governance suffix** for jurisdictions (e.g., `/government` for municipal governments)
+* **UUIDs** generated deterministically from the OCDID for data consistency
+
+If an identifier is missing:
 
 * do not invent identifiers
-* flag the gap
+* flag the gap with clear documentation
+* use human-readable names as temporary identifiers
 
 ---
 

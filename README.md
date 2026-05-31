@@ -3,6 +3,15 @@
 This repository stores and generates Division and Jurisdiction YAML data for US
 local governments in the OpenStates ecosystem.
 
+## Core Concepts
+
+**What's the difference between Divisions and Jurisdictions?** See [FAQ: Division vs Jurisdiction](FAQ.md#what-is-the-difference-between-a-jurisdiction-and-a-division)
+
+- **Division** = Geographic area (where something is)
+- **Jurisdiction** = Governing entity (who governs it)
+
+Read more: [FAQ.md](FAQ.md#why-jurisdictions) for complete definitions.
+
 ## What This Repo Contains
 - Source models and pipeline code under `src/`
 - Output YAML under:
@@ -85,6 +94,8 @@ uv run python src/init_migration/main.py --state wa,tx,oh --force
 4. Update docs when behavior or contributor workflow changes.
 
 ## Contributing Guidance
+- Main model definitions: [`MODELS.md`](MODELS.md) - Division, Jurisdiction, and OCD ID structure
+- Conceptual Q&A: [`FAQ.md`](FAQ.md) - Understanding divisions, jurisdictions, and governance
 - Contributor process and expectations: `CONTRIBUTING.md`
 - Agent and semi-autonomous workflow rules: `AGENTS.md`
 - Pre-commit checklist: `ai_tools/system/pre-commit-checks.instruction.md`
