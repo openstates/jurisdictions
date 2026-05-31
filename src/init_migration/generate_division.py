@@ -9,18 +9,20 @@ Responsibilities:
 - Serialize Division objects to YAML files
 """
 
+import logging
+import re
+from datetime import UTC, datetime
+from pathlib import Path
+from uuid import UUID
+
+import yaml
+
 from src.init_migration.pipeline_models import GeneratorReq
-from src.utils.ocdid import ocdid_parser
 from src.models.division import Division
 from src.models.source import SourceType
-from src.utils.state_lookup import load_state_code_lookup
+from src.utils.ocdid import ocdid_parser
 from src.utils.place_name import namelsad_to_display_name
-from pathlib import Path
-from datetime import datetime, timezone
-from uuid import UUID
-import logging
-import yaml
-import re
+from src.utils.state_lookup import load_state_code_lookup
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -108,7 +110,7 @@ class DivGenerator:
                 )
                 return self._load_existing_division(raw_ocdid)
 
-            now = datetime.now(timezone.utc)
+            now = datetime.now(UTC)
             self.division = Division(
                 ocdid=raw_ocdid,
                 country="us",
@@ -198,7 +200,7 @@ class DivGenerator:
 
             place = parsed.get("place", "")
 
-            now = datetime.now(timezone.utc)
+            now = datetime.now(UTC)
             self.division = Division(
                 ocdid=raw_ocdid,
                 country="us",

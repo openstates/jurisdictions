@@ -1,9 +1,9 @@
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal
 
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field, model_validator
 
-from src.utils.ocdid import ocdid_parser
 from src.errors import OCDIdParsingError
+from src.utils.ocdid import ocdid_parser
 
 
 def validate_ocdid(value: str) -> str:
@@ -45,15 +45,15 @@ class OCDIdParsed(BaseModel):
 
     model_config = ConfigDict(extra="allow")
 
-    type: Optional[OCDIdType] = Field(
+    type: OCDIdType | None = Field(
         default=None,
         description="The Open Civic Data identifier namespace: 'ocd-division' or 'ocd-jurisdiction'.",
     )
     country: str = "us"
-    state: Optional[str] = None
-    county: Optional[str] = None
-    place: Optional[str] = None
-    subdivision: Optional[str] = None
+    state: str | None = None
+    county: str | None = None
+    place: str | None = None
+    subdivision: str | None = None
     raw_ocdid: OCDIdStr = Field(
         description="Validated OCD ID string. Must start with 'ocd-division/' or 'ocd-jurisdiction/' and have at least two segments."
     )

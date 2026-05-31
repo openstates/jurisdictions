@@ -9,14 +9,14 @@ Responsibilities:
 
 import asyncio
 import tempfile
+from logging import getLogger
 from pathlib import Path
 
 import duckdb
-from logging import getLogger
 from rich.progress import (
+    BarColumn,
     Progress,
     SpinnerColumn,
-    BarColumn,
     TextColumn,
     TimeElapsedColumn,
 )
@@ -221,7 +221,7 @@ class DownloadManager:
                     progress.advance(download_task)
 
                 await asyncio.gather(
-                    *(fetch_local(s, u) for s, u in zip(self.states, local_urls))
+                    *(fetch_local(s, u) for s, u in zip(self.states, local_urls, strict=True))
                 )
 
             # --- Load into DuckDB ---

@@ -7,7 +7,6 @@ import yaml
 from src.init_migration.generate_recursive import ensure_ancestor_stubs, stub_exists
 from src.models.ocdid import OCDIdParsed
 
-
 # ---------------------------------------------------------------------------
 # build_ancestor_ocdids — pure function, no I/O
 # ---------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import NAMESPACE_URL, uuid4, uuid5
 
 from hypothesis import given
@@ -30,7 +30,7 @@ def _build_division(ocdid: str, id_value=None) -> Division:
 
 @given(ocdid=division_ocdid_strategy())
 def test_division_id_defaults_to_uuid5_from_ocdid_and_date(ocdid: str) -> None:
-    last_updated = datetime(2026, 4, 8, 12, 0, tzinfo=timezone.utc)
+    last_updated = datetime(2026, 4, 8, 12, 0, tzinfo=UTC)
     division = Division(
         ocdid=ocdid,
         country="us",

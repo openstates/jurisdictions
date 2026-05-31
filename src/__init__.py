@@ -16,10 +16,14 @@ __author__ = "Open States Contributors"
 __email__ = "hello@openstates.org"
 
 # Public API exports
-from src.models.division import Division
-from src.models.jurisdiction import Jurisdiction
-from src.models.ocdid import OCDidParsed
-from src.models.source import SourceObj, SourceType
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.models.division import Division
+    from src.models.jurisdiction import Jurisdiction
+    from src.models.ocdid import OCDidParsed
+    from src.utils.yaml_manager import YamlManager
 
 __all__ = [
     "Division",
@@ -27,6 +31,7 @@ __all__ = [
     "OCDidParsed",
     "SourceObj",
     "SourceType",
+    "YamlManager",
     "__version__",
     "__author__",
     "__email__",

@@ -35,7 +35,6 @@ https://www2.census.gov/geo/pdfs/reference/mtfccs2025.pdf (edit
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
 from src.utils.ocdid import ocdid_parser
 
@@ -43,10 +42,10 @@ from src.utils.ocdid import ocdid_parser
 @dataclass
 class JurisdictionSeed:
     has_jurisdiction: bool
-    classification: Optional[str] = None
-    jurisdiction_name: Optional[str] = None
-    jurisdiction_type_suffix: Optional[str] = None
-    reason: Optional[str] = None
+    classification: str | None = None
+    jurisdiction_name: str | None = None
+    jurisdiction_type_suffix: str | None = None
+    reason: str | None = None
 
 
 # LSAD codes that indicate purely statistical geographies with no governing body.

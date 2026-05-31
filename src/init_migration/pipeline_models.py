@@ -1,8 +1,10 @@
-from pydantic import BaseModel, Field
+from datetime import UTC, datetime
+from enum import StrEnum
 from typing import Any
-from datetime import datetime, UTC
-from enum import Enum
 from uuid import UUID
+
+from pydantic import BaseModel, Field
+
 from src.models.ocdid import OCDIdParsed
 
 # Master Validation Set for initial load
@@ -32,7 +34,7 @@ class GeneratorReq(BaseModel):
     asof_datetime: datetime = Field(default_factory=lambda: datetime.now(tz=UTC))
 
 
-class Status(str, Enum):
+class Status(StrEnum):
     SUCCESS = "success"
     SKIPPED = "skipped"
     PARTIAL = "partial"

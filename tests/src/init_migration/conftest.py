@@ -1,12 +1,13 @@
 """Shared test fixtures and configuration for downloader tests"""
 
-import pytest
-import respx
-from pathlib import Path
-import json
-import sys
 import asyncio
 import inspect
+import json
+import sys
+from pathlib import Path
+
+import pytest
+import respx
 
 # Ensure project root is on sys.path so `import src` works without installation
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -32,7 +33,7 @@ def pytest_pyfunc_call(pyfuncitem):
             loop = asyncio.new_event_loop()
             try:
                 # Only pass arguments that the test function actually declares
-                argnames = getattr(pyfuncitem, "_fixtureinfo").argnames
+                argnames = pyfuncitem._fixtureinfo.argnames
                 kwargs = {k: v for k, v in pyfuncitem.funcargs.items() if k in argnames}
                 loop.run_until_complete(func(**kwargs))
             finally:

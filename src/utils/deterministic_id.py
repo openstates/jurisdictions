@@ -7,8 +7,7 @@ its input fields. This module provides generation and verification helpers.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime, timezone
-from typing import Optional
+from datetime import UTC, date, datetime
 from uuid import NAMESPACE_URL, UUID, uuid5
 
 
@@ -16,14 +15,14 @@ from uuid import NAMESPACE_URL, UUID, uuid5
 class DecodedID:
     identifier: str
     is_decodable: bool
-    reason: Optional[str] = None
+    reason: str | None = None
 
 
 def _normalize_date(asof_date: date | datetime | str | None) -> date:
     if asof_date is None:
-        return datetime.now(timezone.utc).date()
+        return datetime.now(UTC).date()
     if isinstance(asof_date, datetime):
-        return asof_date.astimezone(timezone.utc).date()
+        return asof_date.astimezone(UTC).date()
     if isinstance(asof_date, date):
         return asof_date
     return date.fromisoformat(asof_date)

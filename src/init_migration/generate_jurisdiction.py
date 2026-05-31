@@ -12,18 +12,20 @@ Name and URL resolution order:
     2. Deterministic fallback from Division data
 """
 
+import logging
+import re
+from datetime import UTC, datetime
+from pathlib import Path
+from uuid import UUID
+
+import yaml
+
 from src.init_migration.pipeline_models import GeneratorReq
 from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
-from src.models.source import SourceType
 from src.models.ocdid import OCDIdParsed
+from src.models.source import SourceType
 from src.utils.ocdid import ocdid_parser
-from pathlib import Path
-from datetime import datetime, timezone
-from uuid import UUID
-import logging
-import yaml
-import re
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -148,7 +150,7 @@ class JurGenerator:
             term = None
             metadata: dict = {"urls": []}
 
-            now = datetime.now(timezone.utc)
+            now = datetime.now(UTC)
             self.jurisdiction = Jurisdiction(
                 ocdid=jurisdiction_ocdid,
                 name=name,

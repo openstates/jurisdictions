@@ -1,15 +1,15 @@
-from enum import Enum
-from pydantic import BaseModel, Field, ConfigDict, model_validator
-from typing import Dict, List, Optional
-from datetime import datetime, timezone
-from .source import SourceObj
-import yaml
-from uuid import NAMESPACE_URL, UUID, uuid5
-from pathlib import Path
-
-from src.models.ocdid import OCDIdStr, OCDIdParsed, get_ocdid_type
-
 import logging
+from datetime import UTC, datetime
+from enum import StrEnum
+from pathlib import Path
+from uuid import NAMESPACE_URL, UUID, uuid5
+
+import yaml
+from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+from src.models.ocdid import OCDIdParsed, OCDIdStr, get_ocdid_type
+
+from .source import SourceObj
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 PROJECT_PATH = "jurisdictions/"
 
 
-class ClassificationEnum(str, Enum):
+class ClassificationEnum(StrEnum):
     """These are the allowed defined types for jurisdictions"""
 
     GOVERNMENT = "government"  # i.e. city council
@@ -33,7 +33,7 @@ class ClassificationEnum(str, Enum):
     SPECIAL_PURPOSE_DISTRICT = "special_purpose_district"  # NON-OCDid COMPLIANT; ADDED; Examples: Fire districts, water districts, park districts, etc. that have elected governing bodies but are not advisory boards and do not have the full range of powers of a local government.
 
 
-class URLEnum(str, Enum):
+class URLEnum(StrEnum):
     """These are the allowed defined types for jurisdiction urls"""
 
     PEOPLE = "people"
@@ -84,7 +84,7 @@ class TermDetail(BaseModel):
         ...,
         description="The number of distinct positions that are elected to represent the jurisdiction inclusive of at-large positions. For a city council with 5 members and , this would be 7.",
     )
-    term_limits: Optional[str] = Field(
+    term_limits: str | None = Field(
         default=None,
         description="Typically defined as the number of terms an office holder can hold. Can be a string description of the term limits if any.",
     )
@@ -92,7 +92,7 @@ class TermDetail(BaseModel):
         ...,
         description="The source url that defines the terms for the jurisdiction. Must be a .gov source. Can often be found in the incorporation charter or state constitution.",
     )
-    last_known_term_end_date: Optional[datetime] = Field(
+    last_known_term_end_date: datetime | None = Field(
         default=None,
         description="The last known start of the most recent term. This date allows future term start and end dates to be computed programmatically.",
     )
@@ -126,27 +126,27 @@ class Jurisdiction(BaseModel):
         ...,
         description="A jurisdiction category. **(required)** See ClassificationEnum.",
     )
-    legislative_sessions: Dict[str, SessionDetail] = Field(
+    legislative_sessions: dict[str, SessionDetail] = Field(
         default_factory=dict,
         description="Dictionary describing sessions, each key is a session slug that must also appear in one ``sessions`` list in ``terms``.  Values consist of several fields giving more detail about the session. **(required)**",
     )
-    feature_flags: List[str] = Field(
+    feature_flags: list[str] = Field(
         default_factory=list,
         description="A way to mark certain features as available on a per-jurisdiction basis. Each element in feature_flags is of type (string) **(required, minItems: 0)** ",
     )
-    term: Optional[TermDetail] = Field(
+    term: TermDetail | None = Field(
         default=None,
         description="The details of the terms for elected officials representing this jurisdiction. ",
     )
-    accurate_asof: Optional[datetime] = Field(
+    accurate_asof: datetime | None = Field(
         default=None,
         description="The datetime ('2025-05-01:00:00:00' ISO 8601 standard format when the data for the record is known to be accurate by the researcher. This may or may not be the same data as the 'last_updated' date below. **REQUIRED**",
     )
     last_updated: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
+        default_factory=lambda: datetime.now(UTC),
         description="The datetime that the data in the record was last updated by the researcher (or it's agent).",
     )
-    sourcing: List[SourceObj] = Field(
+    sourcing: list[SourceObj] = Field(
         default_factory=list,
         description="Describe how the data was sourced. Used to identify AI generated data.",
     )
@@ -178,7 +178,7 @@ class Jurisdiction(BaseModel):
     @model_validator(mode="after")
     def ensure_uuid5_id(self):
         if self.id is None:
-            asof_date = self.last_updated.astimezone(timezone.utc).date().isoformat()
+            asof_date = self.last_updated.astimezone(UTC).date().isoformat()
             self.id = uuid5(NAMESPACE_URL, f"{self.ocdid}|{asof_date}")
         return self
 

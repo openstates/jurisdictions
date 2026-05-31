@@ -1,10 +1,9 @@
-from enum import Enum
-from pydantic import BaseModel, Field
-from pydantic import AnyHttpUrl, FtpUrl, FileUrl
-from typing import Union
+from enum import StrEnum
+
+from pydantic import AnyHttpUrl, BaseModel, Field, FileUrl, FtpUrl
 
 
-class SourceType(str, Enum):
+class SourceType(StrEnum):
     """These are the allowed defined types for SourceObjects"""
 
     AI = "ai_generated"
@@ -26,7 +25,7 @@ class SourceObj(BaseModel):
     source_type: SourceType = Field(
         default=SourceType.HUMAN, description="The method used to collect the data."
     )
-    source_url: dict[str, Union[AnyHttpUrl, FtpUrl, FileUrl]] = Field(
+    source_url: dict[str, AnyHttpUrl | FtpUrl | FileUrl] = Field(
         description="The source name and url. If AI generated, the source url identified by the AI agent."
     )
     source_description: str | None = Field(

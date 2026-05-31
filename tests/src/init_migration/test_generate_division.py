@@ -1,12 +1,12 @@
-import pytest
-from datetime import datetime, timezone
-from uuid import UUID
-from uuid import NAMESPACE_URL, uuid5
-
-from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp
-from src.init_migration.generate_division import DivGenerator
-from src.models.ocdid import OCDIdParsed
+from datetime import UTC, datetime
 from pathlib import Path
+from uuid import NAMESPACE_URL, UUID, uuid5
+
+import pytest
+
+from src.init_migration.generate_division import DivGenerator
+from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp
+from src.models.ocdid import OCDIdParsed
 
 
 @pytest.fixture
@@ -20,7 +20,7 @@ def sample_req(tmp_path) -> GeneratorReq:
     resp = OCDidIngestResp(
         uuid=uuid5(
             NAMESPACE_URL,
-            f"ocd-division/country:us/state:ca|{datetime.now(timezone.utc).date().isoformat()}",
+            f"ocd-division/country:us/state:ca|{datetime.now(UTC).date().isoformat()}",
         ),
         ocdid=parsed,
         raw_record={},
