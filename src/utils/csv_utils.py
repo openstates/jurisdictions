@@ -1,5 +1,6 @@
-import requests
 import csv
+
+import requests
 
 
 def fetch_csv_rows(url: str) -> list[dict]:

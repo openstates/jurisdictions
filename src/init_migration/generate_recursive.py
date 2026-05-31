@@ -14,7 +14,7 @@ filling in their full data.  The only contract enforced here is:
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import yaml
@@ -97,7 +97,7 @@ def _write_stub_division(
 ) -> Path:
     """Write a placeholder Division YAML and return the file path."""
     jur_part = ocdid.replace("ocd-division/", "")
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     division = Division(
         ocdid=ocdid,
         country="us",
@@ -143,7 +143,7 @@ def _write_stub_jurisdiction(div_ocdid: str, display_name: str, jur_dir: Path) -
     """Write a placeholder Jurisdiction YAML and return the file path."""
     div_part = div_ocdid.replace("ocd-division/", "")
     jur_ocdid = f"ocd-jurisdiction/{div_part}/government"
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
     data = {
         "ocdid": jur_ocdid,
         "name": f"{display_name} Government",

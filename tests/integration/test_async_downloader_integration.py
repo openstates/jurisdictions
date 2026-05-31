@@ -1,7 +1,8 @@
 """Integration tests for AsyncDownloader"""
 
-import pytest
 import base64
+
+import pytest
 from httpx import Response
 
 from src.init_migration.downloader import AsyncDownloader, DownloaderConfig

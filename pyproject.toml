@@ -31,7 +31,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
-    "Topic :: Government",
+    "Topic :: Software Development",
     "Topic :: Internet :: WWW/HTTP",
     "Topic :: Scientific/Engineering :: Information Analysis",
 ]
@@ -137,6 +137,7 @@ select = [
 ]
 ignore = [
     "E501",   # line too long (handled by line-length)
+    "C901",   # function too complex (McCabe complexity)
 ]
 
 [tool.ruff.lint.isort]

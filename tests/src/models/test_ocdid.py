@@ -2,7 +2,7 @@ import pytest
 from pydantic import ValidationError
 
 from src.errors import OCDIdParsingError
-from src.models.ocdid import OCDIdStr, OCDIdParsed, get_ocdid_type, validate_ocdid
+from src.models.ocdid import OCDIdParsed, OCDIdStr, get_ocdid_type, validate_ocdid
 
 
 def test_validate_ocdid_accepts_division_prefix() -> None:

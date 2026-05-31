@@ -1,11 +1,12 @@
 """GitHub API specific tests"""
 
 import base64
+
 import pytest
 from httpx import Response
 
-from src.init_migration.downloader import AsyncDownloader, DownloaderConfig
 from src.errors import UnexpectedContentError
+from src.init_migration.downloader import AsyncDownloader, DownloaderConfig
 
 
 class TestGitHubAPIIntegration:

@@ -3,9 +3,10 @@ Tests for the CRUDL YamlManager module.
 """
 
 import json
-import pytest
 import tempfile
 from pathlib import Path
+
+import pytest
 
 from src.utils.yaml_manager import YamlManager
 
