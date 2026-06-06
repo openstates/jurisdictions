@@ -9,7 +9,7 @@ from src.models.ocdid import OCDIdParsed
 
 
 def test_ocdid_ingest_resp_accepts_ocdid_parsed():
-    """OCDidIngestResp.ocdid should accept an OCDidParsed instance."""
+    """OCDidIngestResp.ocdid should accept an OCDIdParsed instance."""
     parsed = OCDIdParsed(
         country="us",
         state="wa",
