@@ -22,20 +22,16 @@ import pytest
 import yaml
 from datetime import datetime, timezone
 from pathlib import Path
-from uuid import UUID, NAMESPACE_URL, uuid5
-from unittest.mock import MagicMock
+from uuid import NAMESPACE_URL, uuid5
 import csv
 
 from src.init_migration.pipeline_models import (
     GeneratorReq,
     OCDidIngestResp,
-    GeneratorStatus,
     Status,
 )
 from src.init_migration.generate_pipeline import GeneratePipeline
 from src.models.ocdid import OCDIdParsed
-from src.models.division import Division
-from src.models.jurisdiction import Jurisdiction
 
 
 # Sample 5 records for integration test
@@ -409,7 +405,7 @@ async def test_generate_pipeline_council_district_logic(tmp_path, validation_csv
     assert jur_data["ocdid"] == expected_ocdid
     assert "council_district" not in jur_data["ocdid"]
 
-    print(f"\n✓ Council district logic verified:")
+    print("\n✓ Council district logic verified:")
     print(f"  - Division: {ocdid}")
     print(f"  - Jurisdiction: {jur_data['ocdid']}")
     print(f"  - Classification: {jur_data['classification']}")
@@ -443,7 +439,6 @@ async def test_generate_pipeline_deduplication(tmp_path, validation_csv_file):
     response1 = await pipeline.run()
     assert response1.status.status == Status.SUCCESS
     assert response1.jurisdiction_path is not None
-    jur_path1 = Path(response1.jurisdiction_path)
     junction_count_after_1 = len(list(jurisdiction_output.glob("*.yaml")))
 
     # Now run a second council district from the same city
@@ -462,7 +457,7 @@ async def test_generate_pipeline_deduplication(tmp_path, validation_csv_file):
     division_count = len(list(division_output.glob("*.yaml")))
     assert division_count >= 2, "Should have at least 2 divisions"
 
-    print(f"\n✓ Deduplication verified:")
+    print("\n✓ Deduplication verified:")
     print(f"  - Divisions: {division_count}")
     print(f"  - Jurisdictions after CD1: {junction_count_after_1}")
     print(f"  - Jurisdictions after CD2: {junction_count_after_2}")
