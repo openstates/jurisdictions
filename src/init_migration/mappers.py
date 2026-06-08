@@ -2,10 +2,10 @@
 Dictionaries representing file mappings for initial data migration.
 """
 
-from pydantic import BaseModel
 import json
 from pathlib import Path
 
+from pydantic import BaseModel
 
 ROOT = Path(__file__).parent.parent.parent
 
@@ -14,7 +14,7 @@ ocdid_master_mapper = {
     "name": "display_name",
     "sameAs": "also_known_as",
     "sameAsNote": "metadata.also_known_as_note",
-    "validThrough": "valid_asof",
+    "validThrough": "valid_thru",
     "census_geoid": "geometries.government_identifiers.geoid",
     "census_geoid_12": "geometries.government_identifiers.geoid_12",
     "census_geoid_14": "geometries.government_identifiers.geoid_14",
@@ -22,7 +22,7 @@ ocdid_master_mapper = {
     "placeholder_id": "metadata.placeholder_id",  # Only 5284 values
     "sch_dist_stateid": "metadata.sch_dist_stateid",  # 15438 values
     "state_id": "geometries.government_identifiers.stusps",  # IS IT STATE CODE?
-    "validFrom": "valid_thru",
+    "validFrom": "valid_asof",
 }
 
 
