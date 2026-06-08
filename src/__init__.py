@@ -19,11 +19,10 @@ __email__ = "hello@openstates.org"
 
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from src.models.division import Division
-    from src.models.jurisdiction import Jurisdiction
-    from src.models.ocdid import OCDidParsed
-    from src.utils.yaml_manager import YamlManager
+from src.models.division import Division
+from src.models.jurisdiction import Jurisdiction
+from src.models.ocdid import OCDIdParsed
+from src.utils.yaml_manager import YamlManager
 
 __all__ = [
     "Division",
