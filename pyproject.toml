@@ -47,19 +47,6 @@ dependencies = [
     "rapidfuzz>=3.0.0",
     "rich>=14.0.0",
 ]
-
-[project.optional-dependencies]
-dev = [
-    "pytest>=8.4.2",
-    "pytest-cov>=7.0.0",
-    "pytest-asyncio>=0.24.0",
-    "respx>=0.22.0",
-    "ruff>=0.13.2",
-    "pytest-pythonpath>=0.7",
-    "hypothesis>=6.151.11",
-    "mypy>=1.11.0",
-]
-
 [project.urls]
 Homepage = "https://openstates.org"
 Repository = "https://github.com/openstates/jurisdictions"
