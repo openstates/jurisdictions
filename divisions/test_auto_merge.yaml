@@ -1,0 +1,6 @@
+id: ocd-division/country:us/state:test
+name: Test Division for Auto-Merge
+geometries: []
+metadata:
+  test: true
+  note: "This is a test file for validating the auto-merge workflow"
