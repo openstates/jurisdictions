@@ -365,6 +365,26 @@ See [CONTRIBUTING.md](CONTRIBUTING.md#pick-up-an-existing-issue---coding-require
 - **"How do I contribute?"** Read [CONTRIBUTING.md](CONTRIBUTING.md)
 - **"Something's broken"** Check `docs/setup_uv.md` for troubleshooting, or open an [issue](https://github.com/openstates/jurisdictions/issues)
 
+## 🚀 YAML-Only Changes & Auto-Merge
+
+For pull requests containing **only YAML file changes** in `divisions/` or `jurisdictions/`:
+
+- ✅ PR automatically merges after approval
+- ✅ Branch automatically deletes
+- ✅ No manual merge step needed
+
+**How it works:**
+1. Create PR with YAML-only changes
+2. Workflow verifies files are in safe paths
+3. Request reviewer approval
+4. Auto-merge triggers automatically
+
+**Learn more:**
+- [YAML Auto-Merge Quick Reference](docs/YAML_AUTO_MERGE_QUICK_REFERENCE.md) — 2-minute overview
+- [YAML Auto-Merge Workflow](docs/YAML_AUTO_MERGE_WORKFLOW.md) — Technical details & configuration
+
+---
+
 ## Notes
 - Use `src` package-root imports in code and tests (e.g., `from src.models.division import Division`)
 - Do not modify core model contracts in `src/models/` without maintainer approval
