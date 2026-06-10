@@ -352,7 +352,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md#pick-up-an-existing-issue---coding-require
 ## Contributing Guidance
 - **Getting started:** See [`CONTRIBUTING.md`](CONTRIBUTING.md) for how to contribute code, data, and improvements
 - **Conceptual Q&A:** [`FAQ.md`](FAQ.md) - Understanding [divisions](FAQ.md#what-is-a-division), [jurisdictions](FAQ.md#what-is-a-jurisdiction), [places](FAQ.md#what-is-a-place), and governance
-- **Model definitions:** [`MODELS.md`](MODELS.md) - Technical details on [Division](MODELS.md#division-model), [Jurisdiction](MODELS.md#jurisdiction-model), [OCD ID](MODELS.md#ocdidparsed-model), and data structures
+- **Model definitions:** [`MODELS.md`](MODELS.md) - Technical details on [Division](MODELS.md#division-model), [Jurisdiction](MODELS.md#jurisdiction-model), [OCDID](MODELS.md#ocdidparsed-model), and data structures
 - **Model relationships:** [`docs/data_model_relationships.md`](docs/data_model_relationships.md) - Visual map and detailed connections
 - Agent and semi-autonomous workflow rules: `AGENTS.md`
 - Pre-commit checklist: `ai_tools/system/pre-commit-checks.instruction.md`
