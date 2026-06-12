@@ -17,6 +17,7 @@ import asyncio
 import logging
 import sys
 import tempfile
+import time
 from datetime import UTC, date, datetime
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
@@ -25,6 +26,7 @@ import duckdb
 import httpx
 from rich.console import Console
 from rich.table import Table
+from tqdm import tqdm
 
 from src.utils.state_lookup import load_state_code_lookup
 from src.init_migration.download_manager import DownloadManager
@@ -226,20 +228,42 @@ async def run_pipeline(args: argparse.Namespace) -> MatchResults:
     logger.info(f"Starting pipeline for {len(states)} state(s)")
     console.print(f"Processing {len(states)} state(s): {', '.join(states)}")
 
+    pipeline_start = time.perf_counter()
+
     # Phase 1: Download and load
+    phase1_start = time.perf_counter()
     dm = DownloadManager(states=states)
     download_stats = await dm.run_downloads(force=args.force)
+    phase1_elapsed = time.perf_counter() - phase1_start
+    logger.info(
+        "Phase 1 (download) complete",
+        extra={"elapsed_sec": round(phase1_elapsed, 2), "states": states},
+    )
 
     # Phase 2: Match and build
+    phase2_start = time.perf_counter()
     matcher = OCDidMatcher(states=states)
     match_results = matcher.run_matching(show_progress=True)
+    phase2_elapsed = time.perf_counter() - phase2_start
+    logger.info(
+        "Phase 2 (match) complete",
+        extra={
+            "elapsed_sec": round(phase2_elapsed, 2),
+            "matched": len(match_results.matched),
+        },
+    )
 
     # Phase 3: Generate Division and Jurisdiction YAML for every matched record
     phase3_stats = {"success": 0, "skipped": 0, "partial": 0, "failed": 0}
     tracking_rows: list[tuple[str, str, str | None, str | None, str | None]] = []
     if match_results.matched:
         validation_csv_path = _cache_validation_csv()
-        for ingest_resp in match_results.matched:
+        phase3_start = time.perf_counter()
+        for ingest_resp in tqdm(
+            match_results.matched,
+            desc=f"Phase 3 generating YAML ({','.join(states)})",
+            unit="record",
+        ):
             req = GeneratorReq(
                 data=ingest_resp,
                 validation_data_filepath=str(validation_csv_path),
@@ -263,12 +287,30 @@ async def run_pipeline(args: argparse.Namespace) -> MatchResults:
                 tracking_rows.append(
                     (ingest_resp.ocdid.raw_ocdid, "failed", str(exc), None, None)
                 )
+        phase3_elapsed = time.perf_counter() - phase3_start
+        records = len(match_results.matched)
+        logger.info(
+            "Phase 3 (generate) complete",
+            extra={
+                "elapsed_sec": round(phase3_elapsed, 2),
+                "records": records,
+                "sec_per_record": round(phase3_elapsed / records, 3) if records else 0,
+            },
+        )
         # Phase 4
         store_generation_tracking(tracking_rows)
 
+    total_elapsed = time.perf_counter() - pipeline_start
     # Summary
     print_summary(console, download_stats, match_results, phase3_stats)
-    logger.info("Pipeline complete")
+    console.print(
+        f"Total runtime: {total_elapsed:.1f}s "
+        f"for {len(states)} state(s): {', '.join(states)}"
+    )
+    logger.info(
+        "Pipeline complete",
+        extra={"elapsed_sec": round(total_elapsed, 2), "states": states},
+    )
 
     return match_results
 
