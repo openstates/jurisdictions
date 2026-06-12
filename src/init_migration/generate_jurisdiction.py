@@ -16,6 +16,7 @@ from src.init_migration.pipeline_models import GeneratorReq
 from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
 from src.models.source import SourceType
+from src.models.ocdid import OCDIdParsed
 from src.utils.ocdid import ocdid_parser
 from pathlib import Path
 from datetime import datetime, timezone
@@ -28,7 +29,7 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 
-def get_jurisdiction_filename(ocdid: str, uuid: UUID) -> str:
+def get_jurisdiction_filename(ocdid: OCDIdParsed, uuid: UUID) -> str:
     """Generate Jurisdiction YAML filename from components.
 
     Derives the name segment from the second-to-last path component of the
@@ -43,7 +44,7 @@ def get_jurisdiction_filename(ocdid: str, uuid: UUID) -> str:
     """
     parts = ocdid.rstrip("/").split("/")
     segment = parts[-2] if len(parts) >= 2 else parts[-1]
-    safe_segment = segment.replace(":", "_")
+    safe_segment = segment.split(":")[1] if ":" in segment else segment
     return f"{safe_segment}_{uuid}.yaml"
 
 

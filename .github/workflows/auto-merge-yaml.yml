@@ -1,0 +1,78 @@
+name: Auto-merge YAML-only PRs
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, review_requested]
+    branches: [main]
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  check-yaml-only:
+    runs-on: ubuntu-latest
+    outputs:
+      yaml_only: ${{ steps.filter.outputs.safe_paths }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Check modified paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          filters: |
+            safe_paths:
+              - 'divisions/**/*.yml'
+              - 'divisions/**/*.yaml'
+              - 'jurisdictions/**/*.yml'
+              - 'jurisdictions/**/*.yaml'
+
+  auto-merge:
+    runs-on: ubuntu-latest
+    needs: check-yaml-only
+    if: needs.check-yaml-only.outputs.yaml_only == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check if PR is approved
+        id: check-approval
+        run: |
+          APPROVALS=$(gh pr view ${{ github.event.pull_request.number }} --json reviews --jq '[.reviews[] | select(.state=="APPROVED")] | length')
+          echo "approval_count=$APPROVALS" >> $GITHUB_OUTPUT
+          if [ "$APPROVALS" -gt 0 ]; then
+            echo "approved=true" >> $GITHUB_OUTPUT
+          else
+            echo "approved=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable auto-merge (squash)
+        if: steps.check-approval.outputs.approved == 'true'
+        run: |
+          gh pr merge ${{ github.event.pull_request.number }} \
+            --auto \
+            --squash \
+            --delete-branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment on PR if not approved
+        if: steps.check-approval.outputs.approved == 'false'
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --body "✅ This PR contains only YAML files from safe paths and is eligible for auto-merge once approved by a reviewer."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment if changes detected outside safe paths
+        if: needs.check-yaml-only.outputs.yaml_only == 'false'
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --body "⚠️ This PR contains changes outside the safe YAML paths. Auto-merge is disabled. Manual review and merge required."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

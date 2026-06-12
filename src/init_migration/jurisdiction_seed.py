@@ -18,7 +18,16 @@ parent entity type. A council_district division creates a jurisdiction for its
 parent (e.g., a city council district creates a city government jurisdiction).
 
 
-Def of a Jurisdiction:
+Assumptions:
+- Open Civic Data Division identifiers are reliable.
+   - If a locality (place, county, subdivision, etc) crosses a county boundary,
+     it's parent parent segment will be the state. Division identifiers do not
+     assign divisions that cross boundaries to more than one parent.
+    - If the generator pipeline has created a division that is not included in
+      the Open Civic Data repository (mostly cousubs), the NAMESALD suffix (CCD
+      OR MCD, OR CCP)
+
+Definition of a Jurisdiction:
 https://open-civic-data.readthedocs.io/en/latest/data/jurisdiction.html
 Here are the reference documents:
 
@@ -30,6 +39,18 @@ https://www.census.gov/library/reference/code-lists/functional-status-codes.html
 
 https://www2.census.gov/geo/pdfs/reference/mtfccs2025.pdf (edit
 
+
+ToDo:
+1. Do we need to pass government identifiers beyond the LSAD code? Or, is LSAD sufficient for the classification rules we want to implement? Are there any other codes that would be useful to pass for more granular decisioning? (e.g. FUNCSTAT, CLASSFP, MTFCC)
+- NAMELSAD
+- LSAD
+- CLASSFP
+- MTFCC
+- FUNCSTAT
+2. Are the LSAD codes in the STATISTICAL_LSADS correct and complete?
+3. Do we want to handle MCD (minor civil divisions)
+4. Are the non-parent entity types correct and complete?
+Currently only "council_district". Should it include "ward" # or "precinct"
 """
 
 from __future__ import annotations
@@ -116,7 +137,7 @@ GOVERNMENT_TYPES = {
 
 # Division segment keys that indicate a sub-division whose jurisdiction belongs
 # to the PARENT entity (not to itself). Strip these before resolving type.
-PARENT_ENTITY_TYPES = {"council_district"}
+NON_A_PARENT_ENTITY_TYPES = {"council_district"}
 
 
 def _extract_primary_division_type(parsed_ocdid: dict) -> str:
@@ -135,7 +156,7 @@ def _extract_primary_division_type(parsed_ocdid: dict) -> str:
 
     # Strip council_district (and other parent-entity sub-types) so the parent
     # type is used for classification decisions.
-    div_keys = [k for k in div_keys if k not in PARENT_ENTITY_TYPES]
+    div_keys = [k for k in div_keys if k not in NON_A_PARENT_ENTITY_TYPES]
 
     return div_keys[-1] if div_keys else "unknown"
 
@@ -164,6 +185,7 @@ def infer_jurisdiction_seed(
         JurisdictionSeed with classification and creation decision.
     """
     # 1. Exact override always wins.
+    # Use this to handle updates to specific records based on manual review and challenges
     if exact_override:
         return JurisdictionSeed(
             has_jurisdiction=exact_override["has_jurisdiction"],
@@ -179,8 +201,13 @@ def infer_jurisdiction_seed(
             has_jurisdiction=False,
             reason="statistical geography",
         )
-
+    # Returns a deconstructed id.
     parsed = ocdid_parser(ocdid)
+
+    # Returns the primary division (last segment) for any division
+    # Ignores parent divisions: {"base", "country", "state", "district",
+    # "territory"}
+    # Could be anything below state: congressional district, state legislative district, county, place, anc, council_district, etc. We use this to determine jurisdiction creation and classification rules.
     division_type = _extract_primary_division_type(parsed)
 
     # 3. Legislative district.

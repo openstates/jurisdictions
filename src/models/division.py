@@ -6,6 +6,7 @@ import yaml
 from uuid import NAMESPACE_URL, UUID, uuid5
 from pathlib import Path
 import logging
+from src.models.ocdid import OCDIdStr
 
 logger = logging.getLogger(__name__)
 
@@ -90,9 +91,9 @@ class Division(BaseModel):
     id: UUID | None = Field(
         default=None, description="UUID5 derived from ocdid and generation date."
     )
-    ocdid: str = Field(
+    ocdid: OCDIdStr = Field(
         ...,
-        description="The canonical OpenCivicData id for the political geo division. Should be sourced from the Open Civic Data repo. Example: ADD TKTK See: docs.opencivicdata.org",
+        description="The canonical OpenCivicData id for the political geo division. Should be sourced from the Open Civic Data repo (https://github.com/opencivicdata/ocd-division-ids). Example: ocd-division/country:us/state:wa/place:seattle/",
     )
     country: str = Field(
         ..., description="Two-letter ISO-3166 alpha-2 country code. (e.g. 'us', 'ca')"

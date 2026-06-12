@@ -3,7 +3,7 @@ from typing import Any
 from datetime import datetime, UTC
 from enum import Enum
 from uuid import UUID
-from src.models.ocdid import OCDidParsed
+from src.models.ocdid import OCDIdParsed
 
 # Master Validation Set for initial load
 DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121"
@@ -11,7 +11,7 @@ DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoH
 
 class OCDidIngestResp(BaseModel):
     uuid: UUID  # UUID5 identifier
-    ocdid: OCDidParsed
+    ocdid: OCDIdParsed
     raw_record: dict[str, Any]
 
 

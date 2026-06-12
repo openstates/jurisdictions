@@ -7,6 +7,8 @@ import yaml
 from uuid import NAMESPACE_URL, UUID, uuid5
 from pathlib import Path
 
+from src.models.ocdid import OCDIdStr, OCDIdParsed, get_ocdid_type
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -109,7 +111,7 @@ class Jurisdiction(BaseModel):
     id: UUID | None = Field(
         default=None, description="UUID5 derived from ocdid and generation date."
     )
-    ocdid: str = Field(
+    ocdid: OCDIdStr = Field(
         ...,
         description="Jurisdictions IDs take the form ocd-jurisdiction/<jurisdiction_id>/<jurisdiction_type> where jurisdiction_id is the ID for the related division without the ocd-division/ prefix and jurisdiction_type is council, legislature, etc.",
     )
@@ -154,20 +156,31 @@ class Jurisdiction(BaseModel):
     )
 
     @model_validator(mode="after")
+    def validate_jurisdiction_id(self) -> "Jurisdiction":
+        """Jurisdictions IDs take the form
+        ocd-jurisdiction/<jurisdiction_id>/<jurisdiction_type> where
+        jurisdiction_id is the ID for the related division without the
+        ocd-division/ prefix and jurisdiction_type is council, legislature, as
+        defined in the ClassificationEnum. This validator checks that the ocdid field is compliant with this structure and raises an error if not."""
+        if get_ocdid_type(self.ocdid) != "ocd-jurisdiction":
+            raise ValueError(
+                "Jurisdiction ocdid must use the 'ocd-jurisdiction' prefix"
+            )
+
+        jurisdiction_type = OCDIdParsed.get_last_segment(self.ocdid)
+        if jurisdiction_type != self.classification.value:
+            raise ValueError(
+                "Jurisdiction ocdid suffix must match the classification value"
+            )
+
+        return self
+
+    @model_validator(mode="after")
     def ensure_uuid5_id(self):
         if self.id is None:
             asof_date = self.last_updated.astimezone(timezone.utc).date().isoformat()
             self.id = uuid5(NAMESPACE_URL, f"{self.ocdid}|{asof_date}")
         return self
-
-    # @field_validator("id")
-    def validate_jurisdiction_id(self):
-        """Jurisdictions IDs take the form ocd-jurisdiction/<jurisdiction_id>/<jurisdiction_type> where jurisdiction_id is the ID for the related division without the ocd-division/ prefix and jurisdiction_type is council, legislature, etc."""
-        # TODO:
-        #  - Check prefix = ocd-jurisdiction
-        #  - Check "jurisdiction type" is an allowed type
-        #  - Check that a matching Division object exists. If not... we need one!
-        pass
 
     # Untested
     @classmethod
