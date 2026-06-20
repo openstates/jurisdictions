@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
 import yaml
 
 from src.init_migration.generate_recursive import ensure_ancestor_stubs, stub_exists
@@ -113,7 +112,7 @@ def test_stub_exists_ignores_corrupt_yaml(tmp_path: Path):
 
 def test_ensure_ancestor_stubs_creates_state_stub(tmp_path: Path):
     """State-level stub Division and Jurisdiction are created for a place OCD ID."""
-    parsed = _make_parsed("ocd-division/country:us/state:wa/place:seattle")
+    parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:wa/place:seattle")
     results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
 
     assert len(results) == 1
@@ -139,7 +138,9 @@ def test_ensure_ancestor_stubs_creates_state_stub(tmp_path: Path):
 
 def test_ensure_ancestor_stubs_creates_county_stub(tmp_path: Path):
     """State and county stubs are both created for a state/county/place OCD ID."""
-    parsed = _make_parsed("ocd-division/country:us/state:ca/county:marin/place:sausalito")
+    parsed = OCDIdParsed.parse_ocdid(
+        "ocd-division/country:us/state:ca/county:marin/place:sausalito"
+    )
     results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
 
     assert len(results) == 2
@@ -161,10 +162,12 @@ def test_ensure_ancestor_stubs_creates_county_stub(tmp_path: Path):
 
 def test_ensure_ancestor_stubs_division_uses_model_fields(tmp_path: Path):
     """Division YAML produced by the stub contains model-validated fields."""
-    parsed = _make_parsed("ocd-division/country:us/state:tx/place:austin")
+    parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:tx/place:austin")
     results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
 
-    div_data = yaml.safe_load(Path(results[0]["division_path"]).read_text(encoding="utf-8"))
+    div_data = yaml.safe_load(
+        Path(results[0]["division_path"]).read_text(encoding="utf-8")
+    )
     # Fields set by Division model
     assert "ocdid" in div_data
     assert "country" in div_data
@@ -178,10 +181,12 @@ def test_ensure_ancestor_stubs_division_uses_model_fields(tmp_path: Path):
 
 def test_ensure_ancestor_stubs_jurisdiction_uses_model_fields(tmp_path: Path):
     """Jurisdiction YAML produced by the stub contains model-validated fields."""
-    parsed = _make_parsed("ocd-division/country:us/state:tx/place:austin")
+    parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:tx/place:austin")
     results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
 
-    jur_data = yaml.safe_load(Path(results[0]["jurisdiction_path"]).read_text(encoding="utf-8"))
+    jur_data = yaml.safe_load(
+        Path(results[0]["jurisdiction_path"]).read_text(encoding="utf-8")
+    )
     assert "ocdid" in jur_data
     assert "name" in jur_data
     assert "url" in jur_data
@@ -192,7 +197,7 @@ def test_ensure_ancestor_stubs_jurisdiction_uses_model_fields(tmp_path: Path):
 
 def test_ensure_ancestor_stubs_idempotent(tmp_path: Path):
     """Running twice produces no additional writes."""
-    parsed = _make_parsed("ocd-division/country:us/state:wa/place:seattle")
+    parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:wa/place:seattle")
 
     first = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
     assert all(r["action"] == "created" for r in first)
@@ -207,14 +212,14 @@ def test_ensure_ancestor_stubs_idempotent(tmp_path: Path):
 
 def test_ensure_ancestor_stubs_no_ancestors_for_state(tmp_path: Path):
     """A state-level OCD ID has no ancestors so the result is an empty list."""
-    parsed = _make_parsed("ocd-division/country:us/state:wa")
+    parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:wa")
     results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
     assert results == []
 
 
 def test_ensure_ancestor_stubs_directory_layout_state(tmp_path: Path):
     """State stubs are written under {output}/divisions/{state}/, not local/."""
-    parsed = _make_parsed("ocd-division/country:us/state:tx/place:austin")
+    parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:tx/place:austin")
     results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
 
     div_path = Path(results[0]["division_path"])
@@ -224,7 +229,9 @@ def test_ensure_ancestor_stubs_directory_layout_state(tmp_path: Path):
 
 def test_ensure_ancestor_stubs_directory_layout_county(tmp_path: Path):
     """County stubs are written under {output}/divisions/{state}/county/."""
-    parsed = _make_parsed("ocd-division/country:us/state:ca/county:marin/place:sausalito")
+    parsed = OCDIdParsed.parse_ocdid(
+        "ocd-division/country:us/state:ca/county:marin/place:sausalito"
+    )
     results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
 
     county_result = next(r for r in results if r["level"] == "county")
@@ -234,7 +241,7 @@ def test_ensure_ancestor_stubs_directory_layout_county(tmp_path: Path):
 
 def test_ensure_ancestor_stubs_ocdid_field_matches(tmp_path: Path):
     """The ocdid field in each stub YAML matches the ancestor's raw_ocdid."""
-    parsed = _make_parsed("ocd-division/country:us/state:wa/place:tacoma")
+    parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:wa/place:tacoma")
     results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
 
     for result in results:
@@ -244,7 +251,7 @@ def test_ensure_ancestor_stubs_ocdid_field_matches(tmp_path: Path):
 
 def test_ensure_ancestor_stubs_jur_ocdid_format(tmp_path: Path):
     """Jurisdiction stub uses the correct ocd-jurisdiction/…/government format."""
-    parsed = _make_parsed("ocd-division/country:us/state:wa/place:seattle")
+    parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:wa/place:seattle")
     results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
 
     jur_data = yaml.safe_load(
@@ -256,8 +263,10 @@ def test_ensure_ancestor_stubs_jur_ocdid_format(tmp_path: Path):
 
 def test_ensure_ancestor_stubs_country_from_parsed_ocdid(tmp_path: Path):
     """The country field in the Division stub comes from the OCDidParsed object."""
-    parsed = _make_parsed("ocd-division/country:us/state:wa/place:seattle")
+    parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:wa/place:seattle")
     results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
 
-    div_data = yaml.safe_load(Path(results[0]["division_path"]).read_text(encoding="utf-8"))
+    div_data = yaml.safe_load(
+        Path(results[0]["division_path"]).read_text(encoding="utf-8")
+    )
     assert div_data["country"] == parsed.country

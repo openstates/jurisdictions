@@ -10,13 +10,7 @@ from src.models.ocdid import OCDIdParsed
 
 def test_ocdid_ingest_resp_accepts_ocdid_parsed():
     """OCDidIngestResp.ocdid should accept an OCDIdParsed instance."""
-    parsed = OCDIdParsed(
-        country="us",
-        state="wa",
-        place="seattle",
-        base_ocdid="ocd-division/country:us/state:wa/place:seattle",
-        raw_ocdid="ocd-division/country:us/state:wa/place:seattle",
-    )
+    parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:wa/place:seattle")
     det_id = uuid5(NAMESPACE_URL, "ocd-division/country:us/state:wa/place:seattle")
     resp = OCDidIngestResp(
         uuid=det_id,
@@ -33,13 +27,7 @@ def test_ocdid_ingest_resp_accepts_ocdid_parsed():
 
 def test_ocdid_ingest_resp_uuid_is_uuid5_string():
     """OCDidIngestResp.uuid should parse to a UUID5 object."""
-    parsed = OCDIdParsed(
-        country="us",
-        state="wa",
-        place="seattle",
-        base_ocdid="ocd-division/country:us/state:wa/place:seattle",
-        raw_ocdid="ocd-division/country:us/state:wa/place:seattle",
-    )
+    parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:wa/place:seattle")
     det_id = uuid5(NAMESPACE_URL, "ocd-division/country:us/state:wa/place:seattle")
     resp = OCDidIngestResp(
         uuid=det_id,
