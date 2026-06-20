@@ -352,7 +352,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md#pick-up-an-existing-issue---coding-require
 ## Contributing Guidance
 - **Getting started:** See [`CONTRIBUTING.md`](CONTRIBUTING.md) for how to contribute code, data, and improvements
 - **Conceptual Q&A:** [`FAQ.md`](FAQ.md) - Understanding [divisions](FAQ.md#what-is-a-division), [jurisdictions](FAQ.md#what-is-a-jurisdiction), [places](FAQ.md#what-is-a-place), and governance
-- **Model definitions:** [`MODELS.md`](MODELS.md) - Technical details on [Division](MODELS.md#division-model), [Jurisdiction](MODELS.md#jurisdiction-model), [OCD ID](MODELS.md#ocdidparsed-model), and data structures
+- **Model definitions:** [`MODELS.md`](MODELS.md) - Technical details on [Division](MODELS.md#division-model), [Jurisdiction](MODELS.md#jurisdiction-model), [OCDID](MODELS.md#ocdidparsed-model), and data structures
 - **Model relationships:** [`docs/data_model_relationships.md`](docs/data_model_relationships.md) - Visual map and detailed connections
 - Agent and semi-autonomous workflow rules: `AGENTS.md`
 - Pre-commit checklist: `ai_tools/system/pre-commit-checks.instruction.md`
@@ -364,6 +364,26 @@ See [CONTRIBUTING.md](CONTRIBUTING.md#pick-up-an-existing-issue---coding-require
 - **"What's the data model?"** See [MODELS.md](MODELS.md) for technical details
 - **"How do I contribute?"** Read [CONTRIBUTING.md](CONTRIBUTING.md)
 - **"Something's broken"** Check `docs/setup_uv.md` for troubleshooting, or open an [issue](https://github.com/openstates/jurisdictions/issues)
+
+## 🚀 YAML-Only Changes & Auto-Merge
+
+For pull requests containing **only YAML file changes** in `divisions/` or `jurisdictions/`:
+
+- ✅ PR automatically merges after approval
+- ✅ Branch automatically deletes
+- ✅ No manual merge step needed
+
+**How it works:**
+1. Create PR with YAML-only changes
+2. Workflow verifies files are in safe paths
+3. Request reviewer approval
+4. Auto-merge triggers automatically
+
+**Learn more:**
+- [YAML Auto-Merge Quick Reference](docs/YAML_AUTO_MERGE_QUICK_REFERENCE.md) — 2-minute overview
+- [YAML Auto-Merge Workflow](docs/YAML_AUTO_MERGE_WORKFLOW.md) — Technical details & configuration
+
+---
 
 ## Notes
 - Use `src` package-root imports in code and tests (e.g., `from src.models.division import Division`)

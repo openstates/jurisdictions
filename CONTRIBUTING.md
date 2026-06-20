@@ -94,6 +94,26 @@ Include the following in your PR:
 4. Notes on data/output impact (for example `divisions/`, `jurisdictions/`).
 5. For model changes: Clear explanation of how the structure changed and backward compatibility considerations (see [MODELS.md](MODELS.md) for current structure).
 
+## YAML-Only Changes & Auto-Merge
+
+For contributions that change **only YAML files** in safe paths:
+
+**Safe paths for auto-merge:**
+- `divisions/**/*.{yml,yaml}`
+- `jurisdictions/**/*.{yml,yaml}`
+
+**Process:**
+1. Create PR with YAML-only changes in safe paths
+2. Request reviewer approval
+3. ✅ Workflow auto-merges after approval
+4. ✅ Branch auto-deletes automatically
+
+**Important:** If your PR includes any files outside these paths (code, config, docs), auto-merge is disabled and requires manual merge.
+
+**Documentation:**
+- [YAML Auto-Merge Quick Reference](../docs/YAML_AUTO_MERGE_QUICK_REFERENCE.md) — Quick overview for contributors
+- [YAML Auto-Merge Workflow](../docs/YAML_AUTO_MERGE_WORKFLOW.md) — Technical details for maintainers
+
 ## Documentation Structure
 - **[README.md](README.md)** - Project overview and quick start
 - **[FAQ.md](FAQ.md)** - Conceptual questions (What's a division? What's a jurisdiction? Why both?)

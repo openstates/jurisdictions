@@ -38,8 +38,11 @@ class OCDIdParsed(BaseModel):
     OCDids, not Jurisdiction OCDids (which have a slightly different structure)
 
     Examples:
+        - ocd-division/country:us/state:ca
+        - ocd-division/country:us/state:ca/county:marin
         - ocd-division/country:us/state:ca/county:marin/place:sausalito
         - ocd-division/country:us/state:wa/place:seattle/council_district:1
+        - ocd-division/country:us/msa:multistate-area
         - ocd-division/country:us/state:wa
     """
 

@@ -8,6 +8,7 @@ from uuid import NAMESPACE_URL, UUID, uuid5
 from pathlib import Path
 
 from src.models.ocdid import OCDIdStr, OCDIdParsed, get_ocdid_type
+from src.utils.datetime import ymd
 
 import logging
 
@@ -17,6 +18,28 @@ logger = logging.getLogger(__name__)
 PROJECT_PATH = "jurisdictions/"
 
 
+# Session factories with exact dates
+def session_calendar_year(year: int) -> "SessionDetail":
+    return SessionDetail(
+        name=str(year),
+        identifiers=str(year),
+        classification="primary",
+        start_date=ymd(year, 1, 1),
+        end_date=ymd(year, 12, 31),
+    )
+
+
+def session_span(name_slug: str, start: datetime, end: datetime) -> "SessionDetail":
+    return SessionDetail(
+        name=name_slug,
+        identifiers=name_slug,
+        classification="primary",
+        start_date=start,
+        end_date=end,
+    )
+
+
+# United states only
 class ClassificationEnum(str, Enum):
     """These are the allowed defined types for jurisdictions"""
 
@@ -27,6 +50,7 @@ class ClassificationEnum(str, Enum):
     TRANSIT_AUTHORITY = (
         "transit_authority"  # i.e. PORT Authority of New York and New Jersey
     )
+    UTILITY_COMMISSION = "utility_commission"  #  NON-OCDid COMPLIANT; ADDEDi.e. California Public Utilities Commission
     JUDICIAL = "judicial"  # NON-OCDid COMPLIANT; ADDED
     PROSECUTORIAL = "prosecutorial"  # NON-OCDid COMPLIANT; ADDED, Examples: District Attorney Offices
     ADVISORY_BOARD = "advisory_board"  # NON-OCDid COMPLIANT; ADDED; Examples:  Cousubs that have elected governing bodies that advise but meet under the fiscal oversight of the county government.
