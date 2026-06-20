@@ -10,5 +10,5 @@ def load_state_code_lookup():
     """
     data_dir = Path(__file__).resolve().parents[1] / "data"
     path = data_dir / "state_lookup.json"
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         return json.load(f)

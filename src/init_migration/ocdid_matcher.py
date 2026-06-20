@@ -11,11 +11,11 @@ Responsibilities:
 """
 
 from dataclasses import dataclass, field
+from logging import getLogger
 from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
 import duckdb
-from logging import getLogger
 
 from src.init_migration.pipeline_models import OCDidIngestResp
 from src.models.ocdid import OCDIdParsed
@@ -84,7 +84,7 @@ class OCDidMatcher:
             matched_rows = cursor.fetchall()
 
             for row in matched_rows:
-                row_dict = dict(zip(col_names, row))
+                row_dict = dict(zip(col_names, row, strict=True))
                 row_dict.pop("_local_state", None)
                 ocdid_str = row_dict["id"]
 
@@ -121,7 +121,7 @@ class OCDidMatcher:
 
             orphan_cols = ["id", "name", "state"]
             results.local_orphans = [
-                dict(zip(orphan_cols, row)) for row in local_orphan_rows
+                dict(zip(orphan_cols, row, strict=True)) for row in local_orphan_rows
             ]
             if results.local_orphans:
                 logger.warning(f"Found {len(results.local_orphans)} local orphan(s)")
@@ -147,7 +147,7 @@ class OCDidMatcher:
 
             master_orphan_cols = ["id", "name"]
             results.master_orphans = [
-                dict(zip(master_orphan_cols, row)) for row in master_orphan_rows
+                dict(zip(master_orphan_cols, row, strict=True)) for row in master_orphan_rows
             ]
             if results.master_orphans:
                 logger.warning(f"Found {len(results.master_orphans)} master orphan(s)")

@@ -1,9 +1,9 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import NAMESPACE_URL, uuid4, uuid5
 
+import pytest
 from hypothesis import given
 from hypothesis import strategies as st
-import pytest
 from pydantic import ValidationError
 
 from src.models.jurisdiction import ClassificationEnum, Jurisdiction
@@ -42,7 +42,7 @@ def test_jurisdiction_id_defaults_to_uuid5_from_ocdid_and_date(
     jurisdiction_input: tuple[str, ClassificationEnum],
 ) -> None:
     ocdid, classification = jurisdiction_input
-    last_updated = datetime(2026, 4, 8, 12, 0, tzinfo=timezone.utc)
+    last_updated = datetime(2026, 4, 8, 12, 0, tzinfo=UTC)
     jurisdiction = Jurisdiction(
         ocdid=ocdid,
         name="Sample Jurisdiction",

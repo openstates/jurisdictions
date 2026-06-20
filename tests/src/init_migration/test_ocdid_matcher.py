@@ -1,8 +1,9 @@
 """Tests for OCDidMatcher — join logic, UUID generation, lookup table."""
 
-import pytest
-import duckdb
 from pathlib import Path
+
+import duckdb
+import pytest
 
 from src.init_migration.ocdid_matcher import OCDidMatcher
 from src.init_migration.pipeline_models import OCDidIngestResp

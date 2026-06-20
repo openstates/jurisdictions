@@ -1,9 +1,10 @@
 """Tests for pipeline_models — specifically the OCDidIngestResp model changes."""
 
-from uuid import UUID
-from uuid import NAMESPACE_URL, uuid5
+from uuid import NAMESPACE_URL, UUID, uuid5
 
 import pytest
+from pydantic import ValidationError
+
 from src.init_migration.pipeline_models import OCDidIngestResp
 from src.models.ocdid import OCDIdParsed
 
@@ -50,7 +51,7 @@ def test_ocdid_ingest_resp_uuid_is_uuid5_string():
 
 def test_ocdid_ingest_resp_rejects_plain_string_for_ocdid():
     """OCDidIngestResp.ocdid should not accept a plain string."""
-    with pytest.raises(Exception):
+    with pytest.raises(ValidationError):
         OCDidIngestResp(
             uuid="not-a-valid-ocdid",
             ocdid="ocd-division/country:us/state:wa/place:seattle",

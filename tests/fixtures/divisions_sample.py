@@ -10,7 +10,6 @@ from src.models.division import (
 )
 from src.models.source import SourceObj
 
-
 SEATTLE_DIVISION = Division(
     ocdid="ocd-division/country:us/state:wa/place:seattle/council_district:1",
     country="us",

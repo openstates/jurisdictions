@@ -8,7 +8,6 @@ from src.models.jurisdiction import (
 )
 from src.models.source import SourceObj
 
-
 SEATTLE_JURISDICTION = Jurisdiction(
     ocdid="ocd-jurisdiction/country:us/state:wa/place:seattle/government",
     name="Seattle City Government",

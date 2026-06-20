@@ -7,9 +7,11 @@ Generate OCDids
 ====================
 """
 
-from typing import Any
-import i18naddress
 import logging
+from typing import Any
+
+import i18naddress
+
 from src.errors import OCDIdParsingError
 
 logging.basicConfig(level=logging.INFO)
