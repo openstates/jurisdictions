@@ -85,7 +85,7 @@ class OCDIdParsed(BaseModel):
     def get_last_segment(cls, ocdid: "OCDIdParsed | OCDIdStr") -> str:
         """
         Extract the last segment from an OCD ID, handling edge cases. This
-        handler accepts both parsed OCDidParsed objects and valid OCD ID
+        handler accepts both parsed OCDIdParsed objects and valid OCD ID
         strings.
         """
         raw_ocdid: str = ocdid.raw_ocdid if isinstance(ocdid, cls) else str(ocdid)
