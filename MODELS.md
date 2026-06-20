@@ -10,7 +10,7 @@ This document describes the core data models used in the OpenStates Jurisdiction
 |-------|---------|-----------|--|
 | **Division** | Geographic area | Where something is | `src/models/division.py` |
 | **Jurisdiction** | Governing entity | Who governs it | `src/models/jurisdiction.py` |
-| **OCDidParsed** | OCD ID breakdown | Standardized identifier | `src/models/ocdid.py` |
+| **OCDIdParsed** | OCD ID breakdown | Standardized identifier | `src/models/ocdid.py` |
 | **SourceObj** | Data provenance | Where data came from | `src/models/source.py` |
 
 ---
@@ -46,7 +46,7 @@ ocd-division/country:us/state:ca/county:los_angeles
 ocd-division/country:us/state:wa/place:seattle
 ```
 
-**See also:** [OCDidParsed Model](#ocdidparsed-model)
+**See also:** [OCDIdParsed Model](#ocdidparsed-model)
 
 **What is a "place"?** A place is a U.S. Census Bureau geographic classification. See [FAQ: What is a place?](FAQ.md#what-is-a-place) or the [Census Bureau documentation](https://www.census.gov/content/dam/Census/data/developers/understandingplace.pdf).
 
@@ -153,7 +153,7 @@ url: "https://www.lacity.gov"
 
 ---
 
-## OCDidParsed Model
+## OCDIdParsed Model
 
 **Purpose:** Breaks down an Open Civic Data identifier into its component parts.
 
@@ -164,8 +164,8 @@ url: "https://www.lacity.gov"
 ### Key Fields
 
 ```python
-class OCDidParsed(BaseModel):
-    type: OCDidType                    # "ocd-division" or "ocd-jurisdiction"
+class OCDIdParsed(BaseModel):
+    type: OCDIdType                    # "ocd-division" or "ocd-jurisdiction"
     country: str                       # Country code (usually "us")
     state: str | None                 # State abbreviation (e.g., "ca", "wa")
     county: str | None                # County name/code

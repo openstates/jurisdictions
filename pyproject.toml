@@ -15,6 +15,7 @@ dependencies = [
     "pydantic>=2.11.9",
     "rapidfuzz>=3.0.0",
     "rich>=14.0.0",
+    "tqdm>=4.68.1",
 ]
 
 [dependency-groups]

@@ -1,7 +1,6 @@
 import pytest
 from pydantic import ValidationError
 
-from src.errors import OCDIdParsingError
 from src.models.ocdid import OCDIdStr, OCDIdParsed, get_ocdid_type, validate_ocdid
 
 
@@ -52,6 +51,7 @@ def test_ocdid_parsed_populates_type_from_raw_ocdid() -> None:
         country="us",
         state="wa",
         place="seattle",
+        base_ocdid="ocd-division/country:us/state:wa/place:seattle",
         raw_ocdid="ocd-division/country:us/state:wa/place:seattle",
     )
 
@@ -63,6 +63,7 @@ def test_ocdid_parsed_accepts_jurisdiction_type_from_raw_ocdid() -> None:
         country="us",
         state="wa",
         place="seattle",
+        base_ocdid="ocd-division/country:us/state:wa/place:seattle",
         raw_ocdid="ocd-jurisdiction/country:us/state:wa/place:seattle/government",
     )
 
@@ -76,6 +77,7 @@ def test_ocdid_parsed_rejects_mismatched_type() -> None:
             country="us",
             state="wa",
             place="seattle",
+            base_ocdid="ocd-division/country:us/state:wa/place:seattle",
             raw_ocdid="ocd-division/country:us/state:wa/place:seattle",
         )
 
@@ -87,13 +89,19 @@ def test_parse_ocdid_returns_parsed_model_for_division() -> None:
     assert parsed.country == "us"
     assert parsed.state == "wa"
     assert parsed.place == "seattle"
+    assert parsed.base_ocdid == "ocd-division/country:us/state:wa/place:seattle"
 
 
-def test_parse_ocdid_raises_for_jurisdiction_shape() -> None:
-    with pytest.raises(OCDIdParsingError):
-        OCDIdParsed.parse_ocdid(
-            "ocd-jurisdiction/country:us/state:wa/place:seattle/government"
-        )
+def test_parse_ocdid_returns_parsed_model_for_jurisdiction() -> None:
+    parsed = OCDIdParsed.parse_ocdid(
+        "ocd-jurisdiction/country:us/state:wa/place:seattle/government"
+    )
+
+    assert parsed.type == "ocd-jurisdiction"
+    assert parsed.country == "us"
+    assert parsed.state == "wa"
+    assert parsed.place == "seattle"
+    assert parsed.base_ocdid == "ocd-jurisdiction/country:us/state:wa/place:seattle"
 
 
 def test_get_last_segment_accepts_model_instance() -> None:
@@ -101,18 +109,33 @@ def test_get_last_segment_accepts_model_instance() -> None:
         country="us",
         state="wa",
         place="seattle",
+        base_ocdid="ocd-division/country:us/state:wa/place:seattle",
         raw_ocdid="ocd-division/country:us/state:wa/place:seattle",
     )
 
     assert OCDIdParsed.get_last_segment(parsed) == "place:seattle"
 
 
-def test_get_last_segment_accepts_validated_string() -> None:
+def test_get_last_segment_accepts_validated_string_jurisdiction() -> None:
     ocdid: OCDIdStr = validate_ocdid(
         "ocd-jurisdiction/country:us/state:wa/place:seattle/government"
     )
 
-    assert OCDIdParsed.get_last_segment(ocdid) == "government"
+    assert OCDIdParsed.get_last_segment(ocdid) == "place:seattle"
+
+
+def test_get_last_segment_returns_correct_segment_for_division() -> None:
+    ocdid: OCDIdStr = validate_ocdid("ocd-division/country:us/state:wa/place:seattle")
+
+    assert OCDIdParsed.get_last_segment(ocdid) == "place:seattle"
+
+
+def test_get_last_segment_returns_correct_segment_for_jurisdiction() -> None:
+    ocdid: OCDIdStr = validate_ocdid(
+        "ocd-jurisdiction/country:us/state:wa/place:seattle/government"
+    )
+
+    assert OCDIdParsed.get_last_segment(ocdid) == "place:seattle"
 
 
 def test_build_ancestor_ocdids_returns_intermediate_divisions() -> None:
@@ -121,6 +144,7 @@ def test_build_ancestor_ocdids_returns_intermediate_divisions() -> None:
         state="wa",
         county="king",
         place="seattle",
+        base_ocdid="ocd-division/country:us/state:wa/county:king/place:seattle",
         raw_ocdid="ocd-division/country:us/state:wa/county:king/place:seattle",
     )
 

@@ -34,12 +34,7 @@ from src.utils.yaml_manager import YamlManager
 @pytest.fixture
 def sample_generator_request(tmp_path) -> GeneratorReq:
     """Create a GeneratorReq for jurisdiction generation."""
-    parsed = OCDIdParsed(
-        raw_ocdid="ocd-division/country:us/state:ca/place:seattle",
-        country="us",
-        state="ca",
-        place="seattle",
-    )
+    parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:ca/place:seattle")
     test_uuid = uuid5(
         NAMESPACE_URL,
         f"ocd-division/country:us/state:ca/place:seattle|{datetime.now(timezone.utc).date().isoformat()}",

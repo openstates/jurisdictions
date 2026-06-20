@@ -12,11 +12,7 @@ from pathlib import Path
 @pytest.fixture
 def sample_req(tmp_path) -> GeneratorReq:
     """Create a GeneratorReq with current OCDidIngestResp types."""
-    parsed = OCDIdParsed(
-        raw_ocdid="ocd-division/country:us/state:ca",
-        country="us",
-        state="ca",
-    )
+    parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:ca")
     resp = OCDidIngestResp(
         uuid=uuid5(
             NAMESPACE_URL,
