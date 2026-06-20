@@ -28,12 +28,12 @@ to ensure no requirements were lost in translation.
 | 5 | Pull per-state local CSVs | `local_urls()` → `state-{st}-local_gov.csv` | Task 5 | Covered |
 | 6 | For each local record, pull full data from master | Inner join on `id` column | Task 7 SQL join | Covered |
 | 7 | "We will work from the master list" | `raw_record` contains master columns only | Task 7 `m.*` select | Covered |
-| 8 | Parse OCDid in OCDidParsed model | `ocdid_parser()` → `OCDidParsed` | Task 7 | Covered |
+| 8 | Parse OCDid in OCDIdParsed model | `ocdid_parser()` → `OCDIdParsed` | Task 7 | Covered |
 | 9 | Generate a UUID | `uuid5_id.generate_id()` → `oid1-` string | Task 7 | Covered (see note A) |
 | 10 | Store UUID/OCD-ID in DuckDB lookup table | `ocdid_uuid_lookup` table | Task 7 `_store_lookup_table()` | Covered |
 | 11 | "Can be run once, skipped in future runs" | `INSERT ... WHERE NOT EXISTS` idempotency | Task 7 | Covered |
 | 12 | "Backup to a .csv file as well" | `data/ocdid_uuid_lookup.csv` | Task 7 `COPY ... TO` | Covered |
-| 13 | Return `OCDidIngestResp(UUID, OCDidParsed, raw_record)` | Model with `uuid: str`, `ocdid: OCDidParsed`, `raw_record: dict` | Task 2 + Task 7 | Covered |
+| 13 | Return `OCDidIngestResp(UUID, OCDIdParsed, raw_record)` | Model with `uuid: str`, `ocdid: OCDIdParsed`, `raw_record: dict` | Task 2 + Task 7 | Covered |
 
 ### Notes
 

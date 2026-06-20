@@ -17,8 +17,18 @@ NOTE: Council_district is handled by stripping it from the OCD ID and using the
 parent entity type. A council_district division creates a jurisdiction for its
 parent (e.g., a city council district creates a city government jurisdiction).
 
+Assumptions:
+- Open Civic Data Division identifiers are reliable.
+   - If a locality (place, county, subdivision, etc) crosses a county boundary,
+     it's parent parent segment will be the state. Division identifiers do not
+     assign divisions that cross boundaries to more than one parent.
+    - If the generator pipeline has created a division that is not included in
+      the Open Civic Data repository (mostly cousubs), the NAMESALD suffix (CCD
+      OR MCD, OR CCP)
+- We are currently focused on non-triable data. We hope to expand to include
+  tribal jurisdictions.
 
-Def of a Jurisdiction:
+Definition of a Jurisdiction:
 https://open-civic-data.readthedocs.io/en/latest/data/jurisdiction.html
 Here are the reference documents:
 
@@ -30,18 +40,43 @@ https://www.census.gov/library/reference/code-lists/functional-status-codes.html
 
 https://www2.census.gov/geo/pdfs/reference/mtfccs2025.pdf (edit
 
+
+ToDo:
+1. Do we need to pass government identifiers beyond the LSAD code? Or, is LSAD sufficient for the classification rules we want to implement? Are there any other codes that would be useful to pass for more granular decisioning? (e.g. FUNCSTAT, CLASSFP, MTFCC)
+- NAMELSAD
+- LSAD
+- CLASSFP
+- MTFCC
+- FUNCSTAT
+2. Are the LSAD codes in the STATISTICAL_LSADS correct and complete?
+3. Do we want to handle MCD (minor civil divisions)
+4. Are the non-parent entity types correct and complete?
+Currently only "council_district". Should it include "ward" # or "precinct"
+5. We need to handle parent entities (state, county, etc). Check if we are
+handling through GOVERNMENT_TYPES code path. If passed a division
+which is a parent entity we should create a Jurisdiction object. (Used in
+building ancestor Jurisdictions.)
+6. Verify the SCHOOL_CLASSES segment identifiers for school districts in the
+Open Civic Data repo.
+7. Verify the GOVERNMENT_TYPES segment identifiers for governing bodies in the
+Open Civic Data repo.
+8. Write code to do a specific AI lookup on how to handle LSAD code "27" (sub-county district)
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import Optional
+from pydantic import BaseModel
 
+from src.models.jurisdiction import ClassificationEnum
 from src.utils.ocdid import ocdid_parser
+from src.data.lsad_mapper import get_lsad_map, LSADCode
 
 
-@dataclass
-class JurisdictionSeed:
+LSAD_CODES: dict[str, LSADCode] = get_lsad_map()
+
+
+class JurisdictionSeed(BaseModel):
     has_jurisdiction: bool
     classification: Optional[str] = None
     jurisdiction_name: Optional[str] = None
@@ -54,8 +89,24 @@ class JurisdictionSeed:
 STATISTICAL_LSADS = {
     "05",  # AK Census Area
     "15",  # CDP (Census Designated Place — unincorporated, no government)
-    "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38",
-    "39", "42", "46", "47", "54", "55", "56",
+    "28",
+    "29",
+    "30",
+    "31",
+    "32",
+    "33",
+    "34",
+    "35",
+    "36",
+    "37",
+    "38",
+    "39",
+    "42",
+    "46",
+    "47",
+    "54",
+    "55",
+    "56",
 }
 
 # OCD division segment keys that indicate a legislative district.
@@ -63,11 +114,20 @@ LEGISLATIVE_TYPES = {"cd", "sldu", "sldl"}
 
 # Division types that are purely geographic / statistical with no governing body.
 NON_JURISDICTION_DIVISION_TYPES = {
-    "vtd", "zcta", "tract", "blockgroup", "block",
-    "ua", "msa", "csa", "division", "region",
+    "vtd",
+    "zcta",
+    "tract",
+    "blockgroup",
+    "block",
+    "ua",
+    "msa",
+    "csa",
+    "division",
+    "region",
 }
 
 # Division types that correspond to elected school boards.
+# TODO: Verify where this Open Civic Data are these fair dinkum segment identifiers
 SCHOOL_CLASSES = {
     "elementary_school_district",
     "secondary_school_district",
@@ -78,14 +138,85 @@ SCHOOL_CLASSES = {
 
 # Division types that create a general government jurisdiction.
 # `anc` = DC Advisory Neighborhood Commission — an elected governing body.
+# TODO: These are not in the Open Civic Data repo as segment identifiers. How do
+# we identify these? By name? By LSAD code?
+# "cousub",
+# "submcd",
+# "aiannh",
+# "aits",
+# "anc",
 GOVERNMENT_TYPES = {
-    "country", "state", "county", "place",
-    "cousub", "submcd", "aiannh", "aits", "anc",
+    "country",
+    "state",
+    "county",
+    "place",
+    "cousub",
+    "submcd",
+    "aiannh",
+    "aits",
+    "anc",
 }
 
 # Division segment keys that indicate a sub-division whose jurisdiction belongs
 # to the PARENT entity (not to itself). Strip these before resolving type.
-PARENT_ENTITY_TYPES = {"council_district"}
+NON_PARENT_ENTITY_TYPES = {"council_district"}
+
+# The generated LSAD map is the source of truth for descriptions and associated
+# entity names. These sets describe which mapped LSADs are non-governing purely
+# statistical geographies in the current decision tree.
+STATISTICAL_LSAD_ENTITIES = frozenset(
+    {
+        "Alaska Native Village Statistical Area",
+        "American Indian Joint Use Area",
+        "Census Designated Place",
+        "Census Division",
+        "Census Region",
+        "Combined New England City and Town Area",
+        "Combined Statistical Area",
+        "Consolidated Metropolitan Statistical Area and Metropolitan Statistical Area",
+        "Metropolitan and Micropolitan Statistical Area",
+        "Metropolitan Division",
+        "New England City and Town Division",
+        "New England City and Town Metropolitan and Micropolitan Statistical Area",
+        "New England County Metropolitan Area",
+        "Oklahoma Tribal Statistical Area",
+        "Primary Metropolitan Statistical Area",
+        "State-designated Tribal Statistical Area",
+        "Tribal Designated Statistical Area",
+        "Urban Area",
+        "Urban Growth Area",
+    }
+)
+
+STATISTICAL_LSAD_DESCRIPTIONS = frozenset(
+    {
+        "CCD (suffix)",
+        "Census Area (suffix)",
+        "census subarea (suffix)",
+        "census subdistrict (suffix)",
+    }
+)
+
+
+def _split_associated_entities(entity_text: str) -> set[str]:
+    return {entity.strip() for entity in entity_text.split(",") if entity.strip()}
+
+
+def _resolve_lsad_code(lsad_code: str | None, ocdid: str) -> LSADCode | None:
+    if lsad_code is None:
+        return None
+
+    if lsad_code not in LSAD_CODES:
+        raise ValueError(f"Unknown LSAD code '{lsad_code}' for OCD ID '{ocdid}'")
+
+    return LSAD_CODES[lsad_code]
+
+
+def _is_statistical_lsad(lsad_code: LSADCode) -> bool:
+    entities = _split_associated_entities(lsad_code.associated_geographic_entity)
+    return bool(entities & STATISTICAL_LSAD_ENTITIES) or (
+        lsad_code.lsad_description in STATISTICAL_LSAD_DESCRIPTIONS
+    )
 
 
 def _extract_primary_division_type(parsed_ocdid: dict) -> str:
@@ -99,12 +230,12 @@ def _extract_primary_division_type(parsed_ocdid: dict) -> str:
         The primary division type string (e.g. "place", "anc", "county").
     """
     # Skip metadata keys that don't represent geographic division types.
-    meta_keys = {"base", "country", "state", "district", "territory"}
-    div_keys = [k for k in parsed_ocdid.keys() if k not in meta_keys]
+    parent_entity_keys = {"base", "country", "state", "district", "territory"}
+    div_keys = [k for k in parsed_ocdid.keys() if k not in parent_entity_keys]
 
     # Strip council_district (and other parent-entity sub-types) so the parent
     # type is used for classification decisions.
-    div_keys = [k for k in div_keys if k not in PARENT_ENTITY_TYPES]
+    div_keys = [k for k in div_keys if k not in NON_PARENT_ENTITY_TYPES]
 
     return div_keys[-1] if div_keys else "unknown"
 
@@ -132,7 +263,10 @@ def infer_jurisdiction_seed(
     Returns:
         JurisdictionSeed with classification and creation decision.
     """
+    lsad_code_obj = _resolve_lsad_code(lsad_code, ocdid)
+
     # 1. Exact override always wins.
+    # Use this to handle updates to specific records based on manual review and challenges
     if exact_override:
         return JurisdictionSeed(
             has_jurisdiction=exact_override["has_jurisdiction"],
@@ -143,21 +277,31 @@ def infer_jurisdiction_seed(
         )
 
     # 2. Explicit statistical flags or statistical LSAD code.
-    if is_statistical is True or (lsad_code and lsad_code in STATISTICAL_LSADS):
+    if is_statistical is True or (
+        lsad_code_obj is not None and _is_statistical_lsad(lsad_code_obj)
+    ):
         return JurisdictionSeed(
             has_jurisdiction=False,
             reason="statistical geography",
         )
-
+    # Returns a deconstructed id.
     parsed = ocdid_parser(ocdid)
+
+    # Returns the primary division (last segment) for any division
+    # Ignores parent divisions: {"base", "country", "state", "district",
+    # "territory"}
+    # Could be anything below state: congressional district, state legislative
+    # district, county, place, anc, council_district, etc. We use this to
+    # determine jurisdiction creation and classification rules.
+    # TODO: Need to handle parent entities
     division_type = _extract_primary_division_type(parsed)
 
     # 3. Legislative district.
     if division_type in LEGISLATIVE_TYPES:
         return JurisdictionSeed(
             has_jurisdiction=True,
-            classification="legislature",
-            jurisdiction_type_suffix="legislature",
+            classification=ClassificationEnum.LEGISLATURE.value,
+            jurisdiction_type_suffix=ClassificationEnum.LEGISLATURE.value,
             reason="legislative district",
         )
 
@@ -165,8 +309,8 @@ def infer_jurisdiction_seed(
     if division_type in SCHOOL_CLASSES:
         return JurisdictionSeed(
             has_jurisdiction=True,
-            classification="school_system",
-            jurisdiction_type_suffix="school_board",
+            classification=ClassificationEnum.SCHOOL_SYSTEM.value,
+            jurisdiction_type_suffix=ClassificationEnum.SCHOOL_SYSTEM.value,
             reason="school district geography",
         )
 
@@ -177,19 +321,48 @@ def infer_jurisdiction_seed(
             reason="non-governing geography",
         )
 
-    # 6: LSAD code "52"
+    # 6: LSAD code "27" (sub-county district)
+    # because it is sometimes a legal entity (an incorporated place) and sometimes just a statistical or
+    # economic area. This needs a special AI lookup to determine what it is.
+    if lsad_code == "27":
+        return disambiguate_subcounty_district(
+            lsad_code=lsad_code_obj,
+            ocdid_parsed=parsed,
+            jurisdiction_seed=JurisdictionSeed(
+                has_jurisdiction=True,
+                classification=ClassificationEnum.GOVERNMENT.value,
+                jurisdiction_type_suffix=ClassificationEnum.GOVERNMENT.value,
+                reason="sub-county district with ambiguous legal status; AI lookup required",
+            ),
+        )
 
-    # 6. General government fallback.
+    # 7. General government fallback.
     if division_type in GOVERNMENT_TYPES:
         return JurisdictionSeed(
             has_jurisdiction=True,
-            classification="government",
-            jurisdiction_type_suffix="government",
+            classification=ClassificationEnum.GOVERNMENT.value,
+            jurisdiction_type_suffix=ClassificationEnum.GOVERNMENT.value,
             reason="general government fallback",
         )
 
-    # 7. Unknown — safest default is no automatic jurisdiction.
+    # 8. Unknown — safest default is no automatic jurisdiction.
     return JurisdictionSeed(
         has_jurisdiction=False,
         reason=f"unknown division type '{division_type}'; manual review required",
     )
+
+
+def disambiguate_subcounty_district(
+    lsad_code: LSADCode,
+    ocdid_parsed: dict[str, str],
+    jurisdiction_seed: JurisdictionSeed,
+) -> JurisdictionSeed:
+    """Call an AI function to determine how to handle LSAD code "27" (sub-county
+    district), which is sometimes a legal entity (an incorporated place) and
+    sometimes just a statistical or economic area. This function would use the
+    ocdid_parsed data to make the determination."""
+
+    # NOT YET IMPLEMENTED:
+    _ = (lsad_code, ocdid_parsed)
+
+    return jurisdiction_seed

@@ -6,26 +6,7 @@ import pytest
 import yaml
 
 from src.init_migration.generate_recursive import ensure_ancestor_stubs, stub_exists
-from src.models.ocdid import OCDidParsed
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
-def _make_parsed(raw_ocdid: str) -> OCDidParsed:
-    """Build an OCDidParsed from a raw OCD ID string, mirroring how the pipeline
-    constructs it (only known fields are mapped; extras land in model.__pydantic_extra__)."""
-    from src.utils.ocdid import ocdid_parser
-    parsed = ocdid_parser(raw_ocdid)
-    return OCDidParsed(
-        raw_ocdid=raw_ocdid,
-        country=parsed.get("country", "us"),
-        state=parsed.get("state"),
-        county=parsed.get("county"),
-        place=parsed.get("place"),
-        subdivision=parsed.get("subdivision"),
-    )
+from src.models.ocdid import OCDIdParsed
 
 
 # ---------------------------------------------------------------------------
@@ -35,68 +16,50 @@ def _make_parsed(raw_ocdid: str) -> OCDidParsed:
 
 def test_build_ancestors_place():
     """State is the only ancestor for a state/place OCD ID."""
-    parsed = _make_parsed("ocd-division/country:us/state:wa/place:seattle")
-    ancestors = parsed.build_ancestors()
-    assert len(ancestors) == 1
-    assert ancestors[0].raw_ocdid == "ocd-division/country:us/state:wa"
-    assert ancestors[0].state == "wa"
+    ocdid = "ocd-division/country:us/state:wa/place:seattle"
+    parsed = OCDIdParsed.parse_ocdid(ocdid)
+    result = OCDIdParsed.build_ancestor_ocdids(parsed)
+    assert [ancestor.raw_ocdid for ancestor in result] == [
+        "ocd-division/country:us/state:wa"
+    ]
 
 
 def test_build_ancestors_county_place():
     """State then county are returned for a state/county/place OCD ID."""
-    parsed = _make_parsed("ocd-division/country:us/state:ca/county:marin/place:sausalito")
-    ancestors = parsed.build_ancestors()
-    assert len(ancestors) == 2
-    assert ancestors[0].raw_ocdid == "ocd-division/country:us/state:ca"
-    assert ancestors[0].state == "ca"
-    assert ancestors[1].raw_ocdid == "ocd-division/country:us/state:ca/county:marin"
-    assert ancestors[1].county == "marin"
+    ocdid = "ocd-division/country:us/state:ca/county:marin/place:sausalito"
+    parsed = OCDIdParsed.parse_ocdid(ocdid)
+    result = OCDIdParsed.build_ancestor_ocdids(parsed)
+    assert [ancestor.raw_ocdid for ancestor in result] == [
+        "ocd-division/country:us/state:ca",
+        "ocd-division/country:us/state:ca/county:marin",
+    ]
 
 
 def test_build_ancestors_council_district():
     """Place is an ancestor of a council_district OCD ID."""
-    parsed = _make_parsed("ocd-division/country:us/state:wa/place:seattle/council_district:1")
-    ancestors = parsed.build_ancestors()
-    assert len(ancestors) == 2
-    assert ancestors[0].raw_ocdid == "ocd-division/country:us/state:wa"
-    assert ancestors[1].raw_ocdid == "ocd-division/country:us/state:wa/place:seattle"
+    ocdid = "ocd-division/country:us/state:wa/place:seattle/council_district:1"
+    parsed = OCDIdParsed.parse_ocdid(ocdid)
+    result = OCDIdParsed.build_ancestor_ocdids(parsed)
+    assert [ancestor.raw_ocdid for ancestor in result] == [
+        "ocd-division/country:us/state:wa",
+        "ocd-division/country:us/state:wa/place:seattle",
+    ]
 
 
-def test_build_ancestors_leaf_excluded():
-    """The leaf OCD ID itself never appears in the ancestor list."""
-    leaf = "ocd-division/country:us/state:tx/place:austin"
-    parsed = _make_parsed(leaf)
-    ancestors = parsed.build_ancestors()
-    assert all(a.raw_ocdid != leaf for a in ancestors)
+def test_build_ancestor_ocdids_leaf_excluded():
+    """The leaf node itself is never in the ancestor list."""
+    ocdid = "ocd-division/country:us/state:tx/place:austin"
+    parsed = OCDIdParsed.parse_ocdid(ocdid)
+    result = OCDIdParsed.build_ancestor_ocdids(parsed)
+    assert ocdid not in [ancestor.raw_ocdid for ancestor in result]
 
 
-def test_build_ancestors_state_only():
-    """A state-level OCD ID has no ancestors to return."""
-    parsed = _make_parsed("ocd-division/country:us/state:wa")
-    assert parsed.build_ancestors() == []
-
-
-def test_build_ancestors_returns_ocddid_parsed_objects():
-    """Each element in the result is an OCDidParsed instance."""
-    parsed = _make_parsed("ocd-division/country:us/state:ca/county:marin/place:sausalito")
-    ancestors = parsed.build_ancestors()
-    assert all(isinstance(a, OCDidParsed) for a in ancestors)
-
-
-def test_build_ancestors_order():
-    """Ancestors are ordered from shallowest to deepest."""
-    parsed = _make_parsed("ocd-division/country:us/state:ca/county:los_angeles/place:los_angeles")
-    ancestors = parsed.build_ancestors()
-    assert ancestors[0].raw_ocdid == "ocd-division/country:us/state:ca"
-    assert ancestors[1].raw_ocdid == "ocd-division/country:us/state:ca/county:los_angeles"
-    assert len(ancestors) == 2
-
-
-def test_build_ancestors_country_preserved():
-    """country field from the original OCD ID is preserved on each ancestor."""
-    parsed = _make_parsed("ocd-division/country:us/state:wa/place:seattle")
-    ancestors = parsed.build_ancestors()
-    assert all(a.country == "us" for a in ancestors)
+def test_build_ancestor_ocdids_state_only():
+    """A state-level OCD ID has no ancestors to stub."""
+    ocdid = "ocd-division/country:us/state:wa"
+    parsed = OCDIdParsed.parse_ocdid(ocdid)
+    result = OCDIdParsed.build_ancestor_ocdids(parsed)
+    assert result == []
 
 
 # ---------------------------------------------------------------------------
@@ -106,7 +69,9 @@ def test_build_ancestors_country_preserved():
 
 def test_stub_exists_missing_dir(tmp_path: Path):
     """Returns False for a directory that does not exist."""
-    assert stub_exists("ocd-division/country:us/state:wa", tmp_path / "nowhere") is False
+    assert (
+        stub_exists("ocd-division/country:us/state:wa", tmp_path / "nowhere") is False
+    )
 
 
 def test_stub_exists_empty_dir(tmp_path: Path):
@@ -117,8 +82,10 @@ def test_stub_exists_empty_dir(tmp_path: Path):
 def test_stub_exists_match(tmp_path: Path):
     """Returns True when a YAML file contains a matching ocdid field."""
     ocdid = "ocd-division/country:us/state:wa"
-    stub = tmp_path / "washington_stub.yaml"
-    stub.write_text(yaml.dump({"ocdid": ocdid, "display_name": "Washington"}), encoding="utf-8")
+    stub = tmp_path / "washington_state_stub.yaml"
+    stub.write_text(
+        yaml.dump({"ocdid": ocdid, "display_name": "Washington"}), encoding="utf-8"
+    )
     assert stub_exists(ocdid, tmp_path) is True
 
 
@@ -185,7 +152,9 @@ def test_ensure_ancestor_stubs_creates_county_stub(tmp_path: Path):
         assert Path(result["jurisdiction_path"]).exists()
 
     county_result = next(r for r in results if r["level"] == "county")
-    div_data = yaml.safe_load(Path(county_result["division_path"]).read_text(encoding="utf-8"))
+    div_data = yaml.safe_load(
+        Path(county_result["division_path"]).read_text(encoding="utf-8")
+    )
     assert div_data["ocdid"] == "ocd-division/country:us/state:ca/county:marin"
     assert "county" in div_data["display_name"].lower()
 
@@ -278,7 +247,9 @@ def test_ensure_ancestor_stubs_jur_ocdid_format(tmp_path: Path):
     parsed = _make_parsed("ocd-division/country:us/state:wa/place:seattle")
     results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
 
-    jur_data = yaml.safe_load(Path(results[0]["jurisdiction_path"]).read_text(encoding="utf-8"))
+    jur_data = yaml.safe_load(
+        Path(results[0]["jurisdiction_path"]).read_text(encoding="utf-8")
+    )
     assert jur_data["ocdid"].startswith("ocd-jurisdiction/")
     assert jur_data["ocdid"].endswith("/government")
 

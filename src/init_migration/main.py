@@ -14,18 +14,28 @@ Usage:
 
 import argparse
 import asyncio
+import logging
 import sys
+import tempfile
+import time
+from datetime import UTC, date, datetime
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from logging import getLogger
+import duckdb
+import httpx
 from rich.console import Console
 from rich.table import Table
+from tqdm import tqdm
 
 from src.utils.state_lookup import load_state_code_lookup
 from src.init_migration.download_manager import DownloadManager
-from src.init_migration.ocdid_matcher import OCDidMatcher, MatchResults
+from src.init_migration.ocdid_matcher import OCDidMatcher, MatchResults, DEFAULT_DB_PATH
+from src.init_migration.generate_pipeline import GeneratePipeline
+from src.init_migration.pipeline_models import DIVISIONS_SHEET_CSV_URL, GeneratorReq
 
-logger = getLogger(__name__)
+logger = logging.getLogger(__name__)
+
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     """Parse command-line arguments."""
@@ -37,7 +47,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=str,
         default=None,
         help="Comma-separated state codes to process (e.g., wa,tx,oh). "
-             "Default: all states from state_lookup.json.",
+        "Default: all states from state_lookup.json.",
     )
     parser.add_argument(
         "--force",
@@ -71,24 +81,42 @@ def resolve_states(state_arg: str | None) -> list[str]:
 
 
 def configure_logging(log_dir: str) -> None:
-    """Configure loguru to write to the specified log directory."""
+    """Configure standard Python logging with console and file output."""
     log_path = Path(log_dir)
     log_path.mkdir(parents=True, exist_ok=True)
 
-    logger.remove()  # Remove default stderr handler
-    logger.add(sys.stderr, level="INFO")  # Console: INFO and above
-    logger.add(
-        str(log_path / "pipeline_{time}.log"),
-        rotation="10 MB",
-        retention=5,
-        level="DEBUG",
+    # Get root logger and clear existing handlers
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.DEBUG)
+    for handler in root_logger.handlers[:]:
+        root_logger.removeHandler(handler)
+
+    # Console handler (INFO and above)
+    console_handler = logging.StreamHandler(sys.stderr)
+    console_handler.setLevel(logging.INFO)
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
+    console_handler.setFormatter(formatter)
+    root_logger.addHandler(console_handler)
+
+    # File handler (DEBUG and above, with rotation at 10 MB, keep 5 backups)
+    log_file = str(log_path / "pipeline.log")
+    file_handler = RotatingFileHandler(
+        log_file,
+        maxBytes=10 * 1024 * 1024,  # 10 MB
+        backupCount=5,
+    )
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
+    root_logger.addHandler(file_handler)
 
 
 def print_summary(
     console: Console,
     download_stats: dict,
     match_results,
+    phase3_stats: dict | None = None,
 ) -> None:
     """Print a summary table using rich."""
     table = Table(title="Pipeline Summary")
@@ -104,7 +132,87 @@ def print_summary(
     table.add_row("Local orphans", str(len(match_results.local_orphans)))
     table.add_row("Master orphans", str(len(match_results.master_orphans)))
 
+    if phase3_stats:
+        table.add_section()
+        table.add_row("YAML generated", str(phase3_stats.get("success", 0)))
+        table.add_row("YAML skipped", str(phase3_stats.get("skipped", 0)))
+        table.add_row("YAML partial", str(phase3_stats.get("partial", 0)))
+        table.add_row("YAML failed", str(phase3_stats.get("failed", 0)))
+
     console.print(table)
+
+
+def _cache_validation_csv() -> Path:
+    """Download the validation CSV once and cache it to a tmp file.
+
+    Without this, GeneratePipeline re-downloads the full sheet for every record.
+    """
+    cache_path = Path(tempfile.gettempdir()) / "phase3_validation.csv"
+    logger.info(f"Caching validation CSV from {DIVISIONS_SHEET_CSV_URL}")
+    with httpx.Client(timeout=120, follow_redirects=True) as client:
+        resp = client.get(DIVISIONS_SHEET_CSV_URL)
+        resp.raise_for_status()
+    cache_path.write_bytes(resp.content)
+    logger.info(f"Validation CSV cached at {cache_path} ({len(resp.content)} bytes)")
+    return cache_path
+
+
+GENERATION_TRACKING_PREFIX = "generation_tracking"
+
+
+def generation_tracking_table_name(run_date: date | None = None) -> str:
+    """Build the per-day tracking table name, e.g. generation_tracking_2026_05_23.
+
+    The run date (UTC) is appended so each calendar day gets its own table:
+    re-running on the same day reuses/updates that day's table, while a run on
+    a later day creates a new one.
+    """
+    run_date = run_date or datetime.now(tz=UTC).date()
+    return f"{GENERATION_TRACKING_PREFIX}_{run_date:%Y_%m_%d}"
+
+
+def store_generation_tracking(
+    rows: list[tuple[str, str, str | None, str | None, str | None]],
+    db_path: str = DEFAULT_DB_PATH,
+) -> None:
+    """Persist Phase 3 generation results to a per-day DuckDB tracking table.
+
+    Each row is (original_id, status, error, division_path, jurisdiction_path),
+    derived from a GeneratorResp. The table name carries the run date, so a new
+    day produces a new table. Within the same day the write is idempotent: rows
+    for the same original_id are replaced rather than duplicated. Inserts are
+    batched in a single executemany call.
+    """
+    if not rows:
+        return
+
+    table = generation_tracking_table_name()
+    conn = duckdb.connect(db_path)
+    try:
+        conn.execute(
+            f"""
+            CREATE TABLE IF NOT EXISTS {table} (
+                original_id TEXT,
+                status TEXT,
+                error TEXT,
+                division_path TEXT,
+                jurisdiction_path TEXT
+            )
+            """
+        )
+        ids = [r[0] for r in rows]
+        placeholders = ", ".join("?" for _ in ids)
+        conn.execute(
+            f"DELETE FROM {table} WHERE original_id IN ({placeholders})",
+            ids,
+        )
+        conn.executemany(
+            f"INSERT INTO {table} VALUES (?, ?, ?, ?, ?)",
+            rows,
+        )
+        logger.info(f"Stored {len(rows)} generation tracking record(s) in {table}")
+    finally:
+        conn.close()
 
 
 async def run_pipeline(args: argparse.Namespace) -> MatchResults:
@@ -120,17 +228,89 @@ async def run_pipeline(args: argparse.Namespace) -> MatchResults:
     logger.info(f"Starting pipeline for {len(states)} state(s)")
     console.print(f"Processing {len(states)} state(s): {', '.join(states)}")
 
+    pipeline_start = time.perf_counter()
+
     # Phase 1: Download and load
+    phase1_start = time.perf_counter()
     dm = DownloadManager(states=states)
     download_stats = await dm.run_downloads(force=args.force)
+    phase1_elapsed = time.perf_counter() - phase1_start
+    logger.info(
+        "Phase 1 (download) complete",
+        extra={"elapsed_sec": round(phase1_elapsed, 2), "states": states},
+    )
 
     # Phase 2: Match and build
+    phase2_start = time.perf_counter()
     matcher = OCDidMatcher(states=states)
     match_results = matcher.run_matching(show_progress=True)
+    phase2_elapsed = time.perf_counter() - phase2_start
+    logger.info(
+        "Phase 2 (match) complete",
+        extra={
+            "elapsed_sec": round(phase2_elapsed, 2),
+            "matched": len(match_results.matched),
+        },
+    )
 
+    # Phase 3: Generate Division and Jurisdiction YAML for every matched record
+    phase3_stats = {"success": 0, "skipped": 0, "partial": 0, "failed": 0}
+    tracking_rows: list[tuple[str, str, str | None, str | None, str | None]] = []
+    if match_results.matched:
+        validation_csv_path = _cache_validation_csv()
+        phase3_start = time.perf_counter()
+        for ingest_resp in tqdm(
+            match_results.matched,
+            desc=f"Phase 3 generating YAML ({','.join(states)})",
+            unit="record",
+        ):
+            req = GeneratorReq(
+                data=ingest_resp,
+                validation_data_filepath=str(validation_csv_path),
+            )
+            pipeline = GeneratePipeline(req)
+            try:
+                response = await pipeline.run()
+                phase3_stats[response.status.status.value] += 1
+                tracking_rows.append(
+                    (
+                        response.data.ocdid.raw_ocdid,
+                        response.status.status.value,
+                        response.status.error,
+                        response.division_path,
+                        response.jurisdiction_path,
+                    )
+                )
+            except Exception as exc:
+                logger.exception(f"Phase 3 failed for {ingest_resp.ocdid.raw_ocdid}")
+                phase3_stats["failed"] += 1
+                tracking_rows.append(
+                    (ingest_resp.ocdid.raw_ocdid, "failed", str(exc), None, None)
+                )
+        phase3_elapsed = time.perf_counter() - phase3_start
+        records = len(match_results.matched)
+        logger.info(
+            "Phase 3 (generate) complete",
+            extra={
+                "elapsed_sec": round(phase3_elapsed, 2),
+                "records": records,
+                "sec_per_record": round(phase3_elapsed / records, 3) if records else 0,
+            },
+        )
+        # Phase 4
+        store_generation_tracking(tracking_rows)
+
+    total_elapsed = time.perf_counter() - pipeline_start
     # Summary
-    print_summary(console, download_stats, match_results)
-    logger.info("Pipeline complete")
+    print_summary(console, download_stats, match_results, phase3_stats)
+    console.print(
+        f"Total runtime: {total_elapsed:.1f}s "
+        f"for {len(states)} state(s): {', '.join(states)}"
+    )
+    logger.info(
+        "Pipeline complete",
+        extra={"elapsed_sec": round(total_elapsed, 2), "states": states},
+    )
 
     return match_results
 

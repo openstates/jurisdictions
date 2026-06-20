@@ -9,6 +9,7 @@ Ancestors are stub quality — a separate enrichment pipeline is responsible for
 filling in their full data.  The only contract enforced here is:
   - The `ocdid` field is correct and matches the OCD hierarchy.
 """
+
 from __future__ import annotations
 
 import logging
@@ -17,29 +18,15 @@ from pathlib import Path
 
 import yaml
 
-from src.models.division import Division, GovernmentIdentifiers
-from src.models.jurisdiction import ClassificationEnum, Jurisdiction
-from src.models.ocdid import OCDidParsed
-from src.models.source import SourceObj, SourceType
+from src.models.division import Division
+from src.models.ocdid import OCDIdParsed
+from src.models.source import SourceType
 from src.utils.state_lookup import load_state_code_lookup
 
 logger = logging.getLogger(__name__)
 
-# Segment keys that identify a governing-body ancestor level, checked in priority
-# order so that the most-specific level is selected for each ancestor.
-_LEVEL_KEYS: tuple[str, ...] = ("county", "state", "district", "territory")
-
-_OCD_REPO_URL = (
-    "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids"
-    "/master/identifiers/country-us.csv"
-)
-_STUB_SOURCE = SourceObj(
-    field=["ocdid"],
-    source_name="ocdid_recursive_stub",
-    source_url={"ocd_repo": _OCD_REPO_URL},
-    source_type=SourceType.HUMAN,
-    source_description="Placeholder stub — created by recursive ancestor traversal",
-)
+# Ancestor segment keys, in priority order used to detect the deepest level.
+_LEVEL_KEYS = ("county", "state", "district", "territory")
 
 
 def stub_exists(ocdid: str, search_dir: Path) -> bool:
@@ -107,48 +94,47 @@ def _write_stub_division(
     state_fips: str,
     div_dir: Path,
 ) -> Path:
-    """Build a stub Division via the Division model and write it as YAML.
-
-    Args:
-        ancestor: OCDidParsed for this ancestor level.
-        display_name: Human-readable name derived from the ancestor (e.g. "Washington").
-        state_fips: Two-digit FIPS code for the ancestor's state.
-        div_dir: Target directory for the YAML file.
-
-    Returns:
-        Path to the written file.
-    """
-    div_ocdid = ancestor.raw_ocdid
-    jur_part = div_ocdid.replace("ocd-division/", "")
+    """Write a placeholder Division YAML and return the file path."""
+    jur_part = ocdid.replace("ocd-division/", "")
     now = datetime.now(timezone.utc)
-
-    gov_ids = GovernmentIdentifiers(
-        namelsad=display_name,
-        statefp=state_fips,
-        sldust=[],
-        sldlst=[],
-        countyfp=[],
-        county_names=[],
-        lsad="",
-        geoid=state_fips,
-    )
-
     division = Division(
-        ocdid=div_ocdid,
-        country=ancestor.country,
+        ocdid=ocdid,
+        country="us",
         display_name=display_name,
+        geometries=[],
+        also_known_as=[],
         jurisdiction_id=f"ocd-jurisdiction/{jur_part}/government",
-        government_identifiers=gov_ids,
-        sourcing=[_STUB_SOURCE],
+        government_identifiers={
+            "namelsad": display_name,
+            "statefp": state_fips,
+            "sldust": [],
+            "sldlst": [],
+            "countyfp": [],
+            "county_names": [],
+            "lsad": "",
+            "geoid": state_fips,
+        },
+        sourcing=[
+            {
+                "field": ["ocdid"],
+                "source_name": "ocdid_recursive_stub",
+                "source_url": {
+                    "ocd_repo": "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv"
+                },
+                "source_type": SourceType.HUMAN,
+                "source_description": "Placeholder stub — created by recursive ancestor traversal",
+            }
+        ],
         accurate_asof=now,
         last_updated=now,
     )
-
-    data = division.model_dump(mode="json", exclude_none=True)
+    data = division.model_dump(exclude_none=False, mode="json")
     div_dir.mkdir(parents=True, exist_ok=True)
     safe_name = display_name.lower().replace(" ", "_")
     path = div_dir / f"{safe_name}_stub.yaml"
-    path.write_text(yaml.dump(data, default_flow_style=False, sort_keys=False), encoding="utf-8")
+    path.write_text(
+        yaml.dump(data, default_flow_style=False, sort_keys=False), encoding="utf-8"
+    )
     return path
 
 
@@ -197,7 +183,9 @@ def _write_stub_jurisdiction(
     jur_dir.mkdir(parents=True, exist_ok=True)
     safe_name = display_name.lower().replace(" ", "_")
     path = jur_dir / f"{safe_name}_stub.yaml"
-    path.write_text(yaml.dump(data, default_flow_style=False, sort_keys=False), encoding="utf-8")
+    path.write_text(
+        yaml.dump(data, default_flow_style=False, sort_keys=False), encoding="utf-8"
+    )
     return path
 
 
@@ -232,17 +220,19 @@ def ensure_ancestor_stubs(
             }
     """
     state_lookup = load_state_code_lookup()
-    ancestors = parsed_ocdid.build_ancestors()
+    parsed_ocdid = OCDIdParsed.parse_ocdid(ocdid)
+    ancestors = OCDIdParsed.build_ancestor_ocdids(parsed_ocdid)
     results: list[dict] = []
 
     for ancestor in ancestors:
-        # Detect the deepest governing-body level present in this ancestor.
-        level = next(
-            (k for k in _LEVEL_KEYS if getattr(ancestor, k, None)),
-            None,
-        )
+        ancestor_ocdid = ancestor.raw_ocdid
+        parsed = ancestor.model_dump(exclude_none=True)
+
+        level = next((k for k in _LEVEL_KEYS if k in parsed), None)
         if not level:
-            logger.debug("No recognised level in ancestor %s — skipping", ancestor.raw_ocdid)
+            logger.debug(
+                "No recognised level in ancestor %s — skipping", ancestor_ocdid
+            )
             continue
 
         state_code = (ancestor.state or getattr(ancestor, "district", None) or "").lower()
@@ -265,16 +255,16 @@ def ensure_ancestor_stubs(
         )
 
         jur_ocdid = (
-            f"ocd-jurisdiction/{ancestor.raw_ocdid.replace('ocd-division/', '')}/government"
+            f"ocd-jurisdiction/{ancestor_ocdid.replace('ocd-division/', '')}/government"
         )
-        div_exists = stub_exists(ancestor.raw_ocdid, div_dir)
+        div_exists = stub_exists(ancestor_ocdid, div_dir)
         jur_exists = stub_exists(jur_ocdid, jur_dir)
 
         if div_exists and jur_exists:
             logger.debug("Ancestor stubs already exist for %s", ancestor.raw_ocdid)
             results.append(
                 {
-                    "ocdid": ancestor.raw_ocdid,
+                    "ocdid": ancestor_ocdid,
                     "level": level,
                     "action": "skipped",
                     "division_path": None,
@@ -287,10 +277,12 @@ def ensure_ancestor_stubs(
         jur_path: Path | None = None
 
         if not div_exists:
-            div_path = _write_stub_division(ancestor, display_name, state_fips, div_dir)
+            div_path = _write_stub_division(
+                ancestor_ocdid, display_name, state_fips, div_dir
+            )
             logger.info(
                 "Stub Division created for ancestor %s",
-                ancestor.raw_ocdid,
+                ancestor_ocdid,
                 extra={"path": str(div_path)},
             )
 
@@ -298,7 +290,7 @@ def ensure_ancestor_stubs(
             jur_path = _write_stub_jurisdiction(ancestor, display_name, jur_dir)
             logger.info(
                 "Stub Jurisdiction created for ancestor %s",
-                ancestor.raw_ocdid,
+                ancestor_ocdid,
                 extra={"path": str(jur_path)},
             )
 

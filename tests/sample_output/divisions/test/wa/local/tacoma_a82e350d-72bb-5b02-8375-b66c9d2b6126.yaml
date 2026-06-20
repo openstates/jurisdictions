@@ -1,0 +1,49 @@
+accurate_asof: '2025-10-27T01:29:51Z'
+also_known_as: []
+country: us
+display_name: Tacoma
+geometries: []
+government_identifiers:
+  common_name: null
+  county_names:
+  - Pierce
+  countyfp:
+  - '053'
+  cousubfp: null
+  geoid: '5370000'
+  geoid_12: null
+  geoid_14: null
+  lsad: '25'
+  namelsad: Tacoma city
+  placefp: null
+  sldlst:
+  - '027'
+  - 028
+  - 029
+  sldust:
+  - '027'
+  - 028
+  - 029
+  statefp: '53'
+id: a82e350d-72bb-5b02-8375-b66c9d2b6126
+jurisdiction_id: ocd-jurisdiction/country:us/state:wa/place:tacoma/government
+last_updated: '2025-10-27T01:29:51Z'
+metadata: null
+ocdid: ocd-division/country:us/state:wa/place:tacoma
+sourcing:
+- field:
+  - geometries
+  source_description: null
+  source_name: Census TIGER/Line
+  source_type: human_researched
+  source_url:
+    url: https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer
+- field:
+  - government_identifiers
+  source_description: null
+  source_name: civicdata.tech
+  source_type: human_researched
+  source_url:
+    url: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362
+valid_asof: null
+valid_thru: null

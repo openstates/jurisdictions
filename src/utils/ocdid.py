@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 BASE_OCDID = "ocd-division/country:us"
 
+
 def ocdid_parser(ocdid_str):
     """
     Parses OCDid's and returns each part as a key, value pair in a dictionary.
@@ -38,6 +39,7 @@ def ocdid_parser(ocdid_str):
         message = f"Error parsing OCDid: {ocdid_str} Error: {error}"
         raise OCDIdParsingError(message) from error
     return parsed_ocdid
+
 
 def generate_ocdids(base_ocdid=BASE_OCDID) -> list[dict[str, Any]]:
     """
@@ -74,7 +76,10 @@ def generate_ocdids(base_ocdid=BASE_OCDID) -> list[dict[str, Any]]:
         # See: https://en.wikipedia.org/wiki/List_of_U.S._state_and_territory_abbreviations
         exclude = ["AA", "AE", "AP", "MH", "FM", "PW"]
         territories = {"AS", "GU", "MP", "FM", "PR", "PW", "VI", "UM"}
-        states = [state_abbr for state_abbr, state_name in us_address_validation_rules.country_area_choices]
+        states = [
+            state_abbr
+            for state_abbr, state_name in us_address_validation_rules.country_area_choices
+        ]
         states = [state for state in states if state not in exclude]
         logger.debug("Generate admin1 (state) level ids.")
         for state in states:

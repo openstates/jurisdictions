@@ -18,7 +18,7 @@ import duckdb
 from logging import getLogger
 
 from src.init_migration.pipeline_models import OCDidIngestResp
-from src.models.ocdid import OCDidParsed
+from src.models.ocdid import OCDIdParsed
 from src.utils.ocdid import ocdid_parser
 
 logger = getLogger(__name__)
@@ -30,6 +30,7 @@ DEFAULT_CSV_BACKUP = "data/ocdid_uuid_lookup.csv"
 @dataclass
 class MatchResults:
     """Container for matching results."""
+
     matched: list[OCDidIngestResp] = field(default_factory=list)
     local_orphans: list[dict] = field(default_factory=list)
     master_orphans: list[dict] = field(default_factory=list)
@@ -89,7 +90,8 @@ class OCDidMatcher:
 
                 # Parse OCD ID
                 parsed_dict = ocdid_parser(ocdid_str)
-                parsed = OCDidParsed(
+                parsed = OCDIdParsed(
+                    base_ocdid=ocdid_str,
                     raw_ocdid=ocdid_str,
                     country=parsed_dict.get("country", "us"),
                     state=parsed_dict.get("state"),
@@ -149,9 +151,7 @@ class OCDidMatcher:
                 dict(zip(master_orphan_cols, row)) for row in master_orphan_rows
             ]
             if results.master_orphans:
-                logger.warning(
-                    f"Found {len(results.master_orphans)} master orphan(s)"
-                )
+                logger.warning(f"Found {len(results.master_orphans)} master orphan(s)")
 
             # --- Store lookup table ---
             self._store_lookup_table(conn, results)

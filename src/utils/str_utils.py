@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def fix_zero_padding(series: pd.Series, n: int) -> pd.Series:
     """
     Zero pad all string elements in a pandas Series to n places.
@@ -10,6 +11,7 @@ def fix_zero_padding(series: pd.Series, n: int) -> pd.Series:
         pd.Series: Zero-padded string Series.
     """
     return series.astype(str).str.zfill(n)
+
 
 def zero_pad_value(value, n: int) -> str:
     """

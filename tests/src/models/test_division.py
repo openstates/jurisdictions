@@ -6,8 +6,14 @@ from hypothesis import strategies as st
 
 from src.models.division import Division
 
-_OCDID_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789:/_-"
-ocdid_strategy = st.text(alphabet=_OCDID_CHARS, min_size=1, max_size=120)
+
+@st.composite
+def division_ocdid_strategy(draw) -> str:
+    state = draw(st.text(alphabet="abcdefghijklmnopqrstuvwxyz", min_size=2, max_size=2))
+    place = draw(
+        st.text(alphabet="abcdefghijklmnopqrstuvwxyz", min_size=3, max_size=12)
+    )
+    return f"ocd-division/country:us/state:{state}/place:{place}"
 
 
 def _build_division(ocdid: str, id_value=None) -> Division:
@@ -22,7 +28,7 @@ def _build_division(ocdid: str, id_value=None) -> Division:
     return Division(**kwargs)
 
 
-@given(ocdid=ocdid_strategy)
+@given(ocdid=division_ocdid_strategy())
 def test_division_id_defaults_to_uuid5_from_ocdid_and_date(ocdid: str) -> None:
     last_updated = datetime(2026, 4, 8, 12, 0, tzinfo=timezone.utc)
     division = Division(
@@ -39,5 +45,7 @@ def test_division_id_defaults_to_uuid5_from_ocdid_and_date(ocdid: str) -> None:
 
 def test_division_accepts_explicit_id() -> None:
     explicit_id = uuid4()
-    division = _build_division("ocd-division/country:us/state:wa/place:seattle", id_value=explicit_id)
+    division = _build_division(
+        "ocd-division/country:us/state:wa/place:seattle", id_value=explicit_id
+    )
     assert division.id == explicit_id

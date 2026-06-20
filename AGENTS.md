@@ -76,6 +76,19 @@ Treat this file as a policy index. Detailed operational guidance lives in:
   - `ocd-jurisdiction/<division_id_without_prefix>/<classification>`
 - Use `src` package-root imports (for example `from src.models.division import Division`).
 
+## OCD ID Parsing Rules
+- Always use `OCDIdParsed.parse_ocdid()` to parse raw OCDID strings:
+  ```python
+  from src.models.ocdid import OCDIdParsed
+  
+  parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:ca/county:los_angeles")
+  # Access components: parsed.state, parsed.county, parsed.place, parsed.type, etc.
+  ```
+- `OCDIdParsed` provides structured access to OCD ID components (type, country, state, county, place, subdivision)
+- Never parse OCD IDs with string splits or regex—use the parser for consistency and validation
+- The parser validates format and populates the `type` field automatically
+- Reference: `src/models/ocdid.py` and `MODELS.md` for field documentation
+
 ## Logging Rules
 - Use standard Python logging.
 - Prefer structured, contextual logs.

@@ -111,13 +111,13 @@ Create `tests/src/init_migration/test_pipeline_models.py`:
 """Tests for pipeline_models — specifically the OCDidIngestResp model changes."""
 import pytest
 from src.init_migration.pipeline_models import OCDidIngestResp
-from src.models.ocdid import OCDidParsed
+from src.models.ocdid import OCDIdParsed
 from src.utils.uuid5_id import generate_id
 
 
 def test_ocdid_ingest_resp_accepts_ocdid_parsed():
-    """OCDidIngestResp.ocdid should accept an OCDidParsed instance."""
-    parsed = OCDidParsed(
+    """OCDidIngestResp.ocdid should accept an OCDIdParsed instance."""
+    parsed = OCDIdParsed(
         country="us",
         state="wa",
         place="seattle",
@@ -136,7 +136,7 @@ def test_ocdid_ingest_resp_accepts_ocdid_parsed():
 
 def test_ocdid_ingest_resp_uuid_is_oid1_string():
     """OCDidIngestResp.uuid should accept an oid1- deterministic ID string."""
-    parsed = OCDidParsed(
+    parsed = OCDIdParsed(
         country="us",
         state="wa",
         place="seattle",
@@ -180,14 +180,14 @@ from pydantic import BaseModel, Field
 from typing import Any
 from datetime import datetime, UTC
 from enum import Enum
-from src.models.ocdid import OCDidParsed
+from src.models.ocdid import OCDIdParsed
 
 
 DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121"
 
 class OCDidIngestResp(BaseModel):
     uuid: str             # oid1- deterministic ID from uuid5_id.generate_id()
-    ocdid: OCDidParsed
+    ocdid: OCDIdParsed
     raw_record: dict[str, Any]
 
 class GeneratorReq(BaseModel):
@@ -243,7 +243,7 @@ Expected: All tests pass including the new `test_pipeline_models.py`.
 ```bash
 git add src/init_migration/pipeline_models.py src/init_migration/generate_*.py tests/
 git rm --cached src/init_migration/models.py 2>/dev/null || true
-git commit -m "refactor: rename models.py to pipeline_models.py, change OCDidIngestResp.ocdid to OCDidParsed"
+git commit -m "refactor: rename models.py to pipeline_models.py, change OCDidIngestResp.ocdid to OCDIdParsed"
 ```
 
 ---
@@ -934,7 +934,7 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 from src.init_migration.pipeline_models import OCDidIngestResp
-from src.models.ocdid import OCDidParsed
+from src.models.ocdid import OCDIdParsed
 from src.utils.ocdid import ocdid_parser
 from src.utils.uuid5_id import generate_id
 
@@ -1004,7 +1004,7 @@ class OCDidMatcher:
 
                 # Parse OCD ID
                 parsed_dict = ocdid_parser(ocdid_str)
-                parsed = OCDidParsed(
+                parsed = OCDIdParsed(
                     raw_ocdid=ocdid_str,
                     country=parsed_dict.get("country", "us"),
                     state=parsed_dict.get("state"),
