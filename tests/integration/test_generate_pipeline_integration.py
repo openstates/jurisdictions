@@ -237,8 +237,7 @@ async def test_generate_pipeline_5_sample_records(tmp_path, validation_csv_file)
 
     # 3 should succeed, 2 should be quarantined (PARTIAL)
     assert len(results["success"]) == 3, (
-        f"Expected 3 successes, got {len(results['success'])}: "
-        f"{results['success']}"
+        f"Expected 3 successes, got {len(results['success'])}: {results['success']}"
     )
     assert len(results["partial"]) == 2, (
         f"Expected 2 partial (quarantine), got {len(results['partial'])}: "
@@ -267,7 +266,9 @@ async def test_generate_pipeline_5_sample_records(tmp_path, validation_csv_file)
 
 @pytest.mark.integration
 @pytest.mark.asyncio
-async def test_generate_pipeline_successful_record_output(tmp_path, validation_csv_file):
+async def test_generate_pipeline_successful_record_output(
+    tmp_path, validation_csv_file
+):
     """Verify successful record (Sausalito) produces valid Division and Jurisdiction."""
     asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
     division_output = tmp_path / "divisions"
@@ -307,7 +308,9 @@ async def test_generate_pipeline_successful_record_output(tmp_path, validation_c
     with open(jur_path) as f:
         jur_data = yaml.safe_load(f)
     assert jur_data is not None
-    expected_jur_ocdid = "ocd-jurisdiction/country:us/state:ca/place:sausalito/government"
+    expected_jur_ocdid = (
+        "ocd-jurisdiction/country:us/state:ca/place:sausalito/government"
+    )
     assert jur_data["ocdid"] == expected_jur_ocdid
     assert jur_data["classification"] == "government"
     assert "accurate_asof" in jur_data
