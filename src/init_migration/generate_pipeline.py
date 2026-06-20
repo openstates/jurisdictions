@@ -103,7 +103,7 @@ class GeneratePipeline:
         self.division_output_dir = Path(division_output_dir)
         self.jurisdiction_output_dir = Path(jurisdiction_output_dir)
 
-        # OCDid is already parsed as OCDidParsed from Stage 1
+        # OCDid is already parsed as OCDIdParsed from Stage 1
         self.parsed_ocdid = self.data.ocdid
 
         # Initialize generated objects

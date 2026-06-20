@@ -7,7 +7,7 @@
 │                     JURISDICTIONS ECOSYSTEM                          │
 └─────────────────────────────────────────────────────────────────────┘
 
-                    OCDidParsed
+                    OCDIdParsed
                         │
                         │ (represents)
                         │
@@ -33,9 +33,9 @@
 
 ## Detailed Model Relationships
 
-### 1. **OCDidParsed** (Foundation)
+### 1. **OCDIdParsed** (Foundation)
 ```
-OCDidParsed
+OCDIdParsed
 ├── country: str = "us"
 ├── state: Optional[str]
 ├── county: Optional[str]
@@ -196,7 +196,7 @@ Both Division and Jurisdiction share:
 Raw OCD Data
     │
     ▼
-OCDidParsed (parse & validate OCD ID)
+OCDIdParsed (parse & validate OCD ID)
     │
     ├─────────────────────────┬─────────────────────────┐
     │                         │                         │
@@ -279,7 +279,7 @@ This is the PRIMARY KEY for relating the two models.
 
 ```
 When creating a Division, you MUST:
-  ✓ Provide valid ocdid (parsed via OCDidParsed)
+  ✓ Provide valid ocdid (parsed via OCDIdParsed)
   ✓ Provide existing jurisdiction_id
   ✓ Ensure government_identifiers.geoid is populated
   ✓ Ensure sourcing explains data origin

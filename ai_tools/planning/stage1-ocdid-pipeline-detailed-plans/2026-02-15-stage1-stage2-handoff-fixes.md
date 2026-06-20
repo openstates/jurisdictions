@@ -4,7 +4,7 @@
 
 **Goal:** Fix the pipeline plumbing so Stage 1 output (`OCDidIngestResp`) flows cleanly into Stage 2 (`GeneratorReq` → `GeneratePipeline`), resolving type mismatches introduced by the Stage 1 implementation.
 
-**Architecture:** Three categories of fix: (1) return data from `run_pipeline()` instead of discarding it, (2) update Stage 2 code to handle `OCDidParsed` instead of raw strings, (3) add `uuid5_id` field to Division/Jurisdiction models (non-breaking).
+**Architecture:** Three categories of fix: (1) return data from `run_pipeline()` instead of discarding it, (2) update Stage 2 code to handle `OCDIdParsed` instead of raw strings, (3) add `uuid5_id` field to Division/Jurisdiction models (non-breaking).
 
 **Tech Stack:** Pydantic v2, DuckDB, Python 3.12+
 
@@ -14,7 +14,7 @@
 
 Stage 1 implementation changed `OCDidIngestResp` in two ways:
 - `uuid: UUID` → `uuid: str` (now holds oid1- deterministic IDs from `generate_id()`)
-- `ocdid: str` → `ocdid: OCDidParsed` (Pydantic model instead of raw string)
+- `ocdid: str` → `ocdid: OCDIdParsed` (Pydantic model instead of raw string)
 
 Stage 2 code (`generate_pipeline.py`, `generate_division.py`, `generate_jurisdiction.py`) still assumes the old types. Additionally, `main.py` discards Stage 1 results instead of passing them forward.
 
@@ -59,7 +59,7 @@ git commit -m "feat: add uuid5_id field to Division and Jurisdiction models"
 
 ---
 
-## Task 2: Fix `generate_pipeline.py` — handle `OCDidParsed` and `str` uuid
+## Task 2: Fix `generate_pipeline.py` — handle `OCDIdParsed` and `str` uuid
 
 **Files:**
 - Modify: `src/init_migration/generate_pipeline.py`
@@ -75,7 +75,7 @@ Line 121: `ocdid_parser(self.data.ocdid)` → use the already-parsed object:
 self.parsed_ocdid = ocdid_parser(self.data.ocdid)
 
 # After:
-self.parsed_ocdid = self.data.ocdid  # Already OCDidParsed from Stage 1
+self.parsed_ocdid = self.data.ocdid  # Already OCDIdParsed from Stage 1
 ```
 
 Also update the except block (lines 122-124) — parsing can't fail since it's already parsed. Remove the try/except around it.
@@ -121,12 +121,12 @@ Run: `uv run ruff check src/init_migration/generate_pipeline.py`
 
 ```bash
 git add src/init_migration/generate_pipeline.py
-git commit -m "fix: update generate_pipeline.py to handle OCDidParsed and str uuid"
+git commit -m "fix: update generate_pipeline.py to handle OCDIdParsed and str uuid"
 ```
 
 ---
 
-## Task 3: Fix `generate_division.py` — handle `OCDidParsed` and `str` uuid
+## Task 3: Fix `generate_division.py` — handle `OCDIdParsed` and `str` uuid
 
 **Files:**
 - Modify: `src/init_migration/generate_division.py`
@@ -135,7 +135,7 @@ git commit -m "fix: update generate_pipeline.py to handle OCDidParsed and str uu
 
 Line 40: `ocdid_parser(self.data.ocdid)` → use `.raw_ocdid` or the object directly.
 
-Since `DivGenerator` uses `self.parsed_ocdid` as a dict (from `ocdid_parser()` return), and `OCDidParsed` is a Pydantic model (not a dict), we need to pass the raw string:
+Since `DivGenerator` uses `self.parsed_ocdid` as a dict (from `ocdid_parser()` return), and `OCDIdParsed` is a Pydantic model (not a dict), we need to pass the raw string:
 
 ```python
 # Before (line 40):
@@ -165,12 +165,12 @@ uuid5_id=str(uuid),  # oid1- deterministic ID
 
 ```bash
 git add src/init_migration/generate_division.py
-git commit -m "fix: update DivGenerator to handle OCDidParsed and str uuid"
+git commit -m "fix: update DivGenerator to handle OCDIdParsed and str uuid"
 ```
 
 ---
 
-## Task 4: Fix `generate_jurisdiction.py` — handle `OCDidParsed` and `str` uuid
+## Task 4: Fix `generate_jurisdiction.py` — handle `OCDIdParsed` and `str` uuid
 
 **Files:**
 - Modify: `src/init_migration/generate_jurisdiction.py`
@@ -206,9 +206,9 @@ Lines 17-22 and 46-51: Update to use new types:
 
 ```python
 from src.utils.uuid5_id import generate_id
-from src.models.ocdid import OCDidParsed
+from src.models.ocdid import OCDIdParsed
 
-parsed = OCDidParsed(
+parsed = OCDIdParsed(
     raw_ocdid="ocd-division/country:us/state:ca",
     country="us",
     state="ca",

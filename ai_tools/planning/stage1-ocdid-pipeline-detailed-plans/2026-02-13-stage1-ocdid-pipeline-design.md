@@ -102,7 +102,7 @@ Matching and UUID generation. Responsibilities:
   - **Local orphan** — local record has no master match (drift detected).
   - **Master orphan** — master record for a given state has no local match.
 - For each matched record:
-  - Parse OCD ID into `OCDidParsed` model
+  - Parse OCD ID into `OCDIdParsed` model
   - Generate deterministic UUID via `uuid5_id.generate_id()`
   - Build `OCDidIngestResp(uuid, ocdid_parsed, raw_record)` where `raw_record`
     contains the **master** record's columns (not local)
@@ -162,7 +162,7 @@ From `src/init_migration/pipeline_models.py` (renamed from `models.py`):
 ```python
 class OCDidIngestResp(BaseModel):
     uuid: str             # changed from UUID → str (holds oid1- deterministic ID)
-    ocdid: OCDidParsed    # changed from str → OCDidParsed
+    ocdid: OCDIdParsed    # changed from str → OCDIdParsed
     raw_record: dict[str, Any]
 ```
 
@@ -171,12 +171,12 @@ class OCDidIngestResp(BaseModel):
   this is the only field to change.
 - The raw OCD ID string remains accessible via `resp.ocdid.raw_ocdid`.
 
-### OCDidParsed — no changes
+### OCDIdParsed — no changes
 
 From `src/models/ocdid.py`:
 
 ```python
-class OCDidParsed(BaseModel):
+class OCDIdParsed(BaseModel):
     country: str = "us"
     state: Optional[str] = None
     county: Optional[str] = None

@@ -18,7 +18,7 @@
         - Map fields in master list to Division model
         - convert the  model to .yaml and store the .yaml file with the UUID
           only as the name
-        - Parse the OCDid in the OCDidParsed model
+        - Parse the OCDid in the OCDIdParsed model
         - Generate a UUID
         - Store OCDid and UUID in DuckDB lookup table for re-runs. 
 
@@ -38,7 +38,7 @@
     -Return:
         OCDidIngestResp() model
             - UUID # id of the stub Division object
-            - OCDidParsed # OCDID from Open Civic Data master list
+            - OCDIdParsed # OCDID from Open Civic Data master list
             - raw record from Open Civic Data master list
 
     - Calls Child Pipeline (GeneratorReq ->)
