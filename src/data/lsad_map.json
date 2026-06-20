@@ -1,0 +1,812 @@
+{
+  "00": {
+    "lsad_description": "",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "American Indian Area, Congressional District, Consolidated City, County or Equivalent Feature, County Subdivision, Economic Census Place, Elementary School District, Incorporated Place, Local/Tribal Legislative District, Military Installation, Nation, Secondary School District, Special School Administrative Area, Special-Purpose District, State Legislative District (Lower Chamber), State Legislative District (Upper Chamber), State or Equivalent Feature, Tribal Subdivision, Unified School District, Voting District"
+  },
+  "03": {
+    "lsad_description": "City and Borough (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "City and Borough",
+    "associated_geographic_entity": "County or Equivalent Feature"
+  },
+  "04": {
+    "lsad_description": "Borough (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Borough",
+    "associated_geographic_entity": "County or Equivalent Feature"
+  },
+  "05": {
+    "lsad_description": "Census Area (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Census Area",
+    "associated_geographic_entity": "County or Equivalent Feature"
+  },
+  "06": {
+    "lsad_description": "County (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "County",
+    "associated_geographic_entity": "County or Equivalent Feature, Economic Census Place"
+  },
+  "07": {
+    "lsad_description": "District (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "District",
+    "associated_geographic_entity": "County or Equivalent Feature"
+  },
+  "10": {
+    "lsad_description": "Island (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Island",
+    "associated_geographic_entity": "County or Equivalent Feature, Economic Census Place"
+  },
+  "12": {
+    "lsad_description": "Municipality (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Municipality",
+    "associated_geographic_entity": "County or Equivalent Feature"
+  },
+  "13": {
+    "lsad_description": "Municipio (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Municipio",
+    "associated_geographic_entity": "County or Equivalent Feature"
+  },
+  "15": {
+    "lsad_description": "Parish (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Parish",
+    "associated_geographic_entity": "County or Equivalent Feature, Economic Census Place"
+  },
+  "20": {
+    "lsad_description": "barrio (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "barrio",
+    "associated_geographic_entity": "County Subdivision"
+  },
+  "21": {
+    "lsad_description": "borough (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "borough",
+    "associated_geographic_entity": "County Subdivision, Economic Census Place"
+  },
+  "22": {
+    "lsad_description": "CCD (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "CCD",
+    "associated_geographic_entity": "County Subdivision"
+  },
+  "23": {
+    "lsad_description": "census subarea (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "census subarea",
+    "associated_geographic_entity": "County Subdivision"
+  },
+  "24": {
+    "lsad_description": "census subdistrict (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "census subdistrict",
+    "associated_geographic_entity": "County Subdivision"
+  },
+  "25": {
+    "lsad_description": "city (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "city",
+    "associated_geographic_entity": "Consolidated City, County or Equivalent Feature, County Subdivision, Economic Census Place, Incorporated Place"
+  },
+  "26": {
+    "lsad_description": "county (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "county",
+    "associated_geographic_entity": "County Subdivision, Economic Census Place"
+  },
+  "27": {
+    "lsad_description": "district (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "district",
+    "associated_geographic_entity": "County Subdivision, Economic Census Place"
+  },
+  "28": {
+    "lsad_description": "District (prefix)",
+    "lsad_prefix": "district",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "County Subdivision, Tribal Subdivision"
+  },
+  "29": {
+    "lsad_description": "precinct (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "precinct",
+    "associated_geographic_entity": "County Subdivision"
+  },
+  "30": {
+    "lsad_description": "Precinct (prefix)",
+    "lsad_prefix": "precinct",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "County Subdivision"
+  },
+  "31": {
+    "lsad_description": "gore (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "gore",
+    "associated_geographic_entity": "County Subdivision"
+  },
+  "32": {
+    "lsad_description": "grant (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "grant",
+    "associated_geographic_entity": "County Subdivision"
+  },
+  "36": {
+    "lsad_description": "location (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "location",
+    "associated_geographic_entity": "County Subdivision"
+  },
+  "37": {
+    "lsad_description": "municipality (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "municipality",
+    "associated_geographic_entity": "Economic Census Place, Incorporated Place"
+  },
+  "39": {
+    "lsad_description": "plantation (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "plantation",
+    "associated_geographic_entity": "County Subdivision"
+  },
+  "41": {
+    "lsad_description": "barrio-pueblo (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "barrio-pueblo",
+    "associated_geographic_entity": "County Subdivision"
+  },
+  "42": {
+    "lsad_description": "purchase (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "purchase",
+    "associated_geographic_entity": "County Subdivision"
+  },
+  "43": {
+    "lsad_description": "town (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "town",
+    "associated_geographic_entity": "County Subdivision, Economic Census Place, Incorporated Place"
+  },
+  "44": {
+    "lsad_description": "township (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "township",
+    "associated_geographic_entity": "County Subdivision, Economic Census Place"
+  },
+  "45": {
+    "lsad_description": "Township (prefix)",
+    "lsad_prefix": "township",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "County Subdivision"
+  },
+  "46": {
+    "lsad_description": "UT (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "UT",
+    "associated_geographic_entity": "County Subdivision"
+  },
+  "47": {
+    "lsad_description": "village (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "village",
+    "associated_geographic_entity": "County Subdivision, Economic Census Place, Incorporated Place"
+  },
+  "49": {
+    "lsad_description": "charter township (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "charter township",
+    "associated_geographic_entity": "County Subdivision, Economic Census Place"
+  },
+  "51": {
+    "lsad_description": "subbarrio (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "subbarrio",
+    "associated_geographic_entity": "Sub-Minor Civil Division"
+  },
+  "53": {
+    "lsad_description": "city and borough (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "city and borough",
+    "associated_geographic_entity": "Economic Census Place, Incorporated Place"
+  },
+  "55": {
+    "lsad_description": "comunidad (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "comunidad",
+    "associated_geographic_entity": "Census Designated Place"
+  },
+  "57": {
+    "lsad_description": "CDP (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "CDP",
+    "associated_geographic_entity": "Census Designated Place, Economic Census Place"
+  },
+  "62": {
+    "lsad_description": "zona urbana (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "zona urbana",
+    "associated_geographic_entity": "Census Designated Place"
+  },
+  "68": {
+    "lsad_description": "Region (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Region",
+    "associated_geographic_entity": "Census Region"
+  },
+  "69": {
+    "lsad_description": "Division (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Division",
+    "associated_geographic_entity": "Census Division"
+  },
+  "70": {
+    "lsad_description": "UGA (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "UGA",
+    "associated_geographic_entity": "Urban Growth Area"
+  },
+  "71": {
+    "lsad_description": "CMSA",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Consolidated Metropolitan Statistical Area and Metropolitan Statistical Area"
+  },
+  "72": {
+    "lsad_description": "MSA",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Consolidated Metropolitan Statistical Area and Metropolitan Statistical Area"
+  },
+  "73": {
+    "lsad_description": "Primary Metropolitan Statistical Area",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Primary Metropolitan Statistical Area"
+  },
+  "74": {
+    "lsad_description": "New England County Metropolitan Area",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "New England County Metropolitan Area"
+  },
+  "75": {
+    "lsad_description": "Urbanized Area (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Urbanized Area",
+    "associated_geographic_entity": "Urban Area"
+  },
+  "76": {
+    "lsad_description": "Urban Cluster (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Urban Cluster",
+    "associated_geographic_entity": "Urban Area"
+  },
+  "77": {
+    "lsad_description": "Alaska Native Regional Corporation (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Alaska Native Regional Corporation",
+    "associated_geographic_entity": "Alaska Native Regional Corporation"
+  },
+  "78": {
+    "lsad_description": "Hawaiian Home Land (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Hawaiian Home Land",
+    "associated_geographic_entity": "Hawaiian Home Land"
+  },
+  "79": {
+    "lsad_description": "ANVSA (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "ANVSA",
+    "associated_geographic_entity": "Alaska Native Village Statistical Area"
+  },
+  "80": {
+    "lsad_description": "TDSA (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "TDSA",
+    "associated_geographic_entity": "Tribal Designated Statistical Area"
+  },
+  "81": {
+    "lsad_description": "Colony (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Colony",
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "82": {
+    "lsad_description": "Community (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Community",
+    "associated_geographic_entity": "American Indian Area, Tribal Subdivision"
+  },
+  "83": {
+    "lsad_description": "joint-use area (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "joint-use area",
+    "associated_geographic_entity": "American Indian Joint Use Area"
+  },
+  "84": {
+    "lsad_description": "Pueblo (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Pueblo",
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "85": {
+    "lsad_description": "Rancheria (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Rancheria",
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "86": {
+    "lsad_description": "Reservation (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Reservation",
+    "associated_geographic_entity": "American Indian Area, County Subdivision"
+  },
+  "87": {
+    "lsad_description": "Reserve (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Reserve",
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "88": {
+    "lsad_description": "OTSA (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "OTSA",
+    "associated_geographic_entity": "Oklahoma Tribal Statistical Area"
+  },
+  "89": {
+    "lsad_description": "Trust Land (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Trust Land",
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "90": {
+    "lsad_description": "joint-use OTSA (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "joint-use OTSA",
+    "associated_geographic_entity": "American Indian Joint Use Area"
+  },
+  "91": {
+    "lsad_description": "Ranch (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Ranch",
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "92": {
+    "lsad_description": "SDTSA (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "SDTSA",
+    "associated_geographic_entity": "State-designated Tribal Statistical Area"
+  },
+  "93": {
+    "lsad_description": "Indian Village (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Indian Village",
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "94": {
+    "lsad_description": "Village (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Village",
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "95": {
+    "lsad_description": "Indian Community (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Indian Community",
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "96": {
+    "lsad_description": "Indian Reservation (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Indian Reservation",
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "97": {
+    "lsad_description": "Indian Rancheria (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Indian Rancheria",
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "98": {
+    "lsad_description": "Indian Colony (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Indian Colony",
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "99": {
+    "lsad_description": "Pueblo de",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "9C": {
+    "lsad_description": "Pueblo of",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "9D": {
+    "lsad_description": "Ranch Reservation (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Ranch Reservation",
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "9E": {
+    "lsad_description": "Rancheria Reservation (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Rancheria Reservation",
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "9F": {
+    "lsad_description": "Ranches (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Ranches",
+    "associated_geographic_entity": "American Indian Area"
+  },
+  "B1": {
+    "lsad_description": "Balance of County",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Economic Census Place"
+  },
+  "B2": {
+    "lsad_description": "Balance of Parish",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Economic Census Place"
+  },
+  "B3": {
+    "lsad_description": "Balance of Borough",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Economic Census Place"
+  },
+  "B4": {
+    "lsad_description": "Balance of Census Area",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Economic Census Place"
+  },
+  "B5": {
+    "lsad_description": "town (balance)",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Economic Census Place"
+  },
+  "B6": {
+    "lsad_description": "township (balance)",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Economic Census Place"
+  },
+  "B7": {
+    "lsad_description": "charter township (balance)",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Economic Census Place"
+  },
+  "B8": {
+    "lsad_description": "Balance of",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Economic Census Place"
+  },
+  "BG": {
+    "lsad_description": "Block Group (prefix)",
+    "lsad_prefix": "block group",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Block Group"
+  },
+  "BI": {
+    "lsad_description": "Balance of Island",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Economic Census Place"
+  },
+  "BK": {
+    "lsad_description": "Block (prefix)",
+    "lsad_prefix": "block",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Tabulation Block"
+  },
+  "BL": {
+    "lsad_description": "(balance)",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Incorporated Place"
+  },
+  "C1": {
+    "lsad_description": "Congressional District (at Large) (actual text)",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Congressional District"
+  },
+  "C2": {
+    "lsad_description": "Congressional District (prefix)",
+    "lsad_prefix": "congressional district",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Congressional District"
+  },
+  "C3": {
+    "lsad_description": "Resident Commissioner District (at Large) (actual text)",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Congressional District"
+  },
+  "C4": {
+    "lsad_description": "Delegate District (at Large) (actual text)",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Congressional District"
+  },
+  "C5": {
+    "lsad_description": "No Representative (actual text)",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Congressional District"
+  },
+  "CB": {
+    "lsad_description": "consolidated government (balance)",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Incorporated Place"
+  },
+  "CG": {
+    "lsad_description": "consolidated government (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "consolidated government",
+    "associated_geographic_entity": "Consolidated City, Economic Census Place"
+  },
+  "CN": {
+    "lsad_description": "corporation (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "corporation",
+    "associated_geographic_entity": "Incorporated Place"
+  },
+  "CR": {
+    "lsad_description": "Commercial Region (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Commercial Region",
+    "associated_geographic_entity": "Commercial Region"
+  },
+  "CT": {
+    "lsad_description": "Census Tract (prefix)",
+    "lsad_prefix": "census tract",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Census Tract"
+  },
+  "IB": {
+    "lsad_description": "Tribal Block Group (prefix)",
+    "lsad_prefix": "tribal block group",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Tribal Block Group"
+  },
+  "IT": {
+    "lsad_description": "Tribal Census Tract (prefix)",
+    "lsad_prefix": "tribal census tract",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Tribal Census Tract"
+  },
+  "L1": {
+    "lsad_description": "Ward (prefix)",
+    "lsad_prefix": "ward",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "State Legislative District (Upper Chamber)"
+  },
+  "L2": {
+    "lsad_description": "Senatorial District (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Senatorial District",
+    "associated_geographic_entity": "State Legislative District (Upper Chamber)"
+  },
+  "L3": {
+    "lsad_description": "Assembly District (prefix)",
+    "lsad_prefix": "assembly district",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "State Legislative District (Lower Chamber)"
+  },
+  "L4": {
+    "lsad_description": "General Assembly District (prefix)",
+    "lsad_prefix": "general assembly district",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "State Legislative District (Lower Chamber)"
+  },
+  "L5": {
+    "lsad_description": "State Legislative District (prefix)",
+    "lsad_prefix": "state legislative district",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "State Legislative District (Lower Chamber)"
+  },
+  "L6": {
+    "lsad_description": "State Legislative Subdistrict (prefix)",
+    "lsad_prefix": "state legislative subdistrict",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "State Legislative District (Lower Chamber)"
+  },
+  "L7": {
+    "lsad_description": "District",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "State Legislative District (Lower Chamber), State Legislative District (Upper Chamber)"
+  },
+  "LL": {
+    "lsad_description": "State House District (prefix)",
+    "lsad_prefix": "state house district",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "State Legislative District (Lower Chamber)"
+  },
+  "LU": {
+    "lsad_description": "State Senate District (prefix)",
+    "lsad_prefix": "state senate district",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "State Legislative District (Upper Chamber)"
+  },
+  "M0": {
+    "lsad_description": "CSA (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "CSA",
+    "associated_geographic_entity": "Combined Statistical Area"
+  },
+  "M1": {
+    "lsad_description": "Metro Area (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Metro Area",
+    "associated_geographic_entity": "Metropolitan and Micropolitan Statistical Area"
+  },
+  "M2": {
+    "lsad_description": "Micro Area (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Micro Area",
+    "associated_geographic_entity": "Metropolitan and Micropolitan Statistical Area"
+  },
+  "M3": {
+    "lsad_description": "Metro Division (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Metro Division",
+    "associated_geographic_entity": "Metropolitan Division"
+  },
+  "M4": {
+    "lsad_description": "Combined NECTA (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Combined NECTA",
+    "associated_geographic_entity": "Combined New England City and Town Area"
+  },
+  "M5": {
+    "lsad_description": "Metropolitan NECTA (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Metropolitan NECTA",
+    "associated_geographic_entity": "New England City and Town Metropolitan and Micropolitan Statistical Area"
+  },
+  "M6": {
+    "lsad_description": "Micropolitan NECTA (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Micropolitan NECTA",
+    "associated_geographic_entity": "New England City and Town Metropolitan and Micropolitan Statistical Area"
+  },
+  "M7": {
+    "lsad_description": "NECTA Division (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "NECTA Division",
+    "associated_geographic_entity": "New England City and Town Division"
+  },
+  "MB": {
+    "lsad_description": "metropolitan government (balance)",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Economic Census Place, Incorporated Place"
+  },
+  "MG": {
+    "lsad_description": "metropolitan government (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "metropolitan government",
+    "associated_geographic_entity": "Consolidated City, Economic Census Place, Incorporated Place"
+  },
+  "MT": {
+    "lsad_description": "metro government (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "metro government",
+    "associated_geographic_entity": "Consolidated City"
+  },
+  "P1": {
+    "lsad_description": "SuperPUMA (prefix)",
+    "lsad_prefix": "superpuma",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Public-Use Microdata Area (1% Area)"
+  },
+  "P5": {
+    "lsad_description": "PUMA (prefix)",
+    "lsad_prefix": "puma",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Public-Use Microdata Area (5% or 10% Area)"
+  },
+  "T1": {
+    "lsad_description": "Area (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Area",
+    "associated_geographic_entity": "Tribal Subdivision"
+  },
+  "T2": {
+    "lsad_description": "Chapter (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Chapter",
+    "associated_geographic_entity": "Tribal Subdivision"
+  },
+  "T3": {
+    "lsad_description": "Segment (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Segment",
+    "associated_geographic_entity": "Tribal Subdivision"
+  },
+  "TA": {
+    "lsad_description": "Administrative Area (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Administrative Area",
+    "associated_geographic_entity": "Tribal Subdivision"
+  },
+  "TB": {
+    "lsad_description": "Addition (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Addition",
+    "associated_geographic_entity": "Tribal Subdivision"
+  },
+  "TC": {
+    "lsad_description": "County District (prefix)",
+    "lsad_prefix": "county district",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Tribal Subdivision"
+  },
+  "TZ": {
+    "lsad_description": "TAZ (prefix)",
+    "lsad_prefix": "taz",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Traffic Analysis Zone"
+  },
+  "UB": {
+    "lsad_description": "unified government (balance)",
+    "lsad_prefix": null,
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Incorporated Place"
+  },
+  "UC": {
+    "lsad_description": "urban county (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "urban county",
+    "associated_geographic_entity": "Economic Census Place, Incorporated Place"
+  },
+  "UG": {
+    "lsad_description": "unified government (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "unified government",
+    "associated_geographic_entity": "Consolidated City, Economic Census Place, Incorporated Place"
+  },
+  "V1": {
+    "lsad_description": "Voting District (prefix)",
+    "lsad_prefix": "voting district",
+    "lsad_suffix": null,
+    "associated_geographic_entity": "Voting District"
+  },
+  "V2": {
+    "lsad_description": "Voting District (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "Voting District",
+    "associated_geographic_entity": "Voting District"
+  },
+  "Z3": {
+    "lsad_description": "ZCTA3 (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "ZCTA3",
+    "associated_geographic_entity": "ZIP Code Tabulation Area (Three-Digit)"
+  },
+  "Z5": {
+    "lsad_description": "ZCTA5 (suffix)",
+    "lsad_prefix": null,
+    "lsad_suffix": "ZCTA5",
+    "associated_geographic_entity": "Zip Code Tabulation Area (Five-Digit)"
+  }
+}
