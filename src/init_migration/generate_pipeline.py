@@ -408,7 +408,7 @@ class GeneratePipeline:
             # etc.) before processing the leaf.  Failures here are non-fatal so that
             # a transient I/O error does not abort the main generation work.
             ancestor_results = ensure_ancestor_stubs(
-                self.data.ocdid.raw_ocdid,
+                self.data.ocdid,
                 self.division_output_dir,
                 self.jurisdiction_output_dir,
             )
@@ -417,7 +417,7 @@ class GeneratePipeline:
                 extra={
                     "ocdid": self.data.ocdid.raw_ocdid,
                     "ancestor_count": len(ancestor_results),
-                    "created": sum(
+                    "generated": sum(
                         1 for r in ancestor_results if r["action"] == "created"
                     ),
                 },
