@@ -14,6 +14,7 @@ def test_ocdid_ingest_resp_accepts_ocdid_parsed():
         country="us",
         state="wa",
         place="seattle",
+        base_ocdid="ocd-division/country:us/state:wa/place:seattle",
         raw_ocdid="ocd-division/country:us/state:wa/place:seattle",
     )
     det_id = uuid5(NAMESPACE_URL, "ocd-division/country:us/state:wa/place:seattle")
@@ -36,6 +37,7 @@ def test_ocdid_ingest_resp_uuid_is_uuid5_string():
         country="us",
         state="wa",
         place="seattle",
+        base_ocdid="ocd-division/country:us/state:wa/place:seattle",
         raw_ocdid="ocd-division/country:us/state:wa/place:seattle",
     )
     det_id = uuid5(NAMESPACE_URL, "ocd-division/country:us/state:wa/place:seattle")

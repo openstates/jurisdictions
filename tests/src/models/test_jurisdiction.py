@@ -29,7 +29,7 @@ def _build_jurisdiction(ocdid: str, id_value=None) -> Jurisdiction:
         "ocdid": ocdid,
         "name": "Sample Jurisdiction",
         "url": "https://example.gov",
-        "classification": ClassificationEnum.GOVERNMENT,
+        "classification": ClassificationEnum.GOVERNMENT.value,
         "metadata": {"urls": []},
     }
     if id_value is not None:

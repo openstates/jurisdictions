@@ -35,6 +35,7 @@ from src.utils.yaml_manager import YamlManager
 def sample_generator_request(tmp_path) -> GeneratorReq:
     """Create a GeneratorReq for jurisdiction generation."""
     parsed = OCDIdParsed(
+        base_ocdid="ocd-division/country:us/state:ca/place:seattle",
         raw_ocdid="ocd-division/country:us/state:ca/place:seattle",
         country="us",
         state="ca",

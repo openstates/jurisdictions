@@ -57,6 +57,9 @@ class OCDIdParsed(BaseModel):
     county: Optional[str] = None
     place: Optional[str] = None
     subdivision: Optional[str] = None
+    base_ocdid: OCDIdStr = Field(
+        description="The base OCD ID without the jurisdiction type prefix, e.g., 'ocd-jurisdiction/country:us/state:wa/place:seattle/government' -> 'ocd-division/country:us/state:wa/place:seattle'"
+    )
     raw_ocdid: OCDIdStr = Field(
         description="Validated OCD ID string. Must start with 'ocd-division/' or 'ocd-jurisdiction/' and have at least two segments."
     )
@@ -73,31 +76,78 @@ class OCDIdParsed(BaseModel):
 
         return self
 
+    def get_ocdid_parts(self) -> list[str]:
+        """
+        Extract the parts of an OCD ID as a dictionary, excluding the type
+        prefix.
+        """
+        if self.type == "ocd-jurisdiction":
+            # For jurisdiction OCD IDs, the last segment is the jurisdiction
+            # classification. Use base_ocdid instead
+            parts = self.base_ocdid.rstrip("/").split("/")
+        else:
+            parts = self.raw_ocdid.rstrip("/").split("/")
+        return parts
+
     @classmethod
     def parse_ocdid(cls, raw_ocdid: str) -> "OCDIdParsed":
         try:
-            ocdid_dict = ocdid_parser(raw_ocdid)
-            return cls(**ocdid_dict, raw_ocdid=raw_ocdid)
+            valid_ocdid = validate_ocdid(raw_ocdid)
+            if valid_ocdid.startswith(("ocd-jurisdiction/")):
+                # Ensure the raw OCD ID is valid
+
+                # Drop the jurisdiction classification segment
+                # Remove the last segment (e.g., 'government')
+                # Store as "base_ocdid" for future ease of parsing.
+                base_ocdid = valid_ocdid.rsplit("/", 1)[0]
+                ocdid_dict = ocdid_parser(base_ocdid)
+            else:
+                ocdid_dict = ocdid_parser(valid_ocdid)
+                # For division OCD IDs, the base is the same as the raw OCD ID
+                base_ocdid = valid_ocdid
+            return cls(**ocdid_dict, base_ocdid=base_ocdid, raw_ocdid=raw_ocdid)
         except Exception as error:
             raise OCDIdParsingError(error) from error
 
     @classmethod
     def get_last_segment(cls, ocdid: "OCDIdParsed | OCDIdStr") -> str:
         """
-        Extract the last segment from an OCD ID, handling edge cases. This
+        Extract the last segment from an OCD ID. This
         handler accepts both parsed OCDIdParsed objects and valid OCD ID
         strings.
         """
-        raw_ocdid: str = ocdid.raw_ocdid if isinstance(ocdid, cls) else str(ocdid)
-        parts = raw_ocdid.rstrip("/").split("/")
+
+        if not isinstance(ocdid, cls):
+            ocdid = cls.parse_ocdid(ocdid)
+
+        parts = ocdid.get_ocdid_parts()
+        return parts[-1]
+
+    @classmethod
+    def get_jurisdiction_classification(
+        cls, ocdid: "OCDIdParsed | OCDIdStr"
+    ) -> Optional[str]:
+        """
+        Extract the jurisdiction classification from an OCD ID. This
+        handler accepts both parsed OCDIdParsed objects and valid OCD ID
+        strings.
+        """
+        if not isinstance(ocdid, cls):
+            ocdid = cls.parse_ocdid(ocdid)
+
+        if not ocdid.type == "ocd-jurisdiction":
+            raise ValueError(
+                "OCD ID must be of type 'ocd-jurisdiction' to extract classification."
+            )
+        parts = ocdid.raw_ocdid.rstrip("/").split("/")
         return parts[-1]
 
     @classmethod
     def build_ancestor_ocdids(cls, parsed_ocdid: "OCDIdParsed") -> list["OCDIdParsed"]:
         """Return ancestor OCD IDs as parsed models, excluding country root and leaf."""
         try:
-            parts = parsed_ocdid.raw_ocdid.split("/")
-            base = parts[0] if len(parts) > 0 else "ocd-division"
+            parts = parsed_ocdid.get_ocdid_parts()
+            base = parts[0] if len(parts) > 0 else parsed_ocdid.type
             country_segment = (
                 parts[1] if len(parts) > 1 else f"country:{parsed_ocdid.country}"
             )

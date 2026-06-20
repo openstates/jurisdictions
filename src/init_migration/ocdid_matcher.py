@@ -91,6 +91,7 @@ class OCDidMatcher:
                 # Parse OCD ID
                 parsed_dict = ocdid_parser(ocdid_str)
                 parsed = OCDIdParsed(
+                    base_ocdid=ocdid_str,
                     raw_ocdid=ocdid_str,
                     country=parsed_dict.get("country", "us"),
                     state=parsed_dict.get("state"),
