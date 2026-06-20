@@ -64,8 +64,15 @@ Treat this file as a policy index. Detailed operational guidance lives in:
   - `uv run ruff check .`
 
 ## Testing Rules
+- CRITICAL: You do not have permission to change data in `tests/sample_output` 
+- We use test-driven development (TDD). Never ""fake-it". If a test fails, do
+  not attempt to force it to pass by changing fixtures or code. Notify of the
+  test failure and why it is failing instead.
+- You must ask permission and request approval for any changes to tests in  to
+  change tests in `tests/integration`
 - Do not hide test output (`2>&1`, tail-only logs, etc.).
-- Test files should mirror source paths.
+- Unit test files should mirror source paths.
+- Integration test files should be stored in `tests/integration`
 - Prefer mocked network boundaries where possible.
 - When debugging tests, run with one worker and no retries.
 
@@ -76,6 +83,19 @@ Treat this file as a policy index. Detailed operational guidance lives in:
   - `ocd-jurisdiction/<division_id_without_prefix>/<classification>`
 - Use `src` package-root imports (for example `from src.models.division import Division`).
 
+## OCD ID Parsing Rules
+- Always use `OCDIdParsed.parse_ocdid()` to parse raw OCDID strings:
+  ```python
+  from src.models.ocdid import OCDIdParsed
+  
+  parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:ca/county:los_angeles")
+  # Access components: parsed.state, parsed.county, parsed.place, parsed.type, etc.
+  ```
+- `OCDIdParsed` provides structured access to OCD ID components (type, country, state, county, place, subdivision)
+- Never parse OCD IDs with string splits or regex—use the parser for consistency and validation
+- The parser validates format and populates the `type` field automatically
+- Reference: `src/models/ocdid.py` and `MODELS.md` for field documentation
+
 ## Logging Rules
 - Use standard Python logging.
 - Prefer structured, contextual logs.
@@ -84,6 +104,7 @@ Treat this file as a policy index. Detailed operational guidance lives in:
 - Prefer exception-aware logging patterns for failures.
 
 ## Code Style Rules
+- Do not import modules in __init__.py 
 - Prefer minimal, targeted changes over broad refactors.
 - Reuse existing modules/utilities before adding new abstractions.
 - Keep comments minimal and purposeful.

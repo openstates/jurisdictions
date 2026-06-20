@@ -5,18 +5,14 @@ from uuid import NAMESPACE_URL, uuid5
 
 from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp
 from src.init_migration.generate_division import DivGenerator
-from src.models.ocdid import OCDidParsed
+from src.models.ocdid import OCDIdParsed
 from pathlib import Path
 
 
 @pytest.fixture
 def sample_req(tmp_path) -> GeneratorReq:
     """Create a GeneratorReq with current OCDidIngestResp types."""
-    parsed = OCDidParsed(
-        raw_ocdid="ocd-division/country:us/state:ca",
-        country="us",
-        state="ca",
-    )
+    parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:ca")
     resp = OCDidIngestResp(
         uuid=uuid5(
             NAMESPACE_URL,

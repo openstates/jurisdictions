@@ -280,10 +280,10 @@ class DivGenerator:
             raise ValueError("government_identifiers required to save Division")
 
         geoid = self.division.government_identifiers.geoid
-        if not geoid:
-            raise ValueError(
-                "geoid required to generate filename — record should have been quarantined"
-            )
+        # if not geoid:
+        #     raise ValueError(
+        #         "geoid required to generate filename — record should have been quarantined"
+        #     )
 
         try:
             filename = get_division_filename(

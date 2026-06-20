@@ -1,37 +1,12 @@
-from datetime import datetime, timezone
-from .src.models.source import SourceObj
-from .src.models.jurisdiction import (
+from datetime import datetime
+from src.models.source import SourceObj
+from src.models.jurisdiction import (
     Jurisdiction,
     TermDetail,
-    SessionDetail,
     ClassificationEnum,
 )
-
-
-# Helper to make UTC datetimes
-def ymd(y: int, m: int, d: int) -> datetime:
-    return datetime(year=y, month=m, day=d, tzinfo=timezone.utc)
-
-
-# Session factories with exact dates
-def session_calendar_year(year: int) -> "SessionDetail":
-    return SessionDetail(
-        name=str(year),
-        identifiers=str(year),
-        classification="primary",
-        start_date=ymd(year, 1, 1),
-        end_date=ymd(year, 12, 31),
-    )
-
-
-def session_span(name_slug: str, start: datetime, end: datetime) -> "SessionDetail":
-    return SessionDetail(
-        name=name_slug,
-        identifiers=name_slug,
-        classification="primary",
-        start_date=start,
-        end_date=end,
-    )
+from src.models.jurisdiction import session_calendar_year, session_span
+from src.utils.datetime import ymd
 
 
 if __name__ == "__main__":

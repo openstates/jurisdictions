@@ -7,6 +7,9 @@ import yaml
 from uuid import NAMESPACE_URL, UUID, uuid5
 from pathlib import Path
 
+from src.models.ocdid import OCDIdStr, OCDIdParsed, get_ocdid_type
+from src.utils.datetime import ymd
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -15,6 +18,28 @@ logger = logging.getLogger(__name__)
 PROJECT_PATH = "jurisdictions/"
 
 
+# Session factories with exact dates
+def session_calendar_year(year: int) -> "SessionDetail":
+    return SessionDetail(
+        name=str(year),
+        identifiers=str(year),
+        classification="primary",
+        start_date=ymd(year, 1, 1),
+        end_date=ymd(year, 12, 31),
+    )
+
+
+def session_span(name_slug: str, start: datetime, end: datetime) -> "SessionDetail":
+    return SessionDetail(
+        name=name_slug,
+        identifiers=name_slug,
+        classification="primary",
+        start_date=start,
+        end_date=end,
+    )
+
+
+# United states only
 class ClassificationEnum(str, Enum):
     """These are the allowed defined types for jurisdictions"""
 
@@ -25,6 +50,7 @@ class ClassificationEnum(str, Enum):
     TRANSIT_AUTHORITY = (
         "transit_authority"  # i.e. PORT Authority of New York and New Jersey
     )
+    UTILITY_COMMISSION = "utility_commission"  #  NON-OCDid COMPLIANT; ADDEDi.e. California Public Utilities Commission
     JUDICIAL = "judicial"  # NON-OCDid COMPLIANT; ADDED
     PROSECUTORIAL = "prosecutorial"  # NON-OCDid COMPLIANT; ADDED, Examples: District Attorney Offices
     ADVISORY_BOARD = "advisory_board"  # NON-OCDid COMPLIANT; ADDED; Examples:  Cousubs that have elected governing bodies that advise but meet under the fiscal oversight of the county government.
@@ -98,7 +124,7 @@ class TermDetail(BaseModel):
 
 # TODO: Best practice is to separate "name" from "display name" recognizing tha
 # these may differ. However, the current specifications for the Jurisdication
-# object don't make this distinction. We should consider making a pull request
+# object does not make this distinction. We should consider making a pull request
 # to update the OCD spec.
 class Jurisdiction(BaseModel):
     """
@@ -109,7 +135,7 @@ class Jurisdiction(BaseModel):
     id: UUID | None = Field(
         default=None, description="UUID5 derived from ocdid and generation date."
     )
-    ocdid: str = Field(
+    ocdid: OCDIdStr = Field(
         ...,
         description="Jurisdictions IDs take the form ocd-jurisdiction/<jurisdiction_id>/<jurisdiction_type> where jurisdiction_id is the ID for the related division without the ocd-division/ prefix and jurisdiction_type is council, legislature, etc.",
     )
@@ -154,20 +180,31 @@ class Jurisdiction(BaseModel):
     )
 
     @model_validator(mode="after")
+    def validate_jurisdiction_id(self) -> "Jurisdiction":
+        """Jurisdictions IDs take the form
+        ocd-jurisdiction/<jurisdiction_id>/<jurisdiction_type> where
+        jurisdiction_id is the ID for the related division without the
+        ocd-division/ prefix and jurisdiction_type is council, legislature, as
+        defined in the ClassificationEnum. This validator checks that the ocdid field is compliant with this structure and raises an error if not."""
+        if get_ocdid_type(self.ocdid) != "ocd-jurisdiction":
+            raise ValueError(
+                "Jurisdiction ocdid must use the 'ocd-jurisdiction' prefix"
+            )
+
+        jurisdiction_type = OCDIdParsed.get_jurisdiction_classification(self.ocdid)
+        if jurisdiction_type != self.classification.value:
+            raise ValueError(
+                "Jurisdiction ocdid suffix must match the classification value"
+            )
+
+        return self
+
+    @model_validator(mode="after")
     def ensure_uuid5_id(self):
         if self.id is None:
             asof_date = self.last_updated.astimezone(timezone.utc).date().isoformat()
             self.id = uuid5(NAMESPACE_URL, f"{self.ocdid}|{asof_date}")
         return self
-
-    # @field_validator("id")
-    def validate_jurisdiction_id(self):
-        """Jurisdictions IDs take the form ocd-jurisdiction/<jurisdiction_id>/<jurisdiction_type> where jurisdiction_id is the ID for the related division without the ocd-division/ prefix and jurisdiction_type is council, legislature, etc."""
-        # TODO:
-        #  - Check prefix = ocd-jurisdiction
-        #  - Check "jurisdiction type" is an allowed type
-        #  - Check that a matching Division object exists. If not... we need one!
-        pass
 
     # Untested
     @classmethod

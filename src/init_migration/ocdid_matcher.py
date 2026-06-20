@@ -18,7 +18,7 @@ import duckdb
 from logging import getLogger
 
 from src.init_migration.pipeline_models import OCDidIngestResp
-from src.models.ocdid import OCDidParsed
+from src.models.ocdid import OCDIdParsed
 from src.utils.ocdid import ocdid_parser
 
 logger = getLogger(__name__)
@@ -90,7 +90,8 @@ class OCDidMatcher:
 
                 # Parse OCD ID
                 parsed_dict = ocdid_parser(ocdid_str)
-                parsed = OCDidParsed(
+                parsed = OCDIdParsed(
+                    base_ocdid=ocdid_str,
                     raw_ocdid=ocdid_str,
                     country=parsed_dict.get("country", "us"),
                     state=parsed_dict.get("state"),
