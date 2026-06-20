@@ -5,9 +5,15 @@ from unittest.mock import patch
 import argparse
 import httpx
 import pytest
-from src.init_migration.main import run_pipeline
+
 from src.init_migration.download_manager import DownloadManager
+from src.init_migration.main import run_pipeline
+from src.init_migration.ocdid_matcher import OCDidMatcher
 from src.init_migration.pipeline_models import DIVISIONS_SHEET_CSV_URL
+
+# TODO: This test leaves/replaces the following artifact:
+# data/ocdid_pipeline.duckdb. Attempted to mock but still generates.
+
 
 # Master dataset with 5 entries: 4 matches (2 in TX, 1 in DC, 1 in HI), 1 master orphan (HI), and no local orphans
 MASTER_CSV = b"""id,name
@@ -73,17 +79,31 @@ async def test_run_pipeline_multi_state_with_orphans_and_failures(
     """End-to-end test"""
 
     monkeypatch.chdir(tmp_path)
-    (tmp_path / "data").mkdir(exist_ok=True)
+    data_dir = tmp_path / "data"
+    data_dir.mkdir(exist_ok=True)
 
-    test_db_path = tmp_path / "data" / "ocdid_pipeline.duckdb"
+    test_db_path = data_dir / "ocdid_pipeline.duckdb"
+
+    class TestDownloadManager(DownloadManager):
+        def __init__(self, *args, **kwargs):
+            kwargs["db_path"] = str(test_db_path)
+            super().__init__(*args, **kwargs)
+
+    class TestOCDidMatcher(OCDidMatcher):
+        def __init__(self, *args, **kwargs):
+            kwargs["db_path"] = str(test_db_path)
+            super().__init__(*args, **kwargs)
 
     with (
+        patch("src.init_migration.main.DEFAULT_DB_PATH", str(test_db_path)),
         patch("src.init_migration.download_manager.DEFAULT_DB_PATH", str(test_db_path)),
         patch("src.init_migration.ocdid_matcher.DEFAULT_DB_PATH", str(test_db_path)),
+        patch("src.init_migration.main.DownloadManager", TestDownloadManager),
+        patch("src.init_migration.main.OCDidMatcher", TestOCDidMatcher),
     ):
         states = ["tx", "dc", "hi"]
 
-        dm = DownloadManager(states=states, db_path=str(test_db_path))
+        dm = TestDownloadManager(states=states)
 
         respx_mock.get(dm.master_url()).mock(
             return_value=httpx.Response(200, content=MASTER_CSV)
@@ -95,17 +115,14 @@ async def test_run_pipeline_multi_state_with_orphans_and_failures(
                 respx_mock.get(url).mock(
                     return_value=httpx.Response(200, content=LOCAL_TX_CSV)
                 )
-
             elif "state-dc" in url:
                 respx_mock.get(url).mock(
                     return_value=httpx.Response(200, content=LOCAL_DC_CSV)
                 )
-
             elif "state-hi" in url:
                 respx_mock.get(url).mock(
                     return_value=httpx.Response(200, content=LOCAL_HI_CSV)
                 )
-
             elif "state-zz" in url:
                 respx_mock.get(url).mock(return_value=httpx.Response(404))
 
@@ -130,6 +147,9 @@ async def test_run_pipeline_multi_state_with_orphans_and_failures(
     assert "ocd-division/country:us/state:tx/place:dallas" in orphan_ids
     assert "ocd-division/country:us/state:hi/place:maui" in orphan_ids
 
-    assert results.master_orphans[0]["id"] == "ocd-division/country:us/state:hi/place:hilo"
+    assert (
+        results.master_orphans[0]["id"]
+        == "ocd-division/country:us/state:hi/place:hilo"
+    )
 
     mock_store_generation_tracking.assert_called_once()
