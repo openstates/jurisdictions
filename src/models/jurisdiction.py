@@ -124,7 +124,7 @@ class TermDetail(BaseModel):
 
 # TODO: Best practice is to separate "name" from "display name" recognizing tha
 # these may differ. However, the current specifications for the Jurisdication
-# object don't make this distinction. We should consider making a pull request
+# object does not make this distinction. We should consider making a pull request
 # to update the OCD spec.
 class Jurisdiction(BaseModel):
     """
@@ -191,7 +191,7 @@ class Jurisdiction(BaseModel):
                 "Jurisdiction ocdid must use the 'ocd-jurisdiction' prefix"
             )
 
-        jurisdiction_type = OCDIdParsed.get_last_segment(self.ocdid)
+        jurisdiction_type = OCDIdParsed.get_jurisdiction_classification(self.ocdid)
         if jurisdiction_type != self.classification.value:
             raise ValueError(
                 "Jurisdiction ocdid suffix must match the classification value"
