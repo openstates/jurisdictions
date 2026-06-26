@@ -1,7 +1,11 @@
 # OpenStates Jurisdictions
 
 This repository stores and generates Division and Jurisdiction YAML data for US
-local governments in the OpenStates ecosystem.
+local governments. 
+
+OpenStates/Jurisdictions aims to create YAML files with metadata for every government entity in the United States, each referencing the geopolitical boundaries co-extensive with that jurisdiction.  Open States is a long-standing open source project that provides legislative data for all U.S. state legislatures. We are working to extend that to counties, county sub-divisions, municipalities, territories, school districts, and special districts. Our data is derived from Census Data and mapped to Open Civic Data Division identifiers (another long-standing open source project).  
+
+The OpenStates/Jurisdictions YAML files are intended to be used by applications that help connect citizens to their communities. By providing a complete, accurate, stable and verified set of Jurisdictions, we are helping application builders to more easily collect representative information, ballot information, public notices, public meetings, and more.
 
 ## Quick Navigation
 
@@ -15,7 +19,7 @@ local governments in the OpenStates ecosystem.
 ## Core Concepts
 
 **New to this project?** This repository works with two core concepts:
-- **Divisions** = Geographic boundaries (the land)
+- **Divisions** = Geographic boundaries (the land areas)
 - **Jurisdictions** = Governing entities (the organizations that have authority)
 
 For complete conceptual explanations and FAQ, see **[FAQ.md](FAQ.md)**.
@@ -171,14 +175,6 @@ git push origin <your-new-branch>
 ```
 
 6. Create pull request by going to https://github.com/<your-username>/jurisdictions/tree/<your-new-branch> -> Contribute -> Open Pull Request
-
-## What This Repo Contains
-- Source models and pipeline code under `src/`
-- Output YAML under:
-  - `divisions/<state>/local/`
-  - `jurisdictions/<state>/local/`
-- Tests under `tests/`
-- Human-facing docs under `docs/`
 
 ## Running Tests
 
