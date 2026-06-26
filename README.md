@@ -1,11 +1,16 @@
 # OpenStates Jurisdictions
 
-This repository stores and generates Division and Jurisdiction YAML data for US
-local governments. 
+This repository stores and generates Division and Jurisdiction YAML data for U.S.local governments. 
 
-OpenStates/Jurisdictions aims to create YAML files with metadata for every government entity in the United States, each referencing the geopolitical boundaries co-extensive with that jurisdiction.  Open States is a long-standing open source project that provides legislative data for all U.S. state legislatures. We are working to extend that to counties, county sub-divisions, municipalities, territories, school districts, and special districts. Our data is derived from Census Data and mapped to Open Civic Data Division identifiers (another long-standing open source project).  
+It includes YAML files with metadata for every government entity in the United States, each referencing the geopolitical boundaries co-extensive with that jurisdiction.  
 
-The OpenStates/Jurisdictions YAML files are intended to be used by applications that help connect citizens to their communities. By providing a complete, accurate, stable and verified set of Jurisdictions, we are helping application builders to more easily collect representative information, ballot information, public notices, public meetings, and more.
+Open States is a long-standing open source project that provides legislative data for all U.S. state legislatures. We are working to extend that to counties, county sub-divisions, municipalities, territories, school districts, and special districts. 
+
+Our data is derived from Census Data and mapped to Open Civic Data Division identifiers (another long-standing open source project).  
+
+The OpenStates/Jurisdictions YAML files are intended to be used by application builders. 
+
+By providing a complete, accurate, stable and human-verified set of Jurisdictions, we are helping civic engagement application builders more easily collect representative information, ballot information, public notices, public meetings, and more.
 
 ## Quick Navigation
 
