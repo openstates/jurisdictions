@@ -1,37 +1,18 @@
 # Jurisdictions FAQ
 
-## Why Jurisdictions?
+## Why does the OpenStates/Jurisdictions project exist?
 
-Civic data is difficult to use because governance is not modeled consistently.
+Traditionally, when civic tech developers begin building an application to support local civic engagement, they run into a wall: accurate, comprehensive local data about U.S. counties, municipalities, schoools, and special districts is complex, time-consuming to collect and difficult to maintain. 
 
 Across the United States, the same types of governing entities are described in different ways. Names overlap, structures vary, and datasets often blur the line between a place and the entity that governs it.
 
-This project exists to fix that.
+[Census](https://www.census.gov/data/developers/data-sets.html) data is complete, but requires domain expertise to navigate and lacks local references, such as links to local government websites. 
 
-A **[jurisdiction](#what-is-a-jurisdiction)** is a governing entity with authority — such as a state, county, or municipal government.
+[Open Civic Data division identifiers](https://github.com/opencivicdata/ocd-division-ids/tree/master/identifiers/country-us)  are simple, short, easy to use, and make gathering geographically-relevant data for individual users fast and reliable, but they lack identifiers that associate them with the Census data they represent and describe. 
 
-A **[division](#what-is-a-division)** is a geographic area — the land itself.
+We thought, what if we extended Open Civic Data Division identifiers to include metadata that describes the government identifiers from which they are sourced? That would allow application builders to easily gather the Census data, information from local government websites, and the geospatial data they need to build their applications--all from one source.  
 
-These are related, but not the same:
-
-* Division = where something is
-* Jurisdiction = who governs it
-
-This distinction is foundational.
-
-Without it:
-
-* governance data becomes inconsistent
-* relationships between entities break down
-* systems cannot scale
-
-With it:
-
-* governance can be modeled clearly
-* entities connect correctly to geography
-* a stable foundation exists for civic data systems
-
-This project focuses on building a clean, consistent jurisdiction layer that can support broader civic infrastructure.
+That is what this project is all about. It focuses on building a comprehensive, accurate and human-verified jurisdiction layer to support application development and agentic use-cases. 
 
 ---
 
@@ -39,7 +20,7 @@ This project focuses on building a clean, consistent jurisdiction layer that can
 
 ### What is a jurisdiction?
 
-A **jurisdiction** is a governing entity with authority over a defined scope.
+A **jurisdiction** is a governing entity with authority and legal power.
 
 Examples include:
 
