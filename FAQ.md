@@ -18,6 +18,14 @@ That is what this project is all about. It focuses on building a comprehensive, 
 
 ## Frequently Asked Questions
 
+### How many government entities are there in the United States? 
+
+Well, that's a good question. There are approximately 90,888 government entities in the United States. This video from [USA Facts](https://usafacts.org) provides the best breakdown and most accurate count we have seen so far. 
+
+[https://usafacts.org/just-the-facts/who-pays-for-what/](https://usafacts.org/just-the-facts/who-pays-for-what/) 
+
+Each of those entities can include one or more geographic areas (Divisions). Within a county there are cities, towns, townships. Within a city. there can be any number of wards and precincts. Congressional Districts overlap county and place boundaries. Some cities are also considered counties. Counties include unincorporated [places](#what-is-a-place). Things get complex fast. Read on... 
+
 ### What is a jurisdiction?
 
 A **jurisdiction** is a governing entity with authority and legal power.
@@ -34,14 +42,6 @@ It represents **governance**, not geography.
 
 ---
 
-### How many government entities are there in the United States? 
-
-Well, that's a good question. There are approximately 90,888 government entities in the United States. This video from [USA Facts](https://usafacts.org) provides the best breakdown and most accurate count we have seen so far. 
-
-[https://usafacts.org/just-the-facts/who-pays-for-what/](https://usafacts.org/just-the-facts/who-pays-for-what/) 
-
-Each of those entities can include one or more geographic areas (Divisions). Within a county there are cities, towns, townships. Within a city. there can be any number of wards and precincts. Congressional Districts overlap county and place boundaries. Some cities are also considered counties. Counties include unincorporated "places" (See: ["What is a place?"](#What is a place?))  Things get complex fast. Read on... 
-
 ### What is a division?
 
 A **division** is a geographic area.
@@ -55,7 +55,7 @@ Examples include:
 
 It represents **land**, not authority.
 
-**See also:** [What is a division?](#what-is-a-division) | [What is the difference between a jurisdiction and a division?](#what-is-the-difference-between-a-jurisdiction-and-a-division)
+**See also:** [What is a jurisdiction?](#what-is-a-jurisdiction) | [What is the difference between a jurisdiction and a division?](#what-is-the-difference-between-a-jurisdiction-and-a-division)
 
 ---
 
