@@ -10,7 +10,7 @@ Across the United States, the same types of governing entities are described in 
 
 [Open Civic Data division identifiers](https://github.com/opencivicdata/ocd-division-ids/tree/master/identifiers/country-us)  are simple, short, easy to use, and make gathering geographically-relevant data for individual users fast and reliable, but they lack identifiers that associate them with the Census data they represent and describe. 
 
-We thought, what if we extended Open Civic Data Division identifiers to include metadata that describes the government identifiers from which they are sourced? That would allow application builders to easily gather the Census data, information from local government websites, and the geospatial data they need to build their applications--all from one source.  
+We thought: What if we extended Open Civic Data Division identifiers to include metadata that describes the government identifiers from which they are sourced? That would allow application builders to easily gather the Census data, information from local government websites, and the geospatial data they need to build their applications—all from one source.  
 
 That is what this project is all about. It focuses on building a comprehensive, accurate and human-verified jurisdiction layer to support application development and agentic use-cases. 
 
