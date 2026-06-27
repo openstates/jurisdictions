@@ -4,7 +4,7 @@ This repository stores and generates Division and Jurisdiction YAML data for U.S
 
 It includes YAML files with metadata for every government entity in the United States, each referencing the geopolitical boundaries coextensive with that jurisdiction.  
 
-[Open States](https://github.com/openstates) is a long-standing open-source project that provides legislative data for all U.S. state legislatures. We are working to extend that to counties, county subdivisions, municipalities, territories, school districts, and special districts. 
+[Open States](https://github.com/openstates) is a long-standing open-source project that provides state representative and legislative data for all U.S. state legislatures. We are working to extend that to counties, county subdivisions, municipalities, territories, school districts, and special districts. 
 
 Our data is derived from Census Data and mapped to [Open Civic Data](https://github.com/opencivicdata/ocd-division-ids/tree/master/identifiers/country-us) Division identifiers (another long-standing open-source project).  
 
