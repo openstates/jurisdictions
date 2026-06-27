@@ -2,15 +2,17 @@
 
 This repository stores and generates Division and Jurisdiction YAML data for U.S.local governments. 
 
-It includes YAML files with metadata for every government entity in the United States, each referencing the geopolitical boundaries co-extensive with that jurisdiction.  
+It includes YAML files with metadata for every government entity in the United States, each referencing the geopolitical boundaries coextensive with that jurisdiction.  
 
-Open States is a long-standing open source project that provides legislative data for all U.S. state legislatures. We are working to extend that to counties, county sub-divisions, municipalities, territories, school districts, and special districts. 
+[Open States](https://github.com/openstates) is a long-standing open-source project that provides legislative data for all U.S. state legislatures. We are working to extend that to counties, county subdivisions, municipalities, territories, school districts, and special districts. 
 
-Our data is derived from Census Data and mapped to Open Civic Data Division identifiers (another long-standing open source project).  
+Our data is derived from Census Data and mapped to [Open Civic Data](https://github.com/opencivicdata/ocd-division-ids/tree/master/identifiers/country-us) Division identifiers (another long-standing open-source project).  
 
-The OpenStates/Jurisdictions YAML files are intended to be used by application builders. 
+The OpenStates/Jurisdictions YAML files are intended for use by application builders. View sample files [here](https://github.com/openstates/jurisdictions/tree/main/divisions/examples)
 
-By providing a complete, accurate, stable and human-verified set of Jurisdictions, we are helping civic engagement application builders more easily collect representative information, ballot information, public notices, public meetings, and more.
+By providing comprehensive, accurate, stable and human-verified set of Jurisdiction data for local U.S. government entities, we are helping developers more easily and quickly provide their users with up-to-date representative information, ballot information, public notices, public meetings, and more. 
+
+Become a contributor! Join [Civic Data](https://unified.me/organization/27721/posts?invite=civicdata) on Unified. 
 
 ## Quick Navigation
 
