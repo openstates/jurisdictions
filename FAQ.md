@@ -24,7 +24,7 @@ Well, that's a good question. There are approximately 90,888 government entities
 
 [https://usafacts.org/just-the-facts/who-pays-for-what/](https://usafacts.org/just-the-facts/who-pays-for-what/) 
 
-Each of those entities can include one or more geographic areas (Divisions). Within a county there are cities, towns, townships. Within a city. there can be any number of wards and precincts. Congressional Districts overlap county and place boundaries. Some cities are also considered counties. Counties include unincorporated [places](#what-is-a-place). Things get complex fast. Read on... 
+Each of those entities can have jurisdiction over one or more geographic areas (Divisions). Within a county there are cities, towns, and townships. Within a city, there can be any number of wards and precincts. Congressional Districts overlap county and [places](#what-is-a-place) boundaries. Some cities are also considered counties. Counties can include unincorporated [places](#what-is-a-place). Things get complex fast. Read on... 
 
 ### What is a jurisdiction?
 
