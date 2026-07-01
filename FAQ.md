@@ -104,7 +104,7 @@ They are related, but not interchangeable.
 
 A jurisdiction governs one or more divisions. A division may be governed by multiple jurisdictions (overlapping authorities).
 
-**For a detailed visual overview of these relationships,** see [docs/data_model_relationships.md](../docs/data_model_relationships.md).
+**For a detailed visual overview of these relationships,** see [docs/data_model_relationships.md](docs/data_model_relationships.md).
 
 **See also:** [README.md - Core Concepts](README.md#core-concepts)
 
