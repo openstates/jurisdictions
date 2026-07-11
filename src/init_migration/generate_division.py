@@ -14,7 +14,7 @@ from src.utils.ocdid import ocdid_parser
 from src.models.division import Division
 from src.models.source import SourceType
 from src.utils.state_lookup import load_state_code_lookup
-from src.utils.place_name import namelsad_to_display_name
+from src.utils.place_name import coerce_lsad_code, namelsad_to_display_name
 from pathlib import Path
 from datetime import datetime, timezone
 from uuid import UUID
@@ -87,19 +87,14 @@ class DivGenerator:
                     f"Missing required NAMELSAD in validation record: {val_rec}"
                 )
 
+            # Normalise lsad — handle "None" strings and Python list reprs from CSV
+            lsad = coerce_lsad_code(val_rec.get("LSAD", ""))
+
             # council_district override takes precedence over NAMELSAD-derived name
             cd_name = _council_district_display_name(self.parsed_ocdid)
-            display_name = cd_name if cd_name else namelsad_to_display_name(namelsad)
-
-            # Normalise lsad — handle "None" strings and Python list reprs from CSV
-            lsad_raw = val_rec.get("LSAD", "") or ""
-            if lsad_raw in ("None", "null"):
-                lsad = ""
-            elif lsad_raw.startswith("["):
-                inner = lsad_raw.strip("[]").replace("'", "").replace('"', "").strip()
-                lsad = inner.split(",")[0].strip() if inner else ""
-            else:
-                lsad = lsad_raw
+            display_name = (
+                cd_name if cd_name else namelsad_to_display_name(namelsad, lsad)
+            )
 
             raw_ocdid = self.data.ocdid.raw_ocdid
             if self._division_exists(raw_ocdid):
