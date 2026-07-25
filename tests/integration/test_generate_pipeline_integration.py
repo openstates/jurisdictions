@@ -74,13 +74,17 @@ SAMPLE_OCDIDS = [
 ]
 
 # Validation CSV data that matches the sample OCD IDs
-# This simulates the Creyton validation dataset
+# This simulates the Creyton validation dataset.
+#
+# NAMELSAD must mirror the real sheet: "<name> <LSAD suffix>", with no trailing
+# state name. Place rows carry a PLACEFP and no COUSUBFP; county subdivision
+# (cousub) rows carry a COUSUBFP and no PLACEFP.
 VALIDATION_CSV_ROWS = [
     # Sausalito match
     {
         "GEOID_Census": "0670364",
         "STATEFP": "06",
-        "NAMELSAD": "Sausalito city, California",
+        "NAMELSAD": "Sausalito city",
         "LSAD": "25",
         "SLDUST_list": "",
         "SLDLST_list": "",
@@ -93,7 +97,7 @@ VALIDATION_CSV_ROWS = [
     {
         "GEOID_Census": "5370000",
         "STATEFP": "53",
-        "NAMELSAD": "Tacoma city, Washington",
+        "NAMELSAD": "Tacoma city",
         "LSAD": "25",
         "SLDUST_list": "",
         "SLDLST_list": "",
@@ -106,7 +110,7 @@ VALIDATION_CSV_ROWS = [
     {
         "GEOID_Census": "5363000",
         "STATEFP": "53",
-        "NAMELSAD": "Seattle city, Washington",
+        "NAMELSAD": "Seattle city",
         "LSAD": "25",
         "SLDUST_list": "",
         "SLDLST_list": "",
@@ -119,7 +123,7 @@ VALIDATION_CSV_ROWS = [
     {
         "GEOID_Census": "4845390165",
         "STATEFP": "48",
-        "NAMELSAD": "Austin city, Texas",
+        "NAMELSAD": "Austin city",
         "LSAD": "25",
         "SLDUST_list": "",
         "SLDLST_list": "",
@@ -127,6 +131,47 @@ VALIDATION_CSV_ROWS = [
         "COUNTY_NAMES": "Travis",
         "COUSUBFP": "",
         "PLACEFP": "01000",
+    },
+    # Decoys. Each of these matched its city at score 1.0 under token_set_ratio,
+    # pushing the city into the "multiple matches" quarantine branch.
+    {
+        # Cousub sharing Seattle's name — must be excluded by the place-layer filter.
+        "GEOID_Census": "5303392524",
+        "STATEFP": "53",
+        "NAMELSAD": "Seattle East CCD",
+        "LSAD": "22",
+        "SLDUST_list": "",
+        "SLDLST_list": "",
+        "COUNTYFP_list": "033",
+        "COUNTY_NAMES": "King",
+        "COUSUBFP": "92524",
+        "PLACEFP": "",
+    },
+    {
+        # Distinct place that merely contains Tacoma's name as a token.
+        "GEOID_Census": "5370010",
+        "STATEFP": "53",
+        "NAMELSAD": "Tacoma Valley city",
+        "LSAD": "25",
+        "SLDUST_list": "",
+        "SLDLST_list": "",
+        "COUNTYFP_list": "053",
+        "COUNTY_NAMES": "Pierce",
+        "COUSUBFP": "",
+        "PLACEFP": "70010",
+    },
+    {
+        # Multi-word place: OCDid slug "oak_harbor" must reach "Oak Harbor".
+        "GEOID_Census": "5350360",
+        "STATEFP": "53",
+        "NAMELSAD": "Oak Harbor city",
+        "LSAD": "25",
+        "SLDUST_list": "",
+        "SLDLST_list": "",
+        "COUNTYFP_list": "029",
+        "COUNTY_NAMES": "Island",
+        "COUSUBFP": "",
+        "PLACEFP": "50360",
     },
     # No Marin City match (intentionally omitted to test quarantine)
     # No DC data (intentionally omitted to test quarantine)
@@ -182,6 +227,54 @@ def _create_generator_req(
         division_population_req=False,
         asof_datetime=asof_dt,
     )
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize(
+    ("ocdid", "expected_namelsad"),
+    [
+        # A cousub ("Seattle East CCD") and a longer place ("Tacoma Valley city")
+        # both scored 1.0 against the city under token_set_ratio, because that
+        # scorer drops the tokens the two names do not share.
+        ("ocd-division/country:us/state:wa/place:seattle", "Seattle city"),
+        ("ocd-division/country:us/state:wa/place:tacoma", "Tacoma city"),
+        # Underscored slugs were compared verbatim against the spaced name.
+        ("ocd-division/country:us/state:wa/place:oak_harbor", "Oak Harbor city"),
+        # Trailing segments are ignored; the place drives the match.
+        (
+            "ocd-division/country:us/state:wa/place:seattle/council_district:1",
+            "Seattle city",
+        ),
+    ],
+)
+def test_find_matches_returns_exactly_one_place(
+    validation_csv_file, ocdid, expected_namelsad
+):
+    """Each place OCDid resolves to exactly one validation record."""
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    req = _create_generator_req(ocdid, str(validation_csv_file), asof_dt)
+    pipeline = GeneratePipeline(req)
+
+    matches = pipeline.find_matches(ocdid)
+
+    assert len(matches) == 1, (
+        f"Expected 1 match for {ocdid}, got {len(matches)}: "
+        f"{matches['NAMELSAD'].to_list() if len(matches) else []}"
+    )
+    assert matches.row(0, named=True)["NAMELSAD"] == expected_namelsad
+
+
+@pytest.mark.integration
+def test_find_matches_excludes_county_subdivisions(validation_csv_file):
+    """County subdivision rows are never candidates for a `place:` OCDid."""
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    ocdid = "ocd-division/country:us/state:wa/place:seattle"
+    req = _create_generator_req(ocdid, str(validation_csv_file), asof_dt)
+    pipeline = GeneratePipeline(req)
+
+    matched_names = pipeline.find_matches(ocdid)["NAMELSAD"].to_list()
+
+    assert "Seattle East CCD" not in matched_names
 
 
 @pytest.mark.integration
@@ -247,13 +340,14 @@ async def test_generate_pipeline_5_sample_records(tmp_path, validation_csv_file)
         f"Expected 0 failures, got {len(results['failed'])}: {results['failed']}"
     )
 
-    # Verify output files created
-    division_files = list(division_output.glob("*.yaml"))
+    # Verify output files created. Output is nested (divisions/<state>/local/…),
+    # so this must recurse.
+    division_files = list(division_output.rglob("*.yaml"))
     assert len(division_files) >= 5, (
         f"Expected at least 5 division YAML files, got {len(division_files)}"
     )
 
-    jurisdiction_files = list(jurisdiction_output.glob("*.yaml"))
+    jurisdiction_files = list(jurisdiction_output.rglob("*.yaml"))
     assert len(jurisdiction_files) >= 3, (
         f"Expected at least 3 jurisdiction YAML files, got {len(jurisdiction_files)}"
     )
@@ -442,7 +536,7 @@ async def test_generate_pipeline_deduplication(tmp_path, validation_csv_file):
     response1 = await pipeline.run()
     assert response1.status.status == Status.SUCCESS
     assert response1.jurisdiction_path is not None
-    junction_count_after_1 = len(list(jurisdiction_output.glob("*.yaml")))
+    junction_count_after_1 = len(list(jurisdiction_output.rglob("*.yaml")))
 
     # Now run a second council district from the same city
     req2 = _create_generator_req(ocdid2, str(validation_csv_file), asof_dt)
@@ -454,10 +548,10 @@ async def test_generate_pipeline_deduplication(tmp_path, validation_csv_file):
     response2 = await pipeline2.run()
     assert response2.status.status == Status.SUCCESS
     # Note: junction_path might be None if already exists (depending on implementation)
-    junction_count_after_2 = len(list(jurisdiction_output.glob("*.yaml")))
+    junction_count_after_2 = len(list(jurisdiction_output.rglob("*.yaml")))
 
     # Both divisions created, but jurisdictions might be deduplicated
-    division_count = len(list(division_output.glob("*.yaml")))
+    division_count = len(list(division_output.rglob("*.yaml")))
     assert division_count >= 2, "Should have at least 2 divisions"
 
     print("\n✓ Deduplication verified:")

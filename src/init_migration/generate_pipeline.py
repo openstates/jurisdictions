@@ -44,7 +44,33 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-# Fuzzy matching threshold (0-1 scale, 0.85 = 85% match required)
+
+def _similarity(a: str, b: str) -> float:
+    """Score two normalized place names on a 0-1 scale.
+
+    token_sort_ratio, not token_set_ratio: token_set discards the tokens the two
+    strings do not share, so "spokane" scores 1.0 against "spokane valley" and
+    against every "* CCD" county subdivision. Sorting instead of set-differencing
+    keeps multi-word names comparable without collapsing distinct places.
+    """
+    if HAS_RAPIDFUZZ:
+        return fuzz.token_sort_ratio(a, b) / 100
+    return difflib.SequenceMatcher(
+        None, " ".join(sorted(a.split())), " ".join(sorted(b.split()))
+    ).ratio()
+
+
+def _ocdid_slug_to_name(slug: str) -> str:
+    """Turn an OCDid path segment back into a place name.
+
+    OCDid segments are slugs ("oak_harbor"); validation names are plain text
+    ("oak harbor").
+    """
+    return slug.replace("_", " ").strip().lower()
+
+
+# Fuzzy matching threshold (0-1 scale, 0.85 = 85% match required). Only reached
+# when no exact normalized-name match exists, so it never decides a common case.
 FUZZY_MATCH_THRESHOLD = 0.85
 
 # Filename pattern constants
@@ -159,14 +185,26 @@ class GeneratePipeline:
             Updated Polars DataFrame with normalized place name column
         """
         try:
-            # Add normalized place name column (lowercase, LSAD stripped)
-            df = self.validation_df.with_columns(
-                pl.col("NAMELSAD")
-                .map_elements(
+            # Add normalized place name column (lowercase, LSAD stripped). The LSAD
+            # column drives affix removal by table lookup; fall back to regex-only
+            # stripping when the source CSV omits it.
+            if "LSAD" in self.validation_df.columns:
+                name_expr = pl.struct(["NAMELSAD", "LSAD"]).map_elements(
+                    lambda row: namelsad_to_display_name(
+                        row["NAMELSAD"], row["LSAD"]
+                    ).lower()
+                    if row["NAMELSAD"]
+                    else "",
+                    return_dtype=pl.Utf8,
+                )
+            else:
+                name_expr = pl.col("NAMELSAD").map_elements(
                     lambda x: namelsad_to_display_name(x).lower() if x else "",
                     return_dtype=pl.Utf8,
                 )
-                .alias("normalized_place_name")
+
+            df = self.validation_df.with_columns(
+                name_expr.alias("normalized_place_name")
             )
             logger.info("Normalized validation data with place names")
             return df
@@ -200,11 +238,14 @@ class GeneratePipeline:
                     place = f"anc {anc}"
 
             if not state or not place:
-                logger.warning(f"Missing state or place in OCDid: {ocdid}")
+                # County-level OCDids land here. The validation CSV carries only
+                # Census "place" and "cousub" layers, so there is nothing to match
+                # them against; they are quarantined as stubs by run().
+                logger.debug(f"Missing state or place in OCDid: {ocdid}")
                 return pl.DataFrame()
 
             state_upper = state.upper()
-            place_lower = place.lower()
+            place_lower = _ocdid_slug_to_name(place)
 
             # Look up state FIPS code
             from src.utils.state_lookup import load_state_code_lookup
@@ -234,27 +275,42 @@ class GeneratePipeline:
                 )
                 return pl.DataFrame()
 
-            # Fuzzy match on normalized place names
-            matches = []
-            for row in state_df.iter_rows(named=True):
-                normalized_name = row.get("normalized_place_name", "")
-                if normalized_name:
-                    # Use fuzzy matching (token_set_ratio if rapidfuzz available, else SequenceMatcher)
-                    if HAS_RAPIDFUZZ:
-                        score = (
-                            fuzz.token_set_ratio(place_lower, normalized_name) / 100
-                        )  # Normalize to 0-1
-                    else:
-                        score = difflib.SequenceMatcher(
-                            None, place_lower, normalized_name
-                        ).ratio()
-                    if score >= FUZZY_MATCH_THRESHOLD:
-                        matches.append((row, score))
+            # A `place:` OCDid segment denotes a Census place, so county
+            # subdivisions are not candidates. The LSAD code cannot make this
+            # distinction (code 25 "city" appears on both layers); a populated
+            # PLACEFP can.
+            state_df = self._filter_to_place_layer(state_df)
+            if state_df.is_empty():
+                logger.debug(f"No place-layer records for state: {state_upper}")
+                return pl.DataFrame()
+
+            candidates = [
+                row
+                for row in state_df.iter_rows(named=True)
+                if row.get("normalized_place_name")
+            ]
+
+            # Exact normalized-name match wins outright. ~97% of names resolve here,
+            # which keeps the fuzzy threshold away from near-miss pairs it gets
+            # wrong (token_sort_ratio("alto", "alton") is 0.89).
+            matches = [
+                (row, 1.0)
+                for row in candidates
+                if row["normalized_place_name"] == place_lower
+            ]
 
             if not matches:
-                logger.debug(
-                    f"No fuzzy matches found for place: {place} in state {state}"
-                )
+                matches = [
+                    (row, score)
+                    for row, score in (
+                        (row, _similarity(place_lower, row["normalized_place_name"]))
+                        for row in candidates
+                    )
+                    if score >= FUZZY_MATCH_THRESHOLD
+                ]
+
+            if not matches:
+                logger.debug(f"No matches found for place: {place} in state {state}")
                 return pl.DataFrame()
 
             # Convert matches to DataFrame, sorted by score descending
@@ -269,6 +325,20 @@ class GeneratePipeline:
         except Exception:
             logger.error(f"Error in find_matches for {ocdid}", exc_info=True)
             return pl.DataFrame()
+
+    @staticmethod
+    def _filter_to_place_layer(df: pl.DataFrame) -> pl.DataFrame:
+        """Keep only Census place rows, dropping county subdivisions.
+
+        Place rows carry a PLACEFP; county subdivision rows carry a COUSUBFP and
+        leave PLACEFP blank. A CSV without a PLACEFP column is passed through
+        unfiltered.
+        """
+        if "PLACEFP" not in df.columns:
+            return df
+        return df.filter(
+            pl.col("PLACEFP").cast(pl.Utf8).fill_null("").str.strip_chars() != ""
+        )
 
     def jurisdiction_exists(self, jurisdiction_ocdid: str) -> bool:
         """Check if a Jurisdiction with this ocd_id has already been created.
