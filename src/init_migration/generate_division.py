@@ -10,6 +10,7 @@ Responsibilities:
 """
 
 from src.init_migration.pipeline_models import GeneratorReq
+from src.init_migration.jurisdiction_seed import derive_jurisdiction_ocdid
 from src.utils.ocdid import ocdid_parser
 from src.models.division import Division
 from src.models.source import SourceType
@@ -20,7 +21,6 @@ from datetime import datetime, timezone
 from uuid import UUID
 import logging
 import yaml
-import re
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -41,24 +41,39 @@ def get_division_filename(display_name: str, geoid: str, uuid: UUID) -> str:
     return f"{safe_display_name}_{geoid}_{uuid}.yaml"
 
 
-def _council_district_display_name(parsed_ocdid: dict) -> str | None:
-    """Return the display name for a council_district division, or None if not applicable.
+def _leaf_segment_display_name(parsed_ocdid: dict[str, str]) -> str | None:
+    """Return the display name for a council_district or ward division, or None if not applicable.
 
     For ``place/council_district`` OCD IDs:   "{Place} Council District {N}"
+    For ``place/ward`` OCD IDs:   "{Place} Ward {N}"
     For ``anc/council_district`` OCD IDs:     "ANC {ANC_ID} District {N}"
+
     """
-    council_district = parsed_ocdid.get("council_district")
-    if not council_district:
+
+    council_district_value = parsed_ocdid.get("council_district")
+    if council_district_value:
+        label = "Council District"
+        value = council_district_value
+
+    ward_value = parsed_ocdid.get("ward")
+    if ward_value:
+        label = "Ward"
+        value = ward_value
+
+    if not (council_district_value or ward_value):
         return None
 
-    anc = parsed_ocdid.get("anc")
-    if anc:
-        return f"ANC {anc.upper()} District {council_district}"
+    # ref: https://en.wikipedia.org/wiki/Advisory_Neighborhood_Commission
+    # ref: https://github.com/opencivicdata/ocd-division-ids/blob/master/identifiers/country-us/state-dc-local_gov.csv
+    anc_value = parsed_ocdid.get("anc")
+    if anc_value:
+        label = "District"
+        return f"ANC {anc_value.upper()} {label} {value}"
 
     place = parsed_ocdid.get("place")
     if place:
         city_name = place.replace("_", " ").title()
-        return f"{city_name} Council District {council_district}"
+        return f"{city_name} {label} {value}"
 
     return None
 
@@ -90,10 +105,10 @@ class DivGenerator:
             # Normalise lsad — handle "None" strings and Python list reprs from CSV
             lsad = coerce_lsad_code(val_rec.get("LSAD", ""))
 
-            # council_district override takes precedence over NAMELSAD-derived name
-            cd_name = _council_district_display_name(self.parsed_ocdid)
+            # leaf segment override takes precedence over NAMELSAD-derived name
+            leaf_name = _leaf_segment_display_name(self.parsed_ocdid)
             display_name = (
-                cd_name if cd_name else namelsad_to_display_name(namelsad, lsad)
+                leaf_name if leaf_name else namelsad_to_display_name(namelsad, lsad)
             )
 
             raw_ocdid = self.data.ocdid.raw_ocdid
@@ -110,7 +125,7 @@ class DivGenerator:
                 display_name=display_name,
                 geometries=[],
                 also_known_as=[],
-                jurisdiction_id=self._derive_jurisdiction_id(raw_ocdid),
+                jurisdiction_id=derive_jurisdiction_ocdid(raw_ocdid),
                 government_identifiers={
                     "namelsad": namelsad,
                     "statefp": statefp,
@@ -168,9 +183,9 @@ class DivGenerator:
             raw_ocdid = self.data.ocdid.raw_ocdid
             parsed = ocdid_parser(raw_ocdid)
 
-            cd_name = _council_district_display_name(parsed)
-            if cd_name:
-                display_name = cd_name
+            leaf_name = _leaf_segment_display_name(parsed)
+            if leaf_name:
+                display_name = leaf_name
             else:
                 place = parsed.get("place", "")
                 display_name = place.replace("_", " ").title() if place else "Unknown"
@@ -200,7 +215,7 @@ class DivGenerator:
                 display_name=display_name,
                 geometries=[],
                 also_known_as=[],
-                jurisdiction_id=self._derive_jurisdiction_id(raw_ocdid),
+                jurisdiction_id=derive_jurisdiction_ocdid(raw_ocdid),
                 government_identifiers={
                     "namelsad": display_name,
                     "statefp": state_fips,
@@ -237,11 +252,6 @@ class DivGenerator:
                 exc_info=True,
             )
             raise
-
-    def _derive_jurisdiction_id(self, division_ocdid: str) -> str:
-        division_part = division_ocdid.replace("ocd-division/", "")
-        division_part = re.sub(r"/council_district:[^/]+", "", division_part)
-        return f"ocd-jurisdiction/{division_part}/government"
 
     def _division_exists(self, ocdid: str) -> bool:
         try:
