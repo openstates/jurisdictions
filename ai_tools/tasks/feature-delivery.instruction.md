@@ -11,6 +11,12 @@ tags: [workflow, execution]
 
 Use this instruction when implementing non-trivial repository changes.
 
+> **Note:** For work on the Census GUS pipeline rework (issue #131,
+> branch `131-gus-pipeline-rework`), this instruction is superseded by
+> `ai_tools/tasks/census-pipeline-rework.instruction.md`. Use that task
+> instruction and the phased plan at
+> `ai_tools/planning/census-pipeline-rework-plan.md` instead.
+
 ## Workflow
 1. Confirm or create the linked issue.
 2. Write a design doc in `ai_tools/planning/`.

@@ -42,6 +42,18 @@ assets:
     owner: maintainers
     path: ai_tools/planning/stage2-generation-pipeline.instruction.md
     tags: [planning, stage2, generation]
+  - id: census-pipeline-rework-task
+    type: instruction
+    status: active
+    owner: maintainers
+    path: ai_tools/tasks/census-pipeline-rework.instruction.md
+    tags: [workflow, execution, rework, census, pipeline]
+  - id: census-pipeline-rework-plan
+    type: planning
+    status: active
+    owner: maintainers
+    path: ai_tools/planning/census-pipeline-rework-plan.md
+    tags: [planning, rework, census, pipeline]
   - id: create-design-and-implementation-plan
     type: prompt
     status: active
