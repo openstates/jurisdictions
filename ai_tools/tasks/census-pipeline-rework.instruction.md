@@ -44,6 +44,31 @@ For this rework only, this instruction **supersedes** the generic workflow in
   `docs/rework/openstates-jurisdictions-data-pipeline.pdf` (with
   grep-friendly source at `docs/rework/openstates-jurisdictions-data-pipeline.md`).
 
+### Phase Tracking (issues #132–#150)
+
+Each phase in the plan has a corresponding `[Rework]` issue. Keep this
+checklist in sync with issue state; the issues themselves remain authoritative.
+
+- [ ] Phase 1 — Repository Archaeology — #132
+- [ ] Phase 2 — Domain Model Stabilization — #133
+- [ ] Phase 3 — Golden Sample Integration Harness — #134
+- [ ] Phase 4 — Source Snapshot Layer — #135
+- [ ] Phase 5 — Normalized Government Layer — #136
+- [ ] Phase 6 — Government-to-Geography Resolver — #137
+- [ ] Phase 7 — OCDID Rule Engine — #138
+- [ ] Phase 8 — OCD Validation and Quarantine — #139
+- [ ] Phase 9 — Canonical Model Construction — #140
+- [ ] Phase 10 — YAML Rendering — #141
+- [ ] Phase 11 — Existing Sample Output Migration — #142
+- [ ] Phase 12 — CI — #143
+- [ ] Phase 13 — California Pilot — #144
+- [ ] Phase 14 — National High-Confidence Run — #145
+- [ ] Phase 15 — Special District Strategy — #146
+- [ ] Phase 16 — Graph Projection — #147
+- [ ] Phase 17 — Cleanup — #148
+- [ ] Phase 18 — Final Documentation — #149
+- [ ] Phase 19 — Final Acceptance Suite — #150
+
 ## Repository Mission (Rework Framing)
 
 This repository builds and maintains a comprehensive, reproducible
