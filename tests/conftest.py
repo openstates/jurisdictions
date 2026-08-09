@@ -86,6 +86,7 @@ def github_api_response():
         "download_url": "https://raw.githubusercontent.com/test/repo/main/file.txt",
     }
 
+
 # NOTE:
 # The Stage 1 pipeline writes into persistent DuckDB tables using append-style
 # inserts. Without clearing tables between integration tests, data from prior
@@ -98,9 +99,9 @@ def github_api_response():
 # idempotent ingestion semantics (e.g. per-state replacement, deduplication,
 # or transactional rebuilds) rather than relying on test-level cleanup.
 
+
 @pytest.fixture
 def clean_duckdb():
-
     # NOTE:
     # Tests currently reset the default pipeline DuckDB database directly.
     # We cannot yet inject a dedicated test DB path cleanly because the

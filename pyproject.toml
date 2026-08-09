@@ -16,6 +16,20 @@ dependencies = [
     "rapidfuzz>=3.0.0",
     "rich>=14.0.0",
     "tqdm>=4.68.1",
+    "google-genai>=2.17.0",
+    "openai>=2.53.0",
+    "python-dotenv>=1.2.2",
+    "ddgs>=9.14.4",
+]
+
+[project.optional-dependencies]
+# Local model runtimes. Install with `uv sync --extra local` (or
+# `pip install '.[local]'`). Only needed if you plan to call
+# `src.clients.ollama.generate()`; the commercial LLM clients
+# (Gemini/OpenAI) and search clients (DDG/Brave) work without this.
+local = [
+    "ollama>=0.6.2",
+    # Future: add `llama-cpp-python` here if we wire a llama.cpp client.
 ]
 
 [dependency-groups]
