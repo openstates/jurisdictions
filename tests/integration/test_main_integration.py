@@ -1,4 +1,5 @@
 """Integration tests for stage 1 pipeline."""
+
 from types import SimpleNamespace
 from unittest.mock import patch
 
@@ -148,8 +149,7 @@ async def test_run_pipeline_multi_state_with_orphans_and_failures(
     assert "ocd-division/country:us/state:hi/place:maui" in orphan_ids
 
     assert (
-        results.master_orphans[0]["id"]
-        == "ocd-division/country:us/state:hi/place:hilo"
+        results.master_orphans[0]["id"] == "ocd-division/country:us/state:hi/place:hilo"
     )
 
     mock_store_generation_tracking.assert_called_once()
