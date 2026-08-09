@@ -64,7 +64,15 @@ Treat this file as a policy index. Detailed operational guidance lives in:
   - `uv run ruff check .`
 
 ## Testing Rules
-- CRITICAL: You do not have permission to change data in `tests/sample_output` 
+- CRITICAL: `tests/sample_output/` is a golden test contract. Changes
+  require explicit maintainer approval — never silently edit these files,
+  never autonomously regenerate them, and never patch a fixture to make a
+  failing golden test pass. A failing golden test is a signal to file a
+  work-item, not a fixture to correct. Reading (inventory, diff, comparison)
+  never needs approval. The rework's regeneration workflow lives in
+  `ai_tools/planning/census-pipeline-rework-plan.md` §"Sample Output
+  Change Control"; per-file observations live in
+  `docs/rework/sample_output_inventory.md` §6.
 - We use test-driven development (TDD). Never ""fake-it". If a test fails, do
   not attempt to force it to pass by changing fixtures or code. Notify of the
   test failure and why it is failing instead.
