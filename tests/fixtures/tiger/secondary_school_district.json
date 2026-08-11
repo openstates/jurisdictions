@@ -1,0 +1,22 @@
+{
+  "exceededTransferLimit": false,
+  "features": [
+    {
+      "attributes": {
+        "BASENAME": "Example Secondary",
+        "FUNCSTAT": "E",
+        "GEOID": "0800002",
+        "HIGRADE": "12",
+        "LOGRADE": "09",
+        "LSADC": "00",
+        "MTFCC": "G5410",
+        "NAME": "Example Secondary School District",
+        "OID": "sdsec-0800002",
+        "SDSEC": "00002",
+        "SDTYP": "",
+        "STATE": "08"
+      }
+    }
+  ],
+  "objectIdFieldName": "OBJECTID"
+}
