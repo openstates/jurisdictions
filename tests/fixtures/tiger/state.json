@@ -1,0 +1,22 @@
+{
+  "exceededTransferLimit": false,
+  "features": [
+    {
+      "attributes": {
+        "BASENAME": "Colorado",
+        "DIVISION": "8",
+        "FUNCSTAT": "A",
+        "GEOID": "08",
+        "LSADC": "00",
+        "MTFCC": "G4000",
+        "NAME": "Colorado",
+        "OID": "state-08",
+        "REGION": "4",
+        "STATE": "08",
+        "STATENS": "01779779",
+        "STUSAB": "CO"
+      }
+    }
+  ],
+  "objectIdFieldName": "OBJECTID"
+}
