@@ -14,6 +14,7 @@ from src.init_migration.tiger_adapter import (
     TigerAdapter,
     TigerCacheMissError,
     TigerGeography,
+    TigerLayerSpec,
     TigerSnapshotIntegrityError,
     TigerSourceResponseError,
 )
@@ -25,15 +26,17 @@ ALL_GEOGRAPHIES = tuple(TigerGeography)
 class FakeFetcher:
     """Small ``AsyncDownloader`` stand-in for offline unit tests."""
 
-    def __init__(self, response: bytes | None) -> None:
-        self.response = response
+    def __init__(self, *responses: bytes | None) -> None:
+        self.responses = list(responses)
         self.calls: list[tuple[str, bool]] = []
 
     async def fetch_bytes(
         self, url: str, *, force: bool = False
     ) -> bytes | None:
         self.calls.append((url, force))
-        return self.response
+        if not self.responses:
+            raise AssertionError("FakeFetcher received an unexpected request")
+        return self.responses.pop(0)
 
 
 def fixture_bytes(geography_type: TigerGeography) -> bytes:
@@ -43,6 +46,35 @@ def fixture_bytes(geography_type: TigerGeography) -> bytes:
 
 def fixture_document(geography_type: TigerGeography) -> dict:
     return json.loads(fixture_bytes(geography_type))
+
+
+def layer_metadata_document(spec: TigerLayerSpec) -> dict:
+    return {
+        "id": spec.layer_id,
+        "name": spec.layer_name,
+        "type": "Feature Layer",
+        "description": (
+            f"{spec.layer_name}; January 1, {spec.vintage} vintage"
+        ),
+        "parentLayer": {
+            "id": spec.parent_layer_id,
+            "name": spec.parent_layer_name,
+        },
+        "capabilities": "Map,Query,Data",
+        "maxRecordCount": 100_000,
+        "fields": [
+            {
+                "name": name,
+                "type": "esriFieldTypeString",
+                "length": length,
+            }
+            for name, length in spec.expected_field_lengths.items()
+        ],
+    }
+
+
+def layer_metadata_bytes(spec: TigerLayerSpec) -> bytes:
+    return json.dumps(layer_metadata_document(spec)).encode()
 
 
 def test_layer_catalog_covers_phase_4_scope() -> None:
@@ -63,6 +95,23 @@ def test_layer_catalog_uses_versioned_acs_2025_layers() -> None:
         ].layer_id
         == 5
     )
+    assert TIGER_LAYERS_2025[TigerGeography.STATE].parent_layer_id == 17
+    assert TIGER_LAYERS_2025[TigerGeography.PLACE].parent_layer_id == 6
+    assert (
+        TIGER_LAYERS_2025[
+            TigerGeography.UNIFIED_SCHOOL_DISTRICT
+        ].parent_layer_id
+        == 4
+    )
+
+
+@pytest.mark.parametrize("geography_type", ALL_GEOGRAPHIES)
+def test_layer_catalog_defines_widths_for_every_query_field(
+    geography_type: TigerGeography,
+) -> None:
+    spec = TIGER_LAYERS_2025[geography_type]
+
+    assert set(spec.expected_field_lengths) == set(spec.query_fields)
 
 
 def test_query_requests_attributes_only_and_deterministic_order(
@@ -83,20 +132,162 @@ def test_query_requests_attributes_only_and_deterministic_order(
     assert "STGEOMETRY" not in query["outFields"][0].split(",")
 
 
-@pytest.mark.asyncio
-async def test_fetch_uses_injected_downloader(tmp_path: Path) -> None:
+@pytest.mark.parametrize("geography_type", ALL_GEOGRAPHIES)
+def test_layer_metadata_preflight_accepts_catalog_contract(
+    tmp_path: Path,
+    geography_type: TigerGeography,
+) -> None:
     adapter = TigerAdapter(tmp_path)
-    payload = fixture_bytes(TigerGeography.STATE)
-    fetcher = FakeFetcher(payload)
+    spec = adapter.get_spec(geography_type)
 
-    result = await adapter.fetch(
-        fetcher, TigerGeography.STATE, force=True
+    adapter.verify_layer_metadata(
+        geography_type, layer_metadata_bytes(spec)
     )
 
+
+@pytest.mark.asyncio
+async def test_fetch_preflights_metadata_before_query(tmp_path: Path) -> None:
+    adapter = TigerAdapter(tmp_path)
+    geography_type = TigerGeography.STATE
+    spec = adapter.get_spec(geography_type)
+    payload = fixture_bytes(geography_type)
+    fetcher = FakeFetcher(layer_metadata_bytes(spec), payload)
+
+    result = await adapter.fetch(fetcher, geography_type)
+
     assert result == payload
-    assert len(fetcher.calls) == 1
-    assert fetcher.calls[0][1] is True
-    assert "/MapServer/18/query?" in fetcher.calls[0][0]
+    assert fetcher.calls == [
+        (spec.metadata_url, True),
+        (adapter.build_query_url(spec), False),
+    ]
+
+
+@pytest.mark.asyncio
+async def test_fetch_rejects_missing_metadata_payload(tmp_path: Path) -> None:
+    adapter = TigerAdapter(tmp_path)
+
+    with pytest.raises(
+        TigerSourceResponseError, match="metadata preflight returned no payload"
+    ):
+        await adapter.fetch(FakeFetcher(None), TigerGeography.STATE)
+
+
+def test_layer_metadata_rejects_wrong_parent_vintage(
+    tmp_path: Path,
+) -> None:
+    adapter = TigerAdapter(tmp_path)
+    geography_type = TigerGeography.STATE
+    spec = adapter.get_spec(geography_type)
+    document = layer_metadata_document(spec)
+    document["parentLayer"] = {"id": 35, "name": "ACS 2024"}
+
+    with pytest.raises(
+        TigerSourceResponseError, match="parent does not match"
+    ):
+        adapter.verify_layer_metadata(
+            geography_type, json.dumps(document).encode()
+        )
+
+
+def test_layer_metadata_rejects_description_vintage_drift(
+    tmp_path: Path,
+) -> None:
+    adapter = TigerAdapter(tmp_path)
+    geography_type = TigerGeography.PLACE
+    spec = adapter.get_spec(geography_type)
+    document = layer_metadata_document(spec)
+    document["description"] = "Incorporated Places; January 1, 2024 vintage"
+
+    with pytest.raises(
+        TigerSourceResponseError, match="does not confirm"
+    ):
+        adapter.verify_layer_metadata(
+            geography_type, json.dumps(document).encode()
+        )
+
+
+def test_layer_metadata_rejects_name_drift(tmp_path: Path) -> None:
+    adapter = TigerAdapter(tmp_path)
+    geography_type = TigerGeography.COUNTY
+    spec = adapter.get_spec(geography_type)
+    document = layer_metadata_document(spec)
+    document["name"] = "County Subdivisions"
+
+    with pytest.raises(
+        TigerSourceResponseError, match="name does not match"
+    ):
+        adapter.verify_layer_metadata(
+            geography_type, json.dumps(document).encode()
+        )
+
+
+def test_layer_metadata_rejects_missing_query_capability(
+    tmp_path: Path,
+) -> None:
+    adapter = TigerAdapter(tmp_path)
+    geography_type = TigerGeography.STATE
+    spec = adapter.get_spec(geography_type)
+    document = layer_metadata_document(spec)
+    document["capabilities"] = "Map,Data"
+
+    with pytest.raises(
+        TigerSourceResponseError, match="Query capability"
+    ):
+        adapter.verify_layer_metadata(
+            geography_type, json.dumps(document).encode()
+        )
+
+
+def test_layer_metadata_rejects_small_record_limit(tmp_path: Path) -> None:
+    adapter = TigerAdapter(tmp_path)
+    geography_type = TigerGeography.STATE
+    spec = adapter.get_spec(geography_type)
+    document = layer_metadata_document(spec)
+    document["maxRecordCount"] = 2_000
+
+    with pytest.raises(
+        TigerSourceResponseError, match="maxRecordCount"
+    ):
+        adapter.verify_layer_metadata(
+            geography_type, json.dumps(document).encode()
+        )
+
+
+def test_layer_metadata_rejects_missing_field(tmp_path: Path) -> None:
+    adapter = TigerAdapter(tmp_path)
+    geography_type = TigerGeography.PLACE
+    spec = adapter.get_spec(geography_type)
+    document = layer_metadata_document(spec)
+    document["fields"] = [
+        field for field in document["fields"] if field["name"] != "PLACE"
+    ]
+
+    with pytest.raises(
+        TigerSourceResponseError, match="missing required fields: PLACE"
+    ):
+        adapter.verify_layer_metadata(
+            geography_type, json.dumps(document).encode()
+        )
+
+
+def test_layer_metadata_rejects_identifier_width_drift(
+    tmp_path: Path,
+) -> None:
+    adapter = TigerAdapter(tmp_path)
+    geography_type = TigerGeography.UNIFIED_SCHOOL_DISTRICT
+    spec = adapter.get_spec(geography_type)
+    document = layer_metadata_document(spec)
+    geoid_field = next(
+        field for field in document["fields"] if field["name"] == "GEOID"
+    )
+    geoid_field["length"] = 8
+
+    with pytest.raises(
+        TigerSourceResponseError, match="GEOID.*retain length 7"
+    ):
+        adapter.verify_layer_metadata(
+            geography_type, json.dumps(document).encode()
+        )
 
 
 @pytest.mark.parametrize("geography_type", ALL_GEOGRAPHIES)
@@ -154,16 +345,17 @@ async def test_refresh_reuses_integrity_checked_cache_after_304(
 ) -> None:
     adapter = TigerAdapter(tmp_path)
     geography_type = TigerGeography.STATE
+    spec = adapter.get_spec(geography_type)
     initial = adapter.cache(
         adapter.verify(geography_type, fixture_bytes(geography_type))
     )
-    fetcher = FakeFetcher(None)
+    fetcher = FakeFetcher(layer_metadata_bytes(spec), None)
 
     refreshed = await adapter.refresh(fetcher, geography_type)
 
     assert refreshed.sha256 == initial.sha256
     assert refreshed.record_count == initial.record_count
-    assert len(fetcher.calls) == 1
+    assert len(fetcher.calls) == 2
 
 
 @pytest.mark.asyncio
@@ -171,9 +363,13 @@ async def test_refresh_304_without_cache_fails_closed(
     tmp_path: Path,
 ) -> None:
     adapter = TigerAdapter(tmp_path)
+    geography_type = TigerGeography.STATE
+    spec = adapter.get_spec(geography_type)
 
     with pytest.raises(TigerCacheMissError):
-        await adapter.refresh(FakeFetcher(None), TigerGeography.STATE)
+        await adapter.refresh(
+            FakeFetcher(layer_metadata_bytes(spec), None), geography_type
+        )
 
 
 def test_verify_rejects_arcgis_error_response(tmp_path: Path) -> None:

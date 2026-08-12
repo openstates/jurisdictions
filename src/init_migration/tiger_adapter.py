@@ -2,7 +2,7 @@
 
 The adapter keeps source acquisition separate from parsing:
 
-``fetch`` -> ``verify`` -> ``cache`` -> ``parse``
+``metadata preflight`` -> ``fetch`` -> ``verify`` -> ``cache`` -> ``parse``
 
 Only TIGERweb attributes are requested. Geometry is intentionally excluded;
 feature-specific GeoJSON URL construction belongs to the downstream resolver.
@@ -75,6 +75,7 @@ class TigerLayerSpec:
     service_name: str
     layer_id: int
     layer_name: str
+    parent_layer_id: int
     geoid_length: int
     code_field: str
     code_length: int
@@ -89,11 +90,46 @@ class TigerLayerSpec:
         )
 
     @property
+    def metadata_url(self) -> str:
+        return f"{self.layer_url}?f=json"
+
+    @property
+    def parent_layer_name(self) -> str:
+        return f"ACS {self.vintage}"
+
+    @property
     def query_fields(self) -> tuple[str, ...]:
         fields = list(self.required_fields)
         if self.ansi_field and self.ansi_field not in fields:
             fields.append(self.ansi_field)
         return tuple(fields)
+
+    @property
+    def expected_field_lengths(self) -> Mapping[str, int]:
+        lengths: dict[str, int] = {
+            "GEOID": self.geoid_length,
+            "STATE": 2,
+            "BASENAME": 100,
+            "NAME": 100,
+            "LSADC": 2,
+            "FUNCSTAT": 1,
+            "MTFCC": 5,
+            "OID": 22,
+            self.code_field: self.code_length,
+        }
+        if self.ansi_field:
+            lengths[self.ansi_field] = 8
+        if self.geography_type is TigerGeography.STATE:
+            lengths.update({"STUSAB": 2, "REGION": 1, "DIVISION": 1})
+        elif self.geography_type is TigerGeography.COUNTY_SUBDIVISION:
+            lengths["COUNTY"] = 3
+        elif self.geography_type in {
+            TigerGeography.UNIFIED_SCHOOL_DISTRICT,
+            TigerGeography.SECONDARY_SCHOOL_DISTRICT,
+            TigerGeography.ELEMENTARY_SCHOOL_DISTRICT,
+        }:
+            lengths.update({"SDTYP": 1, "LOGRADE": 2, "HIGRADE": 2})
+        return lengths
 
 
 _COMMON_FIELDS = (
@@ -107,8 +143,9 @@ _COMMON_FIELDS = (
     "OID",
 )
 
-# These layer IDs are under the versioned ``ACS 2025`` groups in TIGERweb,
-# not the mutable current-vintage layers at the top of each MapServer.
+# These numeric layer IDs currently sit under the ``ACS 2025`` groups in
+# TIGERweb's composite services. ``fetch`` verifies the live layer metadata
+# before downloading records so a future service reordering fails closed.
 TIGER_LAYERS_2025: Mapping[TigerGeography, TigerLayerSpec] = {
     TigerGeography.STATE: TigerLayerSpec(
         geography_type=TigerGeography.STATE,
@@ -116,6 +153,7 @@ TIGER_LAYERS_2025: Mapping[TigerGeography, TigerLayerSpec] = {
         service_name="State_County",
         layer_id=18,
         layer_name="States",
+        parent_layer_id=17,
         geoid_length=2,
         code_field="STATE",
         code_length=2,
@@ -129,6 +167,7 @@ TIGER_LAYERS_2025: Mapping[TigerGeography, TigerLayerSpec] = {
         service_name="State_County",
         layer_id=19,
         layer_name="Counties",
+        parent_layer_id=17,
         geoid_length=5,
         code_field="COUNTY",
         code_length=3,
@@ -141,6 +180,7 @@ TIGER_LAYERS_2025: Mapping[TigerGeography, TigerLayerSpec] = {
         service_name="Places_CouSub_ConCity_SubMCD",
         layer_id=11,
         layer_name="Incorporated Places",
+        parent_layer_id=6,
         geoid_length=7,
         code_field="PLACE",
         code_length=5,
@@ -153,6 +193,7 @@ TIGER_LAYERS_2025: Mapping[TigerGeography, TigerLayerSpec] = {
         service_name="Places_CouSub_ConCity_SubMCD",
         layer_id=8,
         layer_name="County Subdivisions",
+        parent_layer_id=6,
         geoid_length=10,
         code_field="COUSUB",
         code_length=5,
@@ -166,6 +207,7 @@ TIGER_LAYERS_2025: Mapping[TigerGeography, TigerLayerSpec] = {
         service_name="School",
         layer_id=5,
         layer_name="Unified School Districts",
+        parent_layer_id=4,
         geoid_length=7,
         code_field="SDUNI",
         code_length=5,
@@ -178,6 +220,7 @@ TIGER_LAYERS_2025: Mapping[TigerGeography, TigerLayerSpec] = {
         service_name="School",
         layer_id=6,
         layer_name="Secondary School Districts",
+        parent_layer_id=4,
         geoid_length=7,
         code_field="SDSEC",
         code_length=5,
@@ -190,6 +233,7 @@ TIGER_LAYERS_2025: Mapping[TigerGeography, TigerLayerSpec] = {
         service_name="School",
         layer_id=7,
         layer_name="Elementary School Districts",
+        parent_layer_id=4,
         geoid_length=7,
         code_field="SDELM",
         code_length=5,
@@ -321,12 +365,151 @@ class TigerAdapter:
         *,
         force: bool = False,
     ) -> bytes | None:
-        """Fetch raw source bytes; ``None`` means HTTP 304/not modified."""
+        """Validate layer identity, then fetch raw source attributes."""
 
         spec = self.get_spec(geography_type)
+        metadata_payload = await downloader.fetch_bytes(
+            spec.metadata_url, force=True
+        )
+        if metadata_payload is None:
+            raise TigerSourceResponseError(
+                "TIGERweb layer metadata preflight returned no payload"
+            )
+        self.verify_layer_metadata(geography_type, metadata_payload)
         return await downloader.fetch_bytes(
             self.build_query_url(spec), force=force
         )
+
+    def verify_layer_metadata(
+        self,
+        geography_type: TigerGeography,
+        payload: bytes,
+    ) -> None:
+        """Fail closed if a numeric layer no longer matches its catalog."""
+
+        spec = self.get_spec(geography_type)
+        document = _load_json_object(payload, source_url=spec.metadata_url)
+
+        if "error" in document:
+            raise TigerSourceResponseError(
+                f"TIGERweb returned a layer metadata error for "
+                f"{geography_type.value}: {document['error']!r}"
+            )
+        if document.get("id") != spec.layer_id:
+            raise TigerSourceResponseError(
+                "TIGERweb layer metadata ID does not match the pinned catalog"
+            )
+        if document.get("name") != spec.layer_name:
+            raise TigerSourceResponseError(
+                "TIGERweb layer metadata name does not match the pinned catalog"
+            )
+        if document.get("type") != "Feature Layer":
+            raise TigerSourceResponseError(
+                "TIGERweb source must remain a Feature Layer"
+            )
+
+        parent_layer = document.get("parentLayer")
+        if not isinstance(parent_layer, Mapping):
+            raise TigerSourceResponseError(
+                "TIGERweb layer metadata must identify its parent vintage group"
+            )
+        if (
+            parent_layer.get("id") != spec.parent_layer_id
+            or parent_layer.get("name") != spec.parent_layer_name
+        ):
+            raise TigerSourceResponseError(
+                "TIGERweb layer metadata parent does not match the pinned "
+                f"{spec.parent_layer_name} group"
+            )
+
+        description = document.get("description")
+        if not isinstance(description, str):
+            raise TigerSourceResponseError(
+                "TIGERweb layer metadata description is missing"
+            )
+        normalized_description = " ".join(description.lower().split())
+        description_markers = (
+            "january 1",
+            spec.vintage.lower(),
+            "vintage",
+        )
+        if not all(
+            marker in normalized_description
+            for marker in description_markers
+        ):
+            raise TigerSourceResponseError(
+                "TIGERweb layer metadata description does not confirm the "
+                f"January 1, {spec.vintage} vintage"
+            )
+
+        capabilities = document.get("capabilities")
+        if not isinstance(capabilities, str) or "query" not in {
+            item.strip().lower() for item in capabilities.split(",")
+        }:
+            raise TigerSourceResponseError(
+                "TIGERweb layer metadata does not advertise Query capability"
+            )
+
+        max_record_count = document.get("maxRecordCount")
+        if (
+            not isinstance(max_record_count, int)
+            or isinstance(max_record_count, bool)
+            or max_record_count < self.result_record_count
+        ):
+            raise TigerSourceResponseError(
+                "TIGERweb layer maxRecordCount cannot satisfy the configured "
+                "national query"
+            )
+
+        fields = document.get("fields")
+        if not isinstance(fields, list):
+            raise TigerSourceResponseError(
+                "TIGERweb layer metadata must contain a fields list"
+            )
+        fields_by_name: dict[str, Mapping[str, Any]] = {}
+        for index, field in enumerate(fields):
+            if not isinstance(field, Mapping):
+                raise TigerSourceResponseError(
+                    f"TIGERweb layer metadata field {index} is not an object"
+                )
+            name = field.get("name")
+            if not isinstance(name, str) or not name:
+                raise TigerSourceResponseError(
+                    f"TIGERweb layer metadata field {index} has no name"
+                )
+            if name in fields_by_name:
+                raise TigerSourceResponseError(
+                    f"TIGERweb layer metadata repeats field {name!r}"
+                )
+            fields_by_name[name] = field
+
+        missing_fields = set(spec.query_fields).difference(fields_by_name)
+        if missing_fields:
+            missing_text = ", ".join(sorted(missing_fields))
+            raise TigerSourceResponseError(
+                "TIGERweb layer metadata is missing required fields: "
+                f"{missing_text}"
+            )
+
+        for name in spec.query_fields:
+            field = fields_by_name[name]
+            if field.get("type") != "esriFieldTypeString":
+                raise TigerSourceResponseError(
+                    f"TIGERweb field {name!r} must remain a string field"
+                )
+
+        for name, expected_length in spec.expected_field_lengths.items():
+            field = fields_by_name[name]
+            length = field.get("length")
+            if (
+                not isinstance(length, int)
+                or isinstance(length, bool)
+                or length != expected_length
+            ):
+                raise TigerSourceResponseError(
+                    f"TIGERweb field {name!r} must retain length "
+                    f"{expected_length}"
+                )
 
     def verify(
         self,

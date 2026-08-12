@@ -14,10 +14,10 @@ task: "Phase 4 — Task 4.2"
 ## Overview
 
 Implement the Phase 4.2 Census TIGER adapter as an offline-first source
-snapshot layer. The adapter fetches attributes from pinned, vintage-specific
-TIGERweb layers, verifies that a response is complete, caches the raw response
-with provenance and a checksum, and parses cached attributes into typed Python
-records plus structured row errors.
+snapshot layer. The adapter verifies each composite-service layer's live
+metadata contract before fetching attributes, verifies that the response is
+complete, caches the raw response with provenance and a checksum, and parses
+cached attributes into typed Python records plus structured row errors.
 
 The adapter is a source boundary. It does not resolve Government Units Survey
 records, construct OCD identifiers, instantiate canonical `Division` or
@@ -40,14 +40,16 @@ Related work:
 1. Support state, county, incorporated-place, county-subdivision, unified
    school-district, secondary school-district, and elementary
    school-district attributes.
-2. Keep the lifecycle explicit: `fetch -> verify -> cache -> parse`.
+2. Keep the lifecycle explicit: `metadata preflight -> fetch -> verify -> cache -> parse`.
 3. Run normal parsing and unit tests entirely from cached JSON fixtures.
 4. Preserve GEOID/FIPS/school codes as strings, including leading zeros.
 5. Retain source URL, service/layer identity, vintage, retrieval timestamp,
    record count, and SHA-256 checksum.
-6. Fail closed when TIGERweb reports an error, returns an empty national layer,
+6. Fail closed when a numeric layer no longer identifies the expected vintage,
+   geography, query capability, or field-width contract.
+7. Fail closed when TIGERweb reports an error, returns an empty national layer,
    omits requested fields, or indicates a transfer-limit truncation.
-7. Return one normalized record or one structured error for every input
+8. Return one normalized record or one structured error for every input
    feature; never silently drop source rows.
 
 ### Constraints
@@ -69,13 +71,21 @@ Related work:
 Pinned TIGERweb layer specification
                  |
                  v
+ Live layer metadata preflight
+ - ID and geography name
+ - parent ACS vintage group
+ - January 1 vintage description
+ - Query capability and record limit
+ - required string fields and widths
+                 |
+                 v
        Existing AsyncDownloader
                  |
                  v
         Raw ArcGIS JSON bytes
                  |
                  v
- Structural verification
+ Structural response verification
  - JSON object
  - no ArcGIS error
  - no transfer-limit truncation
@@ -101,9 +111,9 @@ layout; unit tests use `tmp_path`.
 
 ## Source Contract
 
-The first supported release is the January 1, 2025 vintage. Layer IDs are
-pinned to the `ACS 2025` groups rather than the mutable current-vintage
-MapServer layers:
+The first supported release is the January 1, 2025 vintage. The full-resolution
+TIGERweb services expose vintage groups inside composite MapServers, so their
+child layers are addressed by numeric IDs:
 
 | Geography | Service | Layer |
 | --- | --- | ---: |
@@ -115,14 +125,22 @@ MapServer layers:
 | Secondary school district | `School` | 6 |
 | Elementary school district | `School` | 7 |
 
-Each query requests only the identifiers and descriptive attributes needed by
-later normalization/resolution, orders by `GEOID`, requests no geometry, and
-sets the service-supported 100,000-record ceiling. The verifier rejects
-`exceededTransferLimit=true` so a future source-size change cannot create
-silent truncation.
+Before each source query, the adapter fetches the layer metadata endpoint and
+verifies that the numeric layer still has the expected layer ID and name,
+`ACS 2025` parent group, January 1 vintage description, Query capability,
+100,000-record capacity, required string fields, and exact field widths. This
+prevents a future composite-service reordering from silently relabeling another
+vintage as 2025.
 
-Adding another vintage requires a new explicit layer catalog. Reusing a
-mutable endpoint while relabeling it as an older vintage is not allowed.
+Each data query requests only the identifiers and descriptive attributes needed
+by later normalization/resolution, orders by `GEOID`, requests no geometry, and
+sets the service-supported 100,000-record ceiling. The response verifier rejects
+`exceededTransferLimit=true` so a future source-size change cannot create silent
+truncation.
+
+Adding another vintage requires a new explicit layer catalog and metadata
+contract. Reusing a mutable endpoint while relabeling it as an older vintage is
+not allowed.
 
 ## Module Contract
 
@@ -132,7 +150,7 @@ Primary types:
 
 - `TigerGeography`: supported source geography classes.
 - `TigerLayerSpec`: pinned service/layer/field contract.
-- `TigerAdapter`: fetch, verify, cache, refresh, and parse operations.
+- `TigerAdapter`: metadata preflight, fetch, verify, cache, refresh, and parse operations.
 - `TigerSnapshotMetadata`: provenance/checksum sidecar data.
 - `TigerRecord`: normalized TIGER attribute record.
 - `TigerParseError`: reviewable malformed/duplicate source row.
@@ -179,7 +197,7 @@ manifest and checksum pass validation. A 304 with no valid cache fails closed.
 
 | Risk | Mitigation |
 | --- | --- |
-| TIGERweb mutable current layers drift | Pin vintage-specific group layers. |
+| Composite TIGERweb layer IDs drift | Preflight live ID, parent vintage, description, capabilities, and field widths before querying. |
 | Service silently truncates a response | Reject `exceededTransferLimit=true`. |
 | Numeric conversion destroys leading zeros | Require exact-width strings. |
 | Network-dependent tests become flaky | Parse controlled JSON fixtures only. |
@@ -190,8 +208,11 @@ manifest and checksum pass validation. A 304 with no valid cache fails closed.
 ## Acceptance Criteria
 
 - All seven supported geography classes have pinned layer specifications.
+- Every fetch verifies live layer identity, parent vintage, capabilities, record
+  limit, required fields, and exact field widths before querying records.
 - Query URLs request attributes only and deterministic GEOID ordering.
-- Error, malformed, missing-field, and truncated responses fail verification.
+- Metadata drift, malformed responses, missing fields, and truncated responses
+  fail verification.
 - Snapshot and manifest writes are atomic.
 - Manifest checksum is verified before cache reuse or parsing.
 - Leading zeros survive fetch/cache/parse unchanged.

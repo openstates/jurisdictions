@@ -23,7 +23,7 @@ Design reference:
 
 ## Goals and Constraints
 
-- Implement the approved `fetch -> verify -> cache -> parse` boundary.
+- Implement the approved `metadata preflight -> fetch -> verify -> cache -> parse` boundary.
 - Reuse `AsyncDownloader` via dependency injection.
 - Pin the 2025 TIGERweb layer contracts.
 - Keep source codes as exact strings.
@@ -54,30 +54,37 @@ Work:
 
 - Add `TigerGeography`.
 - Add `TigerLayerSpec` and the 2025 layer catalog.
+- Pin each layer's composite-service parent group and field-width contract.
 - Add deterministic attributes-only query construction.
 - Reject unsupported vintages explicitly.
 
 Gate:
 
-- Tests cover all required layer classes and exact versioned layer IDs.
+- Tests cover all required layer classes, numeric layer IDs, parent group IDs,
+  and field-width contracts.
 - Query test proves `returnGeometry=false`, `orderByFields=GEOID`, and the
   expected field list.
 
-### Task 3 — Implement Fetch and Structural Verification
+### Task 3 — Implement Metadata Preflight, Fetch, and Structural Verification
 
 Work:
 
 - Inject the existing downloader-compatible `fetch_bytes` interface.
+- Fetch layer metadata before each record query.
+- Verify the layer ID/name, parent ACS vintage group, vintage description,
+  Query capability, record limit, required string fields, and exact widths.
 - Decode ArcGIS JSON responses.
 - Reject ArcGIS errors.
-- Reject missing or empty national `features` and malformed `attributes` structures.
+- Reject missing or empty national `features` and malformed `attributes`
+  structures.
 - Reject missing requested fields.
 - Reject transfer-limit truncation.
 
 Gate:
 
-- Unit tests cover success, source error, missing field, malformed JSON, and
-  `exceededTransferLimit=true`.
+- Unit tests cover metadata success for all seven classes; parent, description,
+  capability, record-limit, field, and width drift; source error; missing field;
+  malformed JSON; and `exceededTransferLimit=true`.
 
 ### Task 4 — Implement Atomic Cache and Manifest
 
@@ -161,7 +168,11 @@ Review gate:
 Required unit coverage:
 
 - layer catalog completeness;
-- pinned 2025 layer IDs;
+- pinned 2025 layer and parent group IDs;
+- metadata contract completeness for every query field;
+- metadata preflight order and forced metadata refresh;
+- parent-vintage, description, name, capability, record-limit, field, and width
+  drift rejection;
 - deterministic query parameters;
 - injected downloader use;
 - seven-geography fixture round trip;
