@@ -32,7 +32,12 @@ from src.utils.state_lookup import load_state_code_lookup
 from src.init_migration.download_manager import DownloadManager
 from src.init_migration.ocdid_matcher import OCDidMatcher, MatchResults, DEFAULT_DB_PATH
 from src.init_migration.generate_pipeline import GeneratePipeline
-from src.init_migration.pipeline_models import DIVISIONS_SHEET_CSV_URL, GeneratorReq
+from src.init_migration.pipeline_models import (
+    COUNTIES_SHEET_CSV_URL,
+    DIVISIONS_SHEET_CSV_URL,
+    STATES_SHEET_CSV_URL,
+    GeneratorReq,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -142,19 +147,29 @@ def print_summary(
     console.print(table)
 
 
-def _cache_validation_csv() -> Path:
-    """Download the validation CSV once and cache it to a tmp file.
+def _cache_validation_csv() -> list[Path]:
+    """Download each validation tab once and cache it to its own tmp file.
 
-    Without this, GeneratePipeline re-downloads the full sheet for every record.
+    Without this, GeneratePipeline re-downloads all three sheets for every record.
+
+    Returns:
+        Cached (divisions, states, counties) paths, in that order.
     """
-    cache_path = Path(tempfile.gettempdir()) / "phase3_validation.csv"
-    logger.info(f"Caching validation CSV from {DIVISIONS_SHEET_CSV_URL}")
+    sheets = (
+        ("phase3_validation.csv", DIVISIONS_SHEET_CSV_URL),
+        ("states_validation.csv", STATES_SHEET_CSV_URL),
+        ("counties_validation.csv", COUNTIES_SHEET_CSV_URL),
+    )
+    cache_paths = []
     with httpx.Client(timeout=120, follow_redirects=True) as client:
-        resp = client.get(DIVISIONS_SHEET_CSV_URL)
-        resp.raise_for_status()
-    cache_path.write_bytes(resp.content)
-    logger.info(f"Validation CSV cached at {cache_path} ({len(resp.content)} bytes)")
-    return cache_path
+        for filename, url in sheets:
+            cache_path = Path(tempfile.gettempdir()) / filename
+            resp = client.get(url)
+            resp.raise_for_status()
+            cache_path.write_bytes(resp.content)
+            logger.info(f"Validation CSV cached at {cache_path}")
+            cache_paths.append(cache_path)
+    return cache_paths
 
 
 GENERATION_TRACKING_PREFIX = "generation_tracking"
@@ -257,7 +272,7 @@ async def run_pipeline(args: argparse.Namespace) -> MatchResults:
     phase3_stats = {"success": 0, "skipped": 0, "partial": 0, "failed": 0}
     tracking_rows: list[tuple[str, str, str | None, str | None, str | None]] = []
     if match_results.matched:
-        validation_csv_path = _cache_validation_csv()
+        divisions_csv_path, states_csv_path, counties_csv_path = _cache_validation_csv()
         phase3_start = time.perf_counter()
         for ingest_resp in tqdm(
             match_results.matched,
@@ -266,7 +281,9 @@ async def run_pipeline(args: argparse.Namespace) -> MatchResults:
         ):
             req = GeneratorReq(
                 data=ingest_resp,
-                validation_data_filepath=str(validation_csv_path),
+                validation_data_division_filepath=str(divisions_csv_path),
+                validation_data_states_filepath=str(states_csv_path),
+                validation_data_counties_filepath=str(counties_csv_path),
             )
             pipeline = GeneratePipeline(req)
             try:
