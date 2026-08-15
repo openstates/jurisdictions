@@ -112,7 +112,7 @@ Division
 │   ├── geoid: str (Combined FIPS code)
 │   ├── geoid_12: Optional[str] (2010 vintage)
 │   ├── geoid_14: Optional[str] (2014 vintage)
-│   └── common_name: Optional[List[str]] (Alternative names)
+│   └── common_names: Optional[List[str]] (Alternative names)
 │
 └── metadata: DivisionMetadata
     └── population: Optional[Population]

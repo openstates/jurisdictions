@@ -61,7 +61,7 @@ class GovernmentIdentifiers(BaseModel):
     geoid: str
     geoid_12: Optional[str] = None
     geoid_14: Optional[str] = None
-    common_name: Optional[list[str]] = Field(
+    common_names: Optional[list[str]] = Field(
         default=None,
         description="The commonly used named for the place if different than the official NAMELSAD. Used for matching on alternative names for a locale.",
     )

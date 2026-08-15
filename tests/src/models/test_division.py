@@ -4,7 +4,7 @@ from uuid import NAMESPACE_URL, uuid4, uuid5
 from hypothesis import given
 from hypothesis import strategies as st
 
-from src.models.division import Division
+from src.models.division import Division, GovernmentIdentifiers
 
 
 @st.composite
@@ -49,3 +49,49 @@ def test_division_accepts_explicit_id() -> None:
         "ocd-division/country:us/state:wa/place:seattle", id_value=explicit_id
     )
     assert division.id == explicit_id
+
+
+def _minimal_government_identifiers(**overrides) -> GovernmentIdentifiers:
+    defaults = {
+        "namelsad": "Seattle city",
+        "statefp": "53",
+        "sldust": [],
+        "sldlst": [],
+        "countyfp": ["033"],
+        "county_names": ["King"],
+        "lsad": "25",
+        "geoid": "5363000",
+    }
+    defaults.update(overrides)
+    return GovernmentIdentifiers(**defaults)
+
+
+def test_government_identifiers_common_names_accepts_list() -> None:
+    gi = _minimal_government_identifiers(common_names=["Emerald City", "Jet City"])
+    assert gi.common_names == ["Emerald City", "Jet City"]
+    dumped = gi.model_dump(mode="json")
+    assert dumped["common_names"] == ["Emerald City", "Jet City"]
+
+
+def test_government_identifiers_common_names_defaults_to_none() -> None:
+    gi = _minimal_government_identifiers()
+    assert gi.common_names is None
+    assert gi.model_dump(mode="json")["common_names"] is None
+
+
+def test_government_identifiers_ignores_legacy_common_name_key() -> None:
+    gi = GovernmentIdentifiers.model_validate(
+        {
+            "namelsad": "Seattle city",
+            "statefp": "53",
+            "sldust": [],
+            "sldlst": [],
+            "countyfp": ["033"],
+            "county_names": ["King"],
+            "lsad": "25",
+            "geoid": "5363000",
+            "common_name": ["Emerald City"],
+        }
+    )
+    assert gi.common_names is None
+    assert "common_name" not in gi.model_dump(mode="json")

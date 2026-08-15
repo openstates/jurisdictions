@@ -300,7 +300,7 @@ class DivGenerator:
 
             # Remove null optional GovernmentIdentifiers fields
             gov_ids = data.get("government_identifiers") or {}
-            for field in ("cousubfp", "placefp", "geoid_12", "geoid_14", "common_name"):
+            for field in ("cousubfp", "placefp", "geoid_12", "geoid_14", "common_names"):
                 if field in gov_ids and gov_ids[field] is None:
                     del gov_ids[field]
             data["government_identifiers"] = gov_ids

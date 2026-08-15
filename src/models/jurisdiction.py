@@ -160,7 +160,7 @@ class Jurisdiction(BaseModel):
     )
     term: Optional[TermDetail] = Field(
         default=None,
-        description="The details of the terms for elected officials representing this jurisdiction. ",
+        description="The details of the terms for elected officials representing this jurisdiction if applicable otherwise omit.",
     )
     accurate_asof: Optional[datetime] = Field(
         default=None,
