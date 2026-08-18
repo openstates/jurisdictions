@@ -1,0 +1,107 @@
+{
+  "generated_at": "2026-08-18T23:23:07.403471+00:00",
+  "tables": [
+    {
+      "name": "local_ocdids",
+      "partitioned_by": "state",
+      "rows": 815,
+      "bytes": 13847,
+      "files": {
+        "ak": "local_ocdids/state=ak/data_0.parquet",
+        "al": "local_ocdids/state=al/data_0.parquet",
+        "az": "local_ocdids/state=az/data_0.parquet",
+        "wa": "local_ocdids/state=wa/data_0.parquet"
+      }
+    },
+    {
+      "name": "master_ocdids",
+      "partitioned_by": "state",
+      "rows": 194950,
+      "bytes": 4337185,
+      "files": {
+        "": "master_ocdids/state=/data_0.parquet",
+        "ak": "master_ocdids/state=ak/data_0.parquet",
+        "al": "master_ocdids/state=al/data_0.parquet",
+        "ar": "master_ocdids/state=ar/data_0.parquet",
+        "as": "master_ocdids/state=as/data_0.parquet",
+        "az": "master_ocdids/state=az/data_0.parquet",
+        "ca": "master_ocdids/state=ca/data_0.parquet",
+        "co": "master_ocdids/state=co/data_0.parquet",
+        "ct": "master_ocdids/state=ct/data_0.parquet",
+        "dc": "master_ocdids/state=dc/data_0.parquet",
+        "de": "master_ocdids/state=de/data_0.parquet",
+        "fl": "master_ocdids/state=fl/data_0.parquet",
+        "ga": "master_ocdids/state=ga/data_0.parquet",
+        "gu": "master_ocdids/state=gu/data_0.parquet",
+        "hi": "master_ocdids/state=hi/data_0.parquet",
+        "ia": "master_ocdids/state=ia/data_0.parquet",
+        "id": "master_ocdids/state=id/data_0.parquet",
+        "il": "master_ocdids/state=il/data_0.parquet",
+        "in": "master_ocdids/state=in/data_0.parquet",
+        "ks": "master_ocdids/state=ks/data_0.parquet",
+        "ky": "master_ocdids/state=ky/data_0.parquet",
+        "la": "master_ocdids/state=la/data_0.parquet",
+        "ma": "master_ocdids/state=ma/data_0.parquet",
+        "md": "master_ocdids/state=md/data_0.parquet",
+        "me": "master_ocdids/state=me/data_0.parquet",
+        "mi": "master_ocdids/state=mi/data_0.parquet",
+        "mn": "master_ocdids/state=mn/data_0.parquet",
+        "mo": "master_ocdids/state=mo/data_0.parquet",
+        "mp": "master_ocdids/state=mp/data_0.parquet",
+        "ms": "master_ocdids/state=ms/data_0.parquet",
+        "mt": "master_ocdids/state=mt/data_0.parquet",
+        "nc": "master_ocdids/state=nc/data_0.parquet",
+        "nd": "master_ocdids/state=nd/data_0.parquet",
+        "ne": "master_ocdids/state=ne/data_0.parquet",
+        "nh": "master_ocdids/state=nh/data_0.parquet",
+        "nj": "master_ocdids/state=nj/data_0.parquet",
+        "nm": "master_ocdids/state=nm/data_0.parquet",
+        "nv": "master_ocdids/state=nv/data_0.parquet",
+        "ny": "master_ocdids/state=ny/data_0.parquet",
+        "oh": "master_ocdids/state=oh/data_0.parquet",
+        "ok": "master_ocdids/state=ok/data_0.parquet",
+        "or": "master_ocdids/state=or/data_0.parquet",
+        "pa": "master_ocdids/state=pa/data_0.parquet",
+        "pr": "master_ocdids/state=pr/data_0.parquet",
+        "ri": "master_ocdids/state=ri/data_0.parquet",
+        "sc": "master_ocdids/state=sc/data_0.parquet",
+        "sd": "master_ocdids/state=sd/data_0.parquet",
+        "tn": "master_ocdids/state=tn/data_0.parquet",
+        "tx": "master_ocdids/state=tx/data_0.parquet",
+        "ut": "master_ocdids/state=ut/data_0.parquet",
+        "va": "master_ocdids/state=va/data_0.parquet",
+        "vi": "master_ocdids/state=vi/data_0.parquet",
+        "vt": "master_ocdids/state=vt/data_0.parquet",
+        "wa": "master_ocdids/state=wa/data_0.parquet",
+        "wi": "master_ocdids/state=wi/data_0.parquet",
+        "wv": "master_ocdids/state=wv/data_0.parquet",
+        "wy": "master_ocdids/state=wy/data_0.parquet"
+      }
+    },
+    {
+      "name": "ocdid_uuid_lookup",
+      "partitioned_by": "state",
+      "rows": 655,
+      "bytes": 38373,
+      "files": {
+        "ak": "ocdid_uuid_lookup/state=ak/data_0.parquet",
+        "al": "ocdid_uuid_lookup/state=al/data_0.parquet",
+        "az": "ocdid_uuid_lookup/state=az/data_0.parquet",
+        "wa": "ocdid_uuid_lookup/state=wa/data_0.parquet"
+      }
+    },
+    {
+      "name": "local_orphans",
+      "partitioned_by": "state",
+      "rows": 0,
+      "bytes": 0,
+      "files": {}
+    },
+    {
+      "name": "master_orphans",
+      "file": "master_orphans.parquet",
+      "rows": 208941,
+      "bytes": 2129776
+    }
+  ]
+}

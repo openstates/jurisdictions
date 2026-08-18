@@ -117,6 +117,3 @@ def export_to_parquet(duckdb_path, out_dir):
         conn.close()
 
     write_manifest(out_dir, manifest_tables)
-
-if __name__ == "__main__":
-    generate_parquet_files()
