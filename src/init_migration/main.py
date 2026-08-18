@@ -30,14 +30,19 @@ from tqdm import tqdm
 
 from src.utils.state_lookup import load_state_code_lookup
 from src.init_migration.download_manager import DownloadManager
-from src.init_migration.ocdid_matcher import OCDidMatcher, MatchResults, DEFAULT_DB_PATH
+from src.init_migration.ocdid_matcher import OCDidMatcher, MatchResults, DEFAULT_DB_PATH, DEFAULT_PARQUET_PATH
 from src.init_migration.generate_pipeline import GeneratePipeline
+<<<<<<< HEAD
 from src.init_migration.pipeline_models import (
     COUNTIES_SHEET_CSV_URL,
     DIVISIONS_SHEET_CSV_URL,
     STATES_SHEET_CSV_URL,
     GeneratorReq,
 )
+=======
+from src.init_migration.pipeline_models import DIVISIONS_SHEET_CSV_URL, GeneratorReq
+from src.utils.parquet import export_to_parquet 
+>>>>>>> 238f3a5 (add parquet export as phase 5, end of init_migration)
 
 logger = logging.getLogger(__name__)
 
@@ -316,6 +321,11 @@ async def run_pipeline(args: argparse.Namespace) -> MatchResults:
         )
         # Phase 4
         store_generation_tracking(tracking_rows)
+
+        # Phase 5
+        # Using generated duckdb, generate parquet files
+        export_to_parquet(duckdb_path=DEFAULT_DB_PATH, out_dir=DEFAULT_PARQUET_PATH)
+
 
     total_elapsed = time.perf_counter() - pipeline_start
     # Summary
