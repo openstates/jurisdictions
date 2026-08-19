@@ -15,6 +15,16 @@ function absUrl(relativePath) {
 
 // DuckDB-Wasm init + registering Parquet views from the published manifest.
 export const Dataset = {
+  // Call this immediately at page load, in parallel with initDb() — it's a
+  // plain HTTP fetch with no dependency on DuckDB being ready, so there's no
+  // reason to wait for WASM init before starting it. Pass the returned
+  // promise into registerViews() once the connection is ready.
+  async fetchManifest() {
+    const resp = await fetch(DATA_BASE + "manifest.json");
+    if (!resp.ok) throw new Error(`Failed to load manifest.json (${resp.status})`);
+    return resp.json();
+  },
+
   async initDb() {
     const bundles = duckdb.getJsDelivrBundles();
     const bundle = await duckdb.selectBundle(bundles);
@@ -32,17 +42,15 @@ export const Dataset = {
     return db;
   },
 
-  async registerViews(conn) {
-    const manifestResp = await fetch(DATA_BASE + "manifest.json");
-    if (!manifestResp.ok) {
-      throw new Error(`Failed to load manifest.json (${manifestResp.status})`);
-    }
-    const manifest = await manifestResp.json();
+  async registerViews(conn, manifestPromise) {
+    const manifest = await manifestPromise;
 
     const tableNames = [];
-    // Row counts are computed once at export time (export_data.py) and
-    // published in the manifest — reuse them rather than re-counting live.
+    // Row counts and column schema are both computed once at export time
+    // (src/utils/parquet.py) and published in the manifest — reuse them
+    // rather than re-deriving live in the browser.
     const rowCounts = new Map();
+    const manifestTables = [];
     for (const entry of manifest.tables) {
       const safeName = `"${entry.name.replace(/"/g, '""')}"`;
 
@@ -68,7 +76,8 @@ export const Dataset = {
       }
       tableNames.push(entry.name);
       rowCounts.set(entry.name, entry.rows);
+      manifestTables.push(entry);
     }
-    return { tableNames, rowCounts };
+    return { tableNames, rowCounts, manifestTables };
   },
 };

@@ -1,17 +1,31 @@
 {
-  "generated_at": "2026-08-18T23:23:07.403471+00:00",
+  "generated_at": "2026-08-18T23:54:21.892696+00:00",
   "tables": [
     {
       "name": "local_ocdids",
       "partitioned_by": "state",
-      "rows": 815,
+      "rows": 495,
       "bytes": 13847,
       "files": {
         "ak": "local_ocdids/state=ak/data_0.parquet",
         "al": "local_ocdids/state=al/data_0.parquet",
         "az": "local_ocdids/state=az/data_0.parquet",
         "wa": "local_ocdids/state=wa/data_0.parquet"
-      }
+      },
+      "columns": [
+        {
+          "name": "id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "state",
+          "type": "VARCHAR"
+        }
+      ]
     },
     {
       "name": "master_ocdids",
@@ -76,32 +90,160 @@
         "wi": "master_ocdids/state=wi/data_0.parquet",
         "wv": "master_ocdids/state=wv/data_0.parquet",
         "wy": "master_ocdids/state=wy/data_0.parquet"
-      }
+      },
+      "columns": [
+        {
+          "name": "id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "sameAs",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "sameAsNote",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validThrough",
+          "type": "DATE"
+        },
+        {
+          "name": "census_geoid",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "census_geoid_12",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "census_geoid_14",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "openstates_district",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "placeholder_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "sch_dist_stateid",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "state_id",
+          "type": "BIGINT"
+        },
+        {
+          "name": "validFrom",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "state",
+          "type": "VARCHAR"
+        }
+      ]
     },
     {
       "name": "ocdid_uuid_lookup",
       "partitioned_by": "state",
-      "rows": 655,
+      "rows": 495,
       "bytes": 38373,
       "files": {
         "ak": "ocdid_uuid_lookup/state=ak/data_0.parquet",
         "al": "ocdid_uuid_lookup/state=al/data_0.parquet",
         "az": "ocdid_uuid_lookup/state=az/data_0.parquet",
         "wa": "ocdid_uuid_lookup/state=wa/data_0.parquet"
-      }
+      },
+      "columns": [
+        {
+          "name": "uuid",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "ocdid",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "state",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR"
+        }
+      ]
     },
     {
       "name": "local_orphans",
       "partitioned_by": "state",
       "rows": 0,
       "bytes": 0,
-      "files": {}
+      "files": {},
+      "columns": [
+        {
+          "name": "id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "state",
+          "type": "VARCHAR"
+        }
+      ]
     },
     {
       "name": "master_orphans",
       "file": "master_orphans.parquet",
-      "rows": 208941,
-      "bytes": 2129776
+      "rows": 387114,
+      "bytes": 2722698,
+      "columns": [
+        {
+          "name": "id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR"
+        }
+      ]
+    },
+    {
+      "name": "generation_tracking_2026_08_18",
+      "file": "generation_tracking_2026_08_18.parquet",
+      "rows": 495,
+      "bytes": 15356,
+      "columns": [
+        {
+          "name": "original_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "error",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "division_path",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "jurisdiction_path",
+          "type": "VARCHAR"
+        }
+      ]
     }
   ]
 }

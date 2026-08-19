@@ -13,48 +13,29 @@ function typeCategory(type) {
   return "other";
 }
 
-function groupByTable(schemaRows) {
-  const byTable = new Map();
-  for (const { table, column, type } of schemaRows) {
-    if (!byTable.has(table)) byTable.set(table, []);
-    byTable.get(table).push({ column, type });
-  }
-  return byTable;
-}
-
-// Lists registered tables + columns, queried live via information_schema
-// against the in-browser DuckDB instance (not a static/hardcoded list).
-// Rendered in two places: a compact, clickable name list near the top of
-// the page (renderNames), and the full column/type reference at the bottom
-// (renderDefinitions) — same underlying data, different level of detail.
+// Lists registered tables + columns, both sourced from manifest.json —
+// column name/type is computed once at export time (src/utils/parquet.py's
+// describe_columns) rather than queried live via information_schema, which
+// would mean touching every partition file's Parquet footer over the
+// network (60+ files across all tables) just to learn column names that
+// never change between exports. Rendered in two places: a compact,
+// clickable name list near the top (renderNames), and the full column/type
+// reference in the Definitions modal (renderDefinitions).
 export const SchemaPanel = {
   namesEl: document.getElementById("table-names-wrap"),
   definitionsEl: document.getElementById("table-definitions-wrap"),
 
-  async load(conn, tableNames) {
-    if (!tableNames.length) return [];
-    const nameList = tableNames.map((t) => `'${t.replace(/'/g, "''")}'`).join(", ");
-    const result = await conn.query(`
-      SELECT table_name, column_name, data_type
-      FROM information_schema.columns
-      WHERE table_name IN (${nameList})
-      ORDER BY table_name, ordinal_position
-    `);
-    return result.toArray().map((row) => ({
-      table: row.table_name,
-      column: row.column_name,
-      type: row.data_type,
-    }));
-  },
-
-  renderNames(schemaRows, rowCounts, onSelectTable) {
-    if (!schemaRows.length) {
+  // Only needs table names + row counts (both already free from the
+  // manifest) — deliberately does NOT depend on load()'s information_schema
+  // query, so the pills can render immediately without waiting on schema
+  // resolution across every registered table (57 files for master_ocdids).
+  renderNames(tableNames, rowCounts, onSelectTable) {
+    if (!tableNames.length) {
       this.namesEl.innerHTML = "";
       return;
     }
 
-    const byTable = groupByTable(schemaRows);
-    const pillsHtml = [...byTable.keys()]
+    const pillsHtml = tableNames
       .map((table) => {
         const rows = rowCounts.get(table);
         const rowsLabel = rows === undefined ? "" : ` (${rows.toLocaleString()})`;
@@ -69,28 +50,29 @@ export const SchemaPanel = {
     });
   },
 
-  renderDefinitions(schemaRows, rowCounts) {
-    if (!schemaRows.length) {
+  // manifestTables: the manifest.json "tables" entries for whichever tables
+  // actually got registered as views (each has name/rows/columns already —
+  // no DB query involved).
+  renderDefinitions(manifestTables) {
+    if (!manifestTables.length) {
       this.definitionsEl.innerHTML = "";
       return;
     }
 
-    const byTable = groupByTable(schemaRows);
-    const tablesHtml = [...byTable.entries()]
-      .map(([table, cols]) => {
-        const colsHtml = cols
+    const tablesHtml = manifestTables
+      .map((t) => {
+        const colsHtml = (t.columns || [])
           .map((c) => {
             const category = typeCategory(c.type);
-            return `${escapeHtml(c.column)} <span class="type-badge type-badge--${category}">${escapeHtml(c.type)}</span>`;
+            return `${escapeHtml(c.name)} <span class="type-badge type-badge--${category}">${escapeHtml(c.type)}</span>`;
           })
           .join(", ");
-        const rows = rowCounts.get(table);
-        const rowCountHtml = rows === undefined
+        const rowCountHtml = t.rows === undefined
           ? ""
-          : `<div class="schema-row-count">${rows.toLocaleString()} row${rows === 1 ? "" : "s"}</div>`;
+          : `<div class="schema-row-count">${t.rows.toLocaleString()} row${t.rows === 1 ? "" : "s"}</div>`;
         return `
           <div class="schema-table">
-            <div class="def-table-name">${escapeHtml(table)}</div>
+            <div class="def-table-name">${escapeHtml(t.name)}</div>
             ${rowCountHtml}
             <div class="schema-columns">${colsHtml}</div>
           </div>

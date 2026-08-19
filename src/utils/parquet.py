@@ -33,6 +33,16 @@ TABLE_CONFIG = [
     TableExportConfig(name="master_orphans", partition_col=None, sort_cols=["id"]),
 ]
 
+def describe_columns(conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig) -> list[dict]:
+    """Column name/type for what actually gets exported (post-select_expr),
+    so computed columns like master_ocdids' derived `state` are included —
+    reuses the same select_expr the COPY statement runs, so this can't
+    drift out of sync with the real output schema.
+    """
+    result = conn.execute(f"DESCRIBE SELECT {cfg.select_expr} FROM {cfg.name}")
+    return [{"name": row[0], "type": row[1]} for row in result.fetchall()]
+
+
 def export_single(conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig, out_dir: str) -> dict:
     file_name = f"{cfg.name}.parquet"
     file_path = Path(out_dir) / file_name
@@ -49,6 +59,7 @@ def export_single(conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig, out_d
         "file": file_name,
         "rows": row_count,
         "bytes": file_path.stat().st_size,
+        "columns": describe_columns(conn, cfg),
     }
 
 def export_partitioned(conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig, out_dir: str) -> dict:
@@ -75,6 +86,7 @@ def export_partitioned(conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig, 
         "rows": row_count,
         "bytes": total_bytes,
         "files": files,
+        "columns": describe_columns(conn, cfg),
     }
 
 def write_manifest(out_dir: str, entries: list[dict]) -> Path:

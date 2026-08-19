@@ -30,21 +30,24 @@ document.getElementById("history-toggle").addEventListener("click", () => {
 
 (async () => {
   try {
+    // Kicked off before WASM init — manifest.json has no dependency on
+    // DuckDB being ready, so there's no reason to wait for it. Both
+    // requests run concurrently instead of back-to-back.
+    const manifestPromise = Dataset.fetchManifest();
+
     const db = await Dataset.initDb();
     const conn = await db.connect();
     QueryRunner.init(conn);
 
     statusEl.textContent = "Loading dataset manifest…";
-    const { tableNames, rowCounts } = await Dataset.registerViews(conn);
+    const { tableNames, rowCounts, manifestTables } = await Dataset.registerViews(conn, manifestPromise);
 
-    statusEl.textContent = "Loading table schema…";
-    const schemaRows = await SchemaPanel.load(conn, tableNames);
     const onSelectTable = (table) => {
       QueryRunner.setQuery(`SELECT * FROM ${table};`);
       QueryRunner.run();
     };
-    SchemaPanel.renderNames(schemaRows, rowCounts, onSelectTable);
-    SchemaPanel.renderDefinitions(schemaRows, rowCounts);
+    SchemaPanel.renderNames(tableNames, rowCounts, onSelectTable);
+    SchemaPanel.renderDefinitions(manifestTables);
 
     Examples.render((sql) => {
       QueryRunner.setQuery(sql);
