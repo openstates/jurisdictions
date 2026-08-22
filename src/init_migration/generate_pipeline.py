@@ -14,13 +14,13 @@ Responsibilities:
 
 import logging
 from pathlib import Path
-import re
 from src.init_migration.pipeline_models import (
     GeneratorReq,
     GeneratorResp,
     GeneratorStatus,
     Status,
 )
+from src.init_migration.jurisdiction_seed import derive_jurisdiction_ocdid
 from src.init_migration.generate_division import DivGenerator
 from src.init_migration.generate_jurisdiction import JurGenerator
 from src.init_migration.generate_recursive import ensure_ancestor_stubs
@@ -451,7 +451,7 @@ class GeneratePipeline:
                 )
                 if seed.has_jurisdiction:
                     classification = seed.classification or "government"
-                    jurisdiction_ocdid = self._derive_jurisdiction_ocdid(
+                    jurisdiction_ocdid = derive_jurisdiction_ocdid(
                         self.division.ocdid, classification
                     )
                     if not self.jurisdiction_exists(jurisdiction_ocdid):
@@ -507,24 +507,6 @@ class GeneratePipeline:
             logger.exception(f"Pipeline failed for {self.data.ocdid.raw_ocdid}")
             response.status = GeneratorStatus(status=Status.FAILED, error=str(e))
             return response
-
-    def _derive_jurisdiction_ocdid(
-        self, division_ocdid: str, classification: str = "government"
-    ) -> str:
-        """Derive jurisdiction ocd_id from division ocd_id.
-
-        Schema: ocd-jurisdiction/<division_without_prefix>/<classification>
-
-        Args:
-            division_ocdid: Division OCD ID
-            classification: Jurisdiction classification (from JurisdictionSeed)
-
-        Returns:
-            Jurisdiction OCD ID
-        """
-        division_part = division_ocdid.replace("ocd-division/", "")
-        division_part = re.sub(r"/council_district:[^/]+", "", division_part)
-        return f"ocd-jurisdiction/{division_part}/{classification}"
 
     def save_quarantine_data(self, output_dir: Path | None = None) -> None:
         """Save quarantine data to CSV files for researcher review.
