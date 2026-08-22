@@ -81,7 +81,7 @@ def test_stub_exists_empty_dir(tmp_path: Path):
 def test_stub_exists_match(tmp_path: Path):
     """Returns True when a YAML file contains a matching ocdid field."""
     ocdid = "ocd-division/country:us/state:wa"
-    stub = tmp_path / "washington_state_stub.yaml"
+    stub = tmp_path / "washington_state_67ec4ce3-3799-5980-a12f-c5c45c9229c3.yaml"
     stub.write_text(
         yaml.dump({"ocdid": ocdid, "display_name": "Washington"}), encoding="utf-8"
     )
@@ -90,7 +90,7 @@ def test_stub_exists_match(tmp_path: Path):
 
 def test_stub_exists_no_match(tmp_path: Path):
     """Returns False when YAML files exist but none matches the given ocdid."""
-    stub = tmp_path / "oregon_stub.yaml"
+    stub = tmp_path / "oregon_67ec4ce3-3799-5980-a12f-c5c45c9229c3.yaml"
     stub.write_text(
         yaml.dump({"ocdid": "ocd-division/country:us/state:or"}),
         encoding="utf-8",
@@ -127,11 +127,15 @@ def test_ensure_ancestor_stubs_creates_state_stub(tmp_path: Path):
     assert jur_path.exists()
 
     div_data = yaml.safe_load(div_path.read_text(encoding="utf-8"))
+    assert div_path.name.endswith(f"_{div_data['id']}.yaml")
+    assert "_stub" not in div_path.name
     assert div_data["ocdid"] == "ocd-division/country:us/state:wa"
     assert div_data["country"] == "us"
     assert div_data["display_name"]  # non-empty
 
     jur_data = yaml.safe_load(jur_path.read_text(encoding="utf-8"))
+    assert jur_path.name.endswith(f"_{jur_data['id']}.yaml")
+    assert "_stub" not in jur_path.name
     assert jur_data["ocdid"] == "ocd-jurisdiction/country:us/state:wa/government"
     assert jur_data["classification"] == "government"
 

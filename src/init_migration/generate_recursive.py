@@ -136,7 +136,7 @@ def _write_stub_division(
     data = division.model_dump(exclude_none=False, mode="json")
     div_dir.mkdir(parents=True, exist_ok=True)
     safe_name = display_name.lower().replace(" ", "_")
-    path = div_dir / f"{safe_name}_stub.yaml"
+    path = div_dir / f"{safe_name}_{division.id}.yaml"
     path.write_text(
         yaml.dump(data, default_flow_style=False, sort_keys=False), encoding="utf-8"
     )
@@ -187,7 +187,7 @@ def _write_stub_jurisdiction(
     data = jurisdiction.model_dump(mode="json", exclude_none=True)
     jur_dir.mkdir(parents=True, exist_ok=True)
     safe_name = display_name.lower().replace(" ", "_")
-    path = jur_dir / f"{safe_name}_stub.yaml"
+    path = jur_dir / f"{safe_name}_{jurisdiction.id}.yaml"
     path.write_text(
         yaml.dump(data, default_flow_style=False, sort_keys=False), encoding="utf-8"
     )
