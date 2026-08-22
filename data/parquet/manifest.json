@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-18T23:54:21.892696+00:00",
+  "generated_at": "2026-08-22T17:47:23.668086+00:00",
   "tables": [
     {
       "name": "local_ocdids",
@@ -204,8 +204,8 @@
     {
       "name": "master_orphans",
       "file": "master_orphans.parquet",
-      "rows": 387114,
-      "bytes": 2722698,
+      "rows": 193557,
+      "bytes": 2106649,
       "columns": [
         {
           "name": "id",
@@ -218,10 +218,10 @@
       ]
     },
     {
-      "name": "generation_tracking_2026_08_18",
-      "file": "generation_tracking_2026_08_18.parquet",
+      "name": "generation_tracking_2026_08_22",
+      "file": "generation_tracking_2026_08_22.parquet",
       "rows": 495,
-      "bytes": 15356,
+      "bytes": 15322,
       "columns": [
         {
           "name": "original_id",
