@@ -35,7 +35,7 @@ class Organization(BaseModel):
     """
     
     name: str
-    common_names: Optional[List[str]] = Field(
+    other_names: Optional[List[str]] = Field(
         default=None,
         description="Commonly used names for the organization, if different from the official name. Provide as a list of strings to support search functionality and matching."
     )
