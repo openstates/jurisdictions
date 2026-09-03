@@ -42,29 +42,40 @@ class DivisionMetadata(BaseModel):
     population: Optional[Population] = None
 
 
-class GovernmentIdentifiers(BaseModel):
-    """
-    Census designated identifiers for the locale.
+class Identifier(BaseModel):
+    """A single external identifier from a specific authority.
+
+    ``value`` is always a string so leading-zero identifiers (Census FIPS,
+    GEOIDs, LEA IDs) round-trip exactly.
     """
 
-    namelsad: str = Field(
-        description="The Census designated legal name for the geo political entity associated with a given locale."
+    authority: str = Field(
+        description="Authority/provider slug (e.g. 'census', 'nces', 'dcgis')."
     )
-    statefp: str
-    sldust: list[str]
-    sldlst: list[str]
-    countyfp: list[str]
-    county_names: list[str]
-    cousubfp: Optional[str] = None
-    placefp: Optional[str] = None
-    lsad: str
-    geoid: str
-    geoid_12: Optional[str] = None
-    geoid_14: Optional[str] = None
-    common_names: Optional[list[str]] = Field(
-        default=None,
-        description="The commonly used named for the place if different than the official NAMELSAD. Used for matching on alternative names for a locale.",
+    id_type: str = Field(
+        description="Identifier type within the authority (e.g. 'geoid', 'statefp', 'placefp', 'lea')."
     )
+    value: str = Field(
+        description="Identifier value as a string; leading zeros preserved."
+    )
+    source: SourceObj = Field(description="Provenance for this identifier.")
+
+
+Identifiers = list[Identifier]
+
+
+def find_identifier(
+    identifiers: Identifiers | None,
+    id_type: str,
+    authority: str = "census",
+) -> str | None:
+    """Return the first matching identifier value, or None."""
+    if not identifiers:
+        return None
+    for ident in identifiers:
+        if ident.authority == authority and ident.id_type == id_type:
+            return ident.value
+    return None
 
 
 class Geometry(BaseModel):
@@ -134,9 +145,9 @@ class Division(BaseModel):
         None,
         description="Any other useful information that a researcher feels should be included.",
     )
-    government_identifiers: Optional[GovernmentIdentifiers] = Field(
+    government_identifiers: Optional[Identifiers] = Field(
         None,
-        description="A dictionary of the  code(s) (i.e. Census state_code, fips_code, geoid, etc.) official name in snake_case and the value. Can include more than one key.",
+        description="Provider-neutral list of external identifiers (Census FIPS/GEOIDs, LEA IDs, DCGIS ANC IDs, etc.). Each entry carries its own SourceObj.",
     )
     jurisdiction_id: str
 
@@ -161,15 +172,12 @@ class Division(BaseModel):
 
     # Untested
     def dump_division(self, base_dir: str | Path = PROJECT_PATH):
-        if not self.government_identifiers:
-            raise ValueError("A geoid is required to store a division obect.")
+        geoid = find_identifier(self.government_identifiers, "geoid")
+        if not geoid:
+            raise ValueError("A census geoid identifier is required to store a division object.")
         base_path = Path(base_dir)
         base_path.mkdir(parents=True, exist_ok=True)
-        filepath = (
-            base_path
-            / f"{self.display_name}_{self.government_identifiers.geoid}_{self.id}.yaml"
-        )
-        # Convert model to dict and ensure UUID is converted to string
+        filepath = base_path / f"{self.display_name}_{geoid}_{self.id}.yaml"
         data = self.model_dump(exclude_none=False, mode="json")
         with open(filepath, "w") as f:
             yaml.safe_dump(data, f)

@@ -11,8 +11,8 @@ Responsibilities:
 
 from src.init_migration.pipeline_models import GeneratorReq
 from src.utils.ocdid import ocdid_parser
-from src.models.division import Division
-from src.models.source import SourceType
+from src.models.division import Division, Identifier, find_identifier
+from src.models.source import SourceObj, SourceType
 from src.utils.state_lookup import load_state_code_lookup
 from src.utils.place_name import coerce_lsad_code, namelsad_to_display_name
 from pathlib import Path
@@ -24,6 +24,53 @@ import re
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
+
+
+def _build_census_identifiers(
+    *,
+    namelsad: str,
+    statefp: str,
+    lsad: str,
+    geoid: str,
+    source: SourceObj,
+    sldust: list[str] | None = None,
+    sldlst: list[str] | None = None,
+    countyfp: list[str] | None = None,
+    county_names: list[str] | None = None,
+    cousubfp: str | None = None,
+    placefp: str | None = None,
+) -> list[Identifier]:
+    """Assemble ``Identifier`` records for the Census authority from CSV fields.
+
+    Empty scalar strings and empty lists produce no entry, so downstream YAML
+    stays compact.
+    """
+    identifiers: list[Identifier] = []
+
+    def _add(id_type: str, value: str) -> None:
+        if value:
+            identifiers.append(
+                Identifier(
+                    authority="census", id_type=id_type, value=value, source=source
+                )
+            )
+
+    _add("namelsad", namelsad)
+    _add("statefp", statefp)
+    _add("lsad", lsad)
+    _add("geoid", geoid)
+    _add("cousubfp", cousubfp or "")
+    _add("placefp", placefp or "")
+    for value in sldust or []:
+        _add("sldust", value)
+    for value in sldlst or []:
+        _add("sldlst", value)
+    for value in countyfp or []:
+        _add("countyfp", value)
+    for value in county_names or []:
+        _add("county_names", value)
+
+    return identifiers
 
 
 def get_division_filename(display_name: str, geoid: str, uuid: UUID) -> str:
@@ -103,6 +150,43 @@ class DivGenerator:
                 )
                 return self._load_existing_division(raw_ocdid)
 
+            civicdata_source = SourceObj(
+                field=["government_identifiers"],
+                source_name="civicdata.tech",
+                source_url={
+                    "civicdata": "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/"
+                },
+                source_type=SourceType.HUMAN,
+                source_description="Human-researched validation data from civicdata.tech",
+            )
+            identifiers = _build_census_identifiers(
+                namelsad=namelsad,
+                statefp=statefp,
+                lsad=lsad,
+                geoid=geoid,
+                sldust=[
+                    v.strip()
+                    for v in (val_rec.get("SLDUST_list", "") or "").split("|")
+                    if v.strip()
+                ],
+                sldlst=[
+                    v.strip()
+                    for v in (val_rec.get("SLDLST_list", "") or "").split("|")
+                    if v.strip()
+                ],
+                countyfp=[
+                    v.strip()
+                    for v in (val_rec.get("COUNTYFP_list", "") or "").split("|")
+                    if v.strip()
+                ],
+                county_names=[
+                    v.strip()
+                    for v in (val_rec.get("COUNTY_NAMES", "") or "").split("|")
+                    if v.strip()
+                ],
+                source=civicdata_source,
+            )
+
             now = datetime.now(timezone.utc)
             self.division = Division(
                 ocdid=raw_ocdid,
@@ -111,43 +195,8 @@ class DivGenerator:
                 geometries=[],
                 also_known_as=[],
                 jurisdiction_id=self._derive_jurisdiction_id(raw_ocdid),
-                government_identifiers={
-                    "namelsad": namelsad,
-                    "statefp": statefp,
-                    "sldust": [
-                        v.strip()
-                        for v in (val_rec.get("SLDUST_list", "") or "").split("|")
-                        if v.strip()
-                    ],
-                    "sldlst": [
-                        v.strip()
-                        for v in (val_rec.get("SLDLST_list", "") or "").split("|")
-                        if v.strip()
-                    ],
-                    "countyfp": [
-                        v.strip()
-                        for v in (val_rec.get("COUNTYFP_list", "") or "").split("|")
-                        if v.strip()
-                    ],
-                    "county_names": [
-                        v.strip()
-                        for v in (val_rec.get("COUNTY_NAMES", "") or "").split("|")
-                        if v.strip()
-                    ],
-                    "lsad": lsad,
-                    "geoid": geoid,
-                },
-                sourcing=[
-                    {
-                        "field": ["government_identifiers"],
-                        "source_name": "civicdata.tech",
-                        "source_url": {
-                            "civicdata": "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/"
-                        },
-                        "source_type": SourceType.HUMAN,
-                        "source_description": "Human-researched validation data from civicdata.tech",
-                    }
-                ],
+                government_identifiers=identifiers,
+                sourcing=[civicdata_source],
                 accurate_asof=self.req.asof_datetime,
                 last_updated=now,
             )
@@ -193,6 +242,26 @@ class DivGenerator:
 
             place = parsed.get("place", "")
 
+            stub_source = SourceObj(
+                field=["ocdid"],
+                source_name="ocdid_ingest",
+                source_url={
+                    "ocd_repo": "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv"
+                },
+                source_type=SourceType.HUMAN,
+                source_description="Open Civic Data Master repo",
+            )
+            stub_geoid = (
+                f"{state_fips}{place.zfill(5)}" if state_fips and place else ""
+            )
+            identifiers = _build_census_identifiers(
+                namelsad=display_name,
+                statefp=state_fips,
+                lsad="",
+                geoid=stub_geoid,
+                source=stub_source,
+            )
+
             now = datetime.now(timezone.utc)
             self.division = Division(
                 ocdid=raw_ocdid,
@@ -201,29 +270,8 @@ class DivGenerator:
                 geometries=[],
                 also_known_as=[],
                 jurisdiction_id=self._derive_jurisdiction_id(raw_ocdid),
-                government_identifiers={
-                    "namelsad": display_name,
-                    "statefp": state_fips,
-                    "sldust": [],
-                    "sldlst": [],
-                    "countyfp": [],
-                    "county_names": [],
-                    "lsad": "",
-                    "geoid": (
-                        f"{state_fips}{place.zfill(5)}" if state_fips and place else ""
-                    ),
-                },
-                sourcing=[
-                    {
-                        "field": ["ocdid"],
-                        "source_name": "ocdid_ingest",
-                        "source_url": {
-                            "ocd_repo": "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv"
-                        },
-                        "source_type": SourceType.HUMAN,
-                        "source_description": "Open Civic Data Master repo",
-                    }
-                ],
+                government_identifiers=identifiers,
+                sourcing=[stub_source],
                 accurate_asof=self.req.asof_datetime,
                 last_updated=now,
             )
@@ -265,20 +313,12 @@ class DivGenerator:
     def dump_division(self, output_dir: Path | None = None) -> Path:
         """Serialize and save Division object to YAML file.
 
-        Excludes null optional GovernmentIdentifiers fields.
         Excludes ``metadata`` when None.
         """
         if not self.division:
             raise ValueError("Division object does not exist")
 
-        if not self.division.government_identifiers:
-            raise ValueError("government_identifiers required to save Division")
-
-        geoid = self.division.government_identifiers.geoid
-        # if not geoid:
-        #     raise ValueError(
-        #         "geoid required to generate filename — record should have been quarantined"
-        #     )
+        geoid = find_identifier(self.division.government_identifiers, "geoid") or ""
 
         try:
             filename = get_division_filename(
@@ -298,14 +338,6 @@ class DivGenerator:
 
             data = self.division.model_dump(mode="json", exclude_none=False)
 
-            # Remove null optional GovernmentIdentifiers fields
-            gov_ids = data.get("government_identifiers") or {}
-            for field in ("cousubfp", "placefp", "geoid_12", "geoid_14", "common_names"):
-                if field in gov_ids and gov_ids[field] is None:
-                    del gov_ids[field]
-            data["government_identifiers"] = gov_ids
-
-            # Exclude metadata when None
             if data.get("metadata") is None:
                 data.pop("metadata", None)
 

@@ -27,7 +27,7 @@ from src.init_migration.generate_recursive import ensure_ancestor_stubs
 from src.init_migration.jurisdiction_seed import infer_jurisdiction_seed
 from src.utils.ocdid import ocdid_parser
 from src.utils.place_name import namelsad_to_display_name
-from src.models.division import Division
+from src.models.division import Division, find_identifier
 from src.models.jurisdiction import Jurisdiction
 import polars as pl
 from pydantic import BaseModel
@@ -436,9 +436,9 @@ class GeneratePipeline:
             if self.division:
                 seed = infer_jurisdiction_seed(
                     ocdid=self.division.ocdid,
-                    lsad_code=self.division.government_identifiers.lsad
-                    if self.division.government_identifiers
-                    else None,
+                    lsad_code=find_identifier(
+                        self.division.government_identifiers, "lsad"
+                    ),
                 )
                 if seed.has_jurisdiction:
                     classification = seed.classification or "government"

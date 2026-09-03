@@ -18,12 +18,11 @@ from pathlib import Path
 
 import yaml
 
-from src.models.division import Division
+from src.models.division import Division, Identifier
 from src.models.ocdid import OCDIdParsed
-from src.models.source import SourceType
+from src.models.source import SourceObj, SourceType
 from src.utils.state_lookup import load_state_code_lookup
 from src.models.jurisdiction import ClassificationEnum, Jurisdiction
-from src.models.source import SourceObj
 from src.init_migration.pipeline_models import REPO_URL
 
 logger = logging.getLogger(__name__)
@@ -102,6 +101,40 @@ def _write_stub_division(
     """Write a placeholder Division YAML and return the file path."""
     jur_part = ancestor.raw_ocdid.replace("ocd-division/", "")
     now = datetime.now(timezone.utc)
+    stub_source = SourceObj(
+        field=["ocdid"],
+        source_name="ocdid_recursive_stub",
+        source_url={"ocd_repo": _OCD_REPO_URL},
+        source_type=SourceType.SCRAPED,
+        source_description="Placeholder stub — created by recursive ancestor traversal",
+    )
+    identifiers: list[Identifier] = []
+    if display_name:
+        identifiers.append(
+            Identifier(
+                authority="census",
+                id_type="namelsad",
+                value=display_name,
+                source=stub_source,
+            )
+        )
+    if state_fips:
+        identifiers.append(
+            Identifier(
+                authority="census",
+                id_type="statefp",
+                value=state_fips,
+                source=stub_source,
+            )
+        )
+        identifiers.append(
+            Identifier(
+                authority="census",
+                id_type="geoid",
+                value=state_fips,
+                source=stub_source,
+            )
+        )
     division = Division(
         ocdid=ancestor.raw_ocdid,
         country="us",
@@ -109,27 +142,8 @@ def _write_stub_division(
         geometries=[],
         also_known_as=[],
         jurisdiction_id=f"ocd-jurisdiction/{jur_part}/government",
-        government_identifiers={
-            "namelsad": display_name,
-            "statefp": state_fips,
-            "sldust": [],
-            "sldlst": [],
-            "countyfp": [],
-            "county_names": [],
-            "lsad": "",
-            "geoid": state_fips,
-        },
-        sourcing=[
-            {
-                "field": ["ocdid"],
-                "source_name": "ocdid_recursive_stub",
-                "source_url": {
-                    "ocd_repo": "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv"
-                },
-                "source_type": SourceType.SCRAPED,
-                "source_description": "Placeholder stub — created by recursive ancestor traversal",
-            }
-        ],
+        government_identifiers=identifiers or None,
+        sourcing=[stub_source],
         accurate_asof=now,
         last_updated=now,
     )
