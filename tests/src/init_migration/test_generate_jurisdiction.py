@@ -173,51 +173,8 @@ class TestAILookup:
             jur_generator._ai_lookup(sample_division)
 
 
-# ============================================================================
-# TEST: JURISDICTION OCDID DERIVATION
-# ============================================================================
-
-
-class TestDeriveJurisdictionOCDId:
-    """Tests for _derive_jurisdiction_ocdid method."""
-
-    def test_derive_from_standard_division_ocdid(self, jur_generator):
-        """Should derive jurisdiction OCD ID from division OCD ID."""
-        division_ocdid = "ocd-division/country:us/state:ca/place:seattle"
-        result = jur_generator._derive_jurisdiction_ocdid(
-            division_ocdid, classification="government"
-        )
-
-        assert result.startswith("ocd-jurisdiction/")
-        assert "country:us" in result
-        assert "state:ca" in result
-        assert "place:seattle" in result
-        assert result.endswith("/government")
-
-    def test_derive_with_different_classification(self, jur_generator):
-        """Should use provided classification in OCD ID."""
-        division_ocdid = "ocd-division/country:us/state:ca"
-        result_gov = jur_generator._derive_jurisdiction_ocdid(
-            division_ocdid, classification="government"
-        )
-        result_leg = jur_generator._derive_jurisdiction_ocdid(
-            division_ocdid, classification="legislature"
-        )
-
-        assert result_gov.endswith("/government")
-        assert result_leg.endswith("/legislature")
-
-    def test_derive_removes_council_district(self, jur_generator):
-        """Should remove council_district segments from derived OCD ID."""
-        division_ocdid = (
-            "ocd-division/country:us/state:ca/place:seattle/council_district:1"
-        )
-        result = jur_generator._derive_jurisdiction_ocdid(
-            division_ocdid, classification="government"
-        )
-
-        assert "council_district" not in result
-        assert "place:seattle" in result
+# Jurisdiction OCDID derivation moved to jurisdiction_seed.derive_jurisdiction_ocdid;
+# its tests live in tests/src/init_migration/test_jurisdiction_seed.py
 
 
 # ============================================================================

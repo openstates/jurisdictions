@@ -13,6 +13,7 @@ Name and URL resolution order:
 """
 
 from src.init_migration.pipeline_models import GeneratorReq
+from src.init_migration.jurisdiction_seed import derive_jurisdiction_ocdid
 from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
 from src.models.source import SourceType
@@ -23,7 +24,6 @@ from datetime import datetime, timezone
 from uuid import UUID
 import logging
 import yaml
-import re
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -122,7 +122,7 @@ class JurGenerator:
             if not division or not division.ocdid:
                 raise ValueError("Division object or ocdid is missing")
 
-            jurisdiction_ocdid = self._derive_jurisdiction_ocdid(
+            jurisdiction_ocdid = derive_jurisdiction_ocdid(
                 division.ocdid, classification
             )
 
@@ -182,14 +182,6 @@ class JurGenerator:
                 exc_info=True,
             )
             raise
-
-    def _derive_jurisdiction_ocdid(
-        self, division_ocdid: str, classification: str = "government"
-    ) -> str:
-        """Derive jurisdiction ocd_id from division ocd_id."""
-        division_part = division_ocdid.replace("ocd-division/", "")
-        division_part = re.sub(r"/council_district:[^/]+", "", division_part)
-        return f"ocd-jurisdiction/{division_part}/{classification}"
 
     def _jurisdiction_exists(self, jurisdiction_ocdid: str) -> bool:
         try:

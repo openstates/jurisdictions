@@ -13,8 +13,8 @@ Decision tree (in priority order):
   6. General government types (place, county, anc, etc.) → government jurisdiction
   7. Unknown → no jurisdiction, flag for manual review
 
-NOTE: Council_district is handled by stripping it from the OCD ID and using the
-parent entity type. A council_district division creates a jurisdiction for its
+NOTE: Council_district and ward are handled by stripping it from the OCD ID and using the
+parent entity type. A leaf division creates a jurisdiction for its
 parent (e.g., a city council district creates a city government jurisdiction).
 
 Assumptions:
@@ -71,6 +71,7 @@ from pydantic import BaseModel
 from src.models.jurisdiction import ClassificationEnum
 from src.utils.ocdid import ocdid_parser
 from src.data.lsad_mapper import get_lsad_map, LSADCode
+import re
 
 
 LSAD_CODES: dict[str, LSADCode] = get_lsad_map()
@@ -159,7 +160,10 @@ GOVERNMENT_TYPES = {
 
 # Division segment keys that indicate a sub-division whose jurisdiction belongs
 # to the PARENT entity (not to itself). Strip these before resolving type.
-NON_PARENT_ENTITY_TYPES = {"council_district"}
+
+# refs: 
+#   ward: https://github.com/search?q=repo%3Aopencivicdata%2Focd-division-ids+ward%3A&type=code&p=3
+NON_PARENT_ENTITY_TYPES = {"council_district", "ward"}
 
 # The generated LSAD map is the source of truth for descriptions and associated
 # entity names. These sets describe which mapped LSADs are non-governing purely
@@ -239,6 +243,15 @@ def _extract_primary_division_type(parsed_ocdid: dict) -> str:
 
     return div_keys[-1] if div_keys else "unknown"
 
+def derive_jurisdiction_ocdid(
+        division_ocdid: str, classification: str = "government"
+    ) -> str:
+        """Derive jurisdiction ocd_id from division ocd_id."""
+        division_part = division_ocdid.replace("ocd-division/", "")
+        # Strip out leaf segments
+        pattern = "|".join(re.escape(t) for t in NON_PARENT_ENTITY_TYPES)
+        division_part = re.sub(rf"/({pattern}):[^/]+", "", division_part)
+        return f"ocd-jurisdiction/{division_part}/{classification}"
 
 def infer_jurisdiction_seed(
     ocdid: str,

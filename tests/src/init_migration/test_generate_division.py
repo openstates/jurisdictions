@@ -4,7 +4,7 @@ from uuid import UUID
 from uuid import NAMESPACE_URL, uuid5
 
 from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp
-from src.init_migration.generate_division import DivGenerator
+from src.init_migration.generate_division import DivGenerator, _leaf_segment_display_name
 from src.models.ocdid import OCDIdParsed
 from pathlib import Path
 
@@ -57,3 +57,38 @@ def test_div_generator_initializes(sample_req):
 
     # division should be None before generation
     assert dg.division is None
+
+
+def test_leaf_segment_display_name_returns_council_district():
+    # ocd-division/country:us/state:wa/place:seattle/council_district:1
+    parsed_ocdid = {"place": "seattle", "council_district": "1"}
+
+    assert _leaf_segment_display_name(parsed_ocdid) == "Seattle Council District 1"
+
+
+def test_leaf_segment_display_name_returns_ward():
+    # ocd-division/country:us/state:oh/place:cincinnati/ward:4
+    parsed_ocdid = {"place": "cincinnati", "ward": "4"}
+
+    assert _leaf_segment_display_name(parsed_ocdid) == "Cincinnati Ward 4"
+
+
+def test_anc_display_name_returns_anc_and_district():
+    # ocd-division/country:us/district:dc/anc:1a/council_district:1
+    parsed_ocdid = {"district": "dc", "anc": "1a", "council_district": "1"}
+
+    assert _leaf_segment_display_name(parsed_ocdid) == "ANC 1A District 1"
+
+
+def test_place_display_name_returns_place_and_district():
+    # ocd-division/country:us/state:tx/place:austin/council_district:8
+    parsed_ocdid = {"place": "austin", "council_district": "8"}
+
+    assert _leaf_segment_display_name(parsed_ocdid) == "Austin Council District 8"
+
+
+def test_unmatched_string_returns_none():
+    # ocd-division/country:us/state:wa/place:seattle
+    parsed_ocdid = {"place": "seattle"}
+
+    assert _leaf_segment_display_name(parsed_ocdid) is None
