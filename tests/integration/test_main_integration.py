@@ -10,7 +10,11 @@ import pytest
 from src.init_migration.download_manager import DownloadManager
 from src.init_migration.main import run_pipeline
 from src.init_migration.ocdid_matcher import OCDidMatcher
-from src.init_migration.pipeline_models import DIVISIONS_SHEET_CSV_URL
+from src.init_migration.pipeline_models import (
+    COUNTIES_SHEET_CSV_URL,
+    DIVISIONS_SHEET_CSV_URL,
+    STATES_SHEET_CSV_URL,
+)
 
 # TODO: This test leaves/replaces the following artifact:
 # data/ocdid_pipeline.duckdb. Attempted to mock but still generates.
@@ -127,9 +131,16 @@ async def test_run_pipeline_multi_state_with_orphans_and_failures(
             elif "state-zz" in url:
                 respx_mock.get(url).mock(return_value=httpx.Response(404))
 
+        # Phase 3 caches all three validation tabs; the states and counties tabs
+        # return header-only CSVs so the concat still lines up.
         respx_mock.get(DIVISIONS_SHEET_CSV_URL).mock(
             return_value=httpx.Response(200, content=VALIDATION_CSV)
         )
+        validation_header = VALIDATION_CSV.split(b"\n")[0] + b"\n"
+        for sheet_url in (STATES_SHEET_CSV_URL, COUNTIES_SHEET_CSV_URL):
+            respx_mock.get(sheet_url).mock(
+                return_value=httpx.Response(200, content=validation_header)
+            )
 
         args = argparse.Namespace(
             state="tx,dc,hi",

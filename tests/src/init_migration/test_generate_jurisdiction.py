@@ -44,9 +44,15 @@ def sample_generator_request(tmp_path) -> GeneratorReq:
         ocdid=parsed,
         raw_record={},
     )
-    # Create a dummy validation CSV file
-    validation_csv = tmp_path / "validation.csv"
-    validation_csv.write_text("STATEFP,NAMELSAD,GEOID_Census\n06,Seattle,0600000\n")
+    # Create dummy validation CSV files, one per tab. Only the divisions tab
+    # carries a row; the other two just need the shared header.
+    header = "STATEFP,NAMELSAD,GEOID_Census\n"
+    divisions_csv = tmp_path / "validation.csv"
+    divisions_csv.write_text(f"{header}06,Seattle,0600000\n")
+    states_csv = tmp_path / "states_validation.csv"
+    states_csv.write_text(header)
+    counties_csv = tmp_path / "counties_validation.csv"
+    counties_csv.write_text(header)
 
     req = GeneratorReq(
         data=resp,
@@ -54,7 +60,9 @@ def sample_generator_request(tmp_path) -> GeneratorReq:
         jurisdiction_ai_url=False,  # AI lookup disabled for unit tests
         division_geo_req=False,
         division_population_req=False,
-        validation_data_filepath=str(validation_csv),
+        validation_data_division_filepath=str(divisions_csv),
+        validation_data_states_filepath=str(states_csv),
+        validation_data_counties_filepath=str(counties_csv),
     )
     return req
 

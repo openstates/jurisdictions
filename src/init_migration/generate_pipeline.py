@@ -124,7 +124,9 @@ class GeneratePipeline:
         self.req = req
         self.data = req.data
         self.uuid = self.data.uuid
-        self.validation_data_filepath = req.validation_data_filepath
+        self.validation_data_division_filepath = req.validation_data_division_filepath
+        self.validation_data_states_filepath = req.validation_data_states_filepath
+        self.validation_data_counties_filepath = req.validation_data_counties_filepath
         self.asof_datetime = req.asof_datetime
         self.division_output_dir = Path(division_output_dir)
         self.jurisdiction_output_dir = Path(jurisdiction_output_dir)
@@ -152,28 +154,35 @@ class GeneratePipeline:
         )
 
     def _load_validation_csv(self) -> pl.DataFrame:
-        """Load validation research CSV from URL or filepath.
+        """Load the Divisions, States, and Counties validation tabs into one frame.
+
+        The three tabs share a schema, so concatenating them yields a single frame
+        covering the place, state, and county layers.
 
         Returns:
-            Polars DataFrame with all validation records
+            Polars DataFrame with all validation records from all three tabs
 
         Raises:
-            ValueError: If CSV cannot be loaded
+            ValueError: If any CSV cannot be loaded
         """
-        try:
-            df = pl.read_csv(self.validation_data_filepath, infer_schema_length=0)
-            logger.info(
-                f"Loaded validation CSV: {df.shape[0]} rows, {df.shape[1]} columns"
-            )
-            return df
-        except Exception as e:
-            logger.error(
-                f"Failed to load validation CSV from {self.validation_data_filepath}",
-                exc_info=True,
-            )
-            raise ValueError(
-                f"Cannot load validation CSV: {self.validation_data_filepath}"
-            ) from e
+        frames = []
+        for label, filepath in (
+            ("divisions", self.validation_data_division_filepath),
+            ("states", self.validation_data_states_filepath),
+            ("counties", self.validation_data_counties_filepath),
+        ):
+            try:
+                df = pl.read_csv(filepath, infer_schema_length=0)
+            except Exception as e:
+                raise ValueError(
+                    f"Cannot load {label} validation CSV: {filepath}"
+                ) from e
+            logger.info(f"Loaded {label} validation CSV: {df.shape[0]} rows")
+            frames.append(df)
+
+        unified_df = pl.concat(frames)
+        logger.info(f"Unified validation data: {unified_df.shape[0]} rows")
+        return unified_df
 
     def _normalize_validation_data(self) -> pl.DataFrame:
         """Normalize validation data by adding normalized place names.

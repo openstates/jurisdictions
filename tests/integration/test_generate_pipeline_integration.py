@@ -92,6 +92,7 @@ VALIDATION_CSV_ROWS = [
         "COUNTY_NAMES": "Marin",
         "COUSUBFP": "",
         "PLACEFP": "70364",
+        "layer": "tl_2025_06_place",
     },
     # Tacoma match (for fuzzy testing)
     {
@@ -105,6 +106,7 @@ VALIDATION_CSV_ROWS = [
         "COUNTY_NAMES": "Pierce",
         "COUSUBFP": "",
         "PLACEFP": "70000",
+        "layer": "tl_2025_53_place",
     },
     # Seattle match
     {
@@ -118,6 +120,7 @@ VALIDATION_CSV_ROWS = [
         "COUNTY_NAMES": "King",
         "COUSUBFP": "",
         "PLACEFP": "63000",
+        "layer": "tl_2025_53_place",
     },
     # Austin match
     {
@@ -131,6 +134,7 @@ VALIDATION_CSV_ROWS = [
         "COUNTY_NAMES": "Travis",
         "COUSUBFP": "",
         "PLACEFP": "01000",
+        "layer": "tl_2025_48_place",
     },
     # Decoys. Each of these matched its city at score 1.0 under token_set_ratio,
     # pushing the city into the "multiple matches" quarantine branch.
@@ -146,6 +150,7 @@ VALIDATION_CSV_ROWS = [
         "COUNTY_NAMES": "King",
         "COUSUBFP": "92524",
         "PLACEFP": "",
+        "layer": "tl_2025_53_cousub",
     },
     {
         # Distinct place that merely contains Tacoma's name as a token.
@@ -159,6 +164,7 @@ VALIDATION_CSV_ROWS = [
         "COUNTY_NAMES": "Pierce",
         "COUSUBFP": "",
         "PLACEFP": "70010",
+        "layer": "tl_2025_53_place",
     },
     {
         # Multi-word place: OCDid slug "oak_harbor" must reach "Oak Harbor".
@@ -172,35 +178,68 @@ VALIDATION_CSV_ROWS = [
         "COUNTY_NAMES": "Island",
         "COUSUBFP": "",
         "PLACEFP": "50360",
+        "layer": "tl_2025_53_place",
     },
     # No Marin City match (intentionally omitted to test quarantine)
     # No DC data (intentionally omitted to test quarantine)
 ]
 
+# States tab rows. State-level records carry a STATEFP and roll up every county
+# beneath them: COUNTYFP_list and COUNTY_NAMES are pipe-delimited lists covering
+# the whole state, while PLACEFP and COUSUBFP stay blank. Values below are the
+# real sheet's Washington row, truncated to the first few counties — the full row
+# carries all 39.
+STATES_CSV_ROWS = [
+    {
+        "GEOID_Census": "53",
+        "STATEFP": "53",
+        "NAMELSAD": "Washington",
+        "LSAD": "00",
+        "SLDUST_list": "",
+        "SLDLST_list": "",
+        "COUNTYFP_list": "001 | 003 | 005 | 029 | 033 | 053",
+        "COUNTY_NAMES": "Adams | Asotin | Benton | Island | King | Pierce",
+        "COUSUBFP": "",
+        "PLACEFP": "",
+        "layer": "tl_2025_us_state",
+    },
+]
 
-@pytest.fixture
-def validation_csv_file(tmp_path) -> Path:
-    """Create a temporary validation CSV file with sample data."""
-    csv_path = tmp_path / "validation_data.csv"
+# Counties tab rows. County records carry STATEFP + COUNTYFP_list, and leave the
+# place-layer columns (PLACEFP, COUSUBFP) blank.
+COUNTIES_CSV_ROWS = [
+    {
+        "GEOID_Census": "53033",
+        "STATEFP": "53",
+        "NAMELSAD": "King County",
+        "LSAD": "06",
+        "SLDUST_list": "",
+        "SLDLST_list": "",
+        "COUNTYFP_list": "033",
+        "COUNTY_NAMES": "King",
+        "COUSUBFP": "",
+        "PLACEFP": "",
+        "layer": "tl_2025_53_county",
+    },
+]
 
-    # Write header
-    fieldnames = list(VALIDATION_CSV_ROWS[0].keys())
-    with open(csv_path, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
+
+def _write_validation_csv(path: Path, rows: list[dict]) -> Path:
+    with open(path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
         writer.writeheader()
-        writer.writerows(VALIDATION_CSV_ROWS)
-
-    return csv_path
+        writer.writerows(rows)
+    return path
 
 
 @pytest.fixture
-def sample_request(validation_csv_file: Path) -> dict:
-    """Create a sample GeneratorReq for testing."""
-    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
-    return {
-        "validation_filepath": str(validation_csv_file),
-        "asof_datetime": asof_dt,
-    }
+def validation_csv_files(tmp_path) -> list[Path]:
+    """Create the three validation CSV files (divisions, states, counties)."""
+    return [
+        _write_validation_csv(tmp_path / "validation_data.csv", VALIDATION_CSV_ROWS),
+        _write_validation_csv(tmp_path / "states_validation.csv", STATES_CSV_ROWS),
+        _write_validation_csv(tmp_path / "counties_validation.csv", COUNTIES_CSV_ROWS),
+    ]
 
 
 def _create_ocdid_ingest_resp(ocdid_str: str, asof_dt: datetime) -> OCDidIngestResp:
@@ -214,13 +253,16 @@ def _create_ocdid_ingest_resp(ocdid_str: str, asof_dt: datetime) -> OCDidIngestR
 
 
 def _create_generator_req(
-    ocdid_str: str, validation_filepath: str, asof_dt: datetime
+    ocdid_str: str, validation_files: list[Path], asof_dt: datetime
 ) -> GeneratorReq:
     """Helper to create GeneratorReq with proper initialization."""
     ingest_resp = _create_ocdid_ingest_resp(ocdid_str, asof_dt)
+    divisions, states, counties = validation_files
     return GeneratorReq(
         data=ingest_resp,
-        validation_data_filepath=validation_filepath,
+        validation_data_division_filepath=str(divisions),
+        validation_data_states_filepath=str(states),
+        validation_data_counties_filepath=str(counties),
         build_base_object=True,
         jurisdiction_ai_url=False,
         division_geo_req=False,
@@ -248,11 +290,11 @@ def _create_generator_req(
     ],
 )
 def test_find_matches_returns_exactly_one_place(
-    validation_csv_file, ocdid, expected_namelsad
+    validation_csv_files, ocdid, expected_namelsad
 ):
     """Each place OCDid resolves to exactly one validation record."""
     asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
-    req = _create_generator_req(ocdid, str(validation_csv_file), asof_dt)
+    req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
     pipeline = GeneratePipeline(req)
 
     matches = pipeline.find_matches(ocdid)
@@ -265,21 +307,54 @@ def test_find_matches_returns_exactly_one_place(
 
 
 @pytest.mark.integration
-def test_find_matches_excludes_county_subdivisions(validation_csv_file):
-    """County subdivision rows are never candidates for a `place:` OCDid."""
+def test_find_matches_excludes_non_place_rows(validation_csv_files):
+    """Only place-layer rows are candidates for a `place:` OCDid.
+
+    County subdivisions, states, and counties all leave PLACEFP blank.
+    """
     asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
     ocdid = "ocd-division/country:us/state:wa/place:seattle"
-    req = _create_generator_req(ocdid, str(validation_csv_file), asof_dt)
+    req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
     pipeline = GeneratePipeline(req)
 
     matched_names = pipeline.find_matches(ocdid)["NAMELSAD"].to_list()
 
     assert "Seattle East CCD" not in matched_names
+    assert "Washington" not in matched_names
+    assert "King County" not in matched_names
+
+
+@pytest.mark.integration
+def test_load_validation_csv_unifies_all_three_tabs(validation_csv_files):
+    """validation_df carries place, state, and county rows from all three tabs."""
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    ocdid = "ocd-division/country:us/state:wa/place:seattle"
+    req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
+    pipeline = GeneratePipeline(req)
+
+    names = pipeline.validation_df["NAMELSAD"].to_list()
+
+    assert "Seattle city" in names, "divisions tab rows missing"
+    assert "Washington" in names, "states tab rows missing"
+    assert "King County" in names, "counties tab rows missing"
+    assert len(pipeline.validation_df) == (
+        len(VALIDATION_CSV_ROWS) + len(STATES_CSV_ROWS) + len(COUNTIES_CSV_ROWS)
+    )
+
+    # The `layer` column names the Census TIGER layer each row came from
+    # (tl_<year>_<state|us>_<geography>). It is the explicit signal the follow-up
+    # matching ticket needs to tell county and state rows apart from places,
+    # rather than inferring the layer from which FIPS columns are populated.
+    layers = set(pipeline.validation_df["layer"].to_list())
+    assert "tl_2025_53_place" in layers, "place-layer rows missing"
+    assert "tl_2025_us_state" in layers, "state-layer rows missing"
+    assert "tl_2025_53_county" in layers, "county-layer rows missing"
+    assert "tl_2025_53_cousub" in layers, "cousub-layer rows missing"
 
 
 @pytest.mark.integration
 @pytest.mark.asyncio
-async def test_generate_pipeline_5_sample_records(tmp_path, validation_csv_file):
+async def test_generate_pipeline_5_sample_records(tmp_path, validation_csv_files):
     """Test pipeline with 5 sample records: verify outputs and quarantine tracking.
 
     Expected results:
@@ -307,7 +382,7 @@ async def test_generate_pipeline_5_sample_records(tmp_path, validation_csv_file)
     # Run pipeline for each sample record
     for sample in SAMPLE_OCDIDS:
         ocdid = sample["ocdid"]
-        req = _create_generator_req(ocdid, str(validation_csv_file), asof_dt)
+        req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
 
         pipeline = GeneratePipeline(
             req,
@@ -361,7 +436,7 @@ async def test_generate_pipeline_5_sample_records(tmp_path, validation_csv_file)
 @pytest.mark.integration
 @pytest.mark.asyncio
 async def test_generate_pipeline_successful_record_output(
-    tmp_path, validation_csv_file
+    tmp_path, validation_csv_files
 ):
     """Verify successful record (Sausalito) produces valid Division and Jurisdiction."""
     asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
@@ -371,7 +446,7 @@ async def test_generate_pipeline_successful_record_output(
     jurisdiction_output.mkdir()
 
     ocdid = "ocd-division/country:us/state:ca/place:sausalito"
-    req = _create_generator_req(ocdid, str(validation_csv_file), asof_dt)
+    req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
 
     pipeline = GeneratePipeline(
         req,
@@ -422,7 +497,7 @@ async def test_generate_pipeline_successful_record_output(
 
 @pytest.mark.integration
 @pytest.mark.asyncio
-async def test_generate_pipeline_quarantine_tracking(tmp_path, validation_csv_file):
+async def test_generate_pipeline_quarantine_tracking(tmp_path, validation_csv_files):
     """Verify quarantine records are properly tracked for no-match cases."""
     asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
     division_output = tmp_path / "divisions"
@@ -437,7 +512,7 @@ async def test_generate_pipeline_quarantine_tracking(tmp_path, validation_csv_fi
     ]
 
     for ocdid in quarantine_ocdids:
-        req = _create_generator_req(ocdid, str(validation_csv_file), asof_dt)
+        req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
         pipeline = GeneratePipeline(
             req,
             division_output_dir=division_output,
@@ -465,7 +540,7 @@ async def test_generate_pipeline_quarantine_tracking(tmp_path, validation_csv_fi
 
 @pytest.mark.integration
 @pytest.mark.asyncio
-async def test_generate_pipeline_council_district_logic(tmp_path, validation_csv_file):
+async def test_generate_pipeline_council_district_logic(tmp_path, validation_csv_files):
     """Verify council district records correctly map to place-level jurisdictions.
 
     Council districts like 'seattle/council_district:1' should:
@@ -480,7 +555,7 @@ async def test_generate_pipeline_council_district_logic(tmp_path, validation_csv
     jurisdiction_output.mkdir()
 
     ocdid = "ocd-division/country:us/state:wa/place:seattle/council_district:1"
-    req = _create_generator_req(ocdid, str(validation_csv_file), asof_dt)
+    req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
 
     pipeline = GeneratePipeline(
         req,
@@ -510,7 +585,7 @@ async def test_generate_pipeline_council_district_logic(tmp_path, validation_csv
 
 @pytest.mark.integration
 @pytest.mark.asyncio
-async def test_generate_pipeline_deduplication(tmp_path, validation_csv_file):
+async def test_generate_pipeline_deduplication(tmp_path, validation_csv_files):
     """Verify jurisdiction deduplication: multiple council districts → one jurisdiction.
 
     When processing two council districts from the same place (Seattle),
@@ -526,7 +601,7 @@ async def test_generate_pipeline_deduplication(tmp_path, validation_csv_file):
     ocdid1 = "ocd-division/country:us/state:wa/place:seattle/council_district:1"
     ocdid2 = "ocd-division/country:us/state:wa/place:seattle/council_district:2"
 
-    req1 = _create_generator_req(ocdid1, str(validation_csv_file), asof_dt)
+    req1 = _create_generator_req(ocdid1, validation_csv_files, asof_dt)
     pipeline = GeneratePipeline(
         req1,
         division_output_dir=division_output,
@@ -539,7 +614,7 @@ async def test_generate_pipeline_deduplication(tmp_path, validation_csv_file):
     junction_count_after_1 = len(list(jurisdiction_output.rglob("*.yaml")))
 
     # Now run a second council district from the same city
-    req2 = _create_generator_req(ocdid2, str(validation_csv_file), asof_dt)
+    req2 = _create_generator_req(ocdid2, validation_csv_files, asof_dt)
     pipeline2 = GeneratePipeline(
         req2,
         division_output_dir=division_output,
