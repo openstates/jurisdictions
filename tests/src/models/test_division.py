@@ -252,3 +252,24 @@ def test_division_children_defaults_to_empty_list() -> None:
 
     assert division.children == []
     assert division.model_dump(mode="json")["children"] == []
+
+
+def test_division_children_rejects_malformed_ocdids() -> None:
+    """Child ids are validated as OCDids, not accepted as arbitrary strings."""
+    import pytest
+    from pydantic import ValidationError
+
+    for bad_child in [
+        "sausalito",
+        "country:us/state:ca/place:sausalito",
+        "ocd-divison/country:us/state:ca/place:sausalito",
+        "",
+    ]:
+        with pytest.raises(ValidationError):
+            Division(
+                ocdid="ocd-division/country:us/state:ca/place:sausalito",
+                country="us",
+                display_name="Sausalito",
+                jurisdiction_id="ocd-jurisdiction/country:us/state:ca/place:sausalito/government",
+                children=[bad_child],
+            )

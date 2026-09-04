@@ -155,9 +155,9 @@ class Division(BaseModel):
         default_factory=list,
         description="A list of alternate formatted OCDids that refer to the same geo political divisions.",
     )
-    children: List[str] = Field(
+    children: List[OCDIdStr] = Field(
         default_factory=list,
-        description="A list of child division ids — the OCDids of the Divisions contained by this one. Projects to the PARENT_OF graph edge.",
+        description="A list of child division ids — the OCDids of the Divisions contained by this one. Validated as OCDids. Projects to the PARENT_OF graph edge.",
     )
     valid_thru: Optional[datetime] = Field(
         default=None,

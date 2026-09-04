@@ -134,8 +134,9 @@ need to reconcile:
    the child Divisions of a parent is a Division-level relationship, not a
    property of one temporal boundary version — rework §26 models
    `PARENT_OF` as a Division↔Division edge and `HAS_GEOMETRY` as a
-   separate one. The field keeps its type (`list[str]` of child OCDids)
-   and its `default_factory=list`; only its owner changes. The capability
+   separate one. It also tightens from `list[str]` to `list[OCDIdStr]`,
+   so a malformed child id fails at load time instead of passing through
+   silently; `default_factory=list` is unchanged. The capability
    is **preserved, not deferred**: no Phase 2 task currently owns
    `PARENT_OF` (Task 2.5 is scoped to Jurisdiction↔Division —
    `GOVERNS`/`SERVES`/`OVERLAPS`/`CONTAINED_BY`), so dropping it here
@@ -237,14 +238,15 @@ Two narrower diffs ride along and should be called out at review time:
 ### Verification
 
 - `uv run pytest tests/src/models/test_division.py tests/src/init_migration/`
-  — 105 passed. New unit tests:
+  — 106 passed. New unit tests:
   - `test_geometry_json_round_trip_is_lossless`
   - `test_geometry_validity_window_accepts_none`
   - `test_division_geometry_versions_sort_by_valid_from`
   - `test_geometry_url_is_provider_neutral`
   - `test_division_children_lists_child_division_ids`
   - `test_division_children_defaults_to_empty_list`
-- `uv run pytest -m "not integration and not slow"` — 156 passed, 15
+  - `test_division_children_rejects_malformed_ocdids`
+- `uv run pytest -m "not integration and not slow"` — 159 passed, 15
   deselected, from a clean working tree. **No golden test fired**: the
   Phase 3 harness (#134) that diffs regenerated output against
   `tests/sample_output/**` does not exist yet, so the drift documented
