@@ -3,7 +3,7 @@ id: sample-output-migration
 type: rework-migration-log
 owner: rework
 status: active
-last_updated: 2026-09-03
+last_updated: 2026-09-04
 tags: [rework, phase-2, models, sample-output, migration]
 scope: "Structural changes to Pydantic models that will require regeneration of tests/sample_output/** in Phase 11 (#142)."
 ---
@@ -253,3 +253,178 @@ Two narrower diffs ride along and should be called out at review time:
   above is latent. It will surface the first time Task 3.3/3.4 runs, and
   that failure is the #142 signal — not a fixture to patch.
 - `uv run ruff check .` — all checks passed.
+
+## URL fields typed as `HttpUrl` (2026-09-04)
+
+**Issue:** #133 (Phase 2 tracking)
+
+Maintainer-directed typing pass across `src/models/`: every URL-bearing
+field is now a validated Pydantic URL type rather than a bare `str`. This
+overlaps Task 2.6 (which also wants `Jurisdiction.url` **nullable** per
+rework §23) and Task 2.2 (`SourceObj` schema growth), but is neither —
+it landed on its own at maintainer request. `Jurisdiction.url` remains
+**required**; the nullable half of Task 2.6 is still outstanding.
+
+### Structural changes landing this change
+
+| Model | Field | Before | After |
+| --- | --- | --- | --- |
+| `Jurisdiction` | `url` | `str` | `HttpUrl` |
+| `URLObject` | `url` | `str` | `HttpUrl` |
+| `TermDetail` | `source_url` | `str` | `HttpUrl` |
+| `SourceObj` | `source_url` | `dict[str, AnyHttpUrl \| FtpUrl \| FileUrl]` | `dict[str, HttpUrl \| FtpUrl \| FileUrl]` |
+
+`Geometry.url` was already `HttpUrl | None` as of Task 2.3, so no URL
+field in `src/models/` is an unvalidated `str` any more.
+
+Two properties of this change worth recording:
+
+1. **A malformed URL now fails at construction** instead of being stored
+   verbatim. This is a tightening: records that previously round-tripped
+   junk will now raise `ValidationError`.
+2. **`HttpUrl` is marginally stricter than `AnyHttpUrl`** — it enforces a
+   2083-character maximum. Verified empirically; no value in the repo is
+   near that bound.
+
+### Deliberate deviation: `SourceObj.source_url` keeps `FtpUrl | FileUrl`
+
+Only the `AnyHttpUrl` member of the union was swapped for `HttpUrl`. The
+union itself was **kept**, not collapsed to `HttpUrl` alone, because the
+Census distributes TIGER/Line over FTP and this pipeline plausibly needs
+to cite an `ftp://` dataset. Collapsing the union would be a capability
+regression, not a tightening. All 30 `source_url` values across the
+golden files are `https://`, so nothing exercises the `ftp`/`file`
+members today. Revisit under Task 2.2 if the container is reworked.
+
+### Expected Phase 11 diff (#142): none
+
+Every real value flowing into these fields was checked **before** the
+type change: 18 values in the golden files (`URLObject.url`,
+`TermDetail.source_url`) plus 24 in
+[`tests/fixtures/jurisdictions_sample.py`](../../tests/fixtures/jurisdictions_sample.py).
+All serialize byte-identically under `HttpUrl`.
+
+Confirmed afterwards by loading each golden Jurisdiction through the
+model and diffing every URL field of the re-dump against the file on
+disk: **5 of 6 load with zero drift**; the sixth
+(`marin_city_community_services_district_governing_board_…`) fails for an
+unrelated pre-existing reason (see below).
+
+`HttpUrl` normalization only affects a **bare host with an empty path**
+(`https://x.gov` → `https://x.gov/`). Path-form URLs are left alone,
+including the shapes present here:
+
+| Shape | Example | Normalized? |
+| --- | --- | --- |
+| bare host + slash | `https://tacoma.gov/` | no |
+| document path | `https://cityoftacoma.legistar.com/Calendar.aspx` | no |
+| query string | `https://library.municode.com/…?nodeId=CH_ARTIIIEL_S2ELDACOTEELMARFEL` | no |
+| deep path | `https://oanc.dc.gov/anc-profile/anc-1a` | no |
+| bare host, no slash | `https://www.austintexas.gov` | **yes** → adds `/` |
+
+The last row was the only occurrence in the repo, and it was normalized
+in the fixture *before* this typing change — see *Fixture value
+normalizations* below. Had it not been, this change would have silently
+rewritten Austin's `url` on the next regeneration. That ordering is the
+reason this pass contributes zero drift.
+
+### Caller changes
+
+- `src/init_migration/generate_jurisdiction.py` — no change needed. The
+  fabricated fallback `https://opencivicdata.org/division/{division.ocdid}`
+  passes `HttpUrl` unchanged despite the colons in the embedded OCDID.
+  (Whether that fabrication should exist at all is still a Task 2.6
+  question — rework §23 argues it should not.)
+- **All YAML output is unaffected.** Both dump paths
+  (`Jurisdiction.dump_jurisdiction`, `JurGenerator.dump_jurisdiction`)
+  already use `model_dump(mode="json")`, which serializes a Pydantic URL
+  to a plain string. A `model_dump()` without `mode="json"` would now
+  emit `Url` objects that `yaml.safe_dump` cannot represent — worth
+  knowing if a new dump path is ever added.
+- `tests/src/init_migration/test_generate_jurisdiction.py` —
+  `test_generated_jurisdiction_fallback_url` used
+  `"opencivicdata.org" in jurisdiction.url`. `HttpUrl` is not a `str`
+  subclass in Pydantic v2, so both assertions now compare against
+  `str(jurisdiction.url)`. This is the only production-code-adjacent
+  breakage the change caused.
+- `tests/fixtures/jurisdictions_sample.py`,
+  `tests/fixtures/divisions_sample.py`,
+  `tests/sample_data/ohio_jurisdictions_licking_county.py` — no changes;
+  all values validate as-is. (The Ohio module is not imported by any
+  test.)
+
+### Known pre-existing breakage, not addressed here
+
+Both predate this change and were verified to fail identically before it:
+
+- **`MARIN_CITY_CSD_JURISDICTION` fails `validate_jurisdiction_id`.** Its
+  OCDID ends `/governing_board`, which is not a `ClassificationEnum`
+  value, so the validator rejects it. This makes
+  `tests/fixtures/jurisdictions_sample.py` **unimportable as a module**
+  and makes the Marin City golden file unloadable through the model. See
+  [`sample_output_inventory.md`](sample_output_inventory.md) §3.4 and
+  [`model_inventory.md`](model_inventory.md) §6.11.
+- **`src/models/jurisdiction.py` `__main__` demo block** constructs a
+  `Jurisdiction` with no `ocdid` and a `SessionDetail` where a `dict`
+  belongs. It raised `ValidationError` before and still does.
+- **`src/models/division.py` has `ruff format` drift** from Task 2.4 (a
+  long `raise ValueError` line in `dump_division`). `ruff check` passes,
+  so it was left rather than mixing an unrelated reformat into this
+  change.
+
+### Verification
+
+- `uv run pytest -m "not integration and not slow"` — 161 passed,
+  15 deselected.
+- `uv run ruff check .` — all checks passed.
+- New unit tests in `tests/src/models/test_jurisdiction.py`:
+  - `test_jurisdiction_url_round_trips_exact_string` — asserts each of
+    the six golden `url` values dumps byte-identically. This is the guard
+    that turns a future silently-normalized value into a loud test
+    failure rather than unexplained Phase 11 drift.
+  - `test_jurisdiction_url_rejects_non_http_values` — covers a bare
+    hostname, free text, an `ftp://` URL, and the empty string.
+
+
+## Fixture value normalizations (not tied to a model task)
+
+Value-level fixture edits that create golden drift without any model
+contract change. Logged here because Phase 11 (#142) has to reconcile
+them alongside the structural migrations above.
+
+### Austin Jurisdiction `url` trailing slash (2026-09-04)
+
+- **File:** [`tests/fixtures/jurisdictions_sample.py`](../../tests/fixtures/jurisdictions_sample.py)
+  (`AUSTIN_JURISDICTION.url`)
+- **Change:** `https://www.austintexas.gov` → `https://www.austintexas.gov/`
+- **Affected golden fixture:**
+  `tests/sample_output/jurisdictions/test/tx/local/city_of_austin_b60ab7ed-add2-5de4-bd08-3da4aec2312b.yaml`
+  (`url:`, one line). No other file changes.
+- **Rationale:** Austin was the only one of the six Jurisdiction
+  fixtures whose bare-host `url` lacked a trailing slash; the other four
+  bare hosts (Seattle, Tacoma, Sausalito, Marin City CSD) all carry it,
+  and ANC 1A's value is a path (`/anc-profile/anc-1a`) where a trailing
+  slash does not belong. Maintainer requested the value be made
+  consistent with the majority form.
+- **Semantics:** unchanged. Per RFC 3986 §6.2.3 an empty path normalizes
+  to `/`, so `https://www.austintexas.gov` and
+  `https://www.austintexas.gov/` are the same URL. This is a
+  presentation-level normalization, not a source correction.
+- **Classification per instruction §35:** `SOURCE_CORRECTION`
+  (cosmetic — no factual change).
+- **Not changed:** the two path-bearing `austintexas.gov` URLs in
+  `AUSTIN_JURISDICTION.metadata.urls`
+  (`/department/city-council/…`, `/government`) keep their existing form.
+- **Why it mattered:** this was the enabling precondition for the
+  §"URL fields typed as `HttpUrl`" change above. Austin's bare-host
+  value was the only URL in the repo that `HttpUrl` would normalize, so
+  without this edit that typing change would have silently rewritten it
+  on the next regeneration. With it, the whole typing pass contributes
+  zero drift.
+- **Golden file:** the maintainer applied the matching one-line edit to
+  `city_of_austin_b60ab7ed-….yaml` directly (`url:` only). Confirmed
+  afterwards: the file loads through the `Jurisdiction` model and
+  re-dumps with zero drift on every URL field. This is the exception to
+  the usual rule, not a precedent — it was an explicit maintainer edit
+  of a single value, not an agent regeneration. Structural regeneration
+  remains Phase 11 (#142) per plan §"Sample Output Change Control" §4.

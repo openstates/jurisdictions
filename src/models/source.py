@@ -1,6 +1,6 @@
 from enum import Enum
 from pydantic import BaseModel, Field
-from pydantic import AnyHttpUrl, FtpUrl, FileUrl
+from pydantic import FileUrl, FtpUrl, HttpUrl
 from typing import Union
 
 
@@ -26,7 +26,7 @@ class SourceObj(BaseModel):
     source_type: SourceType = Field(
         default=SourceType.HUMAN, description="The method used to collect the data."
     )
-    source_url: dict[str, Union[AnyHttpUrl, FtpUrl, FileUrl]] = Field(
+    source_url: dict[str, Union[HttpUrl, FtpUrl, FileUrl]] = Field(
         description="The source name and url. If AI generated, the source url identified by the AI agent."
     )
     source_description: str | None = Field(

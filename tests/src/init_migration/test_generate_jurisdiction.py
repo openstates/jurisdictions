@@ -284,9 +284,10 @@ class TestGenerateJurisdiction:
             classification="government",
         )
 
-        # With AI disabled, should use OpenCivicData fallback
-        assert "opencivicdata.org" in jurisdiction.url
-        assert sample_division.ocdid in jurisdiction.url
+        # With AI disabled, should use OpenCivicData fallback.
+        # url is an HttpUrl, so compare against its string form.
+        assert "opencivicdata.org" in str(jurisdiction.url)
+        assert sample_division.ocdid in str(jurisdiction.url)
 
     def test_generate_with_different_classifications(
         self, jur_generator, sample_division

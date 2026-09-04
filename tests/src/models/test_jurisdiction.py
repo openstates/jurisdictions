@@ -81,3 +81,51 @@ def test_jurisdiction_rejects_mismatched_classification_suffix() -> None:
             classification=ClassificationEnum.GOVERNMENT,
             metadata={"urls": []},
         )
+
+
+def test_jurisdiction_url_round_trips_exact_string() -> None:
+    """A well-formed url survives serialization byte-for-byte.
+
+    Guards the Phase 11 golden contract: HttpUrl normalizes some inputs
+    (a bare host gains a trailing slash), so the six sample_output values
+    must be in already-normal form or regeneration silently rewrites them.
+    """
+    for url in [
+        "https://www.seattle.gov/",
+        "https://tacoma.gov/",
+        "https://www.austintexas.gov/",
+        "https://www.sausalito.gov/",
+        "https://www.marincitycsd.com/",
+        "https://oanc.dc.gov/anc-profile/anc-1a",
+    ]:
+        jurisdiction = Jurisdiction(
+            ocdid="ocd-jurisdiction/country:us/state:wa/place:seattle/government",
+            name="Sample Jurisdiction",
+            url=url,
+            classification=ClassificationEnum.GOVERNMENT,
+            metadata={"urls": []},
+        )
+        assert jurisdiction.model_dump(mode="json")["url"] == url, (
+            f"{url!r} was rewritten on dump"
+        )
+
+        restored = Jurisdiction.model_validate_json(jurisdiction.model_dump_json())
+        assert str(restored.url) == url
+
+
+def test_jurisdiction_url_rejects_non_http_values() -> None:
+    """HttpUrl validation replaces the previous unvalidated str."""
+    for bad_url in [
+        "seattle.gov",
+        "not a url",
+        "ftp://files.seattle.gov/",
+        "",
+    ]:
+        with pytest.raises(ValidationError):
+            Jurisdiction(
+                ocdid="ocd-jurisdiction/country:us/state:wa/place:seattle/government",
+                name="Sample Jurisdiction",
+                url=bad_url,
+                classification=ClassificationEnum.GOVERNMENT,
+                metadata={"urls": []},
+            )

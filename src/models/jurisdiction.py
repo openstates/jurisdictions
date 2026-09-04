@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel, Field, ConfigDict, model_validator
+from pydantic import BaseModel, Field, ConfigDict, HttpUrl, model_validator
 from typing import Dict, List, Optional
 from datetime import datetime, timezone
 from .source import SourceObj
@@ -68,7 +68,10 @@ class URLObject(BaseModel):
     """A URL object for defining known url types for a jurisdiction."""
 
     url_type: URLEnum | str = Field(..., description="The type of url being defined.")
-    url: str = Field(..., description="The url string associated with the url type.")
+    url: HttpUrl = Field(
+        ...,
+        description="The url associated with the url type. Validated as an http(s) URL.",
+    )
 
 
 class URLS(BaseModel):
@@ -112,9 +115,9 @@ class TermDetail(BaseModel):
         default=None,
         description="Typically defined as the number of terms an office holder can hold. Can be a string description of the term limits if any.",
     )
-    source_url: str = Field(
+    source_url: HttpUrl = Field(
         ...,
-        description="The source url that defines the terms for the jurisdiction. Must be a .gov source. Can often be found in the incorporation charter or state constitution.",
+        description="The source url that defines the terms for the jurisdiction. Validated as an http(s) URL. Must be a .gov source. Can often be found in the incorporation charter or state constitution.",
     )
     last_known_term_end_date: Optional[datetime] = Field(
         default=None,
@@ -143,8 +146,9 @@ class Jurisdiction(BaseModel):
         ...,
         description="Name of jurisdiction (e.g. North Carolina General Assembly). Should be sourced from official gov source data (i.e. Census) **(required)**",
     )
-    url: str = Field(
-        ..., description="URL pointing to jurisdiction's website. **(required)**"
+    url: HttpUrl = Field(
+        ...,
+        description="URL pointing to jurisdiction's website. Validated as an http(s) URL. **(required)**",
     )
     classification: ClassificationEnum = Field(
         ...,
