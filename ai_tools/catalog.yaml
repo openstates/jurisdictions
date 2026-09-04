@@ -60,3 +60,15 @@ assets:
     owner: maintainers
     path: ai_tools/prompts/create-design-and-implementation-plan.prompt.md
     tags: [planning, docs]
+  - id: census-government-source-snapshot-adapter-design
+    type: planning
+    status: draft
+    owner: rework
+    path: ai_tools/planning/2026-08-11-census-government-source-snapshot-adapter-design.instruction.md
+    tags: [planning, rework, census, gus, source-snapshot]
+  - id: census-government-source-snapshot-adapter-implementation
+    type: planning
+    status: draft
+    owner: rework
+    path: ai_tools/planning/2026-08-11-census-government-source-snapshot-adapter-implementation.instruction.md
+    tags: [planning, implementation, rework, census, gus]
