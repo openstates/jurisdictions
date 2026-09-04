@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict, model_validator
+from pydantic import BaseModel, Field, ConfigDict, HttpUrl, model_validator
 from typing import List, Optional
 from datetime import datetime, timezone
 from src.models.source import SourceObj
@@ -79,22 +79,56 @@ def find_identifier(
 
 
 class Geometry(BaseModel):
-    start: datetime = Field(
-        ..., description="Best approximation of date boundary became effective."
+    """A provider-neutral, temporally-scoped reference to a boundary geometry.
+
+    A Division keeps its stable identity while its geometry changes over time
+    (rework §21), so a Division carries a list of these versions. Each version
+    owns its validity window, its retrieval URL, its external identifiers, and
+    its own provenance. ArcGIS/TIGERweb is one provider among several, not the
+    abstraction (rework §18).
+    """
+
+    valid_from: datetime | None = Field(
+        default=None,
+        description="Best approximation of the date this boundary became effective. None for an open-ended start.",
     )
-    end: datetime = Field(
-        ...,
-        description="Best approximation of date boundary was replaced or made obsolete (null for current boundaries).",
+    valid_to: datetime | None = Field(
+        default=None,
+        description="Best approximation of the date this boundary was replaced or made obsolete. None for a current boundary.",
     )
     boundary: Boundary = Field(
         ..., description="The centroid and extent of the geometry."
     )
-    children: List[str] = Field(
-        default_factory=list, description="A list of child division ids."
+    url: HttpUrl | None = Field(
+        default=None,
+        description="Provider-neutral retrieval URL for this geometry (e.g. a GeoJSON query endpoint). Ideally granular to the layer defined by the division id.",
     )
-    arcGIS_address: str = Field(
-        ...,
-        description="A url or curl-like request string to the arcGIS server. Ideally this is granular to the layer defined by the division id.",
+    identifiers: Identifiers | None = Field(
+        default=None,
+        description="External identifiers for this geometry (Census GEOID, DCGIS ANC ID, etc.). Each entry carries its own SourceObj.",
+    )
+    source: SourceObj | None = Field(
+        default=None,
+        description="Provenance for this geometry version — which dataset/release it was retrieved from.",
+    )
+
+
+def sort_geometries(geometries: list[Geometry] | None) -> list[Geometry]:
+    """Return geometry versions ordered oldest-first by ``valid_from``.
+
+    An open-ended (``None``) ``valid_from`` sorts first: an unbounded start
+    precedes every dated one. Ordering is stable, so equal ``valid_from``
+    values keep their input order and serialization stays deterministic
+    (rework §32).
+    """
+    if not geometries:
+        return []
+    return sorted(
+        geometries,
+        key=lambda geometry: (
+            geometry.valid_from is not None,
+            geometry.valid_from or datetime.min.replace(tzinfo=timezone.utc),
+        ),
     )
 
 
@@ -120,6 +154,10 @@ class Division(BaseModel):
     also_known_as: List[str] = Field(
         default_factory=list,
         description="A list of alternate formatted OCDids that refer to the same geo political divisions.",
+    )
+    children: List[str] = Field(
+        default_factory=list,
+        description="A list of child division ids — the OCDids of the Divisions contained by this one. Projects to the PARENT_OF graph edge.",
     )
     valid_thru: Optional[datetime] = Field(
         default=None,

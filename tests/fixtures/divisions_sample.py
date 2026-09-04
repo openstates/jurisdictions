@@ -182,11 +182,19 @@ ANC_1A_DIVISION = Division(
     display_name="ANC 1A District 1",
     geometries=[
         Geometry(
-            start=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
-            end=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
+            valid_from=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
+            valid_to=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
             boundary=Boundary(),
-            children=[],
-            arcGIS_address="https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54/query?where=ANC_ID=%271A%27&outFields=*&f=geojson",
+            url="https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54/query?where=ANC_ID=%271A%27&outFields=*&f=geojson",
+            identifiers=[
+                Identifier(
+                    authority="dcgis",
+                    id_type="anc_id",
+                    value="1A",
+                    source=_ANC_GEOMETRY_SOURCE,
+                )
+            ],
+            source=_ANC_GEOMETRY_SOURCE,
         )
     ],
     also_known_as=[],
@@ -243,11 +251,19 @@ SAUSALITO_DIVISION = Division(
     display_name="Sausalito",
     geometries=[
         Geometry(
-            start=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
-            end=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
+            valid_from=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
+            valid_to=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
             boundary=Boundary(),
-            children=[],
-            arcGIS_address="https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4/query?where=GEOID%3D'0670364'&outFields=*&outSR=4326&f=geojson",
+            url="https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4/query?where=GEOID%3D'0670364'&outFields=*&outSR=4326&f=geojson",
+            identifiers=[
+                Identifier(
+                    authority="census",
+                    id_type="geoid",
+                    value="0670364",
+                    source=_SAUSALITO_GEOMETRY_SOURCE,
+                )
+            ],
+            source=_SAUSALITO_GEOMETRY_SOURCE,
         )
     ],
     also_known_as=[],
@@ -286,11 +302,19 @@ MARIN_CITY_DIVISION = Division(
     display_name="Marin City",
     geometries=[
         Geometry(
-            start=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
-            end=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
+            valid_from=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
+            valid_to=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
             boundary=Boundary(),
-            children=[],
-            arcGIS_address="https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/5/query?where=GEOID%3D'0645820'&outFields=*&outSR=4326&f=geojson",
+            url="https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/5/query?where=GEOID%3D'0645820'&outFields=*&outSR=4326&f=geojson",
+            identifiers=[
+                Identifier(
+                    authority="census",
+                    id_type="geoid",
+                    value="0645820",
+                    source=_SAUSALITO_GEOMETRY_SOURCE,
+                )
+            ],
+            source=_SAUSALITO_GEOMETRY_SOURCE,
         )
     ],
     also_known_as=["Marin City Census Designated Place"],
