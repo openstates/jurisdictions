@@ -60,3 +60,15 @@ assets:
     owner: maintainers
     path: ai_tools/prompts/create-design-and-implementation-plan.prompt.md
     tags: [planning, docs]
+  - id: tiger-source-snapshot-adapter-design
+    type: planning
+    status: draft
+    owner: rework
+    path: ai_tools/planning/2026-08-10-tiger-source-snapshot-adapter-design.instruction.md
+    tags: [planning, rework, census, tiger, source-snapshot]
+  - id: tiger-source-snapshot-adapter-implementation
+    type: planning
+    status: draft
+    owner: rework
+    path: ai_tools/planning/2026-08-10-tiger-source-snapshot-adapter-implementation.instruction.md
+    tags: [planning, implementation, rework, census, tiger]

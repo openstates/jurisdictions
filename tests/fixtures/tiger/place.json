@@ -1,0 +1,20 @@
+{
+  "exceededTransferLimit": false,
+  "features": [
+    {
+      "attributes": {
+        "BASENAME": "Example",
+        "FUNCSTAT": "A",
+        "GEOID": "0800001",
+        "LSADC": "25",
+        "MTFCC": "G4110",
+        "NAME": "Example city",
+        "OID": "place-0800001",
+        "PLACE": "00001",
+        "PLACENS": "00000001",
+        "STATE": "08"
+      }
+    }
+  ],
+  "objectIdFieldName": "OBJECTID"
+}

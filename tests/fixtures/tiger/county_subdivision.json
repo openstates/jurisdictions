@@ -1,0 +1,21 @@
+{
+  "exceededTransferLimit": false,
+  "features": [
+    {
+      "attributes": {
+        "BASENAME": "Example",
+        "COUNTY": "041",
+        "COUSUB": "00001",
+        "COUSUBNS": "00000001",
+        "FUNCSTAT": "A",
+        "GEOID": "0804100001",
+        "LSADC": "43",
+        "MTFCC": "G4040",
+        "NAME": "Example township",
+        "OID": "cousub-0804100001",
+        "STATE": "08"
+      }
+    }
+  ],
+  "objectIdFieldName": "OBJECTID"
+}
