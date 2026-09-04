@@ -93,6 +93,10 @@ def _council_district_display_name(parsed_ocdid: dict) -> str | None:
 
     For ``place/council_district`` OCD IDs:   "{Place} Council District {N}"
     For ``anc/council_district`` OCD IDs:     "ANC {ANC_ID} District {N}"
+
+    ``county/council_district`` OCD IDs return None here: the county's entity
+    word varies by state ("County", "Parish", "Borough"), so the caller builds
+    that name from the validation record's NAMELSAD instead of the slug.
     """
     council_district = parsed_ocdid.get("council_district")
     if not council_district:
@@ -108,6 +112,27 @@ def _council_district_display_name(parsed_ocdid: dict) -> str | None:
         return f"{city_name} Council District {council_district}"
 
     return None
+
+
+def _county_council_district_display_name(
+    parsed_ocdid: dict, namelsad: str
+) -> str | None:
+    """Return the display name for a council district under a county.
+
+    A `county:` OCDid matches its county's row on the Counties tab, so without
+    this every council district in the county would be named after the bare
+    county ("Blount") and collide in the filename, which is keyed on the display
+    name and the GEOID.
+
+    The county's NAMELSAD is used verbatim because the entity word is not always
+    "County" — Louisiana has parishes and Alaska has boroughs.
+    """
+    council_district = parsed_ocdid.get("council_district")
+    if not council_district or not parsed_ocdid.get("county"):
+        return None
+    if not namelsad:
+        return None
+    return f"{namelsad} Council District {council_district}"
 
 
 class DivGenerator:
@@ -139,6 +164,10 @@ class DivGenerator:
 
             # council_district override takes precedence over NAMELSAD-derived name
             cd_name = _council_district_display_name(self.parsed_ocdid)
+            if not cd_name:
+                cd_name = _county_council_district_display_name(
+                    self.parsed_ocdid, namelsad
+                )
             display_name = (
                 cd_name if cd_name else namelsad_to_display_name(namelsad, lsad)
             )

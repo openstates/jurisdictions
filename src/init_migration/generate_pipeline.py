@@ -231,13 +231,15 @@ class GeneratePipeline:
             Polars DataFrame with 0, 1, or 2+ matching validation records
         """
         try:
-            # Parse OCDid to extract state and place
+            # Parse the OCDid. The deepest segment present decides which Census
+            # layer the record has to come from, and which name to match on.
             parsed = ocdid_parser(ocdid)  # Returns dict
             state = parsed.get("state")
             place = parsed.get("place")
+            county = parsed.get("county")
 
             if not state:
-                state = parsed.get("district")
+                state = parsed.get("district") or parsed.get("territory")
             if not place:
                 anc = parsed.get("anc")
                 council_district = parsed.get("council_district")
@@ -246,32 +248,49 @@ class GeneratePipeline:
                 elif anc:
                     place = f"anc {anc}"
 
-            if not state or not place:
-                # County-level OCDids land here. The validation CSV carries only
-                # Census "place" and "cousub" layers, so there is nothing to match
-                # them against; they are quarantined as stubs by run().
-                logger.debug(f"Missing state or place in OCDid: {ocdid}")
+            if not state:
+                logger.debug(f"Missing state in OCDid: {ocdid}")
                 return pl.DataFrame()
 
             state_upper = state.upper()
-            place_lower = _ocdid_slug_to_name(place)
 
-            # Look up state FIPS code
+            # Look up the state's FIPS code and full name
             from src.utils.state_lookup import load_state_code_lookup
 
             state_lookup = load_state_code_lookup()
-            state_fips_list = [
-                item.get("statefps") or item.get("statefp")
+            state_records = [
+                item
                 for item in state_lookup
                 if (item.get("stateusps") or item.get("stusps") or "").upper()
                 == state_upper
             ]
 
-            if not state_fips_list:
+            if not state_records:
                 logger.warning(f"State code not found: {state_upper}")
                 return pl.DataFrame()
 
-            state_fips = str(state_fips_list[0]).zfill(2)
+            state_record = state_records[0]
+            state_fips = str(
+                state_record.get("statefps") or state_record.get("statefp") or ""
+            ).zfill(2)
+
+            # Route by segment: a `place:` id can only match a Census place row,
+            # a `county:` id only a county row, and a bare state id only that
+            # state's own row. A state-level id matches on the state's full name
+            # because that is what the States tab carries in NAMELSAD.
+            if place:
+                target_layer = "place"
+                target_name = _ocdid_slug_to_name(place)
+            elif county:
+                target_layer = "county"
+                target_name = _ocdid_slug_to_name(county)
+            else:
+                target_layer = "state"
+                target_name = (state_record.get("name") or "").strip().lower()
+
+            if not target_name:
+                logger.debug(f"No name to match against for OCDid: {ocdid}")
+                return pl.DataFrame()
 
             # Filter validation data by state
             state_df = self.validation_df.filter(
@@ -284,13 +303,11 @@ class GeneratePipeline:
                 )
                 return pl.DataFrame()
 
-            # A `place:` OCDid segment denotes a Census place, so county
-            # subdivisions are not candidates. The LSAD code cannot make this
-            # distinction (code 25 "city" appears on both layers); a populated
-            # PLACEFP can.
-            state_df = self._filter_to_place_layer(state_df)
+            state_df = self._filter_to_layer(state_df, target_layer)
             if state_df.is_empty():
-                logger.debug(f"No place-layer records for state: {state_upper}")
+                logger.debug(
+                    f"No {target_layer}-layer records for state: {state_upper}"
+                )
                 return pl.DataFrame()
 
             candidates = [
@@ -305,21 +322,24 @@ class GeneratePipeline:
             matches = [
                 (row, 1.0)
                 for row in candidates
-                if row["normalized_place_name"] == place_lower
+                if row["normalized_place_name"] == target_name
             ]
 
             if not matches:
                 matches = [
                     (row, score)
                     for row, score in (
-                        (row, _similarity(place_lower, row["normalized_place_name"]))
+                        (row, _similarity(target_name, row["normalized_place_name"]))
                         for row in candidates
                     )
                     if score >= FUZZY_MATCH_THRESHOLD
                 ]
 
             if not matches:
-                logger.debug(f"No matches found for place: {place} in state {state}")
+                logger.debug(
+                    f"No matches found for {target_layer}: {target_name} "
+                    f"in state {state_upper}"
+                )
                 return pl.DataFrame()
 
             # Convert matches to DataFrame, sorted by score descending
@@ -336,18 +356,31 @@ class GeneratePipeline:
             return pl.DataFrame()
 
     @staticmethod
-    def _filter_to_place_layer(df: pl.DataFrame) -> pl.DataFrame:
-        """Keep only Census place rows, dropping county subdivisions.
+    def _filter_to_layer(df: pl.DataFrame, layer: str) -> pl.DataFrame:
+        """Keep only the rows belonging to one Census layer.
 
-        Place rows carry a PLACEFP; county subdivision rows carry a COUSUBFP and
-        leave PLACEFP blank. A CSV without a PLACEFP column is passed through
-        unfiltered.
+        The `layer` column holds the TIGER file stem the row came from, e.g.
+        "tl_2025_53_place", "tl_2025_53_cousub", "tl_2025_53_county",
+        "tl_2025_us_state", so the suffix names the layer.
+
+        A CSV without a `layer` column falls back to the older PLACEFP
+        heuristic for the place layer: place rows carry a PLACEFP, county
+        subdivision rows leave it blank. Any other layer is passed through
+        unfiltered, since there is nothing to key on.
         """
-        if "PLACEFP" not in df.columns:
-            return df
-        return df.filter(
-            pl.col("PLACEFP").cast(pl.Utf8).fill_null("").str.strip_chars() != ""
-        )
+        if "layer" in df.columns:
+            return df.filter(
+                pl.col("layer")
+                .cast(pl.Utf8)
+                .fill_null("")
+                .str.strip_chars()
+                .str.ends_with(f"_{layer}")
+            )
+        if layer == "place" and "PLACEFP" in df.columns:
+            return df.filter(
+                pl.col("PLACEFP").cast(pl.Utf8).fill_null("").str.strip_chars() != ""
+            )
+        return df
 
     def jurisdiction_exists(self, jurisdiction_ocdid: str) -> bool:
         """Check if a Jurisdiction with this ocd_id has already been created.
