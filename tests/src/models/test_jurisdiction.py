@@ -129,3 +129,70 @@ def test_jurisdiction_url_rejects_non_http_values() -> None:
                 classification=ClassificationEnum.GOVERNMENT,
                 metadata={"urls": []},
             )
+
+
+def test_jurisdiction_valid_without_url() -> None:
+    """A Jurisdiction with no website is valid and serializes as null.
+
+    Rework §23: missing official websites must not invalidate an otherwise
+    valid Jurisdiction. Website resolution is a separate enrichment concern.
+    """
+    jurisdiction = Jurisdiction(
+        ocdid="ocd-jurisdiction/country:us/state:wa/place:seattle/government",
+        name="Seattle City Government",
+        classification=ClassificationEnum.GOVERNMENT,
+        metadata={"urls": []},
+    )
+
+    assert jurisdiction.url is None
+    assert jurisdiction.model_dump(mode="json")["url"] is None
+
+
+def test_jurisdiction_without_url_round_trips() -> None:
+    """A url-less Jurisdiction survives a JSON round-trip with url still None."""
+    jurisdiction = Jurisdiction(
+        ocdid="ocd-jurisdiction/country:us/state:wa/place:seattle/government",
+        name="Seattle City Government",
+        classification=ClassificationEnum.GOVERNMENT,
+        metadata={"urls": []},
+    )
+
+    restored = Jurisdiction.model_validate_json(jurisdiction.model_dump_json())
+
+    assert restored.url is None
+    assert restored == jurisdiction
+
+
+def test_jurisdiction_url_absence_does_not_change_uuid() -> None:
+    """Identity must not move when a mutable fact like the website changes.
+
+    Rework §5 / §38 — ``ensure_uuid5_id`` derives identity from ocdid and
+    the last_updated date only. Adding or removing a website must not
+    produce a different UUID.
+    """
+    common = {
+        "ocdid": "ocd-jurisdiction/country:us/state:wa/place:seattle/government",
+        "name": "Seattle City Government",
+        "classification": ClassificationEnum.GOVERNMENT,
+        "metadata": {"urls": []},
+        "last_updated": datetime(2026, 4, 8, 12, 0, tzinfo=timezone.utc),
+    }
+
+    without_url = Jurisdiction(**common)
+    with_url = Jurisdiction(**common, url="https://www.seattle.gov/")
+
+    assert without_url.url is None
+    assert with_url.url is not None
+    assert without_url.id == with_url.id
+
+
+def test_jurisdiction_empty_url_is_rejected_not_coerced_to_none() -> None:
+    """An empty string is invalid input, not a synonym for "no website"."""
+    with pytest.raises(ValidationError):
+        Jurisdiction(
+            ocdid="ocd-jurisdiction/country:us/state:wa/place:seattle/government",
+            name="Seattle City Government",
+            url="",
+            classification=ClassificationEnum.GOVERNMENT,
+            metadata={"urls": []},
+        )

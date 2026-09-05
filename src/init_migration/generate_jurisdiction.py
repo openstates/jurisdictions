@@ -138,11 +138,12 @@ class JurGenerator:
                 fallback_name = f"{division.display_name} Government"
             else:
                 fallback_name = f"{division.display_name} {classification.replace('_', ' ').title()}"
-            fallback_url = f"https://opencivicdata.org/division/{division.ocdid}"
-
             # --- Name / URL ---
+            # No website fabrication: an unresolved official site stays None
+            # rather than becoming a synthetic opencivicdata.org address.
+            # Website resolution is a separate enrichment concern.
             name = (ai or {}).get("name") or fallback_name
-            url = (ai or {}).get("url") or fallback_url
+            url = (ai or {}).get("url")
 
             # --- Term / Metadata ---
             term = None

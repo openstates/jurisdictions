@@ -193,7 +193,9 @@ def test_ensure_ancestor_stubs_jurisdiction_uses_model_fields(tmp_path: Path):
     )
     assert "ocdid" in jur_data
     assert "name" in jur_data
-    assert "url" in jur_data
+    # Ancestor stubs have no resolved website; the stub dumper uses
+    # exclude_none=True, so `url` is omitted rather than emitted as null.
+    assert "url" not in jur_data
     assert "classification" in jur_data
     assert "sourcing" in jur_data
     assert "last_updated" in jur_data

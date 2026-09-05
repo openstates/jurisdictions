@@ -239,13 +239,19 @@ class TestGenerateJurisdiction:
         assert isinstance(jurisdiction, Jurisdiction)
         assert jurisdiction.ocdid.startswith("ocd-jurisdiction/")
         assert jurisdiction.name is not None
-        assert jurisdiction.url is not None
+        # No AI lookup -> no website resolved, and none is fabricated.
+        assert jurisdiction.url is None
         assert jurisdiction.classification == "government"
 
     def test_generated_jurisdiction_has_required_fields(
         self, jur_generator, sample_division
     ):
-        """Generated Jurisdiction should have all required fields."""
+        """Generated Jurisdiction should have all required fields.
+
+        ``url`` is deliberately absent from this list: per rework §23 a
+        website is enrichment, not a requirement, so it is asserted as
+        None in ``test_generate_jurisdiction_basic`` instead.
+        """
         jurisdiction = jur_generator.generate_jurisdiction(
             division=sample_division,
             uuid=jur_generator.uuid,
@@ -256,7 +262,6 @@ class TestGenerateJurisdiction:
         assert jurisdiction.id is not None
         assert jurisdiction.ocdid is not None
         assert jurisdiction.name is not None
-        assert jurisdiction.url is not None
         assert jurisdiction.classification is not None
         assert jurisdiction.legislative_sessions is not None
         assert jurisdiction.feature_flags is not None
@@ -276,18 +281,31 @@ class TestGenerateJurisdiction:
         assert "Seattle" in jurisdiction.name
         assert "Government" in jurisdiction.name
 
-    def test_generated_jurisdiction_fallback_url(self, jur_generator, sample_division):
-        """Generated Jurisdiction should use fallback URL when AI lookup disabled."""
+    def test_generated_jurisdiction_does_not_fabricate_url(
+        self, jur_generator, sample_division
+    ):
+        """No synthetic website is invented when AI lookup is disabled.
+
+        Regression guard for rework §23. The generator previously fell back
+        to ``https://opencivicdata.org/division/{ocdid}``, which is not the
+        jurisdiction's website — it baked an OCDID into a synthetic address.
+        An unresolved site must stay None.
+        """
         jurisdiction = jur_generator.generate_jurisdiction(
             division=sample_division,
             uuid=jur_generator.uuid,
             classification="government",
         )
 
-        # With AI disabled, should use OpenCivicData fallback.
-        # url is an HttpUrl, so compare against its string form.
-        assert "opencivicdata.org" in str(jurisdiction.url)
-        assert sample_division.ocdid in str(jurisdiction.url)
+        assert jurisdiction.url is None
+
+        # OCD provenance still belongs in sourcing, not in the url field.
+        sourcing_urls = [
+            str(value)
+            for source in jurisdiction.sourcing
+            for value in source.source_url.values()
+        ]
+        assert any("opencivicdata.org" in u for u in sourcing_urls)
 
     def test_generate_with_different_classifications(
         self, jur_generator, sample_division

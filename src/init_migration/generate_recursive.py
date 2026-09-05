@@ -188,7 +188,7 @@ def _write_stub_jurisdiction(
     jurisdiction = Jurisdiction(
         ocdid=jur_ocdid,
         name=f"{display_name} Government",
-        url=f"https://opencivicdata.org/division/{div_ocdid}",
+        url=None,
         classification=ClassificationEnum.GOVERNMENT,
         legislative_sessions={},
         feature_flags=[],

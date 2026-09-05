@@ -3,7 +3,7 @@ id: sample-output-migration
 type: rework-migration-log
 owner: rework
 status: active
-last_updated: 2026-09-04
+last_updated: 2026-09-05
 tags: [rework, phase-2, models, sample-output, migration]
 scope: "Structural changes to Pydantic models that will require regeneration of tests/sample_output/** in Phase 11 (#142)."
 ---
@@ -385,6 +385,139 @@ Both predate this change and were verified to fail identically before it:
   - `test_jurisdiction_url_rejects_non_http_values` — covers a bare
     hostname, free text, an `ftp://` URL, and the empty string.
 
+
+## Task 2.6 (remainder) — Nullable website (2026-09-05)
+
+**Issue:** #133 (Phase 2 tracking)
+
+Completes Task 2.6. The typing half landed separately as `ad6aa45`
+(§"URL fields typed as `HttpUrl`" above); this is the rework §23 half —
+"missing official websites must not invalidate otherwise valid
+Jurisdictions. Website resolution is a separate enrichment concern."
+
+### Structural changes landing this task
+
+1. **`Jurisdiction.url: HttpUrl` → `HttpUrl | None`, default `None`.**
+   The inner type stays `HttpUrl`, so a malformed non-empty value is
+   still rejected — `None` is the escape hatch, not a loose string. The
+   empty string remains invalid and is **not** coerced to `None`
+   (regression-tested).
+
+2. **Two URL fabrication sites removed.** Neither was a website.
+
+   | Site | Was | Now |
+   | --- | --- | --- |
+   | `generate_jurisdiction.py:141` | `fallback_url = f"https://opencivicdata.org/division/{division.ocdid}"`, used whenever `_ai_lookup` returned `None` | `url = (ai or {}).get("url")` — `None` when unresolved |
+   | `generate_recursive.py:191` | same synthetic address on every ancestor stub Jurisdiction | `url=None` |
+
+   The second site was not listed in `model_inventory.md` §6.2 and is easy
+   to miss — it fabricated the identical string in a different module.
+
+   `_ai_lookup` returns `None` on its only non-raising path (AI lookup is
+   unimplemented; `jurisdiction_ai_url=True` raises
+   `NotImplementedError`). So the fabrication was not an edge case — it
+   was what **every** generated Jurisdiction received, baking an OCDID
+   into a synthetic URL in direct contradiction of §23.
+
+   OCD provenance is retained where it belongs: the
+   `sourcing[].source_url["division"]` entry at
+   `generate_jurisdiction.py:166` is unchanged. That records where the
+   record came from; it was never a claim about the jurisdiction's
+   website.
+
+### `model_inventory.md` §6.2 risk claim — not substantiated
+
+§6.2 warned that removing the fallback "may break existing quarantine
+paths". Checked before acting:
+
+- **Zero readers of `Jurisdiction.url` anywhere in `src/`.** The only
+  code that branched on the fabricated value was the test asserting it.
+- The quarantine-adjacent modules (`geoid_exception.py`,
+  `ocdid_matcher.py`, `main.py`, `generate_pipeline.py`) do not read
+  `url`. `generate_pipeline.py` generates and dumps a Jurisdiction; it
+  never reads the field back.
+
+§6.2 should be updated to record that the risk did not materialize.
+
+### Expected Phase 11 diff (#142): none
+
+All six jurisdiction fixtures carry a real `url`, so a nullable field
+holding those same values serializes byte-identically. Verified by
+loading each golden file through the model and comparing the re-dumped
+`url` against the file on disk: **5 of 6 zero drift**; the sixth
+(Marin City CSD) fails to load for the unrelated pre-existing reason
+noted below.
+
+**Generated (non-golden) output does change**, and the two dumpers differ
+in how they express absence:
+
+| Dumper | `exclude_none` | A url-less Jurisdiction emits |
+| --- | --- | --- |
+| `JurGenerator.dump_jurisdiction` (`generate_jurisdiction.py:242`) | `False` | `url: null` |
+| `Jurisdiction.dump_jurisdiction` (`jurisdiction.py:233`) | `False` | `url: null` |
+| `_write_stub_jurisdiction` (`generate_recursive.py:201`) | `True` | key omitted entirely |
+
+This asymmetry is pre-existing, not introduced here, but it only becomes
+observable now that `url` can be `None`. Whether stub output should also
+emit explicit nulls is a Phase 10 (YAML rendering) consistency question.
+Working-tree output under `jurisdictions/**` is affected;
+`tests/sample_output/**` is not, because the golden fixtures are dumped
+from `tests/fixtures/*_sample.py` rather than from `JurGenerator`.
+
+### Existing tests updated
+
+- `test_generate_jurisdiction_basic` — `assert jurisdiction.url is not
+  None` inverted to `is None`.
+- `test_generated_jurisdiction_has_required_fields` — the `url` assertion
+  removed; `url` is no longer a required field, so leaving it in that
+  list (and under its "Required fields per Jurisdiction model" comment)
+  would have been wrong. Docstring now says why it is absent.
+- `test_generated_jurisdiction_fallback_url` → renamed
+  `test_generated_jurisdiction_does_not_fabricate_url` and inverted into
+  a §23 regression guard: asserts `url is None` **and** that the OCD
+  reference is still present in `sourcing`, so a future change cannot
+  satisfy it by dropping provenance too.
+- `test_ensure_ancestor_stubs_jurisdiction_uses_model_fields` —
+  `assert "url" in jur_data` → `not in`, because that dumper uses
+  `exclude_none=True` and now omits the key.
+
+`tests/fixtures/jurisdictions_sample.py` unchanged; all six values remain
+valid against the looser type (§33).
+
+### Non-goals
+
+- No `tests/sample_output/**` edits.
+- No change to `ensure_uuid5_id` (Task 2.1).
+- No `SourceObj` changes (Task 2.2).
+- No field rename to `website`. `url` is the OCD spec field name and all
+  six fixtures emit `url:`; renaming adds #142 churn for no semantic
+  gain.
+- The stub-vs-generator `exclude_none` asymmetry above is documented, not
+  reconciled.
+
+### Known pre-existing breakage, not addressed here
+
+- `MARIN_CITY_CSD_JURISDICTION` fails `validate_jurisdiction_id` (OCDID
+  trailing segment `governing_board` is not a `ClassificationEnum`
+  value). Makes `tests/fixtures/jurisdictions_sample.py` unimportable as
+  a module and the Marin City golden file unloadable. Deferred to
+  Phase 7 per [`model_inventory.md`](model_inventory.md) §8; see
+  [`sample_output_inventory.md`](sample_output_inventory.md) §3.4.
+- `src/models/division.py` `ruff format` drift from Task 2.4.
+
+### Verification
+
+- `uv run pytest tests/src/models/test_jurisdiction.py tests/src/init_migration/`
+  — 104 passed.
+- `uv run pytest -m "not integration and not slow"` — 165 passed,
+  15 deselected (baseline at `ad6aa45` was 161).
+- `uv run ruff check .` — all checks passed.
+- New unit tests in `tests/src/models/test_jurisdiction.py`:
+  - `test_jurisdiction_valid_without_url`
+  - `test_jurisdiction_without_url_round_trips`
+  - `test_jurisdiction_url_absence_does_not_change_uuid` (§5/§38 —
+    identity must not move when a mutable fact changes)
+  - `test_jurisdiction_empty_url_is_rejected_not_coerced_to_none`
 
 ## Fixture value normalizations (not tied to a model task)
 

@@ -146,9 +146,9 @@ class Jurisdiction(BaseModel):
         ...,
         description="Name of jurisdiction (e.g. North Carolina General Assembly). Should be sourced from official gov source data (i.e. Census) **(required)**",
     )
-    url: HttpUrl = Field(
-        ...,
-        description="URL pointing to jurisdiction's website. Validated as an http(s) URL. **(required)**",
+    url: HttpUrl | None = Field(
+        default=None,
+        description="URL pointing to jurisdiction's website, if known. Validated as an http(s) URL. None when no official website has been resolved — website resolution is a separate enrichment concern and its absence must not invalidate an otherwise valid Jurisdiction.",
     )
     classification: ClassificationEnum = Field(
         ...,
