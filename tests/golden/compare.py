@@ -52,6 +52,10 @@ def _compare_values(file: str, path: str, expected: Any, actual: Any) -> list[Di
 
 def compare_trees(expected_dir: Path, actual_dir: Path) -> list[Diff]:
     expected_dir, actual_dir = Path(expected_dir), Path(actual_dir)
+    if not expected_dir.is_dir():
+        raise FileNotFoundError(expected_dir)
+    if not actual_dir.is_dir():
+        raise FileNotFoundError(actual_dir)
     expected_files, actual_files = _yaml_files(expected_dir), _yaml_files(actual_dir)
     diffs: list[Diff] = []
     for rel in sorted(expected_files - actual_files):

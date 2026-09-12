@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import pytest
 import yaml
 
 from tests.golden.compare import compare_trees
@@ -52,3 +53,33 @@ def test_list_order_is_significant(tmp_path):
     _write(exp, "x.yaml", {"xs": [1, 2, 3]})
     _write(act, "x.yaml", {"xs": [1, 3, 2]})
     assert any(d.kind == "VALUE_MISMATCH" for d in compare_trees(exp, act))
+
+
+def test_nested_value_mismatch_with_dotted_path(tmp_path):
+    exp, act = tmp_path / "exp", tmp_path / "act"
+    _write(exp, "x.yaml", {"n": {"a": 1}})
+    _write(act, "x.yaml", {"n": {"a": 2}})
+    diffs = compare_trees(exp, act)
+    assert len(diffs) == 1
+    d = diffs[0]
+    assert (d.file, d.path, d.kind) == ("x.yaml", "n.a", "VALUE_MISMATCH")
+    assert d.expected == 1 and d.actual == 2
+
+
+def test_type_mismatch(tmp_path):
+    exp, act = tmp_path / "exp", tmp_path / "act"
+    _write(exp, "x.yaml", {"a": 1})
+    _write(act, "x.yaml", {"a": "1"})
+    diffs = compare_trees(exp, act)
+    assert len(diffs) == 1
+    d = diffs[0]
+    assert (d.file, d.path, d.kind) == ("x.yaml", "a", "TYPE_MISMATCH")
+    assert d.expected == 1 and d.actual == "1"
+
+
+def test_missing_directory_raises_error(tmp_path):
+    exp = tmp_path / "nonexistent"
+    act = tmp_path / "actual"
+    act.mkdir()
+    with pytest.raises(FileNotFoundError):
+        compare_trees(exp, act)
