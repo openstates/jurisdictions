@@ -55,9 +55,7 @@ def _census_ids(
 _CIVICDATA_GI_SOURCE = SourceObj(
     field=["government_identifiers"],
     source_name="civicdata.tech",
-    source_url={
-        "url": "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362"
-    },
+    source_url="https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362",
     source_type="human_researched",
     source_description=None,
 )
@@ -65,9 +63,7 @@ _CIVICDATA_GI_SOURCE = SourceObj(
 _TIGER_GEOMETRY_SOURCE = SourceObj(
     field=["geometries"],
     source_name="Census TIGER/Line",
-    source_url={
-        "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer"
-    },
+    source_url="https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer",
     source_type="human_researched",
     source_description=None,
 )
@@ -125,9 +121,7 @@ TACOMA_DIVISION = Division(
 _AUSTIN_GEOMETRY_SOURCE = SourceObj(
     field=["geometries"],
     source_name="City of Austin ArcGIS Hub",
-    source_url={
-        "url": "https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/"
-    },
+    source_url="https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/",
     source_type="human_researched",
     source_description=None,
 )
@@ -161,7 +155,7 @@ AUSTIN_DIVISION = Division(
 _ANC_GEOMETRY_SOURCE = SourceObj(
     field=["geometries"],
     source_name="DCGIS",
-    source_url={"url": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA"},
+    source_url="https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA",
     source_type="human_researched",
     source_description=None,
 )
@@ -169,9 +163,7 @@ _ANC_GEOMETRY_SOURCE = SourceObj(
 _ANC_GI_SOURCE = SourceObj(
     field=["government_identifiers"],
     source_name="DCGIS",
-    source_url={
-        "url": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54"
-    },
+    source_url="https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54",
     source_type="human_researched",
     source_description=None,
 )
@@ -238,9 +230,7 @@ ANC_1A_DIVISION = Division(
 _SAUSALITO_GEOMETRY_SOURCE = SourceObj(
     field=["geometries"],
     source_name="Census TIGER/Line",
-    source_url={
-        "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer"
-    },
+    source_url="https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer",
     source_type="human_researched",
     source_description=None,
 )
@@ -289,9 +279,7 @@ SAUSALITO_DIVISION = Division(
 _MARIN_CITY_POPULATION_SOURCE = SourceObj(
     field=["metadata", "metadata.population"],
     source_name="Census 2020 Decceennial Census",
-    source_url={
-        "url": "https://data.census.gov/profile/Marin_City_CDP,_California?g=160XX00US0645820"
-    },
+    source_url="https://data.census.gov/profile/Marin_City_CDP,_California?g=160XX00US0645820",
     source_type="human_researched",
     source_description=None,
 )

@@ -86,9 +86,9 @@ def test_jurisdiction_rejects_mismatched_classification_suffix() -> None:
 def test_jurisdiction_url_round_trips_exact_string() -> None:
     """A well-formed url survives serialization byte-for-byte.
 
-    Guards the Phase 11 golden contract: HttpUrl normalizes some inputs
-    (a bare host gains a trailing slash), so the six sample_output values
-    must be in already-normal form or regeneration silently rewrites them.
+    HttpUrl normalizes some inputs (a bare host gains a trailing slash), so
+    the six sample_output values must be in already-normal form or
+    regeneration silently rewrites them.
     """
     for url in [
         "https://www.seattle.gov/",
@@ -134,8 +134,8 @@ def test_jurisdiction_url_rejects_non_http_values() -> None:
 def test_jurisdiction_valid_without_url() -> None:
     """A Jurisdiction with no website is valid and serializes as null.
 
-    Rework §23: missing official websites must not invalidate an otherwise
-    valid Jurisdiction. Website resolution is a separate enrichment concern.
+    Missing official websites must not invalidate an otherwise valid
+    Jurisdiction. Website resolution is a separate enrichment concern.
     """
     jurisdiction = Jurisdiction(
         ocdid="ocd-jurisdiction/country:us/state:wa/place:seattle/government",
@@ -166,9 +166,8 @@ def test_jurisdiction_without_url_round_trips() -> None:
 def test_jurisdiction_url_absence_does_not_change_uuid() -> None:
     """Identity must not move when a mutable fact like the website changes.
 
-    Rework §5 / §38 — ``ensure_uuid5_id`` derives identity from ocdid and
-    the last_updated date only. Adding or removing a website must not
-    produce a different UUID.
+    ``ensure_uuid5_id`` derives identity from ocdid and the last_updated date
+    only. Adding or removing a website must not produce a different UUID.
     """
     common = {
         "ocdid": "ocd-jurisdiction/country:us/state:wa/place:seattle/government",

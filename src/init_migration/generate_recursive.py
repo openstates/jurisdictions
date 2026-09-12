@@ -104,7 +104,7 @@ def _write_stub_division(
     stub_source = SourceObj(
         field=["ocdid"],
         source_name="ocdid_recursive_stub",
-        source_url={"ocd_repo": _OCD_REPO_URL},
+        source_url=_OCD_REPO_URL,
         source_type=SourceType.SCRAPED,
         source_description="Placeholder stub — created by recursive ancestor traversal",
     )
@@ -179,7 +179,7 @@ def _write_stub_jurisdiction(
     jur_source = SourceObj(
         field=["ocdid", "name", "classification"],
         source_name="ocdid_recursive_stub",
-        source_url={"ocd_repo": _OCD_REPO_URL},
+        source_url=_OCD_REPO_URL,
         source_type=SourceType.HUMAN,
         source_description="Placeholder stub — created by recursive ancestor traversal",
     )

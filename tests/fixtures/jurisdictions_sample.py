@@ -34,23 +34,21 @@ SEATTLE_JURISDICTION = Jurisdiction(
         SourceObj(
             field=["url"],
             source_name="Seattle Official Site",
-            source_url={"url": "https://www.seattle.gov/"},
+            source_url="https://www.seattle.gov/",
             source_type="human_researched",
             source_description=None,
         ),
         SourceObj(
             field=["term"],
             source_name="Seattle City Clerk",
-            source_url={
-                "url": "https://www.seattle.gov/cityclerk/agendas-and-legislative-resources/terms-of-office-for-elected-officials"
-            },
+            source_url="https://www.seattle.gov/cityclerk/agendas-and-legislative-resources/terms-of-office-for-elected-officials",
             source_type="human_researched",
             source_description=None,
         ),
         SourceObj(
             field=["metadata", "metadata.urls"],
             source_name="Seattle Council",
-            source_url={"url": "https://www.seattle.gov/council"},
+            source_url="https://www.seattle.gov/council",
             source_type="human_researched",
             source_description=None,
         ),
@@ -94,25 +92,21 @@ TACOMA_JURISDICTION = Jurisdiction(
         SourceObj(
             field=["url"],
             source_name="Tacoma Official Site",
-            source_url={"url": "https://tacoma.gov/"},
+            source_url="https://tacoma.gov/",
             source_type="human_researched",
             source_description=None,
         ),
         SourceObj(
             field=["term"],
             source_name="Tacoma City Charter",
-            source_url={
-                "url": "https://cms.tacoma.gov/cityclerk/Files/Documents/CityCharter.pdf"
-            },
+            source_url="https://cms.tacoma.gov/cityclerk/Files/Documents/CityCharter.pdf",
             source_type="human_researched",
             source_description=None,
         ),
         SourceObj(
             field=["term", "term.number_of_positions"],
             source_name="Tacoma Council",
-            source_url={
-                "url": "https://tacoma.gov/government/departments/city-council/"
-            },
+            source_url="https://tacoma.gov/government/departments/city-council/",
             source_type="human_researched",
             source_description=None,
         ),
@@ -158,27 +152,21 @@ AUSTIN_JURISDICTION = Jurisdiction(
         SourceObj(
             field=["url"],
             source_name="City of Austin ArcGIS Hub",
-            source_url={
-                "url": "https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/"
-            },
+            source_url="https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/",
             source_type="human_researched",
             source_description=None,
         ),
         SourceObj(
             field=["term", "term.term_description"],
             source_name="Austin Code of Ordinances",
-            source_url={
-                "url": "https://library.municode.com/tx/austin/codes/code_of_ordinances?nodeId=CH_ARTIIIEL_S2ELDACOTEELMARFEL"
-            },
+            source_url="https://library.municode.com/tx/austin/codes/code_of_ordinances?nodeId=CH_ARTIIIEL_S2ELDACOTEELMARFEL",
             source_type="human_researched",
             source_description=None,
         ),
         SourceObj(
             field=["term", "term.term_limits"],
             source_name="Austin Code of Ordinances",
-            source_url={
-                "url": "https://library.municode.com/tx/austin/codes/code_of_ordinances?nodeId=CH_ARTIITHCO_S5TELI"
-            },
+            source_url="https://library.municode.com/tx/austin/codes/code_of_ordinances?nodeId=CH_ARTIITHCO_S5TELI",
             source_type="human_researched",
             source_description=None,
         ),
@@ -223,30 +211,28 @@ ANC_1A_JURISDICTION = Jurisdiction(
         SourceObj(
             field=["url"],
             source_name="Office of Advisory Neighborhood Commissions",
-            source_url={"url": "https://oanc.dc.gov/anc-profile/anc-1a"},
+            source_url="https://oanc.dc.gov/anc-profile/anc-1a",
             source_type="human_researched",
             source_description=None,
         ),
         SourceObj(
             field=["term"],
             source_name="DC Code",
-            source_url={
-                "url": "https://code.dccouncil.gov/us/dc/council/code/sections/1-309.06"
-            },
+            source_url="https://code.dccouncil.gov/us/dc/council/code/sections/1-309.06",
             source_type="human_researched",
             source_description=None,
         ),
         SourceObj(
             field=["term", "term.number_of_positions"],
             source_name="OpenANC",
-            source_url={"url": "https://openanc.org/map_2022/ancs/1A.html"},
+            source_url="https://openanc.org/map_2022/ancs/1A.html",
             source_type="human_researched",
             source_description=None,
         ),
         SourceObj(
             field=["metadata", "metadata.urls"],
             source_name="ANC 1A",
-            source_url={"url": "https://anc1a.org/"},
+            source_url="https://anc1a.org/",
             source_type="human_researched",
             source_description=None,
         ),
@@ -292,23 +278,21 @@ SAUSALITO_JURISDICTION = Jurisdiction(
         SourceObj(
             field=["url"],
             source_name="Sausalito Official Site",
-            source_url={"url": "https://www.sausalito.gov/"},
+            source_url="https://www.sausalito.gov/",
             source_type="human_researched",
             source_description=None,
         ),
         SourceObj(
             field=["term"],
             source_name="Sausalito City Government",
-            source_url={"url": "https://www.sausalito.gov/city-government"},
+            source_url="https://www.sausalito.gov/city-government",
             source_type="human_researched",
             source_description=None,
         ),
         SourceObj(
             field=["metadata", "metadata.urls"],
             source_name="Sausalito City Council",
-            source_url={
-                "url": "https://www.sausalito.gov/city-government/city-council"
-            },
+            source_url="https://www.sausalito.gov/city-government/city-council",
             source_type="human_researched",
             source_description=None,
         ),
@@ -348,9 +332,7 @@ MARIN_CITY_CSD_JURISDICTION = Jurisdiction(
         SourceObj(
             field=["term"],
             source_name="Marin LAFCO",
-            source_url={
-                "url": "https://www.marinlafco.org/marin-city-community-services-district"
-            },
+            source_url="https://www.marinlafco.org/marin-city-community-services-district",
             source_type="human_researched",
             source_description=None,
         ),

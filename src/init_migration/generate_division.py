@@ -153,9 +153,8 @@ class DivGenerator:
             civicdata_source = SourceObj(
                 field=["government_identifiers"],
                 source_name="civicdata.tech",
-                source_url={
-                    "civicdata": "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/"
-                },
+                source_url="https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/",
+                dataset="civicdata.tech validation spreadsheet",
                 source_type=SourceType.HUMAN,
                 source_description="Human-researched validation data from civicdata.tech",
             )
@@ -245,9 +244,8 @@ class DivGenerator:
             stub_source = SourceObj(
                 field=["ocdid"],
                 source_name="ocdid_ingest",
-                source_url={
-                    "ocd_repo": "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv"
-                },
+                source_url="https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv",
+                dataset="ocd-division-ids/identifiers/country-us.csv",
                 source_type=SourceType.HUMAN,
                 source_description="Open Civic Data Master repo",
             )

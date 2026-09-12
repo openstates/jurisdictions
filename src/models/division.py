@@ -81,11 +81,11 @@ def find_identifier(
 class Geometry(BaseModel):
     """A provider-neutral, temporally-scoped reference to a boundary geometry.
 
-    A Division keeps its stable identity while its geometry changes over time
-    (rework §21), so a Division carries a list of these versions. Each version
-    owns its validity window, its retrieval URL, its external identifiers, and
-    its own provenance. ArcGIS/TIGERweb is one provider among several, not the
-    abstraction (rework §18).
+    A Division keeps its stable identity while its geometry changes over time,
+    so a Division carries a list of these versions. Each version owns its
+    validity window, its retrieval URL, its external identifiers, and its own
+    provenance. ArcGIS/TIGERweb is one provider among several, not the
+    abstraction.
     """
 
     valid_from: datetime | None = Field(
@@ -118,8 +118,7 @@ def sort_geometries(geometries: list[Geometry] | None) -> list[Geometry]:
 
     An open-ended (``None``) ``valid_from`` sorts first: an unbounded start
     precedes every dated one. Ordering is stable, so equal ``valid_from``
-    values keep their input order and serialization stays deterministic
-    (rework §32).
+    values keep their input order and serialization stays deterministic.
     """
     if not geometries:
         return []

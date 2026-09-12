@@ -42,7 +42,7 @@ def _sample_source() -> SourceObj:
     return SourceObj(
         field=["government_identifiers"],
         source_name="civicdata.tech",
-        source_url={"url": "https://example.test/civicdata"},
+        source_url="https://example.test/civicdata",
         source_type=SourceType.HUMAN,
         source_description=None,
     )
@@ -74,9 +74,9 @@ def test_division_accepts_explicit_id() -> None:
 def test_identifier_json_round_trip_preserves_leading_zeros() -> None:
     """Serialization round-trip must preserve leading-zero identifier values.
 
-    Regression guard for rework §22 — Census FIPS, GEOID, and SLD district
-    codes are strings that carry leading zeros; the Identifier model must
-    keep them intact through model_dump_json → model_validate_json.
+    Census FIPS, GEOID, and SLD district codes are strings that carry leading
+    zeros; the Identifier model must keep them intact through
+    model_dump_json → model_validate_json.
     """
     source = _sample_source()
     leading_zero_values = {
@@ -136,14 +136,14 @@ def _geometry_source() -> SourceObj:
     return SourceObj(
         field=["geometries"],
         source_name="Census TIGER/Line",
-        source_url={"url": "https://example.test/tiger"},
+        source_url="https://example.test/tiger",
         source_type=SourceType.HUMAN,
         source_description=None,
     )
 
 
 def test_geometry_json_round_trip_is_lossless() -> None:
-    """Geometry must serialize and deserialize without loss (rework §18)."""
+    """Geometry must serialize and deserialize without loss."""
     source = _geometry_source()
     geometry = Geometry(
         valid_from=datetime(2020, 1, 1, tzinfo=timezone.utc),
@@ -171,7 +171,7 @@ def test_geometry_json_round_trip_is_lossless() -> None:
 
 
 def test_geometry_validity_window_accepts_none() -> None:
-    """Open-ended validity ranges are legal on both ends (rework §20, §21)."""
+    """Open-ended validity ranges are legal on both ends."""
     geometry = Geometry(boundary=Boundary())
 
     assert geometry.valid_from is None
@@ -213,7 +213,7 @@ def test_division_geometry_versions_sort_by_valid_from() -> None:
 
 
 def test_geometry_url_is_provider_neutral() -> None:
-    """Any http(s) provider is valid — nothing requires a TIGERweb URL (rework §18)."""
+    """Any http(s) provider is valid — nothing requires a TIGERweb URL."""
     non_census_urls = [
         "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/MapServer/54/query?f=geojson",
         "https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/districts/0/query",
@@ -227,7 +227,7 @@ def test_geometry_url_is_provider_neutral() -> None:
 
 
 def test_division_children_lists_child_division_ids() -> None:
-    """Parent→child Division links survive a round-trip (rework §26 PARENT_OF)."""
+    """Parent→child Division links (the PARENT_OF edge) survive a round-trip."""
     child_ids = [
         "ocd-division/country:us/state:ca/place:sausalito/council_district:1",
         "ocd-division/country:us/state:ca/place:sausalito/council_district:2",

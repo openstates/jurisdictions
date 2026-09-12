@@ -231,16 +231,27 @@ OCDidParsed(
 
 ```python
 class SourceObj(BaseModel):
-    field: list[str]                   # Which fields this source applies to
-    note: str | None                   # Additional context about the source
-    url: str | FileUrl | FtpUrl        # Source URL (HTTP, file, or FTP)
-    date_accessed: date | None         # When the source was accessed
+    field: list[str]                        # Dotted field paths on the owning record (free-form)
+    source_name: str                        # e.g. "Census Bureau", "civicdata.tech"
+    source_type: SourceType                 # How the data was collected (default: ai_generated)
+    source_url: HttpUrl | FtpUrl | FileUrl  # Scalar URL of the cited source
+    source_description: str | None          # How the data was sourced
+    dataset: str | None                     # Dataset/product within the source, e.g. "TIGER/Line Shapefiles"
+    release: str | None                     # Release / vintage / version, provider's own terms — one axis
+    publication_date: datetime | None       # Observation time: when the provider published the release
+    retrieval_date: datetime | None         # Observation time: when this pipeline retrieved it
 ```
+
+`publication_date` and `retrieval_date` are **observation time** — when the
+source was published and fetched. They are not real-world validity time,
+which lives on the owning record (`Geometry.valid_from`/`valid_to`,
+`Division.valid_asof`/`valid_thru`). Nothing on a `SourceObj` participates
+in entity identity.
 
 ### Types
 
 ```python
-class SourceType(StrEnum):
+class SourceType(str, Enum):
     AI = "ai_generated"                # Generated/verified by AI system
     HUMAN = "human_researched"         # Researched and verified by human
     SCRAPED = "programmatically_generated"  # Automated scraping
@@ -248,23 +259,31 @@ class SourceType(StrEnum):
 
 ### Examples
 
-**Human-researched source:**
+**Human-researched source (minimal):**
 ```yaml
-field: ["name", "url"]
-note: "Official government website, verified 2026-05-31"
-url: "https://www.ca.gov"
-date_accessed: "2026-05-31"
-type: "human_researched"
+field: ["term", "term.term_limits"]
+source_name: "Austin Code of Ordinances"
+source_type: "human_researched"
+source_url: "https://library.municode.com/tx/austin/codes/code_of_ordinances?nodeId=CH_ARTIITHCO_S5TELI"
+source_description: null
 ```
 
-**AI-generated source:**
+**Programmatic source with release provenance:**
 ```yaml
-field: ["population", "area_km2"]
-note: "Extracted from Census data by OpenStates AI pipeline"
-url: "https://data.census.gov"
-date_accessed: "2026-05-15"
-type: "ai_generated"
+field: ["geometries"]
+source_name: "Census Bureau"
+source_type: "programmatically_generated"
+source_url: "ftp://ftp2.census.gov/geo/tiger/TIGER2024/PLACE/"
+source_description: "TIGER/Line place boundaries"
+dataset: "TIGER/Line Shapefiles"
+release: "2024"
+publication_date: "2024-09-15T00:00:00Z"
+retrieval_date: "2026-08-01T14:30:05Z"
 ```
+
+Pre-Task-2.2 YAML wrote `source_url` as a one-entry map
+(`source_url: {url: ...}`); the model still accepts that form on load and
+drops the label.
 
 ---
 

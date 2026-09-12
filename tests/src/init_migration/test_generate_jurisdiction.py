@@ -248,9 +248,9 @@ class TestGenerateJurisdiction:
     ):
         """Generated Jurisdiction should have all required fields.
 
-        ``url`` is deliberately absent from this list: per rework §23 a
-        website is enrichment, not a requirement, so it is asserted as
-        None in ``test_generate_jurisdiction_basic`` instead.
+        ``url`` is deliberately absent from this list: a website is
+        enrichment, not a requirement, so it is asserted as None in
+        ``test_generate_jurisdiction_basic`` instead.
         """
         jurisdiction = jur_generator.generate_jurisdiction(
             division=sample_division,
@@ -286,8 +286,8 @@ class TestGenerateJurisdiction:
     ):
         """No synthetic website is invented when AI lookup is disabled.
 
-        Regression guard for rework §23. The generator previously fell back
-        to ``https://opencivicdata.org/division/{ocdid}``, which is not the
+        The generator previously fell back to
+        ``https://opencivicdata.org/division/{ocdid}``, which is not the
         jurisdiction's website — it baked an OCDID into a synthetic address.
         An unresolved site must stay None.
         """
@@ -300,11 +300,7 @@ class TestGenerateJurisdiction:
         assert jurisdiction.url is None
 
         # OCD provenance still belongs in sourcing, not in the url field.
-        sourcing_urls = [
-            str(value)
-            for source in jurisdiction.sourcing
-            for value in source.source_url.values()
-        ]
+        sourcing_urls = [str(source.source_url) for source in jurisdiction.sourcing]
         assert any("opencivicdata.org" in u for u in sourcing_urls)
 
     def test_generate_with_different_classifications(

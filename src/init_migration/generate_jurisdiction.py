@@ -15,7 +15,7 @@ Name and URL resolution order:
 from src.init_migration.pipeline_models import GeneratorReq
 from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
-from src.models.source import SourceType
+from src.models.source import SourceObj, SourceType
 from src.models.ocdid import OCDIdParsed
 from src.utils.ocdid import ocdid_parser
 from pathlib import Path
@@ -160,15 +160,13 @@ class JurGenerator:
                 term=term,
                 metadata=metadata,
                 sourcing=[
-                    {
-                        "field": ["ocdid", "name", "classification"],
-                        "source_name": "derived_from_division",
-                        "source_url": {
-                            "division": f"https://opencivicdata.org/division/{division.ocdid}"
-                        },
-                        "source_type": SourceType.HUMAN,
-                        "source_description": "Jurisdiction derived from Division object",
-                    }
+                    SourceObj(
+                        field=["ocdid", "name", "classification"],
+                        source_name="derived_from_division",
+                        source_url=f"https://opencivicdata.org/division/{division.ocdid}",
+                        source_type=SourceType.HUMAN,
+                        source_description="Jurisdiction derived from Division object",
+                    )
                 ],
                 accurate_asof=self.req.asof_datetime,
                 last_updated=now,
