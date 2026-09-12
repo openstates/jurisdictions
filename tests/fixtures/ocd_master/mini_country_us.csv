@@ -1,0 +1,9 @@
+id,name,sameAs,sameAsNote,validThrough,census_geoid,census_geoid_12,census_geoid_14,openstates_district,placeholder_id,sch_dist_stateid,state_id,validFrom
+ocd-division/country:us,United States,,,,,,,,,,,
+ocd-division/country:us/state:co,Colorado,,,,,,,,,,,
+ocd-division/country:us/state:co/county:el_paso,El Paso County,,,,,,,,,,,
+ocd-division/country:us/state:co/place:colorado_springs,Colorado Springs,,,,,,,,,,,
+ocd-division/country:us/state:co/place:denver,Denver,,,,,,,,,,,
+ocd-division/country:us/state:tx,Texas,,,,,,,,,,,
+ocd-division/country:us/state:tx/place:austin,Austin,,,,,,,,,,,
+ocd-division/country:us/state:tx/place:houston,Houston,,,,,,,,,,,
