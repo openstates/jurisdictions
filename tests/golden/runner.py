@@ -27,7 +27,7 @@ class GoldenRunner(Protocol):
 
 
 class FixtureRunner:
-    """Initial GoldenRunner: dumps injected model records into a temp dir."""
+    """Initial GoldenRunner: dumps injected model records into an output directory."""
 
     def __init__(
         self, divisions: list[Division], jurisdictions: list[Jurisdiction]
