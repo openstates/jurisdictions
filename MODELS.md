@@ -35,6 +35,8 @@ class Division(BaseModel):
     area_km2: float | None       # Size in square kilometers
     centroid: Centroid | None    # Center point of the area
     sources: list[SourceObj]     # Data provenance
+    children: list[OCDIdStr]     # OCDIDs of the Divisions this one contains (PARENT_OF)
+    jurisdiction_id: OCDIdStr    # OCDID of the Jurisdiction that governs this Division
 ```
 
 ### OCDID Format
@@ -109,6 +111,16 @@ class ClassificationEnum(StrEnum):
     ADVISORY_BOARD = "advisory_board"   # Advisory bodies with limited authority
     SPECIAL_PURPOSE_DISTRICT = "special_purpose_district"  # Fire, water, park districts
 ```
+
+### Governed Divisions
+
+A Jurisdiction does not list the Divisions it governs. The relationship is
+recorded once, on the Division: `Division.jurisdiction_id` names the
+Jurisdiction that governs it. To find everything a Jurisdiction governs,
+select the Divisions whose `jurisdiction_id` equals its `ocdid`. Several
+Divisions may name the same Jurisdiction (a city and each of its council
+districts), and a Division may name a Jurisdiction whose OCDID it does not
+share (a census-designated place governed by a special district).
 
 ### OCDID Format
 
@@ -294,25 +306,32 @@ Division (geographic area)
     ↓
     └─→ has an ocdid (OCDidParsed)
     └─→ has sources (SourceObj)
-    └─→ has geometry (GeoJSON)
+    └─→ has geometry versions (Geometry)
+    └─→ children: the Divisions it contains (PARENT_OF)
+    └─→ jurisdiction_id: the Jurisdiction that governs it (GOVERNS, stored here only)
 
 Jurisdiction (governing entity)
     ↓
     └─→ has an ocdid (OCDidParsed)
     └─→ has classification (ClassificationEnum)
     └─→ has sources (SourceObj)
-    └─→ governs one or more divisions
+    └─→ governs the Divisions whose jurisdiction_id names it (no list of its own)
 ```
 
 ### Key Relationship Rules
 
 1. **One Division = One Geographic Area**
    - Has exactly one OCDID starting with `ocd-division/`
-   - May be governed by multiple jurisdictions
+   - Names the Jurisdiction that governs it in `jurisdiction_id`, a
+     validated `ocd-jurisdiction/` OCDID. This is the only place the
+     Division–Jurisdiction relationship is stored.
 
 2. **One Jurisdiction = One Governing Entity**
    - Has exactly one OCDID starting with `ocd-jurisdiction/`
-   - Governs one or more divisions
+   - Governs one or more Divisions: every Division whose `jurisdiction_id`
+     equals its `ocdid`. A city and each of its council districts name the
+     same Jurisdiction; a census-designated place may name a special
+     district whose OCDID it does not share.
 
 3. **OCDID Hierarchy**
    - Division OCDIDs build hierarchy: `country → state → county → place → ...`

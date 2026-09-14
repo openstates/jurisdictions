@@ -184,10 +184,6 @@ URL, provider neutrality. Multiple geometry versions coexist.
 ### Task 2.4 — External identifiers
 Preserve GEOIDs/FIPS/LEA and leading zeros. Serialization round-trip exact.
 
-### Task 2.5 — Jurisdiction↔Division relationship
-Support `GOVERNS`, multiple Divisions, future `SERVES`/`OVERLAPS`/
-`CONTAINED_BY`. No hard-coded 1:1 assumption.
-
 ### Task 2.6 — Nullable website
 Valid Jurisdiction can serialize with no website.
 
