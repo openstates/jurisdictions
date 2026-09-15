@@ -1,0 +1,8 @@
+GEOID_Census,STATEFP,NAMELSAD,LSAD,SLDUST_list,SLDLST_list,COUNTYFP_list,COUNTY_NAMES,COUSUBFP,PLACEFP,layer
+0670364,06,Sausalito city,25,,,041,Marin,,70364,tl_2025_06_place
+5370000,53,Tacoma city,25,,,053,Pierce,,70000,tl_2025_53_place
+5363000,53,Seattle city,25,,,033,King,,63000,tl_2025_53_place
+4845390165,48,Austin city,25,,,453,Travis,,01000,tl_2025_48_place
+5303392524,53,Seattle East CCD,22,,,033,King,92524,,tl_2025_53_cousub
+5370010,53,Tacoma Valley city,25,,,053,Pierce,,70010,tl_2025_53_place
+5350360,53,Oak Harbor city,25,,,029,Island,,50360,tl_2025_53_place

@@ -1,0 +1,7 @@
+id,name,sameAs,sameAsNote,validThrough,census_geoid,census_geoid_12,census_geoid_14,openstates_district,placeholder_id,sch_dist_stateid,state_id,validFrom
+ocd-division/country:us/state:ca/place:sausalito,Sausalito city,,,,,,,,,,,
+ocd-division/country:us/state:ca/county:marin/cdp:marin_city,Marin City CDP,,,,,,,,,,,
+ocd-division/country:us/district:dc/anc:1a/council_district:1,Washington DC Advisory Neighborhood Commission 1A - District 1,,,,,,,,,,,
+ocd-division/country:us/state:tx/place:austin/council_district:8,Austin TX city council district 8 (effective Jan 2015),,,,,,,,,,,
+ocd-division/country:us/state:wa/place:seattle/council_district:1,Seattle WA City Council District 1,,,,,,,,,,,
+ocd-division/country:us/state:wa/place:tacoma,Tacoma city,,,,,,,,,,,
