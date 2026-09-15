@@ -11,7 +11,7 @@ Tests cover:
 """
 
 import pytest
-from datetime import datetime, timezone
+from datetime import datetime
 from uuid import NAMESPACE_URL, uuid5
 
 from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp
@@ -35,10 +35,7 @@ from src.utils.yaml_manager import YamlManager
 def sample_generator_request(tmp_path) -> GeneratorReq:
     """Create a GeneratorReq for jurisdiction generation."""
     parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:ca/place:seattle")
-    test_uuid = uuid5(
-        NAMESPACE_URL,
-        f"ocd-division/country:us/state:ca/place:seattle|{datetime.now(timezone.utc).date().isoformat()}",
-    )
+    test_uuid = uuid5(NAMESPACE_URL, "ocd-division/country:us/state:ca/place:seattle")
     resp = OCDidIngestResp(
         uuid=test_uuid,
         ocdid=parsed,

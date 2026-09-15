@@ -3,10 +3,11 @@ from typing import List, Optional
 from datetime import datetime, timezone
 from src.models.source import SourceObj
 import yaml
-from uuid import NAMESPACE_URL, UUID, uuid5
+from uuid import UUID
 from pathlib import Path
 import logging
 from src.models.ocdid import OCDIdStr
+from src.utils.deterministic_id import generate_id
 
 logger = logging.getLogger(__name__)
 
@@ -133,7 +134,8 @@ def sort_geometries(geometries: list[Geometry] | None) -> list[Geometry]:
 
 class Division(BaseModel):
     id: UUID | None = Field(
-        default=None, description="UUID5 derived from ocdid and generation date."
+        default=None,
+        description="UUID5 derived from the ocdid alone. Stable across regenerations: no other field, including last_updated, affects it. Derived when omitted.",
     )
     ocdid: OCDIdStr = Field(
         ...,
@@ -191,8 +193,7 @@ class Division(BaseModel):
     @model_validator(mode="after")
     def ensure_uuid5_id(self):
         if self.id is None:
-            asof_date = self.last_updated.astimezone(timezone.utc).date().isoformat()
-            self.id = uuid5(NAMESPACE_URL, f"{self.ocdid}|{asof_date}")
+            self.id = generate_id(self.ocdid)
         return self
 
     # Untested

@@ -6,7 +6,9 @@ from hypothesis import strategies as st
 import pytest
 from pydantic import ValidationError
 
-from src.models.jurisdiction import ClassificationEnum, Jurisdiction
+from src.models.jurisdiction import ClassificationEnum, Jurisdiction, TermDetail
+from src.models.source import SourceObj, SourceType
+from src.utils.deterministic_id import generate_id
 
 classification_strategy = st.sampled_from(list(ClassificationEnum))
 
@@ -38,22 +40,89 @@ def _build_jurisdiction(ocdid: str, id_value=None) -> Jurisdiction:
 
 
 @given(jurisdiction_input=jurisdiction_input_strategy())
-def test_jurisdiction_id_defaults_to_uuid5_from_ocdid_and_date(
+def test_jurisdiction_id_defaults_to_uuid5_of_ocdid(
     jurisdiction_input: tuple[str, ClassificationEnum],
 ) -> None:
+    """Identity is the UUID5 of the ocdid alone; the timestamp plays no part."""
     ocdid, classification = jurisdiction_input
-    last_updated = datetime(2026, 4, 8, 12, 0, tzinfo=timezone.utc)
     jurisdiction = Jurisdiction(
         ocdid=ocdid,
         name="Sample Jurisdiction",
         url="https://example.gov",
         classification=classification,
         metadata={"urls": []},
-        last_updated=last_updated,
+        last_updated=datetime(2026, 4, 8, 12, 0, tzinfo=timezone.utc),
     )
-    expected = uuid5(NAMESPACE_URL, f"{ocdid}|{last_updated.date().isoformat()}")
 
-    assert jurisdiction.id == expected
+    assert jurisdiction.id == uuid5(NAMESPACE_URL, ocdid)
+    assert jurisdiction.id == generate_id(ocdid)
+
+
+def test_jurisdiction_mutable_facts_do_not_change_uuid() -> None:
+    """Timestamps, website, term, provenance and metadata are not identity.
+
+    Regenerating the same Jurisdiction on another day, with a website
+    resolved, a new source release, or a new retrieval date, yields the
+    same id.
+    """
+    ocdid = "ocd-jurisdiction/country:us/state:wa/place:seattle/government"
+    base = {
+        "ocdid": ocdid,
+        "name": "Seattle City Government",
+        "classification": ClassificationEnum.GOVERNMENT,
+        "metadata": {"urls": []},
+        "last_updated": datetime(2026, 3, 7, tzinfo=timezone.utc),
+    }
+    source = SourceObj(
+        field=["url"],
+        source_name="Seattle Official Site",
+        source_url="https://www.seattle.gov/",
+        source_type=SourceType.HUMAN,
+        source_description=None,
+    )
+    later_release = SourceObj(
+        field=["url"],
+        source_name="Seattle Official Site",
+        source_url="https://www.seattle.gov/",
+        source_type=SourceType.HUMAN,
+        source_description=None,
+        release="2026-09",
+        retrieval_date=datetime(2026, 9, 14, tzinfo=timezone.utc),
+    )
+    variants = [
+        Jurisdiction(**base),
+        Jurisdiction(
+            **{**base, "last_updated": datetime(2026, 9, 14, tzinfo=timezone.utc)}
+        ),
+        Jurisdiction(**base, accurate_asof=datetime(2026, 1, 1, tzinfo=timezone.utc)),
+        Jurisdiction(**base, url="https://www.seattle.gov/"),
+        Jurisdiction(**base, sourcing=[source]),
+        Jurisdiction(**base, sourcing=[later_release]),
+        Jurisdiction(
+            **base,
+            term=TermDetail(
+                duration=4,
+                term_description="Four-year terms.",
+                number_of_positions=9,
+                source_url="https://www.seattle.gov/cityclerk",
+            ),
+        ),
+        Jurisdiction(
+            **{
+                **base,
+                "metadata": {
+                    "urls": [
+                        {"url_type": "people", "url": "https://www.seattle.gov/council"}
+                    ]
+                },
+            }
+        ),
+        Jurisdiction(**{**base, "name": "City of Seattle"}),
+    ]
+
+    ids = {jurisdiction.id for jurisdiction in variants}
+
+    assert ids == {generate_id(ocdid)}
 
 
 def test_jurisdiction_accepts_explicit_id() -> None:
@@ -166,8 +235,8 @@ def test_jurisdiction_without_url_round_trips() -> None:
 def test_jurisdiction_url_absence_does_not_change_uuid() -> None:
     """Identity must not move when a mutable fact like the website changes.
 
-    ``ensure_uuid5_id`` derives identity from ocdid and the last_updated date
-    only. Adding or removing a website must not produce a different UUID.
+    ``ensure_uuid5_id`` derives identity from the ocdid only. Adding or
+    removing a website must not produce a different UUID.
     """
     common = {
         "ocdid": "ocd-jurisdiction/country:us/state:wa/place:seattle/government",

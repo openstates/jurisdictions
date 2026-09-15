@@ -15,6 +15,7 @@ from src.models.division import (
     sort_geometries,
 )
 from src.models.source import SourceObj, SourceType
+from src.utils.deterministic_id import generate_id
 
 
 @st.composite
@@ -49,18 +50,80 @@ def _sample_source() -> SourceObj:
 
 
 @given(ocdid=division_ocdid_strategy())
-def test_division_id_defaults_to_uuid5_from_ocdid_and_date(ocdid: str) -> None:
-    last_updated = datetime(2026, 4, 8, 12, 0, tzinfo=timezone.utc)
+def test_division_id_defaults_to_uuid5_of_ocdid(ocdid: str) -> None:
+    """Identity is the UUID5 of the ocdid alone; the timestamp plays no part."""
     division = Division(
         ocdid=ocdid,
         country="us",
         display_name="Sample Division",
         jurisdiction_id="ocd-jurisdiction/country:us/state:wa/place:seattle/government",
-        last_updated=last_updated,
+        last_updated=datetime(2026, 4, 8, 12, 0, tzinfo=timezone.utc),
     )
-    expected = uuid5(NAMESPACE_URL, f"{ocdid}|{last_updated.date().isoformat()}")
 
-    assert division.id == expected
+    assert division.id == uuid5(NAMESPACE_URL, ocdid)
+    assert division.id == generate_id(ocdid)
+
+
+def test_division_mutable_facts_do_not_change_uuid() -> None:
+    """Timestamps, geometry, provenance, identifiers and metadata are not identity.
+
+    Regenerating the same Division on another day, with a new boundary,
+    a new source release, or a new retrieval date, yields the same id.
+    """
+    ocdid = "ocd-division/country:us/state:ca/place:sausalito"
+    base = {
+        "ocdid": ocdid,
+        "country": "us",
+        "display_name": "Sausalito",
+        "jurisdiction_id": "ocd-jurisdiction/country:us/state:ca/place:sausalito/government",
+        "last_updated": datetime(2025, 10, 27, 1, 29, 51, tzinfo=timezone.utc),
+    }
+    source = _geometry_source()
+    later_release = SourceObj(
+        field=["geometries"],
+        source_name="Census TIGER/Line",
+        source_url="https://example.test/tiger",
+        source_type=SourceType.HUMAN,
+        source_description=None,
+        release="2025",
+        retrieval_date=datetime(2026, 9, 1, tzinfo=timezone.utc),
+    )
+    variants = [
+        Division(**base),
+        Division(
+            **{**base, "last_updated": datetime(2026, 9, 14, tzinfo=timezone.utc)}
+        ),
+        Division(**base, accurate_asof=datetime(2026, 1, 1, tzinfo=timezone.utc)),
+        Division(
+            **base,
+            geometries=[
+                Geometry(
+                    boundary=Boundary(centroid=Centroid(coordinates=[-122.48, 37.86])),
+                    valid_from=datetime(2024, 1, 1, tzinfo=timezone.utc),
+                    source=source,
+                )
+            ],
+        ),
+        Division(**base, sourcing=[source]),
+        Division(**base, sourcing=[later_release]),
+        Division(
+            **base,
+            government_identifiers=[
+                Identifier(
+                    authority="census", id_type="geoid", value="0670364", source=source
+                )
+            ],
+        ),
+        Division(
+            **{**base, "display_name": "City of Sausalito"},
+            also_known_as=["Sausalito city"],
+        ),
+        Division(**base, children=[f"{ocdid}/council_district:1"]),
+    ]
+
+    ids = {division.id for division in variants}
+
+    assert ids == {generate_id(ocdid)}
 
 
 def test_division_accepts_explicit_id() -> None:

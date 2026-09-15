@@ -1,5 +1,4 @@
 import pytest
-from datetime import datetime, timezone
 from uuid import UUID
 from uuid import NAMESPACE_URL, uuid5
 
@@ -14,10 +13,7 @@ def sample_req(tmp_path) -> GeneratorReq:
     """Create a GeneratorReq with current OCDidIngestResp types."""
     parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:ca")
     resp = OCDidIngestResp(
-        uuid=uuid5(
-            NAMESPACE_URL,
-            f"ocd-division/country:us/state:ca|{datetime.now(timezone.utc).date().isoformat()}",
-        ),
+        uuid=uuid5(NAMESPACE_URL, "ocd-division/country:us/state:ca"),
         ocdid=parsed,
         raw_record={},
     )

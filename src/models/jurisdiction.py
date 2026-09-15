@@ -4,11 +4,12 @@ from typing import Dict, List, Optional
 from datetime import datetime, timezone
 from .source import SourceObj
 import yaml
-from uuid import NAMESPACE_URL, UUID, uuid5
+from uuid import UUID
 from pathlib import Path
 
 from src.models.ocdid import OCDIdStr, OCDIdParsed, get_ocdid_type
 from src.utils.datetime import ymd
+from src.utils.deterministic_id import generate_id
 
 import logging
 
@@ -136,7 +137,8 @@ class Jurisdiction(BaseModel):
     """
 
     id: UUID | None = Field(
-        default=None, description="UUID5 derived from ocdid and generation date."
+        default=None,
+        description="UUID5 derived from the ocdid alone. Stable across regenerations: no other field, including last_updated, affects it. Derived when omitted.",
     )
     ocdid: OCDIdStr = Field(
         ...,
@@ -206,8 +208,7 @@ class Jurisdiction(BaseModel):
     @model_validator(mode="after")
     def ensure_uuid5_id(self):
         if self.id is None:
-            asof_date = self.last_updated.astimezone(timezone.utc).date().isoformat()
-            self.id = uuid5(NAMESPACE_URL, f"{self.ocdid}|{asof_date}")
+            self.id = generate_id(self.ocdid)
         return self
 
     # Untested

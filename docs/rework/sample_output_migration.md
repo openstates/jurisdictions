@@ -3,7 +3,7 @@ id: sample-output-migration
 type: rework-migration-log
 owner: rework
 status: active
-last_updated: 2026-09-11
+last_updated: 2026-09-14
 tags: [rework, phase-2, models, sample-output, migration]
 scope: "Structural changes to Pydantic models that will require regeneration of tests/sample_output/** in Phase 11 (#142)."
 ---
@@ -880,6 +880,176 @@ still explained in the `SourceObj` class docstring, without the citation.
 - `uv run ruff format --check` on touched files — clean except the
   pre-existing drift in `generate_division.py` and `test_division.py`
   noted above.
+
+## Task 2.1 — Stable UUID identity (2026-09-14)
+
+**Issue:** #133 (Phase 2 tracking)
+
+Rework §5: "Prefer stable UUIDs derived from stable identity, e.g.
+`UUID5(OCDID)`. Mutable facts such as website, source release, geometry,
+retrieval time, or update date must not change entity identity." Plan
+Task 2.1: "UUID derived from stable OCD identity, not mutable timestamps."
+
+### Structural changes landing this task
+
+1. **Identity is `uuid5(NAMESPACE_URL, ocdid)`.** Before, both models
+   derived `uuid5(NAMESPACE_URL, f"{ocdid}|{last_updated date}")`, so
+   regenerating the same record on a different day produced a different
+   `id` and a different filename. `last_updated` no longer participates.
+   No new formula was invented: this is the form
+   `src/init_migration/ocdid_matcher.py` already mints for
+   `OCDidIngestResp.uuid` and writes to the `ocdid_uuid_lookup` table and
+   CSV. The ingest UUID and the record `id` now agree for the same
+   Division OCDid, which closes all three consequences listed in
+   [`model_inventory.md`](model_inventory.md) §5.
+
+2. **One identity function.** `Division.ensure_uuid5_id` and
+   `Jurisdiction.ensure_uuid5_id` both call
+   `src.utils.deterministic_id.generate_id(ocdid)`. That module existed
+   but was not on the runtime path (§5 again); it now is. Its date
+   parameter is gone: `generate_id(ocdid)`, `verify_id(identifier, ocdid)`,
+   `decode_id(identifier)`. `build_uuid5_name` is removed — its only job
+   was appending the date.
+
+3. **An explicit `id` is still accepted, unchanged.** Every golden file
+   carries an `id:` minted under the old formula and still loads; a
+   golden file loaded and re-dumped shows **zero drift**. The migration
+   below appears only when a record is regenerated from its fixture, which
+   is what Phase 11 does. Whether the model should *reject* an explicit
+   `id` that is not the UUID5 of its `ocdid` is a Phase 11 question to
+   settle after regeneration — today that check would reject all 12 golden
+   files.
+
+4. **`id` field descriptions** on both models now say the value is derived
+   from the ocdid alone and is stable across regenerations.
+
+### Changes deferred to Phase 11 (#142): `IDENTIFIER_MIGRATION`
+
+No YAML under `tests/sample_output/` is edited by this task. On
+regeneration **every golden file changes its `id:` value and its
+filename** (the filename embeds the id). Nothing else in any file moves:
+no other field references a record id (`jurisdiction_id` and `children`
+are OCDids).
+
+**Measured, not predicted.** For each of the 12 golden files the checked-in
+`id:` was confirmed to equal the old formula applied to its `ocdid` and
+`last_updated` date, then the new id was computed from the `ocdid`. The
+six Division fixture objects were dumped before (`c6e8e4c`) and after:
+**exactly one line differs per file, `id:`**. The five loadable
+Jurisdiction fixtures were constructed under the new scheme and their ids
+match the table; Marin City CSD's is computed from its `ocdid`.
+
+| Golden file | `id:` today | `id:` after regen |
+| --- | --- | --- |
+| `divisions/…/sausalito_….yaml` | `5ebd7367-a3e7-54dd-8994-47e5f2cc5f8f` | `c5c62304-e506-54bd-ab72-e4e14d62bba1` |
+| `divisions/…/marin_city_….yaml` | `322f0412-0108-59a7-b29d-5f807672da64` | `90ae7478-23af-54cb-b444-aa8e5e1d8db5` |
+| `divisions/…/anc_1a_district_1_….yaml` | `35e1a717-03a8-5257-8123-3b6dd493c38d` | `c738edad-1ed5-57f7-80a3-a9ca4488cbfb` |
+| `divisions/…/austin_council_district_8_….yaml` | `6ab0a55b-03b8-57e2-9565-1f558058519e` | `34071538-4f6c-58fe-9a31-5900590cecf0` |
+| `divisions/…/seattle_council_district_1_….yaml` | `bb8a9dc8-ed3c-59bc-ba1d-408a3c765dde` | `3f69bd27-211e-5717-8087-752df1db0bde` |
+| `divisions/…/tacoma_….yaml` | `a82e350d-72bb-5b02-8375-b66c9d2b6126` | `c104c614-3662-5202-ac00-c348b7c31e4f` |
+| `jurisdictions/…/sausalito_city_government_….yaml` | `38f5f5e0-64fa-5129-a944-bb9dcc385619` | `7539e65b-3a49-5e24-82b4-3a5bc6f72aad` |
+| `jurisdictions/…/marin_city_community_services_district_governing_board_….yaml` | `fc24cff2-3baa-5768-8652-b2840233c61b` | `de0de79f-ab51-526c-b8e8-e3a8ea7336dc` |
+| `jurisdictions/…/anc_1a_government_….yaml` | `ce723bd7-51c0-55b3-bc32-8d14a84c66ec` | `a598df3f-3f39-55a6-bb32-fe9e77b835e2` |
+| `jurisdictions/…/city_of_austin_….yaml` | `b60ab7ed-add2-5de4-bd08-3da4aec2312b` | `69a2420e-4e10-5d98-8a7b-07c9b40811b1` |
+| `jurisdictions/…/seattle_city_government_….yaml` | `bd405187-c499-5b44-aee8-3800784ee617` | `dd83c671-f854-59c5-bee3-21223377228f` |
+| `jurisdictions/…/tacoma_city_government_….yaml` | `1c2a18a9-a8e3-586d-9968-502e8abb102e` | `104f8f72-25fb-56ae-9a22-b4f1e0ac8ccf` |
+
+Each filename changes the same way, `<slug>_<old id>.yaml` →
+`<slug>_<new id>.yaml`; the slug part is unchanged. Per file: one line
+changed, one rename.
+
+Classification per instruction §35: **`IDENTIFIER_MIGRATION`** — the
+`sample_output_inventory.md` §3.6 prediction, now with the concrete
+values. This is the last Phase 2 task, so the Phase 11 regeneration
+collapses every Phase 2 change — including these 12 renames — into one
+reviewed migration, which is why the plan ordered it last.
+
+Two things to call out at Phase 11 review time:
+
+- **The rename is the whole identity migration.** After regeneration a
+  record's id is a pure function of its OCDid, so this is the last time
+  the golden ids move for a non-OCDid reason. Task 3.7 (stable identity
+  golden test) can then assert it.
+- **The working-tree `ocdid_uuid_lookup.csv` needs no change.** The
+  matcher already wrote ocdid-only UUIDs there; they now equal the
+  Division ids the pipeline produces.
+
+### Caller changes
+
+| Site | Change |
+| --- | --- |
+| `src/utils/deterministic_id.py` | date parameter removed; `generate_id(ocdid)`, `verify_id(identifier, ocdid)`; `build_uuid5_name` deleted; module docstring states the formula |
+| `src/models/division.py`, `src/models/jurisdiction.py` | `ensure_uuid5_id` calls `generate_id(self.ocdid)`; `uuid5`/`NAMESPACE_URL` imports dropped; `id` description updated |
+| `tests/src/utils/test_deterministic_id.py` | rewritten for the date-free API (6 tests, same count as before) |
+| `tests/src/models/test_division.py` | `test_division_id_defaults_to_uuid5_from_ocdid_and_date` → `…_of_ocdid`; new `test_division_mutable_facts_do_not_change_uuid` |
+| `tests/src/models/test_jurisdiction.py` | same rename; new `test_jurisdiction_mutable_facts_do_not_change_uuid`; one docstring corrected |
+| `tests/src/init_migration/test_generate_division.py`, `test_generate_jurisdiction.py` | fixture `OCDidIngestResp.uuid` built with the ocdid-only form the matcher uses (was date-suffixed); two now-unused imports removed |
+
+Generators, fixtures and `MODELS.md` are unchanged: the generators never
+passed an `id` (the model derives it), the fixtures never set one, and
+`MODELS.md` already documents `id` as "UUID5 derived from ocdid". No
+`__init__.py` changes; no network in any touched path (§27).
+
+### Non-goals for this task
+
+- No `tests/sample_output/**` edits (root `AGENTS.md` §"Testing Rules";
+  plan §"Sample Output Change Control" §1).
+- No rejection of an explicit `id` that disagrees with the ocdid (Phase 11,
+  item 3 above).
+- No change to `tests/integration/test_generate_pipeline_integration.py`.
+  Its `_create_ocdid_ingest_resp` helper still builds a date-suffixed
+  `OCDidIngestResp.uuid`; that value never reaches a record id, and all 11
+  tests pass unchanged. Aligning it with the matcher's form is a one-line
+  edit under `tests/integration`, which needs maintainer approval.
+- No cleanup of the unused `uuid` parameters on
+  `DivGenerator.generate_division` / `generate_division_stub` and
+  `JurGenerator.generate_jurisdiction`, or of `get_jurisdiction_filename`'s
+  stale "same as corresponding Division" docstring. The model derives the
+  id; the parameters were already dead. Phase 9 rebuilds these paths.
+- No Task 3.7 golden test (Phase 3 harness).
+
+### Known pre-existing breakage, not addressed here
+
+- `MARIN_CITY_CSD_JURISDICTION` fails `validate_jurisdiction_id`; Phase 7
+  per [`model_inventory.md`](model_inventory.md) §8. Its new id in the
+  table is computed from the `ocdid` string directly.
+- `ruff format` drift in `src/models/division.py` (one line),
+  `src/init_migration/generate_division.py` (one line) and
+  `tests/src/models/test_division.py` (four lines), all on lines this
+  task did not touch. Verified before editing; left alone.
+
+### Verification
+
+- `uv run pytest tests/src/models/ tests/src/init_migration/ tests/src/utils/`
+  — 180 passed. New tests:
+  - `test_division_id_defaults_to_uuid5_of_ocdid` /
+    `test_jurisdiction_id_defaults_to_uuid5_of_ocdid` (hypothesis; the id
+    equals `uuid5(NAMESPACE_URL, ocdid)` and `generate_id(ocdid)`).
+  - `test_division_mutable_facts_do_not_change_uuid` — nine variants of
+    one Division (different `last_updated` day, `accurate_asof`, a new
+    `Geometry`, `sourcing` with and without a later `release` /
+    `retrieval_date`, `government_identifiers`, `display_name` /
+    `also_known_as`, `children`) share one id.
+  - `test_jurisdiction_mutable_facts_do_not_change_uuid` — nine variants
+    (different `last_updated` day, `accurate_asof`, `url`, `sourcing`
+    with and without a later release, `term`, `metadata.urls`, `name`)
+    share one id. Together with the existing
+    `test_jurisdiction_url_absence_does_not_change_uuid` and the two
+    `test_source_metadata_does_not_change_*_uuid` tests, this covers the
+    four cases the plan names: website, source release, geometry,
+    retrieval date.
+  - `tests/src/utils/test_deterministic_id.py` — six tests for the
+    date-free API, including that a Division and its Jurisdiction get
+    different ids.
+- `uv run pytest -m "not integration and not slow"` — **180 passed, 15
+  deselected** (baseline at `f9c6751` was 178).
+- `uv run pytest tests/integration/test_generate_pipeline_integration.py`
+  — 11 passed, unchanged.
+- `uv run ruff check .` — all checks passed.
+- `uv run ruff format --check` on the eight touched files — clean except
+  the pre-existing drift in `src/models/division.py` and
+  `tests/src/models/test_division.py` noted above.
+- Process-reference grep over `src/` and `tests/src/` — zero hits.
 
 ## Fixture value normalizations (not tied to a model task)
 
