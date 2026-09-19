@@ -1057,6 +1057,45 @@ Value-level fixture edits that create golden drift without any model
 contract change. Logged here because Phase 11 (#142) has to reconcile
 them alongside the structural migrations above.
 
+### TIGER 2025 geometry validity window and release (2026-09-18)
+
+- **File:** [`tests/fixtures/divisions_sample.py`](../../tests/fixtures/divisions_sample.py)
+  (`SAUSALITO_DIVISION.geometries[0]`, `MARIN_CITY_DIVISION.geometries[0]`,
+  `_SAUSALITO_GEOMETRY_SOURCE`)
+- **Change:** `valid_from` `2025-10-27T01:29:51Z` → `2025-01-01T00:00:00Z`;
+  `valid_to` `2025-10-27T01:29:51Z` → `null`; the shared TIGER geometry
+  source gains `release: '2025'`.
+- **Affected golden fixtures:**
+  `divisions/test/ca/local/sausalito_5ebd7367-….yaml` and
+  `divisions/test/ca/local/marin_city_322f0412-….yaml`. On regeneration
+  each gets `geometries[0].valid_from: 2025-01-01T00:00:00Z`,
+  `valid_to: null`, and `release: '2025'` on `sourcing[0]` and on the
+  nested geometry `source`.
+- **Rationale (maintainer decision):** a Division file holds the boundary
+  from one Census series. `valid_from` is that series' reference date;
+  TIGER/Line 2025 boundaries are as of January 1, 2025. `valid_to` is
+  populated only when the Census redefines the area, so an active boundary
+  carries `null`. The same-day pair inherited from the old `start`/`end`
+  fields said the boundary was retired the instant it took effect (Task 2.3
+  entry above flagged it).
+- **Classification per instruction §35:** `BUG_FIX` (the window) and
+  `EXPECTED_NEW_FIELD` (`release`).
+- **ANC 1A (same date, maintainer-confirmed):** `ANC_1A_DIVISION.geometries[0]`
+  `valid_from` → `2023-01-01T00:00:00Z`, `valid_to` → `null`. Both DCGIS
+  `SourceObj`s gain `dataset: "Advisory Neighborhood Commission - 2023"`,
+  `release: "2023"`, `publication_date: 2022-12-21T00:00:00Z` (the layer's
+  `CREATED` attribute) and `retrieval_date: 2025-10-27T01:29:51Z` (when the
+  record was researched). Read from DCGIS layer 54 metadata: boundaries
+  from the ANC Boundaries Act of 2022, in effect January 1, 2023. Affects
+  `divisions/test/dc/local/anc_1a_district_1_35e1a717-….yaml` on
+  regeneration. Classification: `BUG_FIX` (window) and
+  `EXPECTED_NEW_FIELD` (the four provenance fields).
+- **Not changed:** the three `geometries: []` fixtures.
+- **Golden files:** unchanged; the dry run of
+  `scripts/regenerate_sample_output.py` still reports 207 differences in 12
+  files, with these values appearing in the existing `valid_from`,
+  `valid_to`, and `release` lines.
+
 ### Austin Jurisdiction `url` trailing slash (2026-09-04)
 
 - **File:** [`tests/fixtures/jurisdictions_sample.py`](../../tests/fixtures/jurisdictions_sample.py)

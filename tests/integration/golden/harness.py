@@ -51,6 +51,7 @@ VALIDATION_CSVS = (
 
 DIVISIONS = "divisions"
 JURISDICTIONS = "jurisdictions"
+QUARANTINE = "quarantine"
 
 # Field path used for whole-file differences (missing, unexpected, renamed).
 FILE_PATH_FIELD = "<path>"
@@ -172,18 +173,23 @@ def compare_trees(
     actual_root: Path,
     *,
     ignore_fields: tuple[str, ...] = (),
+    kinds: tuple[str, ...] | None = None,
 ) -> list[Difference]:
     """Diff two output trees, pairing files by ``(kind, ocdid)``.
 
     The relative path is compared as the field ``<path>`` so a record whose
     id (and therefore filename) changed is reported once for the rename and
-    then field by field for its content.
+    then field by field for its content. ``kinds`` restricts the comparison
+    to those top-level directories.
     """
     expected = load_yaml_tree(expected_root)
     actual = load_yaml_tree(actual_root)
     differences: list[Difference] = []
 
-    for key in sorted(set(expected) | set(actual)):
+    keys = set(expected) | set(actual)
+    if kinds is not None:
+        keys = {key for key in keys if key[0] in kinds}
+    for key in sorted(keys):
         exp_entries = expected.get(key, [])
         act_entries = actual.get(key, [])
         if not act_entries:
@@ -355,6 +361,31 @@ def build_request(
         division_population_req=False,
         asof_datetime=asof,
     )
+
+
+def quarantine_record(run: PipelineRun) -> dict[str, Any]:
+    """The structured outcome of a quarantined run, as stored in the golden tree.
+
+    Combines the response status with the pipeline's own quarantine entry so
+    the record is independent of the wall clock.
+    """
+    if len(run.quarantine) != 1:
+        raise ValueError(
+            f"{run.ocdid}: expected one quarantine entry, got {run.quarantine}"
+        )
+    entry = run.quarantine[0]
+    return {
+        "ocdid": run.ocdid,
+        "status": run.response.status.status.value,
+        "error": run.response.status.error,
+        "reason": entry["reason"],
+        "matched_records": entry["matched_records"],
+    }
+
+
+def quarantine_relative_path(ocdid: str, slug: str) -> Path:
+    """``quarantine/test/<state>/local/<slug>.yaml``."""
+    return Path(QUARANTINE) / "test" / state_segment(ocdid) / "local" / f"{slug}.yaml"
 
 
 def run_pipeline(

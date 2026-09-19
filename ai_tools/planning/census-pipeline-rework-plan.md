@@ -225,6 +225,13 @@ Mutable fact changes retain identity.
 ### Task 3.8 — Temporal geometry golden test
 Two geometry periods serialize correctly with source provenance.
 
+Scope note: a Division file holds geometry from one Census series only;
+historical series are separate runs and separate files. The golden test
+therefore covers one geometry's validity window (`valid_from` = series
+as-of date, `valid_to` null while active) and source release. A record
+with more than one geometry (a genuinely multi-part special-district
+boundary) is a Phase 15 edge case, Task 15.1.
+
 ## Phase 4 — Source Snapshot Layer
 
 ### Task 4.1 — Census Government adapter

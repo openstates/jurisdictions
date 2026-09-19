@@ -340,7 +340,7 @@ Rework §36 requires golden fixtures to cover:
 | OCD exceptions | Partial | Marin City special-district (jurisdiction exception); ANC 1A umbrella-GEOID exception. |
 | Special districts | ✓ | Marin City CSD |
 | Temporal geometry | ✗ | Every Geometry uses same-day `start`/`end`. |
-| New-OCDID quarantine | ✗ | No quarantine golden — currently only in `tests/integration/test_generate_pipeline_integration.py`. |
+| New-OCDID quarantine | ✓ | `quarantine/test/dc/local/anc_1a_district_1.yaml` — ANC 1A District 1, no validation match; asserted deterministic by `tests/integration/golden/test_golden_quarantine.py`. |
 | Unresolved geography | ✗ | Council-district fixtures have `geometries: []` but no explicit quarantine record. |
 
 Every ✗ above is a Phase 3 gap the golden harness must fill.

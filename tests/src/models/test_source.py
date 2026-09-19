@@ -249,7 +249,11 @@ def test_every_golden_sourcing_block_still_validates() -> None:
     ``government_identifiers`` shape on Divisions; the Marin City CSD
     jurisdiction-id validator failure).
     """
-    golden_files = sorted(GOLDEN_DIR.glob("*/test/*/local/*.yaml"))
+    golden_files = sorted(
+        path
+        for kind in ("divisions", "jurisdictions")
+        for path in (GOLDEN_DIR / kind).glob("test/*/local/*.yaml")
+    )
     assert len(golden_files) == 12
 
     blocks = 0

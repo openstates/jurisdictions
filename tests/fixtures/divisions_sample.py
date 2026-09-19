@@ -152,12 +152,24 @@ AUSTIN_DIVISION = Division(
     jurisdiction_id="ocd-jurisdiction/country:us/state:tx/place:austin/government",
 )
 
+# DCGIS layer 54, "Advisory Neighborhood Commission - 2023": boundaries from the
+# ANC Boundaries Act of 2022, in effect January 1, 2023. The layer's CREATED
+# date is 2022-12-21; the record was researched 2025-10-27.
+_ANC_DATASET = "Advisory Neighborhood Commission - 2023"
+_ANC_PUBLISHED = datetime.fromisoformat("2022-12-21T00:00:00+00:00")
+_ANC_RETRIEVED = datetime.fromisoformat("2025-10-27T01:29:51+00:00")
+_ANC_VALID_FROM = datetime.fromisoformat("2023-01-01T00:00:00+00:00")
+
 _ANC_GEOMETRY_SOURCE = SourceObj(
     field=["geometries"],
     source_name="DCGIS",
     source_url="https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA",
     source_type="human_researched",
     source_description=None,
+    dataset=_ANC_DATASET,
+    release="2023",
+    publication_date=_ANC_PUBLISHED,
+    retrieval_date=_ANC_RETRIEVED,
 )
 
 _ANC_GI_SOURCE = SourceObj(
@@ -166,6 +178,10 @@ _ANC_GI_SOURCE = SourceObj(
     source_url="https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54",
     source_type="human_researched",
     source_description=None,
+    dataset=_ANC_DATASET,
+    release="2023",
+    publication_date=_ANC_PUBLISHED,
+    retrieval_date=_ANC_RETRIEVED,
 )
 
 ANC_1A_DIVISION = Division(
@@ -174,8 +190,8 @@ ANC_1A_DIVISION = Division(
     display_name="ANC 1A District 1",
     geometries=[
         Geometry(
-            valid_from=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
-            valid_to=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
+            valid_from=_ANC_VALID_FROM,
+            valid_to=None,
             boundary=Boundary(),
             url="https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54/query?where=ANC_ID=%271A%27&outFields=*&f=geojson",
             identifiers=[
@@ -233,7 +249,12 @@ _SAUSALITO_GEOMETRY_SOURCE = SourceObj(
     source_url="https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer",
     source_type="human_researched",
     source_description=None,
+    release="2025",
 )
+
+# TIGER/Line 2025 boundaries are as of January 1, 2025. valid_to stays None
+# while the boundary is active; it is set only when the Census redefines the area.
+_TIGER_2025_VALID_FROM = datetime.fromisoformat("2025-01-01T00:00:00+00:00")
 
 SAUSALITO_DIVISION = Division(
     ocdid="ocd-division/country:us/state:ca/place:sausalito",
@@ -241,8 +262,8 @@ SAUSALITO_DIVISION = Division(
     display_name="Sausalito",
     geometries=[
         Geometry(
-            valid_from=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
-            valid_to=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
+            valid_from=_TIGER_2025_VALID_FROM,
+            valid_to=None,
             boundary=Boundary(),
             url="https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4/query?where=GEOID%3D'0670364'&outFields=*&outSR=4326&f=geojson",
             identifiers=[
@@ -290,8 +311,8 @@ MARIN_CITY_DIVISION = Division(
     display_name="Marin City",
     geometries=[
         Geometry(
-            valid_from=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
-            valid_to=datetime.fromisoformat("2025-10-27T01:29:51+00:00"),
+            valid_from=_TIGER_2025_VALID_FROM,
+            valid_to=None,
             boundary=Boundary(),
             url="https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/5/query?where=GEOID%3D'0645820'&outFields=*&outSR=4326&f=geojson",
             identifiers=[

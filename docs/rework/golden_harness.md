@@ -22,6 +22,8 @@ and never writes into it. Regeneration is a separate maintainer command.
 | `tests/integration/golden/harness.py` | Structural YAML diff, golden-layout dumper, fixture regeneration, runner for the real `GeneratePipeline`. |
 | `tests/integration/golden/test_golden_sample_output.py` | One comparison per checked-in golden file, marked `integration` and `golden`. |
 | `tests/integration/golden/test_golden_harness.py` | Tests for the helpers. Pure diff tests run with the unit suite; pipeline-running tests are `integration`. |
+| `tests/integration/golden/test_golden_quarantine.py` | ANC 1A District 1 (no validation row) quarantines identically on two runs, and the record equals `tests/sample_output/quarantine/test/dc/local/anc_1a_district_1.yaml`. |
+| `tests/integration/golden/test_golden_identity.py` | Id and filename stay fixed when inputs change: two pipeline runs with a different as-of date and altered validation row; fixture dumps with changed `last_updated`, website, source release/retrieval date, geometry. |
 | `scripts/regenerate_sample_output.py` | Maintainer regeneration command. Never invoked by a test. |
 | `tests/fixtures/ocd_master/country-us.csv` | OCDid roster the runner feeds through the pipeline. |
 | `tests/fixtures/sources/civicdata_*.csv` | The three validation CSVs the pipeline reads. |
@@ -118,8 +120,10 @@ uv run python scripts/regenerate_sample_output.py --write --output-dir D
 ```
 
 - **Dry run (default):** regenerates into a temp directory, prints the
-  full diff against `tests/sample_output/`, writes nothing, exits 1 on
-  differences so it doubles as a drift check.
+  full diff against `tests/sample_output/divisions` and `jurisdictions`,
+  writes nothing, exits 1 on differences so it doubles as a drift check.
+  `quarantine/` records are pipeline output, not fixture dumps, so the
+  command leaves them alone; their test compares them directly.
 - **`--write`:** writes into the target and removes any file there that
   describes the same `(kind, ocdid)` under a different filename (the old
   id). Refuses to run under pytest.
@@ -158,7 +162,7 @@ Dry run after `55524c2`: **207 differences in 12 files**, all predicted by
 | top-level `children: []` | 6 | Task 2.3 |
 | `geometries[0]`: `arcGIS_address`, `children`, `start`, `end` out; `url`, `identifiers`, `source`, `valid_from`, `valid_to` in | 3 × 9 | Task 2.3 |
 | TIGERweb `url` apostrophes become `%27`; DCGIS `url` unchanged | 2; 1 | Task 2.3, percent-encoding note |
-| `valid_to == valid_from` on all three geometries | 3 | Task 2.3 preserves the values; flagged there as a Phase 11 `BUG_FIX` candidate |
+| Geometry windows: Sausalito and Marin City `valid_from: 2025-01-01`, ANC 1A `valid_from: 2023-01-01`, all `valid_to: null`; source `release` (`2025`/`2023`) and, for ANC 1A, `dataset`, `publication_date`, `retrieval_date` | 3 | Migration log, "TIGER 2025 geometry validity window and release" (`BUG_FIX` + `EXPECTED_NEW_FIELD`) |
 
 **Unpredicted differences: none.**
 

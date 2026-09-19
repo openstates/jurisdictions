@@ -17,8 +17,10 @@ import pytest
 import yaml
 
 from tests.integration.golden.harness import (
+    DIVISIONS,
     FILE_PATH_FIELD,
     GOLDEN_ROOT,
+    JURISDICTIONS,
     Difference,
     diff_structures,
     format_differences,
@@ -42,7 +44,13 @@ def _reason(relative: Path) -> str:
     return PREDATES_MODELS
 
 
-GOLDEN_FILES = sorted(p.relative_to(GOLDEN_ROOT) for p in GOLDEN_ROOT.rglob("*.yaml"))
+# Division and Jurisdiction records regenerate from fixture objects; quarantine
+# records are produced by the pipeline and have their own test.
+GOLDEN_FILES = sorted(
+    p.relative_to(GOLDEN_ROOT)
+    for kind in (DIVISIONS, JURISDICTIONS)
+    for p in (GOLDEN_ROOT / kind).rglob("*.yaml")
+)
 
 
 @pytest.fixture(scope="module")

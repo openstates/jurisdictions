@@ -28,7 +28,9 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from tests.integration.golden.harness import (  # noqa: E402
+    DIVISIONS,
     GOLDEN_ROOT,
+    JURISDICTIONS,
     compare_trees,
     format_differences,
     load_yaml_tree,
@@ -61,7 +63,9 @@ def dry_run() -> int:
     with tempfile.TemporaryDirectory(prefix="sample_output_regen_") as tmp:
         root = Path(tmp)
         written = regenerate_from_fixtures(root)
-        differences = compare_trees(GOLDEN_ROOT, root)
+        # Quarantine records come from the pipeline, not the fixture objects,
+        # and are checked by their own test.
+        differences = compare_trees(GOLDEN_ROOT, root, kinds=(DIVISIONS, JURISDICTIONS))
     print(f"regenerated {len(written)} files into a temporary directory")
     if not differences:
         print(f"no differences against {GOLDEN_ROOT}")
