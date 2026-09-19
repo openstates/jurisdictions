@@ -18,12 +18,11 @@ Sample Records:
   5. Austin Council District 8 (TX) — should match & generate
 """
 
+import csv
 import pytest
 import yaml
 from datetime import datetime, timezone
 from pathlib import Path
-from uuid import NAMESPACE_URL, uuid5
-import csv
 
 from src.init_migration.pipeline_models import (
     GeneratorReq,
@@ -32,6 +31,17 @@ from src.init_migration.pipeline_models import (
 )
 from src.init_migration.generate_pipeline import GeneratePipeline
 from src.models.ocdid import OCDIdParsed
+from src.utils.deterministic_id import generate_id
+
+# Controlled inputs: the three tabs of the civicdata.tech validation sheet.
+# The divisions tab carries the four golden place matches plus decoy rows the
+# matcher must reject, and omits Marin City and DC so those quarantine.
+FIXTURE_SOURCES = Path(__file__).resolve().parents[1] / "fixtures" / "sources"
+VALIDATION_CSV_FILES = (
+    FIXTURE_SOURCES / "civicdata_divisions.csv",
+    FIXTURE_SOURCES / "civicdata_states.csv",
+    FIXTURE_SOURCES / "civicdata_counties.csv",
+)
 
 
 # Sample 5 records for integration test
@@ -73,183 +83,26 @@ SAMPLE_OCDIDS = [
     },
 ]
 
-# Validation CSV data that matches the sample OCD IDs
-# This simulates the Creyton validation dataset.
-#
-# NAMELSAD must mirror the real sheet: "<name> <LSAD suffix>", with no trailing
-# state name. Place rows carry a PLACEFP and no COUSUBFP; county subdivision
-# (cousub) rows carry a COUSUBFP and no PLACEFP.
-VALIDATION_CSV_ROWS = [
-    # Sausalito match
-    {
-        "GEOID_Census": "0670364",
-        "STATEFP": "06",
-        "NAMELSAD": "Sausalito city",
-        "LSAD": "25",
-        "SLDUST_list": "",
-        "SLDLST_list": "",
-        "COUNTYFP_list": "041",
-        "COUNTY_NAMES": "Marin",
-        "COUSUBFP": "",
-        "PLACEFP": "70364",
-        "layer": "tl_2025_06_place",
-    },
-    # Tacoma match (for fuzzy testing)
-    {
-        "GEOID_Census": "5370000",
-        "STATEFP": "53",
-        "NAMELSAD": "Tacoma city",
-        "LSAD": "25",
-        "SLDUST_list": "",
-        "SLDLST_list": "",
-        "COUNTYFP_list": "053",
-        "COUNTY_NAMES": "Pierce",
-        "COUSUBFP": "",
-        "PLACEFP": "70000",
-        "layer": "tl_2025_53_place",
-    },
-    # Seattle match
-    {
-        "GEOID_Census": "5363000",
-        "STATEFP": "53",
-        "NAMELSAD": "Seattle city",
-        "LSAD": "25",
-        "SLDUST_list": "",
-        "SLDLST_list": "",
-        "COUNTYFP_list": "033",
-        "COUNTY_NAMES": "King",
-        "COUSUBFP": "",
-        "PLACEFP": "63000",
-        "layer": "tl_2025_53_place",
-    },
-    # Austin match
-    {
-        "GEOID_Census": "4845390165",
-        "STATEFP": "48",
-        "NAMELSAD": "Austin city",
-        "LSAD": "25",
-        "SLDUST_list": "",
-        "SLDLST_list": "",
-        "COUNTYFP_list": "453",
-        "COUNTY_NAMES": "Travis",
-        "COUSUBFP": "",
-        "PLACEFP": "01000",
-        "layer": "tl_2025_48_place",
-    },
-    # Decoys. Each of these matched its city at score 1.0 under token_set_ratio,
-    # pushing the city into the "multiple matches" quarantine branch.
-    {
-        # Cousub sharing Seattle's name — must be excluded by the place-layer filter.
-        "GEOID_Census": "5303392524",
-        "STATEFP": "53",
-        "NAMELSAD": "Seattle East CCD",
-        "LSAD": "22",
-        "SLDUST_list": "",
-        "SLDLST_list": "",
-        "COUNTYFP_list": "033",
-        "COUNTY_NAMES": "King",
-        "COUSUBFP": "92524",
-        "PLACEFP": "",
-        "layer": "tl_2025_53_cousub",
-    },
-    {
-        # Distinct place that merely contains Tacoma's name as a token.
-        "GEOID_Census": "5370010",
-        "STATEFP": "53",
-        "NAMELSAD": "Tacoma Valley city",
-        "LSAD": "25",
-        "SLDUST_list": "",
-        "SLDLST_list": "",
-        "COUNTYFP_list": "053",
-        "COUNTY_NAMES": "Pierce",
-        "COUSUBFP": "",
-        "PLACEFP": "70010",
-        "layer": "tl_2025_53_place",
-    },
-    {
-        # Multi-word place: OCDid slug "oak_harbor" must reach "Oak Harbor".
-        "GEOID_Census": "5350360",
-        "STATEFP": "53",
-        "NAMELSAD": "Oak Harbor city",
-        "LSAD": "25",
-        "SLDUST_list": "",
-        "SLDLST_list": "",
-        "COUNTYFP_list": "029",
-        "COUNTY_NAMES": "Island",
-        "COUSUBFP": "",
-        "PLACEFP": "50360",
-        "layer": "tl_2025_53_place",
-    },
-    # No Marin City match (intentionally omitted to test quarantine)
-    # No DC data (intentionally omitted to test quarantine)
-]
 
-# States tab rows. State-level records carry a STATEFP and roll up every county
-# beneath them: COUNTYFP_list and COUNTY_NAMES are pipe-delimited lists covering
-# the whole state, while PLACEFP and COUSUBFP stay blank. Values below are the
-# real sheet's Washington row, truncated to the first few counties — the full row
-# carries all 39.
-STATES_CSV_ROWS = [
-    {
-        "GEOID_Census": "53",
-        "STATEFP": "53",
-        "NAMELSAD": "Washington",
-        "LSAD": "00",
-        "SLDUST_list": "",
-        "SLDLST_list": "",
-        "COUNTYFP_list": "001 | 003 | 005 | 029 | 033 | 053",
-        "COUNTY_NAMES": "Adams | Asotin | Benton | Island | King | Pierce",
-        "COUSUBFP": "",
-        "PLACEFP": "",
-        "layer": "tl_2025_us_state",
-    },
-]
-
-# Counties tab rows. County records carry STATEFP + COUNTYFP_list, and leave the
-# place-layer columns (PLACEFP, COUSUBFP) blank.
-COUNTIES_CSV_ROWS = [
-    {
-        "GEOID_Census": "53033",
-        "STATEFP": "53",
-        "NAMELSAD": "King County",
-        "LSAD": "06",
-        "SLDUST_list": "",
-        "SLDLST_list": "",
-        "COUNTYFP_list": "033",
-        "COUNTY_NAMES": "King",
-        "COUSUBFP": "",
-        "PLACEFP": "",
-        "layer": "tl_2025_53_county",
-    },
-]
-
-
-def _write_validation_csv(path: Path, rows: list[dict]) -> Path:
-    with open(path, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
-        writer.writeheader()
-        writer.writerows(rows)
-    return path
+def _csv_row_count(path: Path) -> int:
+    with open(path, newline="") as f:
+        return sum(1 for _ in csv.DictReader(f))
 
 
 @pytest.fixture
-def validation_csv_files(tmp_path) -> list[Path]:
-    """Create the three validation CSV files (divisions, states, counties)."""
-    return [
-        _write_validation_csv(tmp_path / "validation_data.csv", VALIDATION_CSV_ROWS),
-        _write_validation_csv(tmp_path / "states_validation.csv", STATES_CSV_ROWS),
-        _write_validation_csv(tmp_path / "counties_validation.csv", COUNTIES_CSV_ROWS),
-    ]
+def validation_csv_files() -> list[Path]:
+    """The three validation CSV fixtures (divisions, states, counties)."""
+    return list(VALIDATION_CSV_FILES)
 
 
 def _create_ocdid_ingest_resp(ocdid_str: str, asof_dt: datetime) -> OCDidIngestResp:
-    """Helper to create OCDidIngestResp from OCD ID string."""
+    """Helper to create OCDidIngestResp from OCD ID string.
+
+    The UUID is the ocdid-only form the matcher mints, so it equals the id
+    the models derive for the same record.
+    """
     parsed = OCDIdParsed.parse_ocdid(ocdid_str)
-    uuid = uuid5(
-        NAMESPACE_URL,
-        f"{ocdid_str}|{asof_dt.date().isoformat()}",
-    )
-    return OCDidIngestResp(uuid=uuid, ocdid=parsed, raw_record={})
+    return OCDidIngestResp(uuid=generate_id(ocdid_str), ocdid=parsed, raw_record={})
 
 
 def _create_generator_req(
@@ -337,8 +190,8 @@ def test_load_validation_csv_unifies_all_three_tabs(validation_csv_files):
     assert "Seattle city" in names, "divisions tab rows missing"
     assert "Washington" in names, "states tab rows missing"
     assert "King County" in names, "counties tab rows missing"
-    assert len(pipeline.validation_df) == (
-        len(VALIDATION_CSV_ROWS) + len(STATES_CSV_ROWS) + len(COUNTIES_CSV_ROWS)
+    assert len(pipeline.validation_df) == sum(
+        _csv_row_count(path) for path in VALIDATION_CSV_FILES
     )
 
     # The `layer` column names the Census TIGER layer each row came from
