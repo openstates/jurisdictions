@@ -20,7 +20,11 @@ export const Dataset = {
   // reason to wait for WASM init before starting it. Pass the returned
   // promise into registerViews() once the connection is ready.
   async fetchManifest() {
-    const resp = await fetch(DATA_BASE + "manifest.json");
+    // `no-cache` forces revalidation, not a bypass: GitHub Pages serves with its own cache
+    // TTL, and every deploy can rewrite the dataset. Without it a returning reader can query
+    // the previous manifest against the new files. The ETag makes the revalidation cheap — an
+    // unchanged manifest comes back 304 with no body.
+    const resp = await fetch(DATA_BASE + "manifest.json", { cache: "no-cache" });
     if (!resp.ok) throw new Error(`Failed to load manifest.json (${resp.status})`);
     return resp.json();
   },
@@ -44,6 +48,12 @@ export const Dataset = {
 
   async registerViews(conn, manifestPromise) {
     const manifest = await manifestPromise;
+    // Every parquet URL carries the manifest's own timestamp. DuckDB-Wasm fetches these through
+    // its internal HTTP filesystem, which we cannot hand a `cache` option — so the version is
+    // put in the URL instead. A run that changed nothing reuses the cached bytes; a new run
+    // changes every URL at once, so the file list and the files can never disagree.
+    const version = encodeURIComponent(manifest.generated_at ?? "");
+    const versioned = (path) => `${absUrl(DATA_BASE + path)}?v=${version}`;
 
     const tableNames = [];
     // Row counts and column schema are both computed once at export time
@@ -56,16 +66,15 @@ export const Dataset = {
 
       if (entry.file) {
         // Single unpartitioned file.
-        const url = absUrl(DATA_BASE + entry.file);
         await conn.query(
-          `CREATE VIEW ${safeName} AS SELECT * FROM read_parquet('${url}')`
+          `CREATE VIEW ${safeName} AS SELECT * FROM read_parquet('${versioned(entry.file)}')`
         );
       } else if (entry.files && Object.keys(entry.files).length > 0) {
         // Hive-partitioned table written as separate per-partition files.
         // hive_partitioning=true lets DuckDB infer the partition column
         // (e.g. state) from each file's path and prune remote fetches on
         // filtered queries, without needing directory listing over HTTP.
-        const urls = Object.values(entry.files).map((f) => absUrl(DATA_BASE + f));
+        const urls = Object.values(entry.files).map(versioned);
         const urlList = urls.map((u) => `'${u}'`).join(", ");
         await conn.query(
           `CREATE VIEW ${safeName} AS SELECT * FROM read_parquet([${urlList}], hive_partitioning=true)`

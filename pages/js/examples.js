@@ -26,9 +26,8 @@ const QUERY_EXAMPLES = [
   },
 ];
 
-// Static, hand-written example queries shown in a collapsible <details> panel.
-// No DB access needed — unlike SchemaPanel, this list doesn't depend on what
-// tables happen to exist at runtime.
+// Static, hand-written example queries shown in a modal. No DB access needed — unlike
+// SchemaPanel, this list does not depend on what tables happen to exist at runtime.
 export const Examples = {
   el: document.getElementById("examples-list"),
 
