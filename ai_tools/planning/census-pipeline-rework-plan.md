@@ -197,6 +197,13 @@ Per root `AGENTS.md`, `tests/sample_output/` is immutable and
 `tests/integration/` changes require approval. Design the harness so tests
 never mutate expected sample output.
 
+**Done** (issue #134): `55524c2` (3.1–3.2), `76a044d` (3.3–3.5),
+`ecbb938` (3.6–3.8). Harness: `tests/integration/golden/`; regeneration
+command: `scripts/regenerate_sample_output.py`; docs:
+`docs/rework/golden_input_mapping.md`, `docs/rework/golden_harness.md`.
+The 12 golden comparisons are `xfail(strict=True)` until Phase 11
+regenerates the files.
+
 ### Task 3.1 — Controlled fixture layout
 Create:
 - `tests/fixtures/census_governments/`
