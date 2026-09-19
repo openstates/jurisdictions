@@ -1,0 +1,12 @@
+{
+  "dataset": "Census of Governments: Organization, Government Units listing (School District sheet)",
+  "filename": "govt_units_2022_school_district.csv",
+  "publication_date": "2023-08-24T12:44:48+00:00",
+  "release": "2022",
+  "retrieved_at": "2026-09-19T16:14:20+00:00",
+  "sha256": "9ab4cded266cff74cc3295938af65d930cc6bb37e5c5335c1530c2b575955682",
+  "size_bytes": 897,
+  "source": "census_governments",
+  "source_name": "U.S. Census Bureau",
+  "url": "https://www2.census.gov/programs-surveys/gus/datasets/2022/govt_units_2022.ZIP"
+}

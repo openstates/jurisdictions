@@ -1,0 +1,12 @@
+{
+  "dataset": "Census of Governments: Organization, Government Units listing (Special District sheet)",
+  "filename": "govt_units_2022_special_district.csv",
+  "publication_date": "2023-08-24T12:44:48+00:00",
+  "release": "2022",
+  "retrieved_at": "2026-09-19T16:14:20+00:00",
+  "sha256": "302461bcc001a3bfeabff3e3ac13f23a566e3aaebc373efe3989cbc4177c0256",
+  "size_bytes": 533,
+  "source": "census_governments",
+  "source_name": "U.S. Census Bureau",
+  "url": "https://www2.census.gov/programs-surveys/gus/datasets/2022/govt_units_2022.ZIP"
+}

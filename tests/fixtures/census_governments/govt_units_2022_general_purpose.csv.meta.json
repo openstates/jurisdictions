@@ -1,0 +1,12 @@
+{
+  "dataset": "Census of Governments: Organization, Government Units listing (General Purpose sheet)",
+  "filename": "govt_units_2022_general_purpose.csv",
+  "publication_date": "2023-08-24T12:44:48+00:00",
+  "release": "2022",
+  "retrieved_at": "2026-09-19T16:14:20+00:00",
+  "sha256": "4bae647cd7e5331e418d00cf7027a9abefad3f065bcc2668780b6291dd65d91b",
+  "size_bytes": 1937,
+  "source": "census_governments",
+  "source_name": "U.S. Census Bureau",
+  "url": "https://www2.census.gov/programs-surveys/gus/datasets/2022/govt_units_2022.ZIP"
+}

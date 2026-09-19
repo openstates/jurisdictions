@@ -157,7 +157,66 @@ A fresh checkout with committed sidecars can re-fetch each file and verify
 it against the recorded checksum; a changed upstream file fails
 verification instead of silently changing output.
 
-## 7. What this layer does not do
+## 7. Adapters
+
+### 7.1 Census government listings
+
+The Census Bureau publishes two listings of the government universe from
+its Governments Master Address File (GMAF), both under
+`https://www2.census.gov/programs-surveys/gus/datasets/<year>/`:
+
+| Listing | Years | File | Module | Cache key |
+| --- | --- | --- | --- | --- |
+| Census of Governments: Organization (benchmark) | ending in 2 and 7 | `govt_units_<year>.ZIP` | `src/sources/census_governments.py` | `census_governments` |
+| Annual Government Units listing (GMAF snapshot) | other years, 2024 on | `gov_units_<year>.zip` | `src/sources/census_gus.py` | `census_gus` |
+
+The benchmark is what the pipeline builds from every five years; the
+annual listing updates it in between. The two modules are independent:
+each has its own spec, fetch, and parse entry points and neither imports
+the other, so a benchmark year can be re-run on its own. They share only
+`src/sources/government_units.py`: the `CensusGovernmentRecord` type, the
+row validator, and the workbook/CSV readers, driven by a per-listing
+`Layout` (sheet names, skipped sheets, column aliases).
+
+Each ZIP holds one Excel workbook with a sheet per government class. The
+record keeps the sheet as `kind` and the sheet's own classification column
+verbatim:
+
+| Sheet | `kind` | Classification column |
+| --- | --- | --- |
+| General Purpose | `general_purpose` | `UNIT_TYPE` (`1 - COUNTY`, `2 - MUNICIPAL`, `3 - TOWNSHIP`) |
+| Special District | `special_district` | `FUNCTION_NAME` |
+| School District | `school_district` | `SCHOOL_LEVEL_DESCRIPTION` |
+| DEP School Dist | `dependent_school_system` | `UNIT_TYPE` of the parent and `SCHOOL_LEVEL_DESCRIPTION` |
+| Public Pension Sys (annual, 2025 on) | `public_pension_system` | `ACTIVITY_NAME`; a dependent retirement board, not a government. Exported to `data/cache/` as its own dataset for other consumers; the pipeline does not read it. |
+
+Layout differences the annual module's aliases absorb: `ACTIVE` for
+`IS_ACTIVE`, `POPULATION_SOURCE_YEAR` for `POPULATION_YEAR`,
+`SCHOOL_ENROLLMENT` for `ENROLLMENT`; the annual listing drops the legacy
+`CENSUS_ID_GIDID`, adds `POLITICAL_CODE_DESCRIPTION`, puts `UNIT_TYPE` on
+every sheet, and from 2025 gives dependent units `PARENT_CENSUS_ID_PID6`
+and `PARENT_UNIT_NAME`. Population and enrollment cells may carry
+thousands separators; the validator strips them.
+
+`CENSUS_ID_PID6`, `FIPS_STATE`, `FIPS_COUNTY`, `FIPS_PLACE` are strings
+exactly as published. A row whose required cells fail validation (six-digit
+id, non-empty name, two-letter state, two-digit state FIPS, `Y`/`N` active
+flag, well-formed optional county/place/parent codes and integer counts)
+becomes a `CensusRowError` naming the sheet, line, id and every problem;
+the rest of the sheet still loads. Columns the record does not name stay
+in `attributes`.
+
+Reading `.xlsx` needs `openpyxl`, added as a project dependency for these
+adapters. The ZIPs are about 11 MB, so fixtures are CSV excerpts of each
+sheet with the upstream header
+(`tests/fixtures/census_governments/govt_units_2022_<sheet>.csv`,
+`tests/fixtures/census_gus/gov_units_<year>_<sheet>.csv`), parsed by the
+same validator through each module's `parse_sheet_snapshot`. Each
+excerpt's sidecar records the ZIP's URL, the year as `release`, the ZIP's
+`Last-Modified` as `publication_date`, and the checksum of the excerpt
+itself.
+
+## 8. What this layer does not do
 
 - It does not normalize, resolve, or classify anything. Adapters return
   plain records; later phases consume them.
