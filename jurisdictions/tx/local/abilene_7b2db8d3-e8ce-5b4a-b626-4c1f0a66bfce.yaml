@@ -1,0 +1,22 @@
+id: 7b2db8d3-e8ce-5b4a-b626-4c1f0a66bfce
+ocdid: ocd-jurisdiction/country:us/state:tx/place:abilene/government
+name: Abilene Council District 6 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:abilene/council_district:6
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-19T17:37:00.983169Z'
+last_updated: '2026-09-19T17:37:01.141427Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:abilene/council_district:6
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

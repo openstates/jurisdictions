@@ -1,0 +1,21 @@
+id: db3e2898-71de-5d3b-ab39-f65fbddf8e14
+ocdid: ocd-jurisdiction/country:us/state:oh/government
+name: Ohio Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:oh
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-19T17:34:07.677189Z'
+last_updated: '2026-09-19T17:34:07.677189Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

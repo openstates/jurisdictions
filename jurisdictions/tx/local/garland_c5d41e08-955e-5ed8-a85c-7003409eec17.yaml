@@ -1,0 +1,22 @@
+id: c5d41e08-955e-5ed8-a85c-7003409eec17
+ocdid: ocd-jurisdiction/country:us/state:tx/place:garland/government
+name: Garland Council District 8 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:garland/council_district:8
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-19T17:37:14.034131Z'
+last_updated: '2026-09-19T17:37:14.188498Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:garland/council_district:8
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

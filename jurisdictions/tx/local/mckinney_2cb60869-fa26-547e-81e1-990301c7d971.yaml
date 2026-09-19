@@ -1,0 +1,22 @@
+id: 2cb60869-fa26-547e-81e1-990301c7d971
+ocdid: ocd-jurisdiction/country:us/state:tx/place:mckinney/government
+name: Mckinney Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:mckinney/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-19T17:37:24.000630Z'
+last_updated: '2026-09-19T17:37:24.152730Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:mckinney/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

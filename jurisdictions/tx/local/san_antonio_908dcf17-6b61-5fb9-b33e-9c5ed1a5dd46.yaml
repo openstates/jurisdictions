@@ -1,0 +1,22 @@
+id: 908dcf17-6b61-5fb9-b33e-9c5ed1a5dd46
+ocdid: ocd-jurisdiction/country:us/state:tx/place:san_antonio/government
+name: San Antonio Council District 9 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:san_antonio/council_district:9
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-19T17:37:32.028535Z'
+last_updated: '2026-09-19T17:37:32.187843Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:san_antonio/council_district:9
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

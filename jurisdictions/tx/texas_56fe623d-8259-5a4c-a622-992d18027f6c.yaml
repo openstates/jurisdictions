@@ -1,0 +1,21 @@
+id: 56fe623d-8259-5a4c-a622-992d18027f6c
+ocdid: ocd-jurisdiction/country:us/state:tx/place:odessa/government
+name: Texas Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:odessa
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-19T17:37:25.882268Z'
+last_updated: '2026-09-19T17:37:25.882268Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

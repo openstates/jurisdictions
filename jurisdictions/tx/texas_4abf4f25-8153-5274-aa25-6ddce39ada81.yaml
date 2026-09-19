@@ -1,0 +1,21 @@
+id: 4abf4f25-8153-5274-aa25-6ddce39ada81
+ocdid: ocd-jurisdiction/country:us/state:tx/place:brownsville/government
+name: Texas Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:brownsville
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-19T17:37:04.499387Z'
+last_updated: '2026-09-19T17:37:04.499387Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

@@ -1,0 +1,21 @@
+id: 2a5ffde2-0acb-5fd4-943b-c2940c930389
+ocdid: ocd-jurisdiction/country:us/state:tx/place:el_paso/government
+name: Texas Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:el_paso
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-19T17:37:09.913617Z'
+last_updated: '2026-09-19T17:37:09.913617Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

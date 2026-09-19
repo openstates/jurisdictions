@@ -1,0 +1,21 @@
+id: 27ff17fc-f6c7-5f60-9c45-b58e05f5df4e
+ocdid: ocd-jurisdiction/country:us/state:tx/place:grand_prairie/government
+name: Texas Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:grand_prairie
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-19T17:37:14.428460Z'
+last_updated: '2026-09-19T17:37:14.428460Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

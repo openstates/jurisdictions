@@ -1,0 +1,21 @@
+id: 2cb60869-fa26-547e-81e1-990301c7d971
+ocdid: ocd-jurisdiction/country:us/state:tx/place:mckinney/government
+name: Texas Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:mckinney
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-19T17:37:23.570478Z'
+last_updated: '2026-09-19T17:37:23.570478Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: a176dfd6-d409-5f2d-a9c4-ed6405c3136a
+ocdid: ocd-jurisdiction/country:us/state:tx/place:dallas/government
+name: Dallas Council District 9 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:dallas/council_district:9
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-19T17:37:08.823050Z'
+last_updated: '2026-09-19T17:37:08.979746Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:dallas/council_district:9
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

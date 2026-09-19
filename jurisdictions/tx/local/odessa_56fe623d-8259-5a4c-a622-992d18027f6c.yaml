@@ -1,0 +1,22 @@
+id: 56fe623d-8259-5a4c-a622-992d18027f6c
+ocdid: ocd-jurisdiction/country:us/state:tx/place:odessa/government
+name: Odessa Council District 5 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:odessa/council_district:5
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-19T17:37:26.556672Z'
+last_updated: '2026-09-19T17:37:26.712828Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:odessa/council_district:5
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
