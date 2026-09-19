@@ -1,0 +1,12 @@
+{
+  "dataset": "ocd-division-ids/identifiers/country-us.csv",
+  "filename": "country-us.csv",
+  "publication_date": null,
+  "release": "master",
+  "retrieved_at": "2026-09-15T23:23:56+00:00",
+  "sha256": "063cc8a422a20ff0157bee073e283213c9ffc3788e82d871331043e960666fe4",
+  "size_bytes": 772,
+  "source": "ocd_master",
+  "source_name": "Open Civic Data",
+  "url": "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv"
+}
