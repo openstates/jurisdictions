@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict, model_validator
+from pydantic import BaseModel, Field, ConfigDict, HttpUrl, model_validator
 from typing import List, Optional
 from datetime import datetime, timezone
 from src.models.source import SourceObj
@@ -42,48 +42,93 @@ class DivisionMetadata(BaseModel):
     population: Optional[Population] = None
 
 
-class GovernmentIdentifiers(BaseModel):
-    """
-    Census designated identifiers for the locale.
+class Identifier(BaseModel):
+    """A single external identifier from a specific authority.
+
+    ``value`` is always a string so leading-zero identifiers (Census FIPS,
+    GEOIDs, LEA IDs) round-trip exactly.
     """
 
-    namelsad: str = Field(
-        description="The Census designated legal name for the geo political entity associated with a given locale."
+    authority: str = Field(
+        description="Authority/provider slug (e.g. 'census', 'nces', 'dcgis')."
     )
-    statefp: str
-    sldust: list[str]
-    sldlst: list[str]
-    countyfp: list[str]
-    county_names: list[str]
-    cousubfp: Optional[str] = None
-    placefp: Optional[str] = None
-    lsad: str
-    geoid: str
-    geoid_12: Optional[str] = None
-    geoid_14: Optional[str] = None
-    common_name: Optional[list[str]] = Field(
-        default=None,
-        description="The commonly used named for the place if different than the official NAMELSAD. Used for matching on alternative names for a locale.",
+    id_type: str = Field(
+        description="Identifier type within the authority (e.g. 'geoid', 'statefp', 'placefp', 'lea')."
     )
+    value: str = Field(
+        description="Identifier value as a string; leading zeros preserved."
+    )
+    source: SourceObj = Field(description="Provenance for this identifier.")
+
+
+Identifiers = list[Identifier]
+
+
+def find_identifier(
+    identifiers: Identifiers | None,
+    id_type: str,
+    authority: str = "census",
+) -> str | None:
+    """Return the first matching identifier value, or None."""
+    if not identifiers:
+        return None
+    for ident in identifiers:
+        if ident.authority == authority and ident.id_type == id_type:
+            return ident.value
+    return None
 
 
 class Geometry(BaseModel):
-    start: datetime = Field(
-        ..., description="Best approximation of date boundary became effective."
+    """A provider-neutral, temporally-scoped reference to a boundary geometry.
+
+    A Division keeps its stable identity while its geometry changes over time
+    (rework §21), so a Division carries a list of these versions. Each version
+    owns its validity window, its retrieval URL, its external identifiers, and
+    its own provenance. ArcGIS/TIGERweb is one provider among several, not the
+    abstraction (rework §18).
+    """
+
+    valid_from: datetime | None = Field(
+        default=None,
+        description="Best approximation of the date this boundary became effective. None for an open-ended start.",
     )
-    end: datetime = Field(
-        ...,
-        description="Best approximation of date boundary was replaced or made obsolete (null for current boundaries).",
+    valid_to: datetime | None = Field(
+        default=None,
+        description="Best approximation of the date this boundary was replaced or made obsolete. None for a current boundary.",
     )
     boundary: Boundary = Field(
         ..., description="The centroid and extent of the geometry."
     )
-    children: List[str] = Field(
-        default_factory=list, description="A list of child division ids."
+    url: HttpUrl | None = Field(
+        default=None,
+        description="Provider-neutral retrieval URL for this geometry (e.g. a GeoJSON query endpoint). Ideally granular to the layer defined by the division id.",
     )
-    arcGIS_address: str = Field(
-        ...,
-        description="A url or curl-like request string to the arcGIS server. Ideally this is granular to the layer defined by the division id.",
+    identifiers: Identifiers | None = Field(
+        default=None,
+        description="External identifiers for this geometry (Census GEOID, DCGIS ANC ID, etc.). Each entry carries its own SourceObj.",
+    )
+    source: SourceObj | None = Field(
+        default=None,
+        description="Provenance for this geometry version — which dataset/release it was retrieved from.",
+    )
+
+
+def sort_geometries(geometries: list[Geometry] | None) -> list[Geometry]:
+    """Return geometry versions ordered oldest-first by ``valid_from``.
+
+    An open-ended (``None``) ``valid_from`` sorts first: an unbounded start
+    precedes every dated one. Ordering is stable, so equal ``valid_from``
+    values keep their input order and serialization stays deterministic
+    (rework §32).
+    """
+    if not geometries:
+        return []
+    return sorted(
+        geometries,
+        key=lambda geometry: (
+            geometry.valid_from is not None,
+            geometry.valid_from or datetime.min.replace(tzinfo=timezone.utc),
+        ),
     )
 
 
@@ -110,6 +155,10 @@ class Division(BaseModel):
         default_factory=list,
         description="A list of alternate formatted OCDids that refer to the same geo political divisions.",
     )
+    children: List[str] = Field(
+        default_factory=list,
+        description="A list of child division ids — the OCDids of the Divisions contained by this one. Projects to the PARENT_OF graph edge.",
+    )
     valid_thru: Optional[datetime] = Field(
         default=None,
         description="If a division is set to be retired, use this date to indicate when the division is no longer valid.",
@@ -134,9 +183,9 @@ class Division(BaseModel):
         None,
         description="Any other useful information that a researcher feels should be included.",
     )
-    government_identifiers: Optional[GovernmentIdentifiers] = Field(
+    government_identifiers: Optional[Identifiers] = Field(
         None,
-        description="A dictionary of the  code(s) (i.e. Census state_code, fips_code, geoid, etc.) official name in snake_case and the value. Can include more than one key.",
+        description="Provider-neutral list of external identifiers (Census FIPS/GEOIDs, LEA IDs, DCGIS ANC IDs, etc.). Each entry carries its own SourceObj.",
     )
     jurisdiction_id: str
 
@@ -161,15 +210,12 @@ class Division(BaseModel):
 
     # Untested
     def dump_division(self, base_dir: str | Path = PROJECT_PATH):
-        if not self.government_identifiers:
-            raise ValueError("A geoid is required to store a division obect.")
+        geoid = find_identifier(self.government_identifiers, "geoid")
+        if not geoid:
+            raise ValueError("A census geoid identifier is required to store a division object.")
         base_path = Path(base_dir)
         base_path.mkdir(parents=True, exist_ok=True)
-        filepath = (
-            base_path
-            / f"{self.display_name}_{self.government_identifiers.geoid}_{self.id}.yaml"
-        )
-        # Convert model to dict and ensure UUID is converted to string
+        filepath = base_path / f"{self.display_name}_{geoid}_{self.id}.yaml"
         data = self.model_dump(exclude_none=False, mode="json")
         with open(filepath, "w") as f:
             yaml.safe_dump(data, f)

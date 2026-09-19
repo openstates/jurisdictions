@@ -54,6 +54,53 @@ reference implementation and behavioral baseline.
 12. National high-confidence generation is reproducible.
 13. Graph state rebuilds entirely from YAML.
 
+## Sample Output Change Control
+
+`tests/sample_output/` is a **golden contract**, not permanently frozen
+data. It changes rarely, only with explicit maintainer approval, and
+the new files become the baseline every downstream phase tests against.
+The lifecycle spans four of the phases below:
+
+1. **Read-only baseline (every phase, every normal test run):** golden
+   tests compare against these fixtures and never mutate them (see
+   Task 3.3, Task 3.5; root `AGENTS.md` §"Testing Rules"). No phase
+   edits YAML under `tests/sample_output/` as a side effect of doing
+   its own work.
+2. **Phase 2 model changes (#133):** land alongside a documented
+   structural migration in
+   `docs/rework/sample_output_migration.md` (Task 2.7). The doc
+   describes the intended change; the YAML files themselves stay
+   untouched at this point.
+3. **Phase 3 golden harness (#134):** regenerates output from
+   controlled fixtures and diffs against the checked-in files. After
+   Phase 2 those diffs are expected to be non-empty — that failure is
+   the signal that Phase 11 work is due, **not** a fixture to patch
+   to make the test pass.
+4. **Phase 11 regeneration (#142, Task 11.3):** a maintainer runs the
+   explicit regeneration command (Task 3.5), reviews the diff,
+   classifies every change per §35 (`STRUCTURAL`, `SOURCE_CORRECTION`,
+   `BUG_FIX`, `TEMPORAL_UPDATE`, `IDENTIFIER_MIGRATION`,
+   `EXPECTED_NEW_FIELD`, `REGRESSION`), and approves the update.
+   Agents do not run this command autonomously and never hand-edit
+   the YAML. Once committed, the regenerated files are the new golden
+   contract — Phases 12–19 test against them.
+5. **Phase 12 CI (#143):** unexplained drift in `tests/sample_output/`
+   fails PR CI. The only sanctioned path to drift is step 4.
+
+Invariants every phase respects:
+
+- **Never silently edit** `tests/sample_output/`. A failing golden
+  test is a signal to file a Phase 11 work-item and stop — not a
+  fixture to correct so the test passes. (Root `AGENTS.md`
+  §"Testing Rules", "never fake-it"; task instruction §29,
+  §33–§36.)
+- **Reading is always fine.** Inventory, diff, and comparison
+  activities never need approval.
+
+Per-file observations, suspicious values, and coverage gaps against
+this contract are catalogued in
+`docs/rework/sample_output_inventory.md` §6.
+
 ## Phase 0 — Establish Rework Environment
 
 ### Task 0.1 — Rework branch
