@@ -179,3 +179,10 @@ src/init_migration/downloader.log
 # VSCode settings
 .vscode/
 
+.DS_Store
+
+# DuckDB write-ahead-log temp file
+*.duckdb.wal
+
+# Generated at deploy time from data/parquet/ — not a source of truth
+pages/data/
