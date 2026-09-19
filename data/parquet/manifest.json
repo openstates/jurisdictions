@@ -1,15 +1,17 @@
 {
-  "generated_at": "2026-08-22T17:47:23.668086+00:00",
+  "generated_at": "2026-09-19T17:38:04.180646+00:00",
   "tables": [
     {
       "name": "local_ocdids",
       "partitioned_by": "state",
-      "rows": 495,
-      "bytes": 13847,
+      "rows": 1554,
+      "bytes": 33324,
       "files": {
         "ak": "local_ocdids/state=ak/data_0.parquet",
         "al": "local_ocdids/state=al/data_0.parquet",
         "az": "local_ocdids/state=az/data_0.parquet",
+        "oh": "local_ocdids/state=oh/data_0.parquet",
+        "tx": "local_ocdids/state=tx/data_0.parquet",
         "wa": "local_ocdids/state=wa/data_0.parquet"
       },
       "columns": [
@@ -153,12 +155,14 @@
     {
       "name": "ocdid_uuid_lookup",
       "partitioned_by": "state",
-      "rows": 495,
-      "bytes": 38373,
+      "rows": 1554,
+      "bytes": 110069,
       "files": {
         "ak": "ocdid_uuid_lookup/state=ak/data_0.parquet",
         "al": "ocdid_uuid_lookup/state=al/data_0.parquet",
         "az": "ocdid_uuid_lookup/state=az/data_0.parquet",
+        "oh": "ocdid_uuid_lookup/state=oh/data_0.parquet",
+        "tx": "ocdid_uuid_lookup/state=tx/data_0.parquet",
         "wa": "ocdid_uuid_lookup/state=wa/data_0.parquet"
       },
       "columns": [
@@ -204,8 +208,8 @@
     {
       "name": "master_orphans",
       "file": "master_orphans.parquet",
-      "rows": 193557,
-      "bytes": 2106649,
+      "rows": 23834,
+      "bytes": 289308,
       "columns": [
         {
           "name": "id",
@@ -218,10 +222,10 @@
       ]
     },
     {
-      "name": "generation_tracking_2026_08_22",
-      "file": "generation_tracking_2026_08_22.parquet",
-      "rows": 495,
-      "bytes": 15322,
+      "name": "generation_tracking_2026_09_19",
+      "file": "generation_tracking_2026_09_19.parquet",
+      "rows": 1554,
+      "bytes": 43125,
       "columns": [
         {
           "name": "original_id",
