@@ -167,6 +167,12 @@ cython_debug/
 # ETag cache files
 .etag_cache.json
 
+# Bulk source snapshots: keep the metadata sidecars, never the files
+data/raw/**
+!data/raw/**/
+!data/raw/**/*.meta.json
+data/cache/
+
 # Claude Code local config
 .claude/
 

@@ -68,3 +68,37 @@ class OCDIdParsingError(Error):
     def __init__(self, message):
         super().__init__(message)
         self.message = message
+
+
+class SnapshotError(Error):
+    """Base class for errors raised by the source snapshot layer."""
+
+    def __init__(self, message, path: str | None = None):
+        super().__init__(message)
+        self.message = message
+        self.path = path
+
+
+class SnapshotIntegrityError(SnapshotError):
+    """
+    Raised when a snapshot file's bytes do not match the checksum or size
+    recorded for it, or when a fetch returns no content to record.
+    """
+
+    def __init__(
+        self,
+        message,
+        path: str | None = None,
+        expected: str | None = None,
+        actual: str | None = None,
+    ):
+        super().__init__(message, path=path)
+        self.expected = expected
+        self.actual = actual
+
+
+class SnapshotMetadataError(SnapshotError):
+    """
+    Raised when a snapshot's metadata sidecar is missing, unreadable, or
+    does not describe the file it sits next to.
+    """
