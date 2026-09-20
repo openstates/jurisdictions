@@ -6,7 +6,7 @@ from uuid import NAMESPACE_URL, uuid5
 from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp
 from src.init_migration.generate_division import DivGenerator
 from src.models.ocdid import OCDIdParsed
-from src.models.division import Division
+from src.models.division import Division, find_identifier
 from pathlib import Path
 
 
@@ -103,10 +103,10 @@ def test_generate_division_from_county_record():
     division = dg.generate_division(COUNTY_VAL_REC, dg.uuid)
 
     assert division.display_name == "Blount"
-    assert division.government_identifiers.geoid == "47009"
-    assert division.government_identifiers.statefp == "47"
-    assert division.government_identifiers.countyfp == ["009"]
-    assert division.government_identifiers.county_names == ["Blount"]
+    assert find_identifier(division.government_identifiers, "geoid") == "47009"
+    assert find_identifier(division.government_identifiers, "statefp") == "47"
+    assert find_identifier(division.government_identifiers, "countyfp") == "009"
+    assert find_identifier(division.government_identifiers, "county_names") == "Blount"
 
 
 @pytest.mark.parametrize(
