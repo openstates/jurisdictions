@@ -6,6 +6,7 @@ from uuid import NAMESPACE_URL, uuid5
 from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp
 from src.init_migration.generate_division import DivGenerator
 from src.models.ocdid import OCDIdParsed
+from src.models.division import Division
 from pathlib import Path
 
 
@@ -150,3 +151,54 @@ def test_county_council_district_name_keeps_the_entity_word():
     division = dg.generate_division(val_rec, dg.uuid)
 
     assert division.display_name == "Orleans Parish Council District 2"
+
+
+def test_generate_division_reuses_existing_ocdid(tmp_path, monkeypatch):
+    """An existing Division OCD ID should be reused instead of duplicated."""
+    import yaml
+
+    monkeypatch.chdir(tmp_path)
+
+    ocdid = "ocd-division/country:us/state:wa/place:seattle"
+    req = _req_for(ocdid)
+
+    existing = Division(
+        id=uuid5(NAMESPACE_URL, "existing-seattle"),
+        ocdid=ocdid,
+        country="us",
+        display_name="Existing Seattle",
+        jurisdiction_id=(
+            "ocd-jurisdiction/country:us/state:wa/place:seattle/government"
+        ),
+    )
+
+    div_dir = tmp_path / "divisions" / "wa" / "local"
+    div_dir.mkdir(parents=True)
+    existing_path = div_dir / "existing_seattle.yaml"
+    existing_path.write_text(
+        yaml.safe_dump(existing.model_dump(mode="json"), sort_keys=False)
+    )
+
+    val_rec = {
+        "GEOID_Census": "5363000",
+        "STATEFP": "53",
+        "NAMELSAD": "Seattle city",
+        "LSAD": "25",
+        "SLDUST_list": "",
+        "SLDLST_list": "",
+        "COUNTYFP_list": "033",
+        "COUNTY_NAMES": "King",
+        "COUSUBFP": "",
+        "PLACEFP": "63000",
+        "layer": "tl_2025_53_place",
+    }
+
+    dg = DivGenerator(req=req)
+    result = dg.generate_division(val_rec, dg.uuid)
+    output_path = dg.dump_division(output_dir=tmp_path)
+
+    assert result.id == existing.id
+    assert result.ocdid == ocdid
+    assert result.display_name == "Existing Seattle"
+    assert output_path.resolve() == existing_path.resolve()
+    assert len(list(div_dir.glob("*.yaml"))) == 1

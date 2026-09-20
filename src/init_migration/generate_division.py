@@ -145,6 +145,7 @@ class DivGenerator:
         self.parsed_ocdid = ocdid_parser(self.data.ocdid.raw_ocdid)
         self.state_lookup = load_state_code_lookup()
         self.division: Division | None = None
+        self.existing_path: Path | None = None
 
     def generate_division(self, val_rec: dict, uuid: UUID) -> Division:
         """Generate a full Division object from a matched validation record."""
@@ -320,24 +321,43 @@ class DivGenerator:
         division_part = re.sub(r"/council_district:[^/]+", "", division_part)
         return f"ocd-jurisdiction/{division_part}/government"
 
-    def _division_exists(self, ocdid: str) -> bool:
+    def _find_existing_division_path(self, ocdid: str) -> Path | None:
+        """Find an existing Division YAML by canonical OCD ID."""
         try:
             parsed = ocdid_parser(ocdid)
             state = parsed.get("state", "").lower() if parsed.get("state") else ""
             div_dir = Path(f"divisions/{state}/local")
             if not div_dir.exists():
-                return False
-            return False
-        except Exception as e:
-            logger.debug(f"Error checking if Division exists: {e}")
-            return False
+                return None
+
+            for filepath in sorted(div_dir.glob("*.yaml")):
+                try:
+                    data = yaml.safe_load(filepath.read_text()) or {}
+                except (OSError, yaml.YAMLError) as exc:
+                    logger.debug(f"Skipping unreadable Division YAML {filepath}: {exc}")
+                    continue
+
+                if data.get("ocdid") == ocdid:
+                    return filepath
+
+            return None
+        except Exception as exc:
+            logger.debug(f"Error locating existing Division {ocdid}: {exc}")
+            return None
+
+    def _division_exists(self, ocdid: str) -> bool:
+        return self._find_existing_division_path(ocdid) is not None
 
     def _load_existing_division(self, ocdid: str) -> Division:
-        try:
-            raise NotImplementedError("_load_existing_division not yet implemented")
-        except Exception:
-            logger.error(f"Failed to load existing Division for {ocdid}", exc_info=True)
-            raise
+        filepath = self._find_existing_division_path(ocdid)
+        if filepath is None:
+            raise FileNotFoundError(f"No existing Division found for {ocdid}")
+
+        data = yaml.safe_load(filepath.read_text())
+        division = Division.model_validate(data)
+        self.division = division
+        self.existing_path = filepath
+        return division
 
     def dump_division(self, output_dir: Path | None = None) -> Path:
         """Serialize and save Division object to YAML file.
@@ -346,6 +366,9 @@ class DivGenerator:
         """
         if not self.division:
             raise ValueError("Division object does not exist")
+
+        if self.existing_path is not None:
+            return self.existing_path
 
         geoid = find_identifier(self.division.government_identifiers, "geoid") or ""
 

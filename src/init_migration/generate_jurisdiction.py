@@ -67,6 +67,7 @@ class JurGenerator:
         self.uuid = self.data.uuid
         self.division = division
         self.jurisdiction: Jurisdiction | None = None
+        self.existing_path: Path | None = None
 
     def _ai_lookup(self, division: Division) -> dict | None:
         """Look up official jurisdiction name and URL via AI agent.
@@ -191,32 +192,63 @@ class JurGenerator:
         division_part = re.sub(r"/council_district:[^/]+", "", division_part)
         return f"ocd-jurisdiction/{division_part}/{classification}"
 
-    def _jurisdiction_exists(self, jurisdiction_ocdid: str) -> bool:
+    def _find_existing_jurisdiction_path(
+        self, jurisdiction_ocdid: str
+    ) -> Path | None:
+        """Find an existing Jurisdiction YAML by canonical OCD ID."""
         try:
-            parsed = ocdid_parser(jurisdiction_ocdid)
-            state = parsed.get("state", "").lower() if parsed.get("state") else ""
+            # Use the source Division OCD ID to determine the state because
+            # jurisdiction IDs end with an unkeyed classification segment.
+            parsed = ocdid_parser(self.req.data.ocdid.raw_ocdid)
+            state = (parsed.get("state") or parsed.get("district") or "").lower()
             jur_dir = Path(f"jurisdictions/{state}/local")
             if not jur_dir.exists():
-                return False
-            return False
-        except Exception as e:
-            logger.debug(f"Error checking if Jurisdiction exists: {e}")
-            return False
+                return None
 
-    def _load_existing_jurisdiction(self, jurisdiction_ocdid: str) -> Jurisdiction:
-        try:
-            raise NotImplementedError("_load_existing_jurisdiction not yet implemented")
-        except Exception:
-            logger.error(
-                f"Failed to load existing Jurisdiction for {jurisdiction_ocdid}",
-                exc_info=True,
+            for filepath in sorted(jur_dir.glob("*.yaml")):
+                try:
+                    data = yaml.safe_load(filepath.read_text()) or {}
+                except (OSError, yaml.YAMLError) as exc:
+                    logger.debug(
+                        f"Skipping unreadable Jurisdiction YAML {filepath}: {exc}"
+                    )
+                    continue
+
+                if data.get("ocdid") == jurisdiction_ocdid:
+                    return filepath
+
+            return None
+        except Exception as exc:
+            logger.debug(
+                f"Error locating existing Jurisdiction {jurisdiction_ocdid}: {exc}"
             )
-            raise
+            return None
+
+    def _jurisdiction_exists(self, jurisdiction_ocdid: str) -> bool:
+        return self._find_existing_jurisdiction_path(jurisdiction_ocdid) is not None
+
+    def _load_existing_jurisdiction(
+        self, jurisdiction_ocdid: str
+    ) -> Jurisdiction:
+        filepath = self._find_existing_jurisdiction_path(jurisdiction_ocdid)
+        if filepath is None:
+            raise FileNotFoundError(
+                f"No existing Jurisdiction found for {jurisdiction_ocdid}"
+            )
+
+        data = yaml.safe_load(filepath.read_text())
+        jurisdiction = Jurisdiction.model_validate(data)
+        self.jurisdiction = jurisdiction
+        self.existing_path = filepath
+        return jurisdiction
 
     def dump_jurisdiction(self, output_dir: Path | None = None) -> Path:
         """Serialize and save Jurisdiction object to YAML file."""
         if not self.jurisdiction:
             raise ValueError("Jurisdiction object does not exist")
+
+        if self.existing_path is not None:
+            return self.existing_path
 
         try:
             filename = get_jurisdiction_filename(
