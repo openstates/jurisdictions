@@ -325,7 +325,7 @@ class DivGenerator:
         """Find an existing Division YAML by canonical OCD ID."""
         try:
             parsed = ocdid_parser(ocdid)
-            state = parsed.get("state", "").lower() if parsed.get("state") else ""
+            state = (parsed.get("state") or parsed.get("district") or "").lower()
             div_dir = Path(f"divisions/{state}/local")
             if not div_dir.exists():
                 return None
@@ -380,7 +380,7 @@ class DivGenerator:
             )
 
             parsed = ocdid_parser(self.division.ocdid)
-            state = parsed.get("state", "").lower() if parsed.get("state") else ""
+            state = (parsed.get("state") or parsed.get("district") or "").lower()
 
             if output_dir is None:
                 output_dir = Path(".")

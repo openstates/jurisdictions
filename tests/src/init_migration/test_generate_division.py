@@ -202,3 +202,81 @@ def test_generate_division_reuses_existing_ocdid(tmp_path, monkeypatch):
     assert result.display_name == "Existing Seattle"
     assert output_path.resolve() == existing_path.resolve()
     assert len(list(div_dir.glob("*.yaml"))) == 1
+
+
+def test_generate_division_reuses_existing_dc_district_ocdid(tmp_path, monkeypatch):
+    """DC district OCD IDs should reuse existing YAML under divisions/dc/local."""
+    import yaml
+
+    monkeypatch.chdir(tmp_path)
+
+    ocdid = "ocd-division/country:us/district:dc/anc:1a/council_district:1"
+    existing = Division(
+        id=uuid5(NAMESPACE_URL, "existing-dc-anc-1a-district-1"),
+        ocdid=ocdid,
+        country="us",
+        display_name="Existing ANC 1A District 1",
+        jurisdiction_id="ocd-jurisdiction/country:us/district:dc/anc:1a/government",
+    )
+
+    div_dir = tmp_path / "divisions" / "dc" / "local"
+    div_dir.mkdir(parents=True)
+    existing_path = div_dir / "existing_dc_anc.yaml"
+    existing_path.write_text(
+        yaml.safe_dump(existing.model_dump(mode="json"), sort_keys=False)
+    )
+
+    dg = DivGenerator(req=_req_for(ocdid))
+    result = dg.generate_division(
+        {
+            "GEOID_Census": "",
+            "STATEFP": "11",
+            "NAMELSAD": "ANC 1A",
+            "LSAD": "",
+            "SLDUST_list": "",
+            "SLDLST_list": "",
+            "COUNTYFP_list": "",
+            "COUNTY_NAMES": "",
+            "COUSUBFP": "",
+            "PLACEFP": "",
+            "layer": "dcgis_anc",
+        },
+        dg.uuid,
+    )
+    output_path = dg.dump_division(output_dir=tmp_path)
+
+    assert result.id == existing.id
+    assert result.display_name == "Existing ANC 1A District 1"
+    assert output_path.resolve() == existing_path.resolve()
+    assert len(list(div_dir.glob("*.yaml"))) == 1
+
+
+def test_dump_division_uses_dc_directory_for_district_ocdid(tmp_path, monkeypatch):
+    """A new DC district Division should be written under divisions/dc/local."""
+    monkeypatch.chdir(tmp_path)
+
+    ocdid = "ocd-division/country:us/district:dc/anc:1a/council_district:2"
+    dg = DivGenerator(req=_req_for(ocdid))
+
+    dg.generate_division(
+        {
+            "GEOID_Census": "",
+            "STATEFP": "11",
+            "NAMELSAD": "ANC 1A",
+            "LSAD": "",
+            "SLDUST_list": "",
+            "SLDLST_list": "",
+            "COUNTYFP_list": "",
+            "COUNTY_NAMES": "",
+            "COUSUBFP": "",
+            "PLACEFP": "",
+            "layer": "dcgis_anc",
+        },
+        dg.uuid,
+    )
+    output_path = dg.dump_division(output_dir=tmp_path)
+
+    assert output_path.parent.resolve() == (
+        tmp_path / "divisions" / "dc" / "local"
+    ).resolve()
+    assert output_path.exists()
