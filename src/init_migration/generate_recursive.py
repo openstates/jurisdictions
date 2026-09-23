@@ -27,10 +27,38 @@ from src.init_migration.pipeline_models import REPO_URL
 
 logger = logging.getLogger(__name__)
 
-# Ancestor segment keys, in priority order used to detect the deepest level.
-_LEVEL_KEYS = ("county", "state", "district", "territory")
+# Ancestor levels supported by recursive stub generation.
+_ROOT_LEVELS = {"state", "district", "territory"}
+_LOCAL_LEVELS = {"place", "anc"}
+_SUPPORTED_LEVELS = _ROOT_LEVELS | _LOCAL_LEVELS | {"county"}
 
 _OCD_REPO_URL = REPO_URL
+
+
+def _ancestor_level(ancestor: OCDIdParsed) -> str | None:
+    """Return the terminal supported hierarchy segment."""
+    terminal = ancestor.raw_ocdid.rsplit("/", 1)[-1]
+    level, sep, _value = terminal.partition(":")
+    if not sep or level not in _SUPPORTED_LEVELS:
+        return None
+    return level
+
+
+def _find_ocdid_paths(ocdid: str, root: Path) -> list[Path]:
+    """Find every YAML carrying an OCDID beneath a state tree."""
+    if not root.exists():
+        return []
+
+    matches = []
+    for path in root.rglob("*.yaml"):
+        try:
+            data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if isinstance(data, dict) and data.get("ocdid") == ocdid:
+            matches.append(path)
+
+    return sorted(matches)
 
 
 def stub_exists(ocdid: str, search_dir: Path) -> bool:
@@ -78,14 +106,29 @@ def _ancestor_dirs(
 
     Mirrors the `DivGenerator.dump_division` convention of prepending
     `"divisions"` / `"jurisdictions"` to the shared output-directory root.
-    State/district/territory stubs sit directly under `{state}/`.
-    County stubs sit under `{state}/county/`.
+    State/district/territory objects sit directly under `{state}/`.
+    County Division stubs sit under `{state}/county/`, while county-government
+    Jurisdictions live with other local governments under `{state}/local/`.
+    Place/ANC ancestors use `{state}/local/` for both object types.
     """
-    if level in ("state", "district", "territory"):
+    if level in _ROOT_LEVELS:
         return (
             division_output_dir / "divisions" / state_code,
             jurisdiction_output_dir / "jurisdictions" / state_code,
         )
+
+    if level in _LOCAL_LEVELS:
+        return (
+            division_output_dir / "divisions" / state_code / "local",
+            jurisdiction_output_dir / "jurisdictions" / state_code / "local",
+        )
+
+    if level == "county":
+        return (
+            division_output_dir / "divisions" / state_code / "county",
+            jurisdiction_output_dir / "jurisdictions" / state_code / "local",
+        )
+
     return (
         division_output_dir / "divisions" / state_code / level,
         jurisdiction_output_dir / "jurisdictions" / state_code / level,
@@ -127,14 +170,15 @@ def _write_stub_division(
                 source=stub_source,
             )
         )
-        identifiers.append(
-            Identifier(
-                authority="census",
-                id_type="geoid",
-                value=state_fips,
-                source=stub_source,
+        if _ancestor_level(ancestor) in _ROOT_LEVELS:
+            identifiers.append(
+                Identifier(
+                    authority="census",
+                    id_type="geoid",
+                    value=state_fips,
+                    source=stub_source,
+                )
             )
-        )
     division = Division(
         ocdid=ancestor.raw_ocdid,
         country="us",
@@ -244,9 +288,7 @@ def ensure_ancestor_stubs(
 
     for ancestor in ancestors:
         ancestor_ocdid = ancestor.raw_ocdid
-        parsed = ancestor.model_dump(exclude_none=True)
-
-        level = next((k for k in _LEVEL_KEYS if k in parsed), None)
+        level = _ancestor_level(ancestor)
         if not level:
             logger.debug(
                 "No recognised level in ancestor %s — skipping", ancestor_ocdid
@@ -277,8 +319,26 @@ def ensure_ancestor_stubs(
         jur_ocdid = (
             f"ocd-jurisdiction/{ancestor_ocdid.replace('ocd-division/', '')}/government"
         )
-        div_exists = stub_exists(ancestor_ocdid, div_dir)
-        jur_exists = stub_exists(jur_ocdid, jur_dir)
+        div_root = division_output_dir / "divisions" / state_code
+        jur_root = jurisdiction_output_dir / "jurisdictions" / state_code
+
+        div_matches = _find_ocdid_paths(ancestor_ocdid, div_root)
+        jur_matches = _find_ocdid_paths(jur_ocdid, jur_root)
+
+        if len(div_matches) > 1:
+            raise ValueError(
+                f"Duplicate ancestor Division OCDID {ancestor_ocdid}: "
+                f"{[str(path) for path in div_matches]}"
+            )
+
+        if len(jur_matches) > 1:
+            raise ValueError(
+                f"Duplicate ancestor Jurisdiction OCDID {jur_ocdid}: "
+                f"{[str(path) for path in jur_matches]}"
+            )
+
+        div_exists = bool(div_matches)
+        jur_exists = bool(jur_matches)
 
         if div_exists and jur_exists:
             logger.debug("Ancestor stubs already exist for %s", ancestor.raw_ocdid)

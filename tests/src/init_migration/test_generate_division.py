@@ -280,3 +280,132 @@ def test_dump_division_uses_dc_directory_for_district_ocdid(tmp_path, monkeypatc
         tmp_path / "divisions" / "dc" / "local"
     ).resolve()
     assert output_path.exists()
+
+
+
+def test_promoted_ingest_stub_preserves_existing_uuid(tmp_path, monkeypatch):
+    """Promoting an ingest-only stub enriches it without changing identity."""
+    import yaml
+
+    monkeypatch.chdir(tmp_path)
+
+    ocdid = (
+        "ocd-division/country:us/state:tx/place:mesquite/"
+        "council_district:1"
+    )
+    req = _req_for(ocdid)
+
+    old_id = uuid5(NAMESPACE_URL, "existing-mesquite-stub")
+
+    source = {
+        "field": ["ocdid"],
+        "source_name": "ocdid_ingest",
+        "source_type": "human_researched",
+        "source_url": {
+            "ocd_repo": (
+                "https://raw.githubusercontent.com/opencivicdata/"
+                "ocd-division-ids/master/identifiers/country-us.csv"
+            )
+        },
+        "source_description": "Open Civic Data ingest stub",
+    }
+
+    stub = Division(
+        id=old_id,
+        ocdid=ocdid,
+        country="us",
+        display_name="Mesquite Council District 1",
+        jurisdiction_id=(
+            "ocd-jurisdiction/country:us/state:tx/"
+            "place:mesquite/government"
+        ),
+        sourcing=[source],
+    )
+
+    div_dir = tmp_path / "divisions" / "tx" / "local"
+    div_dir.mkdir(parents=True)
+
+    stub_path = div_dir / f"unknown__{old_id}.yaml"
+    stub_path.write_text(
+        yaml.safe_dump(stub.model_dump(mode="json"), sort_keys=False)
+    )
+
+    val_rec = {
+        "GEOID_Census": "4847892",
+        "STATEFP": "48",
+        "NAMELSAD": "Mesquite city",
+        "LSAD": "25",
+        "SLDUST_list": "",
+        "SLDLST_list": "",
+        "COUNTYFP_list": "",
+        "COUNTY_NAMES": "",
+        "COUSUBFP": "",
+        "PLACEFP": "47892",
+        "layer": "tl_2025_48_place",
+    }
+
+    dg = DivGenerator(req=req)
+    promoted = dg.generate_division(val_rec, dg.uuid)
+    output_path = dg.dump_division(output_dir=tmp_path)
+
+    assert promoted.id == old_id
+    assert output_path.exists()
+    assert not stub_path.exists()
+
+    data = yaml.safe_load(output_path.read_text())
+    assert data["id"] == str(old_id)
+    assert find_identifier(promoted.government_identifiers, "geoid") == "4847892"
+
+    matching = []
+    for path in div_dir.glob("*.yaml"):
+        row = yaml.safe_load(path.read_text()) or {}
+        if row.get("ocdid") == ocdid:
+            matching.append(path)
+
+    assert matching == [output_path]
+
+
+def test_duplicate_existing_division_ocdid_fails_closed(tmp_path, monkeypatch):
+    """Two files carrying one Division OCDID must not be silently reused."""
+    import yaml
+
+    monkeypatch.chdir(tmp_path)
+
+    ocdid = "ocd-division/country:us/state:wa/place:seattle"
+    div_dir = tmp_path / "divisions" / "wa" / "local"
+    div_dir.mkdir(parents=True)
+
+    for suffix in ("one", "two"):
+        existing = Division(
+            id=uuid5(NAMESPACE_URL, f"duplicate-{suffix}"),
+            ocdid=ocdid,
+            country="us",
+            display_name=f"Seattle {suffix}",
+            jurisdiction_id=(
+                "ocd-jurisdiction/country:us/state:wa/"
+                "place:seattle/government"
+            ),
+        )
+        (div_dir / f"{suffix}.yaml").write_text(
+            yaml.safe_dump(existing.model_dump(mode="json"), sort_keys=False)
+        )
+
+    dg = DivGenerator(req=_req_for(ocdid))
+
+    with pytest.raises(ValueError, match="Duplicate Division OCDID"):
+        dg.generate_division(
+            {
+                "GEOID_Census": "5363000",
+                "STATEFP": "53",
+                "NAMELSAD": "Seattle city",
+                "LSAD": "25",
+                "SLDUST_list": "",
+                "SLDLST_list": "",
+                "COUNTYFP_list": "033",
+                "COUNTY_NAMES": "King",
+                "COUSUBFP": "",
+                "PLACEFP": "63000",
+                "layer": "tl_2025_53_place",
+            },
+            dg.uuid,
+        )
