@@ -3,9 +3,9 @@ id: source-snapshots
 type: rework-guide
 owner: rework
 status: active
-last_updated: 2026-09-18
+last_updated: 2026-09-23
 tags: [rework, phase-4, sources, snapshots, provenance]
-task: "Phase 4 — Tasks 4.1–4.4 (issue #135)"
+task: "Phase 4 — Tasks 4.1–4.6 (issue #135)"
 scope: "How external source files are fetched once, verified, cached under data/raw/, described by a metadata sidecar, and turned into SourceObj provenance."
 ---
 
@@ -59,6 +59,11 @@ data/
       2026/
         public_pension_systems.csv            derived export, ignored
         public_pension_systems.csv.meta.json  sidecar, committed
+    government_units/
+      2022-2026/
+        merged_governments.csv                benchmark updated by annual listing
+        government_changes.csv                field-level change report
+        *.meta.json                           sidecars, committed
 ```
 
 `<release>` is the provider's own label: a GUS survey year, a TIGER/Line
@@ -231,6 +236,35 @@ one column per record field, sorted by Census ID, with a sidecar whose
 source listing's sidecar. The file exists for other consumers; nothing in
 the pipeline reads it, and `governments(result)` is the government universe
 without it.
+
+#### Benchmark/annual merge (`src/sources/government_units_merge.py`)
+
+`merge(benchmark, annual)` takes the two parsed listings and diffs their
+governments by Census ID (pension systems are excluded on both sides).
+Each merged record carries a status:
+
+| Status | Meaning | Record kept |
+| --- | --- | --- |
+| `unchanged` | every compared field equal | annual |
+| `filled` | the only differences are fields the benchmark left empty and the annual listing supplied (e.g. `unit_type` on special districts) | annual |
+| `changed` | at least one field has a different value on both sides | annual |
+| `added` | only in the annual listing | annual |
+| `removed` | only in the benchmark | benchmark, flagged; never dropped |
+
+Compared fields are every record field except `census_id` and the
+one-sided fields (`legacy_id`, `political_code`, `parent_census_id`,
+`parent_name`), which only one listing publishes. A merged record takes
+the annual values and carries the benchmark's `legacy_id` forward.
+
+`export_merge(result, cache_root=data/cache)` writes
+`data/cache/government_units/<benchmark>-<annual>/merged_governments.csv`
+(record columns plus `merge_status`, `benchmark_release`, `annual_release`)
+and `government_changes.csv` (`census_id`, `field`, `benchmark_value`,
+`annual_value`, `filled`), both sorted by Census ID. Each sidecar's
+`dataset` names both source files and their checksums, `release` is
+`<benchmark>-<annual>`, `url` is the annual listing's, and `retrieved_at`
+is the later of the two sources' retrieval times. The merged file is the
+government universe later stages read; the change report is for review.
 
 ### 7.2 Census TIGER (`src/sources/census_tiger.py`, `config/tiger_layers.yaml`)
 

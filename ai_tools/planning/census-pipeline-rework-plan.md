@@ -241,9 +241,18 @@ boundary) is a Phase 15 edge case, Task 15.1.
 
 ## Phase 4 — Source Snapshot Layer
 
+The government universe comes from two Census Bureau listings. The Census
+of Governments: Organization benchmark (years ending in 2 and 7) is what
+the pipeline builds from; the annual Government Units listing (2024 on,
+other years) updates it in between. The two are fetched and parsed by
+independent modules so a benchmark year can be re-run alone; a merge step
+diffs them by Census ID and writes the current universe plus a change
+report under `data/cache/`.
+
 ### Task 4.1 — Census Government adapter
 Separate: fetch, verify, cache, parse. Fixture parse offline; malformed
-rows handled structurally.
+rows handled structurally. Reads the Census of Governments benchmark
+(`govt_units_<year>.ZIP`).
 
 ### Task 4.2 — TIGER adapter
 Initial coverage: state, county, place, county subdivision, school district.
@@ -255,6 +264,18 @@ positive/negative tests pass offline.
 
 ### Task 4.4 — Snapshot metadata
 Retain URL, release/version, download date, checksum where practical.
+
+### Task 4.5 — Annual Government Units listing adapter
+Independent of the benchmark adapter: own fetch, layout, parse, fixtures
+(`gov_units_<year>.zip`). Public pension systems are parsed and exported
+to `data/cache/` as their own dataset; the pipeline does not read them.
+
+### Task 4.6 — Benchmark/annual merge
+Diff by Census ID: `unchanged`, `filled`, `changed`, `added`, `removed`.
+Annual values win; benchmark-only fields carried forward; benchmark
+records missing from the annual listing kept and flagged, never dropped.
+Merged dataset and field-level change report written under `data/cache/`
+with sidecars naming both releases.
 
 ## Phase 5 — Normalized Government Layer
 

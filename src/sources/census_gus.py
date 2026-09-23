@@ -19,19 +19,20 @@ from __future__ import annotations
 
 import csv
 import io
-from dataclasses import fields
 from datetime import datetime
 from logging import getLogger
 from pathlib import Path
 
 from src.init_migration.downloader import AsyncDownloader
 from src.sources.government_units import (
+    EXPORT_COLUMNS,
     CensusGovernmentRecord,
     GovernmentKind,
     Layout,
     ParseResult,
     parse_csv_snapshot,
     parse_workbook_snapshot,
+    record_values,
 )
 from src.sources.snapshot import (
     Snapshot,
@@ -70,10 +71,6 @@ LAYOUT = Layout(
         "SCHOOL_ENROLLMENT": "ENROLLMENT",
         "ACTIVITY_NAME": "FUNCTION_NAME",
     },
-)
-
-EXPORT_COLUMNS = tuple(
-    field.name for field in fields(CensusGovernmentRecord) if field.name != "attributes"
 )
 
 
@@ -146,28 +143,13 @@ def pension_systems(result: ParseResult) -> list[CensusGovernmentRecord]:
     ]
 
 
-def _record_row(record: CensusGovernmentRecord) -> list[str]:
-    row: list[str] = []
-    for column in EXPORT_COLUMNS:
-        value = getattr(record, column)
-        if value is None:
-            row.append("")
-        elif isinstance(value, bool):
-            row.append("Y" if value else "N")
-        elif isinstance(value, GovernmentKind):
-            row.append(value.value)
-        else:
-            row.append(str(value))
-    return row
-
-
 def records_to_csv(records: list[CensusGovernmentRecord]) -> str:
     """Records as CSV text with one column per record field, sorted by Census ID."""
     buffer = io.StringIO()
     writer = csv.writer(buffer, lineterminator="\n")
     writer.writerow(EXPORT_COLUMNS)
     for record in sorted(records, key=lambda r: r.census_id):
-        writer.writerow(_record_row(record))
+        writer.writerow(record_values(record))
     return buffer.getvalue()
 
 

@@ -20,7 +20,7 @@ import io
 import re
 import zipfile
 from collections.abc import Iterable, Mapping
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from enum import Enum
 from logging import getLogger
 
@@ -127,6 +127,30 @@ class CensusGovernmentRecord:
     parent_census_id: str | None = None
     parent_name: str | None = None
     attributes: Mapping[str, str] = field(default_factory=dict)
+
+
+EXPORT_COLUMNS = tuple(
+    f.name for f in fields(CensusGovernmentRecord) if f.name != "attributes"
+)
+
+
+def record_values(record: CensusGovernmentRecord) -> list[str]:
+    """The record's fields as CSV cells in ``EXPORT_COLUMNS`` order.
+
+    ``None`` is empty, booleans are ``Y``/``N``, the kind is its value.
+    """
+    row: list[str] = []
+    for column in EXPORT_COLUMNS:
+        value = getattr(record, column)
+        if value is None:
+            row.append("")
+        elif isinstance(value, bool):
+            row.append("Y" if value else "N")
+        elif isinstance(value, GovernmentKind):
+            row.append(value.value)
+        else:
+            row.append(str(value))
+    return row
 
 
 @dataclass(frozen=True, slots=True)
