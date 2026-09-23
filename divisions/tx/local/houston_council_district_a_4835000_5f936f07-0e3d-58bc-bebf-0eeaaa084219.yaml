@@ -1,0 +1,582 @@
+id: 5f936f07-0e3d-58bc-bebf-0eeaaa084219
+ocdid: ocd-division/country:us/state:tx/place:houston/council_district:a
+country: us
+display_name: Houston Council District a
+geometries: []
+also_known_as: []
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-09-19T17:37:15.363441Z'
+last_updated: '2026-09-19T17:37:15.512427Z'
+sourcing:
+- field:
+  - government_identifiers
+  source_name: civicdata.tech
+  source_type: human_researched
+  source_url:
+    civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+  source_description: Human-researched validation data from civicdata.tech
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: Houston city
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: statefp
+  value: '48'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: lsad
+  value: '25'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: geoid
+  value: '4835000'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldust
+  value: '004'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldust
+  value: '006'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldust
+  value: '007'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldust
+  value: '011'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldust
+  value: '013'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldust
+  value: '015'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldust
+  value: '017'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldust
+  value: 018
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '003'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '015'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '026'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '027'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: 028
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '076'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: 085
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '126'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '127'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '128'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '129'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '130'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '131'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '132'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '133'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '134'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '135'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '137'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '138'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '139'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '140'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '141'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '142'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '143'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '144'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '145'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '146'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '147'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '148'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '149'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '150'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: countyfp
+  value: '157'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: countyfp
+  value: '201'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: countyfp
+  value: '339'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: countyfp
+  value: '473'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: county_names
+  value: Fort Bend
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: county_names
+  value: Harris
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: county_names
+  value: Montgomery
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: county_names
+  value: Waller
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+jurisdiction_id: ocd-jurisdiction/country:us/state:tx/place:houston/government

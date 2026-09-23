@@ -1,0 +1,22 @@
+id: 67dec658-468e-5393-b643-3461c47b6c89
+ocdid: ocd-jurisdiction/country:us/state:tx/place:killeen/government
+name: Killeen Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:killeen/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-19T17:37:19.238893Z'
+last_updated: '2026-09-19T17:37:19.389655Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:killeen/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

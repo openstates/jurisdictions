@@ -1,0 +1,21 @@
+id: 181842bb-488f-5afd-9c81-d582b7687657
+ocdid: ocd-jurisdiction/country:us/state:tx/place:irving/government
+name: Texas Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:irving
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-19T17:37:17.779253Z'
+last_updated: '2026-09-19T17:37:17.779253Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

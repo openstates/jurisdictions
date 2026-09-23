@@ -1,0 +1,32 @@
+id: 165c0a41-a6a6-50b7-bf39-715220bd73ae
+ocdid: ocd-division/country:us/state:tx/county:jackson/council_district:2
+country: us
+display_name: Unknown
+geometries: []
+also_known_as: []
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-09-19T17:35:41.990074Z'
+last_updated: '2026-09-19T17:35:42.133433Z'
+sourcing:
+- field:
+  - ocdid
+  source_name: ocdid_ingest
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv
+  source_description: Open Civic Data Master repo
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: Unknown
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_ingest
+    source_type: human_researched
+    source_url:
+      ocd_repo: https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv
+    source_description: Open Civic Data Master repo
+jurisdiction_id: ocd-jurisdiction/country:us/state:tx/county:jackson/government

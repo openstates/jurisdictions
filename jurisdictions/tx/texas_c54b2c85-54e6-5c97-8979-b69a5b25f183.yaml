@@ -1,0 +1,21 @@
+id: c54b2c85-54e6-5c97-8979-b69a5b25f183
+ocdid: ocd-jurisdiction/country:us/state:tx/place:denton/government
+name: Texas Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:denton
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-19T17:37:09.181676Z'
+last_updated: '2026-09-19T17:37:09.181676Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

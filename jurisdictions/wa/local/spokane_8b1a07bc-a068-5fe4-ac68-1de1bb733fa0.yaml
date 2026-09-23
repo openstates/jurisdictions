@@ -1,0 +1,22 @@
+id: 8b1a07bc-a068-5fe4-ac68-1de1bb733fa0
+ocdid: ocd-jurisdiction/country:us/state:wa/place:spokane/government
+name: Spokane Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/place:spokane/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-19T17:38:02.461319Z'
+last_updated: '2026-09-19T17:38:02.611163Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/place:spokane/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

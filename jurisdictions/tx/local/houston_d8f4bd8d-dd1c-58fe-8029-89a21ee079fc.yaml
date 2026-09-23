@@ -1,0 +1,22 @@
+id: d8f4bd8d-dd1c-58fe-8029-89a21ee079fc
+ocdid: ocd-jurisdiction/country:us/state:tx/place:houston/government
+name: Houston Council District k Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:houston/council_district:k
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-19T17:37:17.351907Z'
+last_updated: '2026-09-19T17:37:17.536822Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:houston/council_district:k
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

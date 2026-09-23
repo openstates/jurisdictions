@@ -1,0 +1,197 @@
+id: d185100e-abc0-56af-954c-839e34c83060
+ocdid: ocd-division/country:us/state:tx/place:garland/council_district:1
+country: us
+display_name: Garland Council District 1
+geometries: []
+also_known_as: []
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-09-19T17:37:12.659640Z'
+last_updated: '2026-09-19T17:37:12.809285Z'
+sourcing:
+- field:
+  - government_identifiers
+  source_name: civicdata.tech
+  source_type: human_researched
+  source_url:
+    civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+  source_description: Human-researched validation data from civicdata.tech
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: Garland city
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: statefp
+  value: '48'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: lsad
+  value: '25'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: geoid
+  value: '4829000'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldust
+  value: '002'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldust
+  value: '016'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '033'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '102'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '107'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '112'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '113'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '114'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: countyfp
+  value: 085
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: countyfp
+  value: '113'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: county_names
+  value: Collin
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: county_names
+  value: Dallas
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+jurisdiction_id: ocd-jurisdiction/country:us/state:tx/place:garland/government

@@ -1,0 +1,32 @@
+id: 010d0287-0ff5-5de3-a404-4c0ce335ba17
+ocdid: ocd-division/country:us/state:tx/county:hays/council_district:1
+country: us
+display_name: Unknown
+geometries: []
+also_known_as: []
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-09-19T17:35:33.028585Z'
+last_updated: '2026-09-19T17:35:33.175412Z'
+sourcing:
+- field:
+  - ocdid
+  source_name: ocdid_ingest
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv
+  source_description: Open Civic Data Master repo
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: Unknown
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_ingest
+    source_type: human_researched
+    source_url:
+      ocd_repo: https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv
+    source_description: Open Civic Data Master repo
+jurisdiction_id: ocd-jurisdiction/country:us/state:tx/county:hays/government

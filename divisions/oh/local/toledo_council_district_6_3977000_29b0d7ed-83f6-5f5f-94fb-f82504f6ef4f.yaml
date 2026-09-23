@@ -1,0 +1,131 @@
+id: 29b0d7ed-83f6-5f5f-94fb-f82504f6ef4f
+ocdid: ocd-division/country:us/state:oh/place:toledo/council_district:6
+country: us
+display_name: Toledo Council District 6
+geometries: []
+also_known_as: []
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-09-19T17:34:30.843954Z'
+last_updated: '2026-09-19T17:34:30.991287Z'
+sourcing:
+- field:
+  - government_identifiers
+  source_name: civicdata.tech
+  source_type: human_researched
+  source_url:
+    civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+  source_description: Human-researched validation data from civicdata.tech
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: Toledo city
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: statefp
+  value: '39'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: lsad
+  value: '25'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: geoid
+  value: '3977000'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldust
+  value: '011'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '041'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '042'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '043'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: countyfp
+  value: 095
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: county_names
+  value: Lucas
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+jurisdiction_id: ocd-jurisdiction/country:us/state:oh/place:toledo/government

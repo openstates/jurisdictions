@@ -1,0 +1,22 @@
+id: ccb9ea05-fe56-5a3b-95f5-610d7937ba31
+ocdid: ocd-jurisdiction/country:us/state:tx/place:pasadena/government
+name: Pasadena Council District h Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:pasadena/council_district:h
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-19T17:37:28.294612Z'
+last_updated: '2026-09-19T17:37:28.445609Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:pasadena/council_district:h
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

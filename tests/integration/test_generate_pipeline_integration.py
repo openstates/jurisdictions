@@ -178,6 +178,97 @@ def test_find_matches_excludes_non_place_rows(validation_csv_files):
 
 
 @pytest.mark.integration
+def test_find_matches_returns_exactly_one_state(validation_csv_files):
+    """A bare state OCDid resolves to exactly one row on the state layer.
+
+    The States tab carries the state's full name in NAMELSAD ("Washington"),
+    while the OCDid carries the USPS code ("wa"), so the code is expanded via
+    the state lookup before matching.
+    """
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    ocdid = "ocd-division/country:us/state:wa"
+    req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
+    pipeline = GeneratePipeline(req)
+
+    matches = pipeline.find_matches(ocdid)
+
+    assert len(matches) == 1, (
+        f"Expected 1 match for {ocdid}, got {len(matches)}: "
+        f"{matches['NAMELSAD'].to_list() if len(matches) else []}"
+    )
+    row = matches.row(0, named=True)
+    assert row["NAMELSAD"] == "Washington"
+    assert row["layer"].endswith("_state")
+
+
+@pytest.mark.integration
+def test_find_matches_returns_exactly_one_county(validation_csv_files):
+    """A `county:` OCDid resolves to exactly one row on the county layer."""
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    ocdid = "ocd-division/country:us/state:wa/county:king"
+    req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
+    pipeline = GeneratePipeline(req)
+
+    matches = pipeline.find_matches(ocdid)
+
+    assert len(matches) == 1, (
+        f"Expected 1 match for {ocdid}, got {len(matches)}: "
+        f"{matches['NAMELSAD'].to_list() if len(matches) else []}"
+    )
+    row = matches.row(0, named=True)
+    assert row["NAMELSAD"] == "King County"
+    assert row["layer"].endswith("_county")
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize(
+    ("ocdid", "expected_layer", "excluded_names"),
+    [
+        (
+            "ocd-division/country:us/state:wa/place:seattle",
+            "place",
+            ["Seattle East CCD", "King County", "Washington"],
+        ),
+        (
+            "ocd-division/country:us/state:wa/county:king",
+            "county",
+            ["King city", "Seattle East CCD", "Washington"],
+        ),
+        (
+            "ocd-division/country:us/state:wa",
+            "state",
+            ["Washington city", "King County", "Seattle city"],
+        ),
+    ],
+)
+def test_find_matches_isolates_layers(
+    validation_csv_files, ocdid, expected_layer, excluded_names
+):
+    """Each segment type matches its own Census layer and no other.
+
+    The fixture deliberately contains a place, a county, and a state that share
+    names ("King city" / "King County", "Washington city" / "Washington"), so a
+    name-only match would cross layers.
+    """
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
+    pipeline = GeneratePipeline(req)
+
+    matches = pipeline.find_matches(ocdid)
+
+    assert len(matches) > 0, f"Expected at least one match for {ocdid}"
+    layers = matches["layer"].to_list()
+    assert all(layer.endswith(f"_{expected_layer}") for layer in layers), (
+        f"{ocdid} matched outside the {expected_layer} layer: {layers}"
+    )
+    matched_names = matches["NAMELSAD"].to_list()
+    for name in excluded_names:
+        assert name not in matched_names, (
+            f"{ocdid} wrongly matched {name!r} from another layer"
+        )
+
+
+@pytest.mark.integration
 def test_load_validation_csv_unifies_all_three_tabs(validation_csv_files):
     """validation_df carries place, state, and county rows from all three tabs."""
     asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)

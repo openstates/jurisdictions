@@ -1,0 +1,21 @@
+id: ccb9ea05-fe56-5a3b-95f5-610d7937ba31
+ocdid: ocd-jurisdiction/country:us/state:tx/place:pasadena/government
+name: Texas Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:pasadena
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-19T17:37:27.007193Z'
+last_updated: '2026-09-19T17:37:27.007193Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

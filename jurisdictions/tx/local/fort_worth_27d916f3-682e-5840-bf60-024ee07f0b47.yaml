@@ -1,0 +1,22 @@
+id: 27d916f3-682e-5840-bf60-024ee07f0b47
+ocdid: ocd-jurisdiction/country:us/state:tx/place:fort_worth/government
+name: Fort Worth Council District 9 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:fort_worth/council_district:9
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-19T17:37:12.479836Z'
+last_updated: '2026-09-19T17:37:12.634333Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:fort_worth/council_district:9
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

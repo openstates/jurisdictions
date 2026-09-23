@@ -1,0 +1,21 @@
+id: 34e69055-02e5-592c-b27a-b6bfc73c5f76
+ocdid: ocd-jurisdiction/country:us/state:tx/place:laredo/government
+name: Texas Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:laredo
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-19T17:37:19.659160Z'
+last_updated: '2026-09-19T17:37:19.659160Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

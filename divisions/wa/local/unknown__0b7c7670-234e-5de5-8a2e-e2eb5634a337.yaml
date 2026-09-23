@@ -1,0 +1,32 @@
+id: 0b7c7670-234e-5de5-8a2e-e2eb5634a337
+ocdid: ocd-division/country:us/state:wa/county:asotin/council_district:1
+country: us
+display_name: Unknown
+geometries: []
+also_known_as: []
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-09-19T17:37:40.459082Z'
+last_updated: '2026-09-19T17:37:40.598784Z'
+sourcing:
+- field:
+  - ocdid
+  source_name: ocdid_ingest
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv
+  source_description: Open Civic Data Master repo
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: Unknown
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_ingest
+    source_type: human_researched
+    source_url:
+      ocd_repo: https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv
+    source_description: Open Civic Data Master repo
+jurisdiction_id: ocd-jurisdiction/country:us/state:wa/county:asotin/government

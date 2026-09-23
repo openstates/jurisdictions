@@ -1,0 +1,32 @@
+id: ffc02507-5371-5502-be6d-ea094fb7517f
+ocdid: ocd-division/country:us/state:tx/county:kenedy/council_district:3
+country: us
+display_name: Unknown
+geometries: []
+also_known_as: []
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-09-19T17:35:48.488868Z'
+last_updated: '2026-09-19T17:35:48.636625Z'
+sourcing:
+- field:
+  - ocdid
+  source_name: ocdid_ingest
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv
+  source_description: Open Civic Data Master repo
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: Unknown
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_ingest
+    source_type: human_researched
+    source_url:
+      ocd_repo: https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv
+    source_description: Open Civic Data Master repo
+jurisdiction_id: ocd-jurisdiction/country:us/state:tx/county:kenedy/government

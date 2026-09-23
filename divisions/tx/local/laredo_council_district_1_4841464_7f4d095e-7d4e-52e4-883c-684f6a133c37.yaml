@@ -1,0 +1,120 @@
+id: 7f4d095e-7d4e-52e4-883c-684f6a133c37
+ocdid: ocd-division/country:us/state:tx/place:laredo/council_district:1
+country: us
+display_name: Laredo Council District 1
+geometries: []
+also_known_as: []
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-09-19T17:37:19.426749Z'
+last_updated: '2026-09-19T17:37:19.596258Z'
+sourcing:
+- field:
+  - government_identifiers
+  source_name: civicdata.tech
+  source_type: human_researched
+  source_url:
+    civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+  source_description: Human-researched validation data from civicdata.tech
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: Laredo city
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: statefp
+  value: '48'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: lsad
+  value: '25'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: geoid
+  value: '4841464'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldust
+  value: '021'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: '042'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: sldlst
+  value: 080
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: countyfp
+  value: '479'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+- authority: census
+  id_type: county_names
+  value: Webb
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      civicdata: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/
+    source_description: Human-researched validation data from civicdata.tech
+jurisdiction_id: ocd-jurisdiction/country:us/state:tx/place:laredo/government

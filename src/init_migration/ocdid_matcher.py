@@ -23,6 +23,7 @@ from src.utils.ocdid import ocdid_parser
 
 logger = getLogger(__name__)
 
+DEFAULT_PARQUET_PATH = "data/parquet"
 DEFAULT_DB_PATH = "data/ocdid_pipeline.duckdb"
 DEFAULT_CSV_BACKUP = "data/ocdid_uuid_lookup.csv"
 

@@ -1,0 +1,21 @@
+id: 0a96264c-1d94-54ee-ac08-1dca17daf871
+ocdid: ocd-jurisdiction/country:us/state:tx/place:waco/government
+name: Texas Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:waco
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-19T17:37:33.741824Z'
+last_updated: '2026-09-19T17:37:33.741824Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

@@ -1,0 +1,55 @@
+id: 912bdb3f-61a1-5ab1-b162-348a3100099b
+ocdid: ocd-division/country:us/state:tx/place:corpus_christi
+country: us
+display_name: Texas
+geometries: []
+also_known_as: []
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-09-19T17:37:05.846072Z'
+last_updated: '2026-09-19T17:37:05.846072Z'
+sourcing:
+- field:
+  - ocdid
+  source_name: ocdid_recursive_stub
+  source_type: programmatically_generated
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata: null
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: Texas
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_recursive_stub
+    source_type: programmatically_generated
+    source_url:
+      ocd_repo: https://github.com/openstates/jurisdictions
+    source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+- authority: census
+  id_type: statefp
+  value: '48'
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_recursive_stub
+    source_type: programmatically_generated
+    source_url:
+      ocd_repo: https://github.com/openstates/jurisdictions
+    source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+- authority: census
+  id_type: geoid
+  value: '48'
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_recursive_stub
+    source_type: programmatically_generated
+    source_url:
+      ocd_repo: https://github.com/openstates/jurisdictions
+    source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+jurisdiction_id: ocd-jurisdiction/country:us/state:tx/place:corpus_christi/government
