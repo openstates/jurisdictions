@@ -1,0 +1,12 @@
+{
+  "dataset": "TIGER/Line Shapefiles, PLACE (attribute table excerpt of tl_2025_06_place, tl_2025_48_place, tl_2025_53_place, tl_2025_11_place)",
+  "filename": "tl_2025_place.csv",
+  "publication_date": "2025-09-22T23:49:10+00:00",
+  "release": "2025",
+  "retrieved_at": "2026-09-19T17:12:09+00:00",
+  "sha256": "b5e1501fa720fab7998515b35edb1f8ecbf0caba0ab584a9d80062ee42d157ee",
+  "size_bytes": 863,
+  "source": "tiger",
+  "source_name": "Census TIGER/Line",
+  "url": "https://www2.census.gov/geo/tiger/TIGER2025/PLACE/"
+}

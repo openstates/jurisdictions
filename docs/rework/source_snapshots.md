@@ -216,6 +216,54 @@ excerpt's sidecar records the ZIP's URL, the year as `release`, the ZIP's
 `Last-Modified` as `publication_date`, and the checksum of the excerpt
 itself.
 
+### 7.2 Census TIGER (`src/sources/census_tiger.py`, `config/tiger_layers.yaml`)
+
+TIGER supplies Division geography: the GEOID, the geography class, and the
+boundary reference. The configuration file lists, per layer, the TIGER/Line
+shapefile that carries the attribute table and the TIGERweb MapServer layer
+that serves the boundary as GeoJSON:
+
+| Layer key | Geography | TIGER/Line file | TIGERweb service / layer | GEOID digits |
+| --- | --- | --- | --- | --- |
+| `state` | state | `STATE/tl_<year>_us_state.zip` | `State_County` / 0 | 2 |
+| `county` | county | `COUNTY/tl_<year>_us_county.zip` | `State_County` / 1 | 5 |
+| `place` | place | `PLACE/tl_<year>_<state>_place.zip` | `Places_CouSub_ConCity_SubMCD` / 4 | 7 |
+| `census_designated_place` | place | same PLACE file (CLASSFP U1/U2, LSAD 57) | `Places_CouSub_ConCity_SubMCD` / 5 | 7 |
+| `county_subdivision` | county_subdivision | `COUSUB/tl_<year>_<state>_cousub.zip` | `Places_CouSub_ConCity_SubMCD` / 1 | 10 |
+| `school_district_unified` | school_district | `UNSD/tl_<year>_<state>_unsd.zip` | `School` / 0 | 7 |
+| `school_district_secondary` | school_district | `SCSD/tl_<year>_<state>_scsd.zip` | `School` / 1 | 7 |
+| `school_district_elementary` | school_district | `ELSD/tl_<year>_<state>_elsd.zip` | `School` / 2 | 7 |
+
+Layer ids are the current-vintage layers of each MapServer, the ones listed
+ahead of the vintage-specific "BAS", "ACS" and "Census 2020" groups.
+
+The adapter fetches a TIGER/Line zip through the snapshot store and reads
+only its `.dbf` attribute table (`src/sources/dbf.py`, a small dBASE
+reader; no geometry library is needed and no polygon is read). Each row
+becomes a `TigerRecord` with `geoid`, `name`, `namelsad`, the FIPS
+components, `lsad`, `classfp`, `funcstat` and `mtfcc` as strings; a row
+whose GEOID has the wrong length, does not start with its STATEFP, or has
+malformed codes becomes a `TigerRowError`.
+
+`tigerweb_query_url(config, layer_key, geoid)` builds the GeoJSON query
+without any request:
+
+```
+https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4/query?where=GEOID%3D'0670364'&outFields=*&outSR=4326&f=geojson
+```
+
+That string, with `%3D` and literal apostrophes, is what the golden
+Sausalito geometry cites. `geometry_url(config, record)` picks the CDP
+layer for PLACE rows that are census designated places. A geometry's
+`Source` cites the MapServer URL (`tigerweb_service_url`), release = the
+TIGER/Line year, and `valid_from` = `series_as_of(year)`, January 1 of the
+release year.
+
+Fixtures under `tests/fixtures/tiger/` are attribute-table excerpts, one
+CSV per layer, with no geometry. National layers cite the exact zip; the
+per-state layers cite the layer directory and name the state files the
+rows came from in `dataset`.
+
 ## 8. What this layer does not do
 
 - It does not normalize, resolve, or classify anything. Adapters return

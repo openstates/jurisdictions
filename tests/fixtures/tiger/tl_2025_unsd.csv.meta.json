@@ -1,0 +1,12 @@
+{
+  "dataset": "TIGER/Line Shapefiles, UNSD (attribute table excerpt of tl_2025_48_unsd, tl_2025_53_unsd, tl_2025_11_unsd)",
+  "filename": "tl_2025_unsd.csv",
+  "publication_date": "2025-09-22T23:51:09+00:00",
+  "release": "2025",
+  "retrieved_at": "2026-09-19T17:12:09+00:00",
+  "sha256": "a298982cbf6988bd054271da47aaf066b4f26e695ab030573c2b9c3ba0d14f29",
+  "size_bytes": 608,
+  "source": "tiger",
+  "source_name": "Census TIGER/Line",
+  "url": "https://www2.census.gov/geo/tiger/TIGER2025/UNSD/"
+}

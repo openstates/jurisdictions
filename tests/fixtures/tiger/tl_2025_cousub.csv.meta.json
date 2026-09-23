@@ -1,0 +1,12 @@
+{
+  "dataset": "TIGER/Line Shapefiles, COUSUB (attribute table excerpt of tl_2025_06_cousub, tl_2025_48_cousub, tl_2025_53_cousub, tl_2025_11_cousub)",
+  "filename": "tl_2025_cousub.csv",
+  "publication_date": "2025-09-22T23:51:19+00:00",
+  "release": "2025",
+  "retrieved_at": "2026-09-19T17:12:09+00:00",
+  "sha256": "7f851d4adcceeb9a5480d20ba1406dd6542fe21d5267bf6fb5f15ec5f41050cf",
+  "size_bytes": 797,
+  "source": "tiger",
+  "source_name": "Census TIGER/Line",
+  "url": "https://www2.census.gov/geo/tiger/TIGER2025/COUSUB/"
+}

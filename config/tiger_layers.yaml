@@ -1,0 +1,104 @@
+# Census TIGER geography layers the pipeline resolves Divisions against.
+#
+# tiger_line: the bulk attribute source. TIGER/Line shapefiles are published
+#   per release year under TIGER<year>/<directory>/; national layers have one
+#   file, state layers one file per state FIPS code.
+# tigerweb: the live GeoJSON service and the layer id inside it. Layer ids
+#   are the current-vintage layers of each MapServer (the ones listed before
+#   the vintage-specific "BAS", "ACS" and "Census" groups).
+# geoid_length: digits in the layer's GEOID; the pipeline validates GEOIDs
+#   against it before building a URL.
+
+tiger_line_base_url: "https://www2.census.gov/geo/tiger/TIGER{year}"
+tigerweb_base_url: "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb"
+
+layers:
+  state:
+    geography: state
+    geoid_length: 2
+    tiger_line:
+      directory: STATE
+      filename: "tl_{year}_us_state.zip"
+      scope: national
+    tigerweb:
+      service: State_County
+      layer: 0
+
+  county:
+    geography: county
+    geoid_length: 5
+    tiger_line:
+      directory: COUNTY
+      filename: "tl_{year}_us_county.zip"
+      scope: national
+    tigerweb:
+      service: State_County
+      layer: 1
+
+  place:
+    geography: place
+    geoid_length: 7
+    tiger_line:
+      directory: PLACE
+      filename: "tl_{year}_{state}_place.zip"
+      scope: state
+    tigerweb:
+      service: Places_CouSub_ConCity_SubMCD
+      layer: 4
+
+  # Census designated places share the PLACE shapefile with incorporated
+  # places (CLASSFP U1/U2, LSAD 57) but live in their own TIGERweb layer.
+  census_designated_place:
+    geography: place
+    geoid_length: 7
+    tiger_line:
+      directory: PLACE
+      filename: "tl_{year}_{state}_place.zip"
+      scope: state
+    tigerweb:
+      service: Places_CouSub_ConCity_SubMCD
+      layer: 5
+
+  county_subdivision:
+    geography: county_subdivision
+    geoid_length: 10
+    tiger_line:
+      directory: COUSUB
+      filename: "tl_{year}_{state}_cousub.zip"
+      scope: state
+    tigerweb:
+      service: Places_CouSub_ConCity_SubMCD
+      layer: 1
+
+  school_district_unified:
+    geography: school_district
+    geoid_length: 7
+    tiger_line:
+      directory: UNSD
+      filename: "tl_{year}_{state}_unsd.zip"
+      scope: state
+    tigerweb:
+      service: School
+      layer: 0
+
+  school_district_secondary:
+    geography: school_district
+    geoid_length: 7
+    tiger_line:
+      directory: SCSD
+      filename: "tl_{year}_{state}_scsd.zip"
+      scope: state
+    tigerweb:
+      service: School
+      layer: 1
+
+  school_district_elementary:
+    geography: school_district
+    geoid_length: 7
+    tiger_line:
+      directory: ELSD
+      filename: "tl_{year}_{state}_elsd.zip"
+      scope: state
+    tigerweb:
+      service: School
+      layer: 2

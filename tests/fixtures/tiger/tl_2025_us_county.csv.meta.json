@@ -1,0 +1,12 @@
+{
+  "dataset": "TIGER/Line Shapefiles, COUNTY (attribute table excerpt of tl_2025_us_county)",
+  "filename": "tl_2025_us_county.csv",
+  "publication_date": "2025-09-23T02:15:55+00:00",
+  "release": "2025",
+  "retrieved_at": "2026-09-19T17:12:09+00:00",
+  "sha256": "63dec48cbe25e179278fb9bdd3e5aa98d48c09757bbc01bce5d6a4c61d4dfd6f",
+  "size_bytes": 809,
+  "source": "tiger",
+  "source_name": "Census TIGER/Line",
+  "url": "https://www2.census.gov/geo/tiger/TIGER2025/COUNTY/tl_2025_us_county.zip"
+}

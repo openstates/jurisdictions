@@ -1,0 +1,12 @@
+{
+  "dataset": "TIGER/Line Shapefiles, STATE (attribute table excerpt of tl_2025_us_state)",
+  "filename": "tl_2025_us_state.csv",
+  "publication_date": "2025-09-23T02:15:56+00:00",
+  "release": "2025",
+  "retrieved_at": "2026-09-19T17:12:09+00:00",
+  "sha256": "aebdb8afa19f3cc4a6895e3236af09f7a0eb29bc5297854713f9f0f585761c27",
+  "size_bytes": 532,
+  "source": "tiger",
+  "source_name": "Census TIGER/Line",
+  "url": "https://www2.census.gov/geo/tiger/TIGER2025/STATE/tl_2025_us_state.zip"
+}

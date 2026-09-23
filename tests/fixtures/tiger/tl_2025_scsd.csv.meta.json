@@ -1,0 +1,12 @@
+{
+  "dataset": "TIGER/Line Shapefiles, SCSD (attribute table excerpt of tl_2025_06_scsd)",
+  "filename": "tl_2025_scsd.csv",
+  "publication_date": "2025-09-22T23:49:40+00:00",
+  "release": "2025",
+  "retrieved_at": "2026-09-19T17:12:09+00:00",
+  "sha256": "9e28ed988e623c46307aba571a3f51d2da3631166039e93beabbf72c905c2d7f",
+  "size_bytes": 242,
+  "source": "tiger",
+  "source_name": "Census TIGER/Line",
+  "url": "https://www2.census.gov/geo/tiger/TIGER2025/SCSD/tl_2025_06_scsd.zip"
+}
