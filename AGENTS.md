@@ -118,6 +118,7 @@ Treat this file as a policy index. Detailed operational guidance lives in:
 - Keep comments minimal and purposeful.
 - Do not modify `__init__.py` unless explicitly requested.
 - Use modern typing (`|`, `Type | None`, typed list/dict annotations).
+- Record, message, configuration, and result types are Pydantic `BaseModel`s (frozen when immutable), matching `src/models/`. Do not introduce `@dataclass` types; serialize with `model_dump` / `model_validate`.
 
 ## Contributor Workflow Rules
 1. Check for an existing issue before implementation.

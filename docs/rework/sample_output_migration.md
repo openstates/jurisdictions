@@ -823,7 +823,7 @@ still explained in the `SourceObj` class docstring, without the citation.
   constructs `SourceObj(name=…, url=…, accessed_at=…, notes=…)` — a
   signature that has never existed on this model — so it did not import
   before this task and does not now. No test imports it. Flag for
-  Phase 17 cleanup.
+  Phase 18 cleanup.
 
 ### Known pre-existing breakage, not addressed here
 

@@ -74,7 +74,7 @@ adapters exist and there is data to put in them.
 
 Nothing under `tests/` imports or opens any of these five files (verified
 with a repository-wide grep). They stay where they are and are listed here
-for Phase 17 cleanup:
+for Phase 18 cleanup:
 
 | File | What it is | Why it stays |
 | --- | --- | --- |
@@ -86,7 +86,7 @@ for Phase 17 cleanup:
 
 `docs/integration_testing_data.md` references two files that do not
 exist (`test_sample.csv`, `testing_creyton_sample.csv`); that document
-describes the prompt that produced the golden set and is also Phase 17
+describes the prompt that produced the golden set and is also Phase 18
 material.
 
 ## 2. How the pipeline behaves on the roster

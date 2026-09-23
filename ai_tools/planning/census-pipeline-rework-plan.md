@@ -3,7 +3,7 @@ id: census-pipeline-rework-plan
 type: planning
 owner: maintainers
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-09-23
 tags: [planning, rework, census, pipeline]
 ---
 
@@ -83,7 +83,7 @@ The lifecycle spans four of the phases below:
    `EXPECTED_NEW_FIELD`, `REGRESSION`), and approves the update.
    Agents do not run this command autonomously and never hand-edit
    the YAML. Once committed, the regenerated files are the new golden
-   contract — Phases 12–19 test against them.
+   contract — Phases 12–20 test against them.
 5. **Phase 12 CI (#143):** unexplained drift in `tests/sample_output/`
    fails PR CI. The only sanctioned path to drift is step 4.
 
@@ -248,6 +248,13 @@ other years) updates it in between. The two are fetched and parsed by
 independent modules so a benchmark year can be re-run alone; a merge step
 diffs them by Census ID and writes the current universe plus a change
 report under `data/cache/`.
+
+**Done** (issue #135): `e12a000` (4.4), `5c36bc6` (4.3), `663881f` (4.1),
+`bfaade7` (4.2), `21ac381` (4.5), `fcccc3a` (4.6). Adapters:
+`src/sources/`; layer config: `config/tiger_layers.yaml`; fixtures:
+`tests/fixtures/{census_governments,census_gus,tiger,ocd_master}/`; docs:
+`docs/rework/source_snapshots.md`. The adapters are not yet wired into
+`GeneratePipeline`; Phase 5.5 and 6.9 integrate them.
 
 ### Task 4.1 — Census Government adapter
 Separate: fetch, verify, cache, parse. Fixture parse offline; malformed
@@ -443,14 +450,53 @@ Official source; no fake GEOID; provenance preserved; golden fixture added.
 Delete graph, rebuild from YAML, compare expected facts. No graph-only
 canonical state.
 
-## Phase 17 — Cleanup
+## Phase 17 — Code Refinement
 
-### Task 17.1 — Identify dead legacy modules
-### Task 17.2 — Verify behavior coverage before deletion
-### Task 17.3 — Remove obsolete hidden state dependencies
+The repository standard for record and message types is Pydantic
+(`src/models/`, `src/init_migration/pipeline_models.py`). The source
+layer built in Phase 4 used `dataclasses` for its snapshot metadata,
+adapter records, parse results and merge results, and earlier utilities
+(`src/utils/deterministic_id.py`, `src/utils/parquet.py`, `src/clients/`)
+did the same. This phase brings every type onto one model infrastructure
+before legacy code is deleted, without changing behaviour or output bytes.
+
+### Task 17.1 — Standardize model infrastructure on Pydantic
+Convert every `@dataclass` record type under `src/` to a Pydantic
+`BaseModel` (frozen where the dataclass was frozen): `SnapshotSpec`,
+`SnapshotMetadata`, `Snapshot`; `CensusGovernmentRecord`,
+`CensusRowError`, `ParseResult`, `Layout`; `TigerRecord`,
+`TigerRowError`, `TigerConfig` and its layer types; `OCDMasterEntry`,
+`OCDRowError`, `Suggestion`; `MergedRecord`, `FieldChange`,
+`MergeResult`; and the utility and client types. Sidecar JSON goes
+through `model_dump`/`model_validate`. Success: unit and integration
+suites unchanged and green; fixture sidecars and the CSV exports under
+`data/cache/` are byte-identical before and after.
+
+### Task 17.2 — Shared validation primitives
+One module of `Annotated` string types for Census identifiers (six-digit
+Census ID, two-digit state FIPS, three-digit county FIPS, five-digit place
+and LEA codes, GEOID by layer length) replacing the per-module regexes in
+`government_units.py` and `census_tiger.py`. Leading zeros preserved;
+malformed values still become structured row errors, never exceptions.
+
+### Task 17.3 — Consistent module conventions
+`from src...` imports everywhere; no duplicated helpers (CSV writers,
+cell coercion, checksum helpers) across adapters; structured logging
+extras named consistently; every public function typed. Record any
+deliberate exceptions in `docs/rework/architecture_decisions.md`.
+
+### Task 17.4 — Static typing gate
+Add a type checker run (`mypy` or `pyright`) to the pre-commit checklist
+and CI over `src/` and `tests/`, clean on the converted modules.
+
+## Phase 18 — Cleanup
+
+### Task 18.1 — Identify dead legacy modules
+### Task 18.2 — Verify behavior coverage before deletion
+### Task 18.3 — Remove obsolete hidden state dependencies
 Fresh checkout + snapshots can regenerate outputs.
 
-## Phase 18 — Final Documentation
+## Phase 19 — Final Documentation
 
 Create/update runbooks for:
 - Architecture
@@ -459,7 +505,7 @@ Create/update runbooks for:
 - Golden fixture update
 - Redistricting/temporal updates
 
-## Phase 19 — Final Acceptance Suite
+## Phase 20 — Final Acceptance Suite
 
 **Functional**: GUS loads; TIGER loads; OCD master loads; supported
 governments resolve; unknown IDs quarantine; YAML deterministic.

@@ -50,7 +50,7 @@ module. "(integration)" means only end-to-end integration exercises it.
 | [`state_lookup.py`](../../src/utils/state_lookup.py) | REUSE | Thin JSON loader; fine. | — (integration only) |
 | [`datetime.py`](../../src/utils/datetime.py) | REUSE | 6-line helper (`ymd`). | — (integration only) |
 | [`str_utils.py`](../../src/utils/str_utils.py) | UNDECIDED | 25 LOC utility; needs a read to decide. Flag for the phase that touches it. | — |
-| [`csv_utils.py`](../../src/utils/csv_utils.py) | REPLACE | Sync `requests.get(url)` fetcher that duplicates `AsyncDownloader` and pulls in `requests`. Not called from `run_pipeline`; kill or replace with `AsyncDownloader` when Phase 17 (cleanup) runs. | — |
+| [`csv_utils.py`](../../src/utils/csv_utils.py) | REPLACE | Sync `requests.get(url)` fetcher that duplicates `AsyncDownloader` and pulls in `requests`. Not called from `run_pipeline`; kill or replace with `AsyncDownloader` when Phase 18 (cleanup) runs. | — |
 | [`yaml_manager.py`](../../src/utils/yaml_manager.py) | ADAPT | Solid CRUDL layer with Pydantic validation; will be the natural home for Phase 10 deterministic serializer. Needs `sort_keys=True` + `default_flow_style=False` (both currently `sort_keys=False`), and its `dump_*` methods bypass the `exclude_none` post-processing that `DivGenerator.dump_division` does. | [tests/src/utils/test_yaml_manager.py](../../tests/src/utils/test_yaml_manager.py) |
 
 ## init_migration pipeline (`src/init_migration/`)
@@ -66,7 +66,7 @@ module. "(integration)" means only end-to-end integration exercises it.
 | [`generate_jurisdiction.py`](../../src/init_migration/generate_jurisdiction.py) | ADAPT | Basic Jurisdiction assembly logic is fine. `_ai_lookup` is a stub raising NotImplementedError. Fallback URL is `https://opencivicdata.org/division/<ocdid>` — not a real jurisdiction website; must be removed once `url` becomes optional (Phase 2.6). | [tests/src/init_migration/test_generate_jurisdiction.py](../../tests/src/init_migration/test_generate_jurisdiction.py) |
 | [`generate_recursive.py`](../../src/init_migration/generate_recursive.py) | ADAPT | Ancestor-stub concept survives; O(N × M) glob scan and unsourced `SourceType.SCRAPED` labels do not. Move ancestor materialisation to Phase 9 canonical construction so stubs are built from the government/geography layer, not derived from a leaf. | [tests/src/init_migration/test_generate_recursive.py](../../tests/src/init_migration/test_generate_recursive.py) |
 | [`jurisdiction_seed.py`](../../src/init_migration/jurisdiction_seed.py) | ADAPT | Decision tree captures real domain knowledge (statistical LSADs, legislative/school/government classes, LSAD 27 escape hatch, DC ANC handling). This is Phase 7 OCDID/exception content — extract classifier + tables, drop the OCDID string parsing. Many TODO comments to resolve. | [tests/src/init_migration/test_jurisdiction_seed.py](../../tests/src/init_migration/test_jurisdiction_seed.py) |
-| [`geoid_exception.py`](../../src/init_migration/geoid_exception.py) | UNDECIDED | Defines `UMBRELLA_GEOID_MAP` for DC ANCs, but no runtime caller (grep-verified — the ANC 1A sample fixture hardcodes `geoid=11001` instead of going through this helper). Either wire it in during Phase 6 (Resolver) or delete during Phase 17. | — |
+| [`geoid_exception.py`](../../src/init_migration/geoid_exception.py) | UNDECIDED | Defines `UMBRELLA_GEOID_MAP` for DC ANCs, but no runtime caller (grep-verified — the ANC 1A sample fixture hardcodes `geoid=11001` instead of going through this helper). Either wire it in during Phase 6 (Resolver) or delete during Phase 18. | — |
 | [`pipeline_models.py`](../../src/init_migration/pipeline_models.py) | ADAPT | `OCDidIngestResp`, `GeneratorReq`, `GeneratorResp`, `Status` are the current DTO layer; Status has the four terminal states we want (SUCCESS/SKIPPED/PARTIAL/FAILED). Rework §28 wants richer terminal statuses (`COMPLETE`, `NO_GEOGRAPHY`, `NEW_OCDID`, `AMBIGUOUS_OCDID`, `DIVISION_NOT_FOUND`, `SOURCE_ERROR`) — replace `PARTIAL` with these. | [tests/src/init_migration/test_pipeline_models.py](../../tests/src/init_migration/test_pipeline_models.py) |
 | [`mappers.py`](../../src/init_migration/mappers.py) | REPLACE | `ocdid_master_mapper` is a stale dict of legacy column-name mappings; `convert_lsad_definitions` is a TODO stub; overlaps with `src/data/lsad_mapper.py`. Consolidate into a single LSAD module. | — |
 | [`parsers.py`](../../src/init_migration/parsers.py) | UNDECIDED | Two 3-line polars helpers with no callers (grep-verified). Delete during cleanup unless Phase 4 wants them. | — |
@@ -163,6 +163,6 @@ infrastructure and enrichment clients are directionally correct.
 - **Phase 7 (OCDID Rule Engine)** should absorb `jurisdiction_seed`'s
   decision tree and every `_derive_jurisdiction_ocdid` clone; see
   [`ocdid_inventory.md`](ocdid_inventory.md).
-- **Phase 17 (Cleanup)** targets: `csv_utils.py`, `mappers.py`,
+- **Phase 18 (Cleanup)** targets: `csv_utils.py`, `mappers.py`,
   `parsers.py`, `deterministic_id.py`, the empty
   `_load_existing_division`/`_load_existing_jurisdiction` stubs.
