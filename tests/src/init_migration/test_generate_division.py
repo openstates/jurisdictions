@@ -6,6 +6,7 @@ from uuid import NAMESPACE_URL, uuid5
 from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp
 from src.init_migration.generate_division import DivGenerator
 from src.models.ocdid import OCDIdParsed
+from src.models.division import Division, find_identifier
 from pathlib import Path
 
 
@@ -102,10 +103,10 @@ def test_generate_division_from_county_record():
     division = dg.generate_division(COUNTY_VAL_REC, dg.uuid)
 
     assert division.display_name == "Blount"
-    assert division.government_identifiers.geoid == "47009"
-    assert division.government_identifiers.statefp == "47"
-    assert division.government_identifiers.countyfp == ["009"]
-    assert division.government_identifiers.county_names == ["Blount"]
+    assert find_identifier(division.government_identifiers, "geoid") == "47009"
+    assert find_identifier(division.government_identifiers, "statefp") == "47"
+    assert find_identifier(division.government_identifiers, "countyfp") == "009"
+    assert find_identifier(division.government_identifiers, "county_names") == "Blount"
 
 
 @pytest.mark.parametrize(
@@ -150,3 +151,261 @@ def test_county_council_district_name_keeps_the_entity_word():
     division = dg.generate_division(val_rec, dg.uuid)
 
     assert division.display_name == "Orleans Parish Council District 2"
+
+
+def test_generate_division_reuses_existing_ocdid(tmp_path, monkeypatch):
+    """An existing Division OCD ID should be reused instead of duplicated."""
+    import yaml
+
+    monkeypatch.chdir(tmp_path)
+
+    ocdid = "ocd-division/country:us/state:wa/place:seattle"
+    req = _req_for(ocdid)
+
+    existing = Division(
+        id=uuid5(NAMESPACE_URL, "existing-seattle"),
+        ocdid=ocdid,
+        country="us",
+        display_name="Existing Seattle",
+        jurisdiction_id=(
+            "ocd-jurisdiction/country:us/state:wa/place:seattle/government"
+        ),
+    )
+
+    div_dir = tmp_path / "divisions" / "wa" / "local"
+    div_dir.mkdir(parents=True)
+    existing_path = div_dir / "existing_seattle.yaml"
+    existing_path.write_text(
+        yaml.safe_dump(existing.model_dump(mode="json"), sort_keys=False)
+    )
+
+    val_rec = {
+        "GEOID_Census": "5363000",
+        "STATEFP": "53",
+        "NAMELSAD": "Seattle city",
+        "LSAD": "25",
+        "SLDUST_list": "",
+        "SLDLST_list": "",
+        "COUNTYFP_list": "033",
+        "COUNTY_NAMES": "King",
+        "COUSUBFP": "",
+        "PLACEFP": "63000",
+        "layer": "tl_2025_53_place",
+    }
+
+    dg = DivGenerator(req=req)
+    result = dg.generate_division(val_rec, dg.uuid)
+    output_path = dg.dump_division(output_dir=tmp_path)
+
+    assert result.id == existing.id
+    assert result.ocdid == ocdid
+    assert result.display_name == "Existing Seattle"
+    assert output_path.resolve() == existing_path.resolve()
+    assert len(list(div_dir.glob("*.yaml"))) == 1
+
+
+def test_generate_division_reuses_existing_dc_district_ocdid(tmp_path, monkeypatch):
+    """DC district OCD IDs should reuse existing YAML under divisions/dc/local."""
+    import yaml
+
+    monkeypatch.chdir(tmp_path)
+
+    ocdid = "ocd-division/country:us/district:dc/anc:1a/council_district:1"
+    existing = Division(
+        id=uuid5(NAMESPACE_URL, "existing-dc-anc-1a-district-1"),
+        ocdid=ocdid,
+        country="us",
+        display_name="Existing ANC 1A District 1",
+        jurisdiction_id="ocd-jurisdiction/country:us/district:dc/anc:1a/government",
+    )
+
+    div_dir = tmp_path / "divisions" / "dc" / "local"
+    div_dir.mkdir(parents=True)
+    existing_path = div_dir / "existing_dc_anc.yaml"
+    existing_path.write_text(
+        yaml.safe_dump(existing.model_dump(mode="json"), sort_keys=False)
+    )
+
+    dg = DivGenerator(req=_req_for(ocdid))
+    result = dg.generate_division(
+        {
+            "GEOID_Census": "",
+            "STATEFP": "11",
+            "NAMELSAD": "ANC 1A",
+            "LSAD": "",
+            "SLDUST_list": "",
+            "SLDLST_list": "",
+            "COUNTYFP_list": "",
+            "COUNTY_NAMES": "",
+            "COUSUBFP": "",
+            "PLACEFP": "",
+            "layer": "dcgis_anc",
+        },
+        dg.uuid,
+    )
+    output_path = dg.dump_division(output_dir=tmp_path)
+
+    assert result.id == existing.id
+    assert result.display_name == "Existing ANC 1A District 1"
+    assert output_path.resolve() == existing_path.resolve()
+    assert len(list(div_dir.glob("*.yaml"))) == 1
+
+
+def test_dump_division_uses_dc_directory_for_district_ocdid(tmp_path, monkeypatch):
+    """A new DC district Division should be written under divisions/dc/local."""
+    monkeypatch.chdir(tmp_path)
+
+    ocdid = "ocd-division/country:us/district:dc/anc:1a/council_district:2"
+    dg = DivGenerator(req=_req_for(ocdid))
+
+    dg.generate_division(
+        {
+            "GEOID_Census": "",
+            "STATEFP": "11",
+            "NAMELSAD": "ANC 1A",
+            "LSAD": "",
+            "SLDUST_list": "",
+            "SLDLST_list": "",
+            "COUNTYFP_list": "",
+            "COUNTY_NAMES": "",
+            "COUSUBFP": "",
+            "PLACEFP": "",
+            "layer": "dcgis_anc",
+        },
+        dg.uuid,
+    )
+    output_path = dg.dump_division(output_dir=tmp_path)
+
+    assert output_path.parent.resolve() == (
+        tmp_path / "divisions" / "dc" / "local"
+    ).resolve()
+    assert output_path.exists()
+
+
+
+def test_promoted_ingest_stub_preserves_existing_uuid(tmp_path, monkeypatch):
+    """Promoting an ingest-only stub enriches it without changing identity."""
+    import yaml
+
+    monkeypatch.chdir(tmp_path)
+
+    ocdid = (
+        "ocd-division/country:us/state:tx/place:mesquite/"
+        "council_district:1"
+    )
+    req = _req_for(ocdid)
+
+    old_id = uuid5(NAMESPACE_URL, "existing-mesquite-stub")
+
+    source = {
+        "field": ["ocdid"],
+        "source_name": "ocdid_ingest",
+        "source_type": "human_researched",
+        "source_url": {
+            "ocd_repo": (
+                "https://raw.githubusercontent.com/opencivicdata/"
+                "ocd-division-ids/master/identifiers/country-us.csv"
+            )
+        },
+        "source_description": "Open Civic Data ingest stub",
+    }
+
+    stub = Division(
+        id=old_id,
+        ocdid=ocdid,
+        country="us",
+        display_name="Mesquite Council District 1",
+        jurisdiction_id=(
+            "ocd-jurisdiction/country:us/state:tx/"
+            "place:mesquite/government"
+        ),
+        sourcing=[source],
+    )
+
+    div_dir = tmp_path / "divisions" / "tx" / "local"
+    div_dir.mkdir(parents=True)
+
+    stub_path = div_dir / f"unknown__{old_id}.yaml"
+    stub_path.write_text(
+        yaml.safe_dump(stub.model_dump(mode="json"), sort_keys=False)
+    )
+
+    val_rec = {
+        "GEOID_Census": "4847892",
+        "STATEFP": "48",
+        "NAMELSAD": "Mesquite city",
+        "LSAD": "25",
+        "SLDUST_list": "",
+        "SLDLST_list": "",
+        "COUNTYFP_list": "",
+        "COUNTY_NAMES": "",
+        "COUSUBFP": "",
+        "PLACEFP": "47892",
+        "layer": "tl_2025_48_place",
+    }
+
+    dg = DivGenerator(req=req)
+    promoted = dg.generate_division(val_rec, dg.uuid)
+    output_path = dg.dump_division(output_dir=tmp_path)
+
+    assert promoted.id == old_id
+    assert output_path.exists()
+    assert not stub_path.exists()
+
+    data = yaml.safe_load(output_path.read_text())
+    assert data["id"] == str(old_id)
+    assert find_identifier(promoted.government_identifiers, "geoid") == "4847892"
+
+    matching = []
+    for path in div_dir.glob("*.yaml"):
+        row = yaml.safe_load(path.read_text()) or {}
+        if row.get("ocdid") == ocdid:
+            matching.append(path)
+
+    assert matching == [output_path]
+
+
+def test_duplicate_existing_division_ocdid_fails_closed(tmp_path, monkeypatch):
+    """Two files carrying one Division OCDID must not be silently reused."""
+    import yaml
+
+    monkeypatch.chdir(tmp_path)
+
+    ocdid = "ocd-division/country:us/state:wa/place:seattle"
+    div_dir = tmp_path / "divisions" / "wa" / "local"
+    div_dir.mkdir(parents=True)
+
+    for suffix in ("one", "two"):
+        existing = Division(
+            id=uuid5(NAMESPACE_URL, f"duplicate-{suffix}"),
+            ocdid=ocdid,
+            country="us",
+            display_name=f"Seattle {suffix}",
+            jurisdiction_id=(
+                "ocd-jurisdiction/country:us/state:wa/"
+                "place:seattle/government"
+            ),
+        )
+        (div_dir / f"{suffix}.yaml").write_text(
+            yaml.safe_dump(existing.model_dump(mode="json"), sort_keys=False)
+        )
+
+    dg = DivGenerator(req=_req_for(ocdid))
+
+    with pytest.raises(ValueError, match="Duplicate Division OCDID"):
+        dg.generate_division(
+            {
+                "GEOID_Census": "5363000",
+                "STATEFP": "53",
+                "NAMELSAD": "Seattle city",
+                "LSAD": "25",
+                "SLDUST_list": "",
+                "SLDLST_list": "",
+                "COUNTYFP_list": "033",
+                "COUNTY_NAMES": "King",
+                "COUSUBFP": "",
+                "PLACEFP": "63000",
+                "layer": "tl_2025_53_place",
+            },
+            dg.uuid,
+        )

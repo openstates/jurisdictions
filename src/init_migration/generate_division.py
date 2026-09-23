@@ -145,6 +145,8 @@ class DivGenerator:
         self.parsed_ocdid = ocdid_parser(self.data.ocdid.raw_ocdid)
         self.state_lookup = load_state_code_lookup()
         self.division: Division | None = None
+        self.existing_path: Path | None = None
+        self.promoted_stub_id: UUID | None = None
 
     def generate_division(self, val_rec: dict, uuid: UUID) -> Division:
         """Generate a full Division object from a matched validation record."""
@@ -173,11 +175,36 @@ class DivGenerator:
             )
 
             raw_ocdid = self.data.ocdid.raw_ocdid
-            if self._division_exists(raw_ocdid):
-                logger.info(
-                    f"Division already exists for {raw_ocdid}, returning existing"
+            existing_path = self._find_existing_division_path(raw_ocdid)
+
+            if existing_path is not None:
+                existing = self._load_existing_division(raw_ocdid)
+                existing_geoid = find_identifier(
+                    existing.government_identifiers, "geoid"
                 )
-                return self._load_existing_division(raw_ocdid)
+                is_ingest_stub = (
+                    not existing_geoid
+                    and any(
+                        getattr(source, "source_name", None) == "ocdid_ingest"
+                        for source in (existing.sourcing or [])
+                    )
+                )
+
+                if not is_ingest_stub:
+                    logger.info(
+                        f"Division already exists for {raw_ocdid}, returning existing"
+                    )
+                    return existing
+
+                # A prior no-match run may have emitted an OCDID-only stub.
+                # Now that authoritative validation exists, regenerate the full
+                # Division rather than allowing the stub to block enrichment.
+                logger.info(
+                    f"Promoting existing stub Division for {raw_ocdid}"
+                )
+                self.promoted_stub_path = existing_path
+                self.promoted_stub_id = existing.id
+                self.existing_path = None
 
             civicdata_source = SourceObj(
                 field=["government_identifiers"],
@@ -218,6 +245,7 @@ class DivGenerator:
 
             now = datetime.now(timezone.utc)
             self.division = Division(
+                id=self.promoted_stub_id,
                 ocdid=raw_ocdid,
                 country="us",
                 display_name=display_name,
@@ -320,24 +348,52 @@ class DivGenerator:
         division_part = re.sub(r"/council_district:[^/]+", "", division_part)
         return f"ocd-jurisdiction/{division_part}/government"
 
-    def _division_exists(self, ocdid: str) -> bool:
+    def _find_existing_division_path(self, ocdid: str) -> Path | None:
+        """Find an existing Division YAML by canonical OCD ID."""
         try:
             parsed = ocdid_parser(ocdid)
-            state = parsed.get("state", "").lower() if parsed.get("state") else ""
+            state = (parsed.get("state") or parsed.get("district") or "").lower()
             div_dir = Path(f"divisions/{state}/local")
             if not div_dir.exists():
-                return False
-            return False
-        except Exception as e:
-            logger.debug(f"Error checking if Division exists: {e}")
-            return False
+                return None
+
+            matches: list[Path] = []
+            for filepath in sorted(div_dir.glob("*.yaml")):
+                try:
+                    data = yaml.safe_load(filepath.read_text()) or {}
+                except (OSError, yaml.YAMLError) as exc:
+                    logger.debug(f"Skipping unreadable Division YAML {filepath}: {exc}")
+                    continue
+
+                if data.get("ocdid") == ocdid:
+                    matches.append(filepath)
+
+            if len(matches) > 1:
+                raise ValueError(
+                    f"Duplicate Division OCDID {ocdid}: "
+                    f"{[str(path) for path in matches]}"
+                )
+
+            return matches[0] if matches else None
+        except ValueError:
+            raise
+        except Exception as exc:
+            logger.debug(f"Error locating existing Division {ocdid}: {exc}")
+            return None
+
+    def _division_exists(self, ocdid: str) -> bool:
+        return self._find_existing_division_path(ocdid) is not None
 
     def _load_existing_division(self, ocdid: str) -> Division:
-        try:
-            raise NotImplementedError("_load_existing_division not yet implemented")
-        except Exception:
-            logger.error(f"Failed to load existing Division for {ocdid}", exc_info=True)
-            raise
+        filepath = self._find_existing_division_path(ocdid)
+        if filepath is None:
+            raise FileNotFoundError(f"No existing Division found for {ocdid}")
+
+        data = yaml.safe_load(filepath.read_text())
+        division = Division.model_validate(data)
+        self.division = division
+        self.existing_path = filepath
+        return division
 
     def dump_division(self, output_dir: Path | None = None) -> Path:
         """Serialize and save Division object to YAML file.
@@ -346,6 +402,9 @@ class DivGenerator:
         """
         if not self.division:
             raise ValueError("Division object does not exist")
+
+        if self.existing_path is not None:
+            return self.existing_path
 
         geoid = find_identifier(self.division.government_identifiers, "geoid") or ""
 
@@ -357,7 +416,7 @@ class DivGenerator:
             )
 
             parsed = ocdid_parser(self.division.ocdid)
-            state = parsed.get("state", "").lower() if parsed.get("state") else ""
+            state = (parsed.get("state") or parsed.get("district") or "").lower()
 
             if output_dir is None:
                 output_dir = Path(".")
@@ -373,6 +432,22 @@ class DivGenerator:
             filepath = div_dir / filename
             with open(filepath, "w") as f:
                 yaml.dump(data, f, default_flow_style=False, sort_keys=False)
+
+            # Remove an obsolete ingest-only stub only when the replacement
+            # was written into the same directory. This preserves repo files
+            # during bounded tests that write to a temporary output root.
+            promoted_stub_path = getattr(self, "promoted_stub_path", None)
+            if promoted_stub_path is not None:
+                promoted_stub_path = Path(promoted_stub_path)
+                if (
+                    promoted_stub_path.resolve() != filepath.resolve()
+                    and promoted_stub_path.parent.resolve()
+                    == filepath.parent.resolve()
+                ):
+                    promoted_stub_path.unlink(missing_ok=True)
+                    logger.info(
+                        f"Removed promoted stub Division {promoted_stub_path}"
+                    )
 
             logger.info(f"Division saved to {filepath}")
             return filepath

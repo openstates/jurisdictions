@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
 import yaml
 
 from src.init_migration.generate_recursive import ensure_ancestor_stubs, stub_exists
@@ -274,3 +275,126 @@ def test_ensure_ancestor_stubs_country_from_parsed_ocdid(tmp_path: Path):
         Path(results[0]["division_path"]).read_text(encoding="utf-8")
     )
     assert div_data["country"] == parsed.country
+
+
+
+def test_place_ancestor_uses_local_layout_and_name(tmp_path: Path):
+    """Austin place ancestry must not be misclassified as Texas state ancestry."""
+    parsed = OCDIdParsed.parse_ocdid(
+        "ocd-division/country:us/state:tx/place:austin/council_district:1"
+    )
+
+    results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
+    place_result = next(r for r in results if r["level"] == "place")
+
+    div_path = Path(place_result["division_path"])
+    jur_path = Path(place_result["jurisdiction_path"])
+
+    assert div_path.parent == tmp_path / "divisions" / "tx" / "local"
+    assert jur_path.parent == tmp_path / "jurisdictions" / "tx" / "local"
+
+    div = yaml.safe_load(div_path.read_text())
+    jur = yaml.safe_load(jur_path.read_text())
+
+    assert div["ocdid"] == "ocd-division/country:us/state:tx/place:austin"
+    assert div["display_name"] == "Austin"
+    assert jur["ocdid"] == (
+        "ocd-jurisdiction/country:us/state:tx/place:austin/government"
+    )
+    assert jur["name"] == "Austin Government"
+
+    ids = {
+        item["id_type"]: item["value"]
+        for item in div["government_identifiers"]
+    }
+    assert ids["statefp"] == "48"
+    assert "geoid" not in ids
+
+
+def test_county_ancestor_reuses_local_parent_jurisdiction(tmp_path: Path):
+    """County ancestry must reuse a government already created in local/."""
+    jur_dir = tmp_path / "jurisdictions" / "tx" / "local"
+    jur_dir.mkdir(parents=True)
+
+    jur_ocdid = "ocd-jurisdiction/country:us/state:tx/county:anderson/government"
+    existing = jur_dir / "anderson_existing.yaml"
+    existing.write_text(yaml.safe_dump({"ocdid": jur_ocdid}))
+
+    parsed = OCDIdParsed.parse_ocdid(
+        "ocd-division/country:us/state:tx/county:anderson/council_district:1"
+    )
+
+    results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
+    county = next(r for r in results if r["level"] == "county")
+
+    assert county["division_path"] is not None
+    assert county["jurisdiction_path"] is None
+
+    matches = [
+        path
+        for path in (tmp_path / "jurisdictions" / "tx").rglob("*.yaml")
+        if (yaml.safe_load(path.read_text()) or {}).get("ocdid") == jur_ocdid
+    ]
+    assert matches == [existing]
+
+
+def test_wrong_path_existing_place_identity_is_reused(tmp_path: Path):
+    """A historical wrong-path place stub must not create a second identity."""
+    div_root = tmp_path / "divisions" / "tx"
+    jur_root = tmp_path / "jurisdictions" / "tx"
+    div_root.mkdir(parents=True)
+    jur_root.mkdir(parents=True)
+
+    div_ocdid = "ocd-division/country:us/state:tx/place:austin"
+    jur_ocdid = "ocd-jurisdiction/country:us/state:tx/place:austin/government"
+
+    old_div = div_root / "texas_old.yaml"
+    old_jur = jur_root / "texas_old.yaml"
+
+    old_div.write_text(yaml.safe_dump({"ocdid": div_ocdid}))
+    old_jur.write_text(yaml.safe_dump({"ocdid": jur_ocdid}))
+
+    parsed = OCDIdParsed.parse_ocdid(
+        "ocd-division/country:us/state:tx/place:austin/council_district:1"
+    )
+
+    results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
+    place = next(r for r in results if r["level"] == "place")
+
+    assert place["action"] == "skipped"
+
+    div_matches = [
+        path
+        for path in div_root.rglob("*.yaml")
+        if (yaml.safe_load(path.read_text()) or {}).get("ocdid") == div_ocdid
+    ]
+    jur_matches = [
+        path
+        for path in jur_root.rglob("*.yaml")
+        if (yaml.safe_load(path.read_text()) or {}).get("ocdid") == jur_ocdid
+    ]
+
+    assert div_matches == [old_div]
+    assert jur_matches == [old_jur]
+
+
+def test_duplicate_ancestor_jurisdiction_fails_closed(tmp_path: Path):
+    """One canonical Jurisdiction OCDID must not exist in two files."""
+    jur_ocdid = "ocd-jurisdiction/country:us/state:tx/county:anderson/government"
+
+    local = tmp_path / "jurisdictions" / "tx" / "local"
+    county = tmp_path / "jurisdictions" / "tx" / "county"
+    local.mkdir(parents=True)
+    county.mkdir(parents=True)
+
+    (local / "anderson.yaml").write_text(yaml.safe_dump({"ocdid": jur_ocdid}))
+    (county / "anderson_county.yaml").write_text(
+        yaml.safe_dump({"ocdid": jur_ocdid})
+    )
+
+    parsed = OCDIdParsed.parse_ocdid(
+        "ocd-division/country:us/state:tx/county:anderson/council_district:1"
+    )
+
+    with pytest.raises(ValueError, match="Duplicate ancestor Jurisdiction OCDID"):
+        ensure_ancestor_stubs(parsed, tmp_path, tmp_path)

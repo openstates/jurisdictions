@@ -483,3 +483,53 @@ class TestJurisdictionGenerationIntegration:
         # All should have the same base but different classification
         for jur in jurisdictions:
             assert "place:seattle" in jur.ocdid
+
+
+def test_generate_jurisdiction_reuses_existing_ocdid(
+    tmp_path,
+    monkeypatch,
+    sample_generator_request,
+    sample_division,
+):
+    """An existing Jurisdiction OCD ID should be reused instead of duplicated."""
+    import yaml
+
+    monkeypatch.chdir(tmp_path)
+
+    jurisdiction_ocdid = (
+        "ocd-jurisdiction/country:us/state:ca/place:seattle/government"
+    )
+
+    existing = Jurisdiction(
+        id=uuid5(NAMESPACE_URL, "existing-seattle-jurisdiction"),
+        ocdid=jurisdiction_ocdid,
+        name="Existing Seattle Government",
+        url="https://example.com",
+        classification="government",
+        metadata={"urls": []},
+    )
+
+    jur_dir = tmp_path / "jurisdictions" / "ca" / "local"
+    jur_dir.mkdir(parents=True)
+    existing_path = jur_dir / "existing_seattle.yaml"
+    existing_path.write_text(
+        yaml.safe_dump(existing.model_dump(mode="json"), sort_keys=False)
+    )
+
+    jur_gen = JurGenerator(
+        req=sample_generator_request,
+        division=sample_division,
+    )
+
+    result = jur_gen.generate_jurisdiction(
+        division=sample_division,
+        uuid=jur_gen.uuid,
+        classification="government",
+    )
+    output_path = jur_gen.dump_jurisdiction(output_dir=tmp_path)
+
+    assert result.id == existing.id
+    assert result.ocdid == jurisdiction_ocdid
+    assert result.name == "Existing Seattle Government"
+    assert output_path.resolve() == existing_path.resolve()
+    assert len(list(jur_dir.glob("*.yaml"))) == 1

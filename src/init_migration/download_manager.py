@@ -124,6 +124,12 @@ class DownloadManager:
                         f"SELECT *, '{state}' AS state FROM {read_expr} WHERE 1=0"
                     )
 
+                # Replace this state's staging rows so repeated runs are idempotent.
+                conn.execute(
+                    "DELETE FROM local_ocdids WHERE state = ?",
+                    [state],
+                )
+
                 conn.execute(
                     f"INSERT INTO local_ocdids "
                     f"SELECT *, '{state}' AS state FROM {read_expr}"
