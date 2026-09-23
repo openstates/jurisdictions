@@ -171,7 +171,9 @@ cython_debug/
 data/raw/**
 !data/raw/**/
 !data/raw/**/*.meta.json
-data/cache/
+data/cache/**
+!data/cache/**/
+!data/cache/**/*.meta.json
 
 # Claude Code local config
 .claude/

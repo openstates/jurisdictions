@@ -1,0 +1,12 @@
+{
+  "dataset": "Governments Master Address File, Government Units listing (School District sheet)",
+  "filename": "gov_units_2026_school_district.csv",
+  "publication_date": "2026-09-15T14:08:55+00:00",
+  "release": "2026",
+  "retrieved_at": "2026-09-23T17:17:58+00:00",
+  "sha256": "93fabead9782be77c44bea7bc36c5e3378c388106300a5a540036d24839cc0da",
+  "size_bytes": 1044,
+  "source": "census_gus",
+  "source_name": "U.S. Census Bureau",
+  "url": "https://www2.census.gov/programs-surveys/gus/datasets/2026/gov_units_2026.zip"
+}

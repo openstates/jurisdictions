@@ -1,0 +1,12 @@
+{
+  "dataset": "Governments Master Address File, Government Units listing (Public Pension Sys sheet)",
+  "filename": "gov_units_2026_public_pension_system.csv",
+  "publication_date": "2026-09-15T14:08:55+00:00",
+  "release": "2026",
+  "retrieved_at": "2026-09-23T17:17:58+00:00",
+  "sha256": "33a8af391d6fa9565cdda18822d17fd0596ac6845341e1b30a2a1799e62f4b2e",
+  "size_bytes": 2651,
+  "source": "census_gus",
+  "source_name": "U.S. Census Bureau",
+  "url": "https://www2.census.gov/programs-surveys/gus/datasets/2026/gov_units_2026.zip"
+}

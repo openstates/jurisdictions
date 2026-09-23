@@ -17,8 +17,8 @@ Each file is downloaded once per provider release, verified, and cached
 with a metadata sidecar. Everything after the download runs offline from
 the cache, and the golden tests run from checked-in fixture snapshots that
 use the same sidecar format. `src/sources/snapshot.py` is the shared base;
-the per-provider adapters (`census_governments.py`, `census_tiger.py`,
-`ocd_master.py`) build on it and own parsing.
+the per-provider adapters (`census_governments.py`, `census_gus.py`,
+`census_tiger.py`, `ocd_master.py`) build on it and own parsing.
 
 This replaces the download half of `DownloadManager`, which fetched the OCD
 CSVs into DuckDB tables on every run (`current_pipeline.md` §2, §4). The
@@ -54,7 +54,11 @@ data/
       <release>/
         country-us.csv
         country-us.csv.meta.json
-  cache/                     derived intermediates (Parquet etc.), ignored
+  cache/
+    census_gus/
+      2026/
+        public_pension_systems.csv            derived export, ignored
+        public_pension_systems.csv.meta.json  sidecar, committed
 ```
 
 `<release>` is the provider's own label: a GUS survey year, a TIGER/Line
@@ -73,7 +77,7 @@ ISO 8601 timestamps:
 
 | Field | Meaning |
 | --- | --- |
-| `source` | Cache directory key: `census_governments`, `tiger`, `ocd_master`. |
+| `source` | Cache directory key: `census_governments`, `census_gus`, `tiger`, `ocd_master`. |
 | `source_name` | Provider name as it appears in `SourceObj.source_name`. |
 | `dataset` | Product within the provider (`SourceObj.dataset`). |
 | `release` | Provider release, vintage, or version (`SourceObj.release`). |
@@ -144,13 +148,15 @@ Errors are `SnapshotIntegrityError` (bytes do not match) and
 Bulk source files are never committed (instruction §17). The sidecars are
 small and are what make a run reproducible: they pin the URL, release, and
 checksum that produced the output. `.gitignore` therefore ignores everything
-under `data/raw/` except `*.meta.json`, and ignores `data/cache/` entirely:
+under `data/raw/` and `data/cache/` except the `*.meta.json` sidecars:
 
 ```gitignore
 data/raw/**
 !data/raw/**/
 !data/raw/**/*.meta.json
-data/cache/
+data/cache/**
+!data/cache/**/
+!data/cache/**/*.meta.json
 ```
 
 A fresh checkout with committed sidecars can re-fetch each file and verify
@@ -210,11 +216,21 @@ Reading `.xlsx` needs `openpyxl`, added as a project dependency for these
 adapters. The ZIPs are about 11 MB, so fixtures are CSV excerpts of each
 sheet with the upstream header
 (`tests/fixtures/census_governments/govt_units_2022_<sheet>.csv`,
-`tests/fixtures/census_gus/gov_units_<year>_<sheet>.csv`), parsed by the
+`tests/fixtures/census_gus/gov_units_2026_<sheet>.csv`), parsed by the
 same validator through each module's `parse_sheet_snapshot`. Each
 excerpt's sidecar records the ZIP's URL, the year as `release`, the ZIP's
 `Last-Modified` as `publication_date`, and the checksum of the excerpt
 itself.
+
+#### Pension export (`census_gus.py`)
+
+`export_pension_systems(result, cache_root=data/cache)` writes the annual
+listing's pension rows to `data/cache/census_gus/<year>/public_pension_systems.csv`,
+one column per record field, sorted by Census ID, with a sidecar whose
+`url`, `release`, `publication_date` and `retrieved_at` are copied from the
+source listing's sidecar. The file exists for other consumers; nothing in
+the pipeline reads it, and `governments(result)` is the government universe
+without it.
 
 ### 7.2 Census TIGER (`src/sources/census_tiger.py`, `config/tiger_layers.yaml`)
 
