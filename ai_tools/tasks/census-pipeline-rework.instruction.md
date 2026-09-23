@@ -44,7 +44,7 @@ For this rework only, this instruction **supersedes** the generic workflow in
   `docs/rework/openstates-jurisdictions-data-pipeline.pdf` (with
   grep-friendly source at `docs/rework/openstates-jurisdictions-data-pipeline.md`).
 
-### Phase Tracking (issues #132–#150, plus Phase 17)
+### Phase Tracking (issues #132–#150 and #167)
 
 Each phase in the plan has a corresponding `[Rework]` issue. Keep this
 checklist in sync with issue state; the issues themselves remain authoritative.
@@ -65,7 +65,7 @@ checklist in sync with issue state; the issues themselves remain authoritative.
 - [ ] Phase 14 — National High-Confidence Run — #145
 - [ ] Phase 15 — Special District Strategy — #146
 - [ ] Phase 16 — Graph Projection — #147
-- [ ] Phase 17 — Code Refinement — issue to be created
+- [ ] Phase 17 — Code Refinement — #167
 - [ ] Phase 18 — Cleanup — #148
 - [ ] Phase 19 — Final Documentation — #149
 - [ ] Phase 20 — Final Acceptance Suite — #150
