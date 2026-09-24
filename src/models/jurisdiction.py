@@ -228,7 +228,7 @@ class Jurisdiction(BaseModel):
         # Convert model to dict using JSON mode to convert enums to strings
         data = self.model_dump(exclude_none=False, mode="json")
         with open(filepath, "w") as f:
-            yaml.safe_dump(data, f)
+            yaml.safe_dump(data, f, sort_keys=False)
         return filepath
 
     @classmethod

@@ -224,7 +224,7 @@ class Division(BaseModel):
         filepath = base_path / f"{self.display_name}_{geoid}_{self.id}.yaml"
         data = self.model_dump(exclude_none=False, mode="json")
         with open(filepath, "w") as f:
-            yaml.safe_dump(data, f)
+            yaml.safe_dump(data, f, sort_keys=False)
         return filepath
 
     def flatten(self) -> dict:

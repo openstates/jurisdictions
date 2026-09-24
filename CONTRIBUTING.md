@@ -34,6 +34,8 @@ If you know that a division or jurisdiction file contains incorrect or outdated 
 
 **Need to understand the file structure?** See [MODELS.md](MODELS.md) for field definitions and examples.
 
+**Keep the keys in order.** YAML files list their keys in the order the model declares them, not alphabetically. If you add a field by hand, put it where the model puts it — see [YAML Field Order](MODELS.md#yaml-field-order).
+
 **Working with places?** See [FAQ: What is a place?](FAQ.md#what-is-a-place).
 
 ### Pick up an existing issue - Coding required. (Python)
