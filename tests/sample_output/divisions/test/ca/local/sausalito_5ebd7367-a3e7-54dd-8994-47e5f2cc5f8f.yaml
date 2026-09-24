@@ -1,7 +1,8 @@
 accurate_asof: '2025-10-27T01:29:51Z'
-also_known_as: []
 country: us
 display_name: Sausalito
+other_names:
+- Sausalito city
 geometries:
 - arcGIS_address: https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4/query?where=GEOID%3D'0670364'&outFields=*&outSR=4326&f=geojson
   boundary:

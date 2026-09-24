@@ -1,8 +1,8 @@
 accurate_asof: '2025-10-27T01:29:51Z'
-also_known_as:
-- Marin City Census Designated Place
 country: us
 display_name: Marin City
+other_names:
+- Marin City Census Designated Place
 geometries:
 - arcGIS_address: https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/5/query?where=GEOID%3D'0645820'&outFields=*&outSR=4326&f=geojson
   boundary:

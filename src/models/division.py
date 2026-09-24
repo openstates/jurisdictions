@@ -1,4 +1,10 @@
-from pydantic import BaseModel, Field, ConfigDict, HttpUrl, model_validator
+from pydantic import (
+    BaseModel,
+    Field,
+    ConfigDict,
+    HttpUrl,
+    model_validator,
+)
 from typing import List, Optional
 from datetime import datetime, timezone
 from src.models.source import SourceObj
@@ -147,13 +153,13 @@ class Division(BaseModel):
         ...,
         description="Human-readable name for division. Should be sourced from the Open Civic Data repo.",
     )
+    other_names: List[str] = Field(
+        default_factory=list,
+        description="A list of alternate display names that refer to the same geo political division.",
+    )
     geometries: Optional[List[Geometry]] = Field(
         default_factory=list,
         description="A list of associated geometries, as defined by the Geometry model. Empty array if not set.",
-    )
-    also_known_as: List[str] = Field(
-        default_factory=list,
-        description="A list of alternate formatted OCDids that refer to the same geo political divisions.",
     )
     children: List[str] = Field(
         default_factory=list,

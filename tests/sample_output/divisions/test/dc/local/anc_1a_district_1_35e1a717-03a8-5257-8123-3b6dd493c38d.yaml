@@ -1,7 +1,8 @@
 accurate_asof: '2025-10-27T01:29:51Z'
-also_known_as: []
 country: us
 display_name: ANC 1A District 1
+other_names:
+- ANC 1A
 geometries:
 - arcGIS_address: https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54/query?where=ANC_ID=%271A%27&outFields=*&f=geojson
   boundary:

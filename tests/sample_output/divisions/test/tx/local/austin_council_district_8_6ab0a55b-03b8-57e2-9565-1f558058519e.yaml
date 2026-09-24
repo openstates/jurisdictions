@@ -1,7 +1,8 @@
 accurate_asof: '2025-10-27T01:29:51Z'
-also_known_as: []
 country: us
 display_name: Austin Council District 8
+other_names:
+- Austin CD 8
 geometries: []
 government_identifiers:
   common_name: null
