@@ -37,6 +37,10 @@ class Organization(BaseModel):
     """
 
     name: str
+    classification: Optional[OrganizationClassificationEnum] = Field(
+        default=None,
+        description="An organization category. See OrganizationClassificationEnum.",
+    )
     other_names: Optional[List[str]] = Field(
         default=None,
         description="Commonly used names for the organization, if different from the official name. Provide as a list of strings to support search functionality and matching.",
@@ -50,9 +54,9 @@ class Organization(BaseModel):
             SourceObj(
                 field=["organization"],
                 source_name="Popolo Schema",
-                source_type=SourceType.HUMAN,
+                source_type=SourceType.AI,
                 source_url={"popolo": "https://www.popoloproject.com"},
-                source_description="Organization structure and metadata sourced from Popolo standard for representing government entities",
+                source_description="Organization structure and metadata. Update with local government sources as needed.",
             )
         ],
     )
