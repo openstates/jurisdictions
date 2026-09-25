@@ -1,0 +1,32 @@
+accurate_asof: '2025-10-27T01:29:51Z'
+classification: special_purpose_district
+feature_flags: []
+id: fc24cff2-3baa-5768-8652-b2840233c61b
+last_updated: '2025-10-27T01:29:51Z'
+legislative_sessions: {}
+metadata:
+  special_district_type: Community Services District
+  urls:
+  - url: https://www.marincitycsd.com/board-members
+    url_type: people
+  - url: https://www.marincitycsd.com/board-meetings
+    url_type: meetings
+name: Marin City Community Services District Governing Board
+ocdid: ocd-jurisdiction/country:us/state:ca/county:marin/cdp:marin_city/special_district:marin_city_community_services_district/governing_board
+sourcing:
+- field:
+  - term
+  source_description: null
+  source_name: Marin LAFCO
+  source_type: human_researched
+  source_url:
+    url: https://www.marinlafco.org/marin-city-community-services-district
+term:
+  duration: 4
+  last_known_term_end_date: '2026-12-31T00:00:00Z'
+  number_of_positions: 5
+  source_url: https://www.marinlafco.org/marin-city-community-services-district
+  term_description: The District is governed by a five-member Board of Directors elected
+    to four-year terms.
+  term_limits: unknown
+url: https://www.marincitycsd.com/

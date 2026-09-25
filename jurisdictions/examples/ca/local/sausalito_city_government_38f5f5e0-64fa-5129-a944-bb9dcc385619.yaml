@@ -1,0 +1,47 @@
+accurate_asof: '2025-10-27T01:29:51Z'
+classification: government
+feature_flags: []
+id: 38f5f5e0-64fa-5129-a944-bb9dcc385619
+last_updated: '2025-10-27T01:29:51Z'
+legislative_sessions: {}
+metadata:
+  urls:
+  - url: https://www.sausalito.gov/city-government/city-council/board-details-and-member-roster
+    url_type: people
+  - url: https://www.sausalito.gov/city-government/city-council/meetings-and-agendas
+    url_type: meetings
+name: Sausalito City Government
+ocdid: ocd-jurisdiction/country:us/state:ca/place:sausalito/government
+sourcing:
+- field:
+  - url
+  source_description: null
+  source_name: Sausalito Official Site
+  source_type: human_researched
+  source_url:
+    url: https://www.sausalito.gov/
+- field:
+  - term
+  source_description: null
+  source_name: Sausalito City Government
+  source_type: human_researched
+  source_url:
+    url: https://www.sausalito.gov/city-government
+- field:
+  - metadata
+  - metadata.urls
+  source_description: null
+  source_name: Sausalito City Council
+  source_type: human_researched
+  source_url:
+    url: https://www.sausalito.gov/city-government/city-council
+term:
+  duration: 4
+  last_known_term_end_date: null
+  number_of_positions: 5
+  source_url: https://www.sausalito.gov/city-government
+  term_description: Sausalito is a general law city with a council-manager form of
+    government. There are five councilmembers who serve overlapping terms of four
+    years. The Council selects a mayor and vice mayor from among its members.
+  term_limits: null
+url: https://www.sausalito.gov/

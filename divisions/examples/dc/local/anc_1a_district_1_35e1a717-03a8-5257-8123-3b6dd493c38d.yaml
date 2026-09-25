@@ -1,0 +1,101 @@
+id: 35e1a717-03a8-5257-8123-3b6dd493c38d
+ocdid: ocd-division/country:us/district:dc/anc:1a/council_district:1
+country: us
+display_name: ANC 1A District 1
+other_names: []
+geometries:
+- valid_from: '2025-10-27T01:29:51Z'
+  valid_to: '2025-10-27T01:29:51Z'
+  boundary:
+    centroid: null
+    extent: null
+  url: https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54/query?where=ANC_ID=%271A%27&outFields=*&f=geojson
+  identifiers:
+  - authority: dcgis
+    id_type: anc_id
+    value: 1A
+    source:
+      field:
+      - geometries
+      source_name: DCGIS
+      source_type: human_researched
+      source_url:
+        url: https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA
+      source_description: null
+  source:
+    field:
+    - geometries
+    source_name: DCGIS
+    source_type: human_researched
+    source_url:
+      url: https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA
+    source_description: null
+children: []
+valid_thru: null
+valid_asof: '2023-01-01T00:00:00Z'
+accurate_asof: '2025-10-27T01:29:51Z'
+last_updated: '2025-10-27T01:29:51Z'
+sourcing:
+- field:
+  - geometries
+  source_name: DCGIS
+  source_type: human_researched
+  source_url:
+    url: https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA
+  source_description: null
+- field:
+  - government_identifiers
+  source_name: DCGIS
+  source_type: human_researched
+  source_url:
+    url: https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54
+  source_description: null
+metadata:
+  population: null
+  source: DC Open Data ANC shapefile obtained via DCGIS. Not a Census designated area.
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: ANC 1A
+  source:
+    field:
+    - government_identifiers
+    source_name: DCGIS
+    source_type: human_researched
+    source_url:
+      url: https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54
+    source_description: null
+- authority: census
+  id_type: statefp
+  value: '11'
+  source:
+    field:
+    - government_identifiers
+    source_name: DCGIS
+    source_type: human_researched
+    source_url:
+      url: https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54
+    source_description: null
+- authority: census
+  id_type: countyfp
+  value: '001'
+  source:
+    field:
+    - government_identifiers
+    source_name: DCGIS
+    source_type: human_researched
+    source_url:
+      url: https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54
+    source_description: null
+- authority: census
+  id_type: geoid
+  value: '11001'
+  source:
+    field:
+    - government_identifiers
+    source_name: DCGIS
+    source_type: human_researched
+    source_url:
+      url: https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Administrative_Other_Boundaries_WebMercator/MapServer/54
+    source_description: null
+jurisdiction_id: ocd-jurisdiction/country:us/district:dc/anc:1a/government

@@ -1,0 +1,165 @@
+id: 322f0412-0108-59a7-b29d-5f807672da64
+ocdid: ocd-division/country:us/state:ca/county:marin/cdp:marin_city
+country: us
+display_name: Marin City
+other_names:
+- Marin City Census Designated Place
+geometries:
+- valid_from: '2025-10-27T01:29:51Z'
+  valid_to: '2025-10-27T01:29:51Z'
+  boundary:
+    centroid: null
+    extent: null
+  url: https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/5/query?where=GEOID%3D%270645820%27&outFields=*&outSR=4326&f=geojson
+  identifiers:
+  - authority: census
+    id_type: geoid
+    value: 0645820
+    source:
+      field:
+      - geometries
+      source_name: Census TIGER/Line
+      source_type: human_researched
+      source_url:
+        url: https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer
+      source_description: null
+  source:
+    field:
+    - geometries
+    source_name: Census TIGER/Line
+    source_type: human_researched
+    source_url:
+      url: https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer
+    source_description: null
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2025-10-27T01:29:51Z'
+last_updated: '2025-10-27T01:29:51Z'
+sourcing:
+- field:
+  - geometries
+  source_name: Census TIGER/Line
+  source_type: human_researched
+  source_url:
+    url: https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer
+  source_description: null
+- field:
+  - government_identifiers
+  source_name: civicdata.tech
+  source_type: human_researched
+  source_url:
+    url: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362
+  source_description: null
+- field:
+  - metadata
+  - metadata.population
+  source_name: Census 2020 Decceennial Census
+  source_type: human_researched
+  source_url:
+    url: https://data.census.gov/profile/Marin_City_CDP,_California?g=160XX00US0645820
+  source_description: null
+metadata:
+  population:
+    population: 2993
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: Marin City CDP
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      url: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362
+    source_description: null
+- authority: census
+  id_type: statefp
+  value: '06'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      url: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362
+    source_description: null
+- authority: census
+  id_type: lsad
+  value: '57'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      url: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362
+    source_description: null
+- authority: census
+  id_type: geoid
+  value: 0645820
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      url: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362
+    source_description: null
+- authority: census
+  id_type: placefp
+  value: '46420'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      url: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362
+    source_description: null
+- authority: census
+  id_type: sldust
+  value: '002'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      url: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362
+    source_description: null
+- authority: census
+  id_type: sldlst
+  value: '012'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      url: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362
+    source_description: null
+- authority: census
+  id_type: countyfp
+  value: '041'
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      url: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362
+    source_description: null
+- authority: census
+  id_type: county_names
+  value: Marin
+  source:
+    field:
+    - government_identifiers
+    source_name: civicdata.tech
+    source_type: human_researched
+    source_url:
+      url: https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/edit?usp=drive_web&ouid=105992325138979778362
+    source_description: null
+jurisdiction_id: ocd-jurisdiction/country:us/state:ca/county:marin/cdp:marin_city/special_district:marin_city_community_services_district/governing_board
