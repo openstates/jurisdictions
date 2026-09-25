@@ -5,7 +5,9 @@ from src.models.ocdid import OCDIdParsed
 from src.models.source import SourceObj, SourceType
 from src.normalize_government import GovernmentRecord, GovernmentType
 from src.ocdid_rule_engine import (
+    ExceptionCategory,
     OCDIDCandidate,
+    derive_jurisdiction_candidate,
     generate_candidate,
     slug_segment,
 )
@@ -329,3 +331,151 @@ def test_every_ordinary_candidate_round_trips_through_authorized_parser(
 
     assert parsed.raw_ocdid == candidate.value
     assert parsed.type == "ocd-division"
+
+
+def test_exception_categories_are_explicit():
+    assert {category.value for category in ExceptionCategory} == {
+        "identifier_override",
+        "hierarchy_override",
+        "slug_name_override",
+        "geography_mapping_override",
+    }
+
+
+def test_dc_state_exception_beats_general_state_rule():
+    candidate = generate_candidate(
+        _government(
+            census_government_id="000011",
+            name="DISTRICT OF COLUMBIA",
+            normalized_name="district of columbia",
+            government_type=GovernmentType.STATE,
+            government_subtype="0 - STATE",
+            state="DC",
+            state_fips="11",
+            county_fips=None,
+            place_fips=None,
+            county_name=None,
+        ),
+        _division(
+            layer="state",
+            geography_type="state",
+            geoid="11",
+            geoidfq="0400000US11",
+            name="District of Columbia",
+            namelsad=None,
+            state_fips="11",
+            county_fips=None,
+            place_fips=None,
+        ),
+    )
+
+    assert candidate.value == "ocd-division/country:us/district:dc"
+    assert candidate.rule == "state.dc"
+    assert candidate.rule_version == "1"
+    assert candidate.exception is not None
+    assert candidate.exception.name == "dc.district_segment"
+    assert candidate.exception.category is ExceptionCategory.HIERARCHY_OVERRIDE
+
+
+def test_normal_state_does_not_receive_dc_exception():
+    candidate = generate_candidate(
+        _government(
+            government_type=GovernmentType.STATE,
+            state="CA",
+            county_fips=None,
+            place_fips=None,
+        ),
+        _division(
+            geography_type="state",
+            geoid="06",
+            name="California",
+            place_fips=None,
+        ),
+    )
+
+    assert candidate.value == "ocd-division/country:us/state:ca"
+    assert candidate.rule == "state.default"
+    assert candidate.exception is None
+
+
+def test_council_district_inherits_parent_jurisdiction():
+    candidate = derive_jurisdiction_candidate(
+        "ocd-division/country:us/state:wa/"
+        "place:seattle/council_district:1"
+    )
+
+    assert candidate.value == (
+        "ocd-jurisdiction/country:us/state:wa/place:seattle/government"
+    )
+    assert candidate.rule == "jurisdiction.parent_inheritance"
+    assert candidate.exception is not None
+    assert candidate.exception.name == "council_district.parent_jurisdiction"
+    assert candidate.exception.category is ExceptionCategory.HIERARCHY_OVERRIDE
+    assert candidate.transformations == (
+        "division_ocdid.parse",
+        "council_district.strip",
+        "jurisdiction_namespace",
+        "classification.append",
+    )
+
+
+def test_dc_anc_council_district_retains_canonical_parent_hierarchy():
+    candidate = derive_jurisdiction_candidate(
+        "ocd-division/country:us/district:dc/"
+        "anc:1a/council_district:1"
+    )
+
+    assert candidate.value == (
+        "ocd-jurisdiction/country:us/district:dc/anc:1a/government"
+    )
+    assert candidate.exception is not None
+    assert candidate.exception.category is ExceptionCategory.HIERARCHY_OVERRIDE
+
+    parsed = OCDIdParsed.parse_ocdid(candidate.value)
+    assert parsed.raw_ocdid == candidate.value
+
+
+def test_regular_division_derives_default_jurisdiction_without_exception():
+    candidate = derive_jurisdiction_candidate(
+        "ocd-division/country:us/state:ca/place:sausalito"
+    )
+
+    assert candidate.value == (
+        "ocd-jurisdiction/country:us/state:ca/place:sausalito/government"
+    )
+    assert candidate.rule == "jurisdiction.default"
+    assert candidate.exception is None
+    assert candidate.transformations == (
+        "division_ocdid.parse",
+        "jurisdiction_namespace",
+        "classification.append",
+    )
+
+
+def test_jurisdiction_candidate_preserves_requested_classification():
+    candidate = derive_jurisdiction_candidate(
+        "ocd-division/country:us/state:tx/place:austin",
+        classification="legislature",
+    )
+
+    assert candidate.value == (
+        "ocd-jurisdiction/country:us/state:tx/place:austin/legislature"
+    )
+    assert candidate.hierarchy == (
+        "country:us",
+        "state:tx",
+        "place:austin",
+        "legislature",
+    )
+
+
+def test_exception_provenance_is_frozen():
+    candidate = derive_jurisdiction_candidate(
+        "ocd-division/country:us/state:wa/"
+        "place:seattle/council_district:1"
+    )
+
+    assert candidate.exception is not None
+
+    with pytest.raises(ValidationError):
+        candidate.exception.name = "changed"

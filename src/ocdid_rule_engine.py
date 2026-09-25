@@ -1,4 +1,4 @@
-"""Construct provenance-rich OCD Division ID candidates.
+"""Construct provenance-rich OCD ID candidates.
 
 This stage proposes candidate OCDIDs from normalized governments and
 resolved Census geography. It does not validate candidates against the
@@ -7,6 +7,8 @@ Phase 8.
 """
 
 from __future__ import annotations
+
+from enum import Enum
 
 from pydantic import BaseModel, ConfigDict
 
@@ -18,8 +20,27 @@ from src.resolve_government import CensusDivisionRecord
 RULE_VERSION = "1"
 
 
+class ExceptionCategory(str, Enum):
+    """Supported categories of explicit OCDID exceptions."""
+
+    IDENTIFIER_OVERRIDE = "identifier_override"
+    HIERARCHY_OVERRIDE = "hierarchy_override"
+    SLUG_NAME_OVERRIDE = "slug_name_override"
+    GEOGRAPHY_MAPPING_OVERRIDE = "geography_mapping_override"
+
+
+class OCDIDException(BaseModel):
+    """Provenance for an explicit exception applied to a candidate."""
+
+    model_config = ConfigDict(frozen=True)
+
+    name: str
+    category: ExceptionCategory
+    version: str = RULE_VERSION
+
+
 class OCDIDCandidate(BaseModel):
-    """One proposed OCD Division ID plus the rule that produced it."""
+    """One proposed OCD ID plus the rule and transformations that produced it."""
 
     model_config = ConfigDict(frozen=True)
 
@@ -28,7 +49,7 @@ class OCDIDCandidate(BaseModel):
     rule_version: str
     transformations: tuple[str, ...]
     hierarchy: tuple[str, ...]
-    exception: str | None = None
+    exception: OCDIDException | None = None
 
 
 def slug_segment(value: str) -> str:
@@ -43,16 +64,37 @@ def _state_segment(government: GovernmentRecord) -> str:
     return f"state:{state}"
 
 
-def _candidate(
+def _division_candidate(
     *,
     hierarchy: tuple[str, ...],
     rule: str,
     transformations: tuple[str, ...],
-    exception: str | None = None,
+    exception: OCDIDException | None = None,
 ) -> OCDIDCandidate:
     value = "ocd-division/" + "/".join(hierarchy)
 
     # Root policy requires OCD IDs to pass through the authorized parser.
+    OCDIdParsed.parse_ocdid(value)
+
+    return OCDIDCandidate(
+        value=value,
+        rule=rule,
+        rule_version=RULE_VERSION,
+        transformations=transformations,
+        hierarchy=hierarchy,
+        exception=exception,
+    )
+
+
+def _jurisdiction_candidate(
+    *,
+    hierarchy: tuple[str, ...],
+    rule: str,
+    transformations: tuple[str, ...],
+    exception: OCDIDException | None = None,
+) -> OCDIDCandidate:
+    value = "ocd-jurisdiction/" + "/".join(hierarchy)
+
     OCDIdParsed.parse_ocdid(value)
 
     return OCDIDCandidate(
@@ -70,11 +112,32 @@ def _state_candidate(
     division: CensusDivisionRecord,
 ) -> OCDIDCandidate:
     del division
+
+    # Washington, DC is represented canonically with a district segment,
+    # not the general state segment that its Census state-equivalent record
+    # would otherwise produce.
+    if government.state.strip().upper() == "DC":
+        return _division_candidate(
+            hierarchy=(
+                "country:us",
+                "district:dc",
+            ),
+            rule="state.dc",
+            transformations=(
+                "state_code.lower",
+                "state_segment.to_district",
+            ),
+            exception=OCDIDException(
+                name="dc.district_segment",
+                category=ExceptionCategory.HIERARCHY_OVERRIDE,
+            ),
+        )
+
     hierarchy = (
         "country:us",
         _state_segment(government),
     )
-    return _candidate(
+    return _division_candidate(
         hierarchy=hierarchy,
         rule="state.default",
         transformations=("state_code.lower",),
@@ -94,7 +157,7 @@ def _county_candidate(
         _state_segment(government),
         f"county:{county}",
     )
-    return _candidate(
+    return _division_candidate(
         hierarchy=hierarchy,
         rule="county.default",
         transformations=(
@@ -117,7 +180,7 @@ def _municipal_candidate(
         _state_segment(government),
         f"place:{place}",
     )
-    return _candidate(
+    return _division_candidate(
         hierarchy=hierarchy,
         rule="municipality.default",
         transformations=(
@@ -148,7 +211,7 @@ def _mcd_candidate(
         f"county:{county}",
         f"place:{place}",
     )
-    return _candidate(
+    return _division_candidate(
         hierarchy=hierarchy,
         rule="mcd.civic_place",
         transformations=(
@@ -174,7 +237,7 @@ def _school_candidate(
         _state_segment(government),
         f"school_district:{school}",
     )
-    return _candidate(
+    return _division_candidate(
         hierarchy=hierarchy,
         rule="school.state",
         transformations=(
@@ -188,10 +251,10 @@ def generate_candidate(
     government: GovernmentRecord,
     division: CensusDivisionRecord,
 ) -> OCDIDCandidate:
-    """Generate an ordinary OCD Division ID candidate.
+    """Generate an OCD Division ID candidate.
 
-    Exception handling is deliberately separate and is added in Tasks
-    7.4-7.5. Phase 8 determines whether the candidate is canonical.
+    Explicit exceptions are evaluated before the corresponding general
+    behavior. Phase 8 determines whether the resulting candidate is canonical.
     """
     if government.government_type is GovernmentType.STATE:
         return _state_candidate(government, division)
@@ -211,4 +274,52 @@ def generate_candidate(
     raise ValueError(
         f"no ordinary OCDID rule for government type "
         f"{government.government_type.value!r}"
+    )
+
+
+def derive_jurisdiction_candidate(
+    division_ocdid: str,
+    *,
+    classification: str = "government",
+) -> OCDIDCandidate:
+    """Derive a jurisdiction OCDID from an authorized parsed division OCDID.
+
+    Council districts are representation subdivisions whose governing
+    jurisdiction belongs to the parent division. The exception is explicit and
+    provenance-bearing instead of being implemented by duplicated regexes.
+    """
+    parsed = OCDIdParsed.parse_ocdid(division_ocdid)
+
+    if parsed.type != "ocd-division":
+        raise ValueError("jurisdiction candidates require an ocd-division input")
+
+    parts = parsed.get_ocdid_parts()
+    hierarchy = tuple(parts[1:])
+
+    if hierarchy and hierarchy[-1].startswith("council_district:"):
+        hierarchy = hierarchy[:-1] + (classification,)
+        return _jurisdiction_candidate(
+            hierarchy=hierarchy,
+            rule="jurisdiction.parent_inheritance",
+            transformations=(
+                "division_ocdid.parse",
+                "council_district.strip",
+                "jurisdiction_namespace",
+                "classification.append",
+            ),
+            exception=OCDIDException(
+                name="council_district.parent_jurisdiction",
+                category=ExceptionCategory.HIERARCHY_OVERRIDE,
+            ),
+        )
+
+    hierarchy = hierarchy + (classification,)
+    return _jurisdiction_candidate(
+        hierarchy=hierarchy,
+        rule="jurisdiction.default",
+        transformations=(
+            "division_ocdid.parse",
+            "jurisdiction_namespace",
+            "classification.append",
+        ),
     )
