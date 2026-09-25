@@ -174,8 +174,8 @@ class Jurisdiction(BaseModel):
         default_factory=list,
         description="Describe how the data was sourced. Used to identify AI generated data.",
     )
-    metadata: JurisdictionMetadata = Field(
-        default_factory=dict,
+    metadata: Optional[JurisdictionMetadata] = Field(
+        default=None,
         description="Any other useful information that a researcher feels should be included.",
     )
 
@@ -206,16 +206,15 @@ class Jurisdiction(BaseModel):
             self.id = uuid5(NAMESPACE_URL, f"{self.ocdid}|{asof_date}")
         return self
 
-    # Untested
     @classmethod
-    def load_jurisdiction(cls, filepath):
+    def load_jurisdiction(cls, filepath: str | Path) -> "Jurisdiction":
         try:
-            data = yaml.safe_load(filepath)
-            cls = cls(**data)
+            data = yaml.safe_load(Path(filepath).read_text())
+            return cls(**data)
         except Exception as error:
             logger.error(
                 "Failed to load jurisdiction object",
-                extras={"error": error},
+                extra={"filepath": str(filepath)},
                 exc_info=True,
             )
             raise ValueError("Failed to load jurisdiction. Check filepath") from error

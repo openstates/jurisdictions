@@ -202,15 +202,16 @@ class Division(BaseModel):
             self.id = uuid5(NAMESPACE_URL, f"{self.ocdid}|{asof_date}")
         return self
 
-    # Untested
     @classmethod
-    def load_division(cls, filepath):
+    def load_division(cls, filepath: str | Path) -> "Division":
         try:
-            data = yaml.safe_load(filepath)
-            cls = cls(**data)
+            data = yaml.safe_load(Path(filepath).read_text())
+            return cls(**data)
         except Exception as error:
             logger.error(
-                "Failed to load division object", extras={"error": error}, exc_info=True
+                "Failed to load division object",
+                extra={"filepath": str(filepath)},
+                exc_info=True,
             )
             raise ValueError("Failed to load division. Check filepath") from error
 

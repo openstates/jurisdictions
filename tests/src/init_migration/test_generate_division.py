@@ -8,8 +8,24 @@ from src.init_migration.generate_division import (
     DivGenerator,
     _leaf_segment_display_name,
 )
+from src.models.division import Identifiers, find_identifier
 from src.models.ocdid import OCDIdParsed
 from pathlib import Path
+
+
+def _identifier_values(
+    identifiers: Identifiers, id_type: str, authority: str = "census"
+) -> list[str]:
+    """Every value for an id_type.
+
+    ``find_identifier`` returns only the first match, but a division spanning
+    several counties carries one ``countyfp`` entry per county.
+    """
+    return [
+        identifier.value
+        for identifier in identifiers
+        if identifier.authority == authority and identifier.id_type == id_type
+    ]
 
 
 @pytest.fixture
@@ -104,11 +120,13 @@ def test_generate_division_from_county_record():
 
     division = dg.generate_division(COUNTY_VAL_REC, dg.uuid)
 
+    identifiers = division.government_identifiers
+
     assert division.display_name == "Blount"
-    assert division.government_identifiers.geoid == "47009"
-    assert division.government_identifiers.statefp == "47"
-    assert division.government_identifiers.countyfp == ["009"]
-    assert division.government_identifiers.county_names == ["Blount"]
+    assert find_identifier(identifiers, "geoid") == "47009"
+    assert find_identifier(identifiers, "statefp") == "47"
+    assert _identifier_values(identifiers, "countyfp") == ["009"]
+    assert _identifier_values(identifiers, "county_names") == ["Blount"]
 
 
 @pytest.mark.parametrize(

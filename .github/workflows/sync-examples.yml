@@ -5,6 +5,11 @@ on:
     branches: [main]
     paths:
       - 'tests/sample_output/**'
+      # A pipeline run rewrites the whole divisions/ tree and takes
+      # divisions/examples with it, so changes here must re-trigger the
+      # mirror to put the examples back.
+      - 'divisions/examples/**'
+      - 'jurisdictions/examples/**'
       - 'src/utils/sync_examples.py'
       - '.github/workflows/sync-examples.yml'
   workflow_dispatch:

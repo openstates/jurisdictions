@@ -12,7 +12,7 @@ metadata:
   - url: https://www.marincitycsd.com/board-meetings
     url_type: meetings
 name: Marin City Community Services District Governing Board
-ocdid: ocd-jurisdiction/country:us/state:ca/county:marin/cdp:marin_city/special_district:marin_city_community_services_district/governing_board
+ocdid: ocd-jurisdiction/country:us/state:ca/county:marin/cdp:marin_city/special_district:marin_city_community_services_district/special_purpose_district
 sourcing:
 - field:
   - term
