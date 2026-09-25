@@ -1,6 +1,9 @@
 import pytest
 
-from src.init_migration.jurisdiction_seed import infer_jurisdiction_seed
+from src.init_migration.jurisdiction_seed import (
+    derive_jurisdiction_ocdid,
+    infer_jurisdiction_seed,
+)
 from src.models.jurisdiction import ClassificationEnum
 
 
@@ -41,3 +44,68 @@ def test_infer_jurisdiction_seed_keeps_census_area_lsad_statistical() -> None:
 
     assert seed.has_jurisdiction is False
     assert seed.reason == "statistical geography"
+
+
+def test_derive_jurisdiction_ocdid_from_standard_division() -> None:
+    """A division with no non-parent segment maps to itself."""
+    result = derive_jurisdiction_ocdid(
+        "ocd-division/country:us/state:ca/place:seattle",
+        classification="government",
+    )
+
+    assert result == "ocd-jurisdiction/country:us/state:ca/place:seattle/government"
+
+
+def test_derive_jurisdiction_ocdid_uses_given_classification() -> None:
+    division_ocdid = "ocd-division/country:us/state:ca"
+
+    result_gov = derive_jurisdiction_ocdid(division_ocdid, classification="government")
+    result_leg = derive_jurisdiction_ocdid(division_ocdid, classification="legislature")
+
+    assert result_gov.endswith("/government")
+    assert result_leg.endswith("/legislature")
+
+
+def test_derive_jurisdiction_ocdid_defaults_to_government() -> None:
+    """DivGenerator relies on the default when it has no classification."""
+    result = derive_jurisdiction_ocdid("ocd-division/country:us/state:ca/place:seattle")
+
+    assert result.endswith("/government")
+
+
+def test_derive_jurisdiction_ocdid_removes_council_district() -> None:
+    """A council district's jurisdiction belongs to its parent place."""
+    result = derive_jurisdiction_ocdid(
+        "ocd-division/country:us/state:ca/place:seattle/council_district:1",
+        classification="government",
+    )
+
+    assert result == "ocd-jurisdiction/country:us/state:ca/place:seattle/government"
+
+
+def test_derive_jurisdiction_ocdid_removes_ward() -> None:
+    """A ward's jurisdiction belongs to its parent place, same as a council district."""
+    result = derive_jurisdiction_ocdid(
+        "ocd-division/country:us/state:oh/place:cincinnati/ward:1",
+        classification="government",
+    )
+
+    assert result == "ocd-jurisdiction/country:us/state:oh/place:cincinnati/government"
+
+
+def test_derive_jurisdiction_ocdid_dedupes_wards_of_one_place() -> None:
+    """Every ward of a place must resolve to the same jurisdiction ocdid.
+
+    This is what lets _jurisdiction_exists() skip creating a duplicate: 26
+    Cincinnati wards should produce one Cincinnati government, not 26.
+    """
+    derived = {
+        derive_jurisdiction_ocdid(
+            f"ocd-division/country:us/state:oh/place:cincinnati/ward:{n}"
+        )
+        for n in range(1, 27)
+    }
+
+    assert derived == {
+        "ocd-jurisdiction/country:us/state:oh/place:cincinnati/government"
+    }
