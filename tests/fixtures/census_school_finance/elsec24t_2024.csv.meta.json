@@ -1,0 +1,12 @@
+{
+  "dataset": "Annual Survey of School System Finances, Individual Unit Tables",
+  "filename": "elsec24t_2024.csv",
+  "publication_date": "2026-05-07T00:00:00+00:00",
+  "release": "2024",
+  "retrieved_at": "2026-09-25T04:07:13.454029+00:00",
+  "sha256": "62ca06af5040ddc4e0b4cacde24dd956592a6b59c9282bec94e3db47e3db15ec",
+  "size_bytes": 242,
+  "source": "census_school_finance",
+  "source_name": "U.S. Census Bureau",
+  "url": "https://www2.census.gov/programs-surveys/school-finances/tables/2024/secondary-education-finance/elsec24t.xlsx"
+}
