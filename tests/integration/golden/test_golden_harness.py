@@ -14,6 +14,7 @@ import pytest
 import yaml
 
 from src.init_migration.pipeline_models import Status
+from src.normalize_government import GovernmentType
 from src.utils.deterministic_id import generate_id
 from tests.integration.golden.harness import (
     ABSENT,
@@ -26,6 +27,7 @@ from tests.integration.golden.harness import (
     golden_relative_path,
     load_division_fixtures,
     load_jurisdiction_fixtures,
+    load_normalized_government_fixtures,
     load_roster,
     regenerate_from_fixtures,
     run_pipeline,
@@ -246,3 +248,26 @@ def test_run_pipeline_roster_statuses(tmp_path):
             assert run.response.status.status == Status.SUCCESS, ocdid
             assert run.quarantine == []
             assert run.response.jurisdiction_path is not None
+
+
+@pytest.mark.integration
+def test_normalized_government_layer_reaches_golden_cities():
+    result = load_normalized_government_fixtures()
+
+    assert result.source_errors == []
+
+    by_name = {record.name: record for record in result.records}
+    expected = {
+        "CITY OF SAUSALITO": ("161205", "city of sausalito"),
+        "CITY OF AUSTIN": ("176394", "city of austin"),
+        "CITY OF SEATTLE": ("184255", "city of seattle"),
+        "CITY OF TACOMA": ("176868", "city of tacoma"),
+    }
+
+    for name, (census_id, normalized_name) in expected.items():
+        record = by_name[name]
+        assert record.census_government_id == census_id
+        assert record.normalized_name == normalized_name
+        assert record.government_type is GovernmentType.MUNICIPAL
+        assert record.source.source_name == "U.S. Census Bureau"
+        assert record.source.release == "2026"
