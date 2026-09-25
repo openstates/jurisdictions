@@ -37,8 +37,14 @@ from src.init_migration.pipeline_models import (
 from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
 from src.models.ocdid import OCDIdParsed
-from src.normalize_government import NormalizationResult, normalize_records
-from src.sources import census_gus
+from src.normalize_government import (
+    GovernmentType,
+    NormalizationResult,
+    normalize_records,
+)
+from src.resolve_government import ResolutionResult, resolve_government
+from src.sources import census_gus, census_tiger
+from src.sources.census_tiger import load_tiger_config
 from src.sources.government_units import GovernmentKind
 from src.sources.snapshot import load_snapshot, source_obj_from_snapshot
 from src.utils.deterministic_id import generate_id
@@ -362,6 +368,42 @@ def load_normalized_government_fixtures() -> NormalizationResult:
         source=source,
         source_errors=parsed.errors,
     )
+
+
+def resolve_golden_government_fixtures() -> dict[str, ResolutionResult]:
+    """Run normalized municipal fixtures through the Phase 6 TIGER resolver."""
+    normalized = load_normalized_government_fixtures()
+
+    config = load_tiger_config()
+    snapshot = load_snapshot(
+        FIXTURES_ROOT / "tiger" / "tl_2025_place.csv"
+    )
+    parsed = census_tiger.parse_csv_snapshot(
+        snapshot,
+        config,
+        "place",
+    )
+    if parsed.metadata is None:
+        raise ValueError("TIGER fixture did not carry snapshot metadata")
+    if parsed.errors:
+        raise ValueError(f"TIGER fixture carried row errors: {parsed.errors}")
+
+    tiger_source = source_obj_from_snapshot(
+        parsed.metadata,
+        field=["geometry"],
+        source_description="TIGER geography resolver input",
+    )
+
+    return {
+        government.census_government_id: resolve_government(
+            government,
+            parsed.records,
+            config=config,
+            tiger_source=tiger_source,
+        )
+        for government in normalized.records
+        if government.government_type is GovernmentType.MUNICIPAL
+    }
 
 
 # ------------------------------------------------------------------- pipeline

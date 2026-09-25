@@ -15,6 +15,7 @@ import yaml
 
 from src.init_migration.pipeline_models import Status
 from src.normalize_government import GovernmentType
+from src.resolve_government import ResolutionStatus
 from src.utils.deterministic_id import generate_id
 from tests.integration.golden.harness import (
     ABSENT,
@@ -29,6 +30,7 @@ from tests.integration.golden.harness import (
     load_jurisdiction_fixtures,
     load_normalized_government_fixtures,
     load_roster,
+    resolve_golden_government_fixtures,
     regenerate_from_fixtures,
     run_pipeline,
 )
@@ -271,3 +273,30 @@ def test_normalized_government_layer_reaches_golden_cities():
         assert record.government_type is GovernmentType.MUNICIPAL
         assert record.source.source_name == "U.S. Census Bureau"
         assert record.source.release == "2026"
+
+
+@pytest.mark.integration
+def test_resolver_layer_reaches_golden_cities():
+    results = resolve_golden_government_fixtures()
+
+    expected = {
+        "161205": "0670364",
+        "176394": "4805000",
+        "184255": "5363000",
+        "176868": "5370000",
+    }
+
+    assert set(results) == {*expected, "124214"}
+
+    for census_id, geoid in expected.items():
+        result = results[census_id]
+
+        assert result.status is ResolutionStatus.RESOLVED
+        assert result.division is not None
+        assert result.division.geoid == geoid
+        assert result.division.geography_type == "place"
+        assert result.division.geometry_url.endswith("f=geojson")
+
+    dc = results["124214"]
+    assert dc.status is ResolutionStatus.DIVISION_NOT_FOUND
+    assert dc.division is None
