@@ -1,0 +1,21 @@
+id: 09f7f0db-4883-5ffb-b623-36a85c4a4961
+ocdid: ocd-jurisdiction/country:us/state:wa/county:snohomish/government
+name: Snohomish County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:snohomish
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:52:17.853330Z'
+last_updated: '2026-09-25T17:52:17.853330Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

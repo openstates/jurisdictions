@@ -1,0 +1,22 @@
+id: 515f590c-b150-54c7-a6f1-b1c3d9f42a57
+ocdid: ocd-jurisdiction/country:us/state:tx/county:nolan/government
+name: Nolan County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:nolan/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:48:09.991598Z'
+last_updated: '2026-09-25T17:48:10.137341Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:nolan/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

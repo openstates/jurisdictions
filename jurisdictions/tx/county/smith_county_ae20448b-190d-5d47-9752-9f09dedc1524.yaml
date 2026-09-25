@@ -1,0 +1,21 @@
+id: ae20448b-190d-5d47-9752-9f09dedc1524
+ocdid: ocd-jurisdiction/country:us/state:tx/county:smith/government
+name: Smith County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:smith
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:43:04.120886Z'
+last_updated: '2026-09-25T17:43:04.120886Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

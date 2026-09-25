@@ -1,0 +1,22 @@
+id: 7a195a0e-b42d-5afa-b5bd-52aae42fb2d2
+ocdid: ocd-jurisdiction/country:us/state:tx/county:kent/government
+name: Kent County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:kent/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:46:56.262945Z'
+last_updated: '2026-09-25T17:46:56.412842Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:kent/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

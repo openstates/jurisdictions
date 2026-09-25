@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-19T17:38:04.180646+00:00",
+  "generated_at": "2026-09-25T17:53:17.100791+00:00",
   "tables": [
     {
       "name": "local_ocdids",
       "partitioned_by": "state",
-      "rows": 1554,
-      "bytes": 33324,
+      "rows": 3108,
+      "bytes": 45194,
       "files": {
         "ak": "local_ocdids/state=ak/data_0.parquet",
         "al": "local_ocdids/state=al/data_0.parquet",
@@ -208,8 +208,8 @@
     {
       "name": "master_orphans",
       "file": "master_orphans.parquet",
-      "rows": 23834,
-      "bytes": 289308,
+      "rows": 47668,
+      "bytes": 356028,
       "columns": [
         {
           "name": "id",
@@ -226,6 +226,34 @@
       "file": "generation_tracking_2026_09_19.parquet",
       "rows": 1554,
       "bytes": 43125,
+      "columns": [
+        {
+          "name": "original_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "error",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "division_path",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "jurisdiction_path",
+          "type": "VARCHAR"
+        }
+      ]
+    },
+    {
+      "name": "generation_tracking_2026_09_25",
+      "file": "generation_tracking_2026_09_25.parquet",
+      "rows": 3108,
+      "bytes": 65508,
       "columns": [
         {
           "name": "original_id",

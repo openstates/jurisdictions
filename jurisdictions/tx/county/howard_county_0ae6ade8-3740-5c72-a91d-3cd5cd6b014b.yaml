@@ -1,0 +1,21 @@
+id: 0ae6ade8-3740-5c72-a91d-3cd5cd6b014b
+ocdid: ocd-jurisdiction/country:us/state:tx/county:howard/government
+name: Howard County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:howard
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:40:33.074524Z'
+last_updated: '2026-09-25T17:40:33.074524Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

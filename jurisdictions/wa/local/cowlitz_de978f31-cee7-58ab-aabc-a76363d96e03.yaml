@@ -1,0 +1,22 @@
+id: de978f31-cee7-58ab-aabc-a76363d96e03
+ocdid: ocd-jurisdiction/country:us/state:wa/county:cowlitz/government
+name: Cowlitz County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:cowlitz/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:53:02.340814Z'
+last_updated: '2026-09-25T17:53:02.485740Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:cowlitz/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

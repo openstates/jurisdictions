@@ -1,0 +1,21 @@
+id: 8c748c4a-fff7-582b-9c27-c635a1065485
+ocdid: ocd-jurisdiction/country:us/state:tx/county:burleson/government
+name: Burleson County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:burleson
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:38:20.017758Z'
+last_updated: '2026-09-25T17:38:20.017758Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

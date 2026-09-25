@@ -1,0 +1,21 @@
+id: 54578de6-acdc-57a9-baba-eba6d9c6fe49
+ocdid: ocd-jurisdiction/country:us/state:tx/county:palo_pinto/government
+name: Palo Pinto County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:palo_pinto
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:42:12.649512Z'
+last_updated: '2026-09-25T17:42:12.649512Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

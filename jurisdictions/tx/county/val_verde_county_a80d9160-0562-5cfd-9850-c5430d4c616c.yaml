@@ -1,0 +1,21 @@
+id: a80d9160-0562-5cfd-9850-c5430d4c616c
+ocdid: ocd-jurisdiction/country:us/state:tx/county:val_verde/government
+name: Val Verde County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:val_verde
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:43:43.444619Z'
+last_updated: '2026-09-25T17:43:43.444619Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

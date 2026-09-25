@@ -1,0 +1,22 @@
+id: 2f116415-ca31-5671-822f-ebb69a102d9d
+ocdid: ocd-jurisdiction/country:us/state:tx/county:kenedy/government
+name: Kenedy County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:kenedy/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:46:54.731668Z'
+last_updated: '2026-09-25T17:46:54.880529Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:kenedy/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

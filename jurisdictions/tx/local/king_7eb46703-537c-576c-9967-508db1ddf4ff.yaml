@@ -1,0 +1,22 @@
+id: 7eb46703-537c-576c-9967-508db1ddf4ff
+ocdid: ocd-jurisdiction/country:us/state:tx/county:king/government
+name: King County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:king/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:02.606000Z'
+last_updated: '2026-09-25T17:47:02.757652Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:king/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
