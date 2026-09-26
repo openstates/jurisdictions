@@ -30,6 +30,7 @@ from tests.integration.golden.harness import (
     load_normalized_government_fixtures,
     load_roster,
     resolve_golden_government_fixtures,
+    validate_golden_government_fixtures,
     regenerate_from_fixtures,
     run_pipeline,
 )
@@ -300,3 +301,39 @@ def test_resolver_layer_reaches_golden_cities():
     dc = results["124214"]
     assert dc.status is ResolutionStatus.DIVISION_NOT_FOUND
     assert dc.division is None
+
+
+@pytest.mark.integration
+def test_ocdid_validation_quarantines_unknown_golden_candidates():
+    results, quarantines = validate_golden_government_fixtures()
+
+    assert results["161205"].status.value == "VERIFIED"
+    assert results["176868"].status.value == "VERIFIED"
+
+    assert results["176394"].status.value == "QUARANTINED"
+    assert results["184255"].status.value == "QUARANTINED"
+
+    assert results["176394"].canonical_ocdid is None
+    assert results["184255"].canonical_ocdid is None
+
+    by_census_id = {
+        record.government.census_government_id: record
+        for record in quarantines
+    }
+
+    assert set(by_census_id) == {"176394", "184255"}
+
+    austin = by_census_id["176394"]
+    assert austin.candidate.value == (
+        "ocd-division/country:us/state:tx/place:austin"
+    )
+    assert austin.reason == "not_in_canonical_corpus"
+    assert austin.review.status.value == "pending"
+    assert austin.review.canonical_ocdid is None
+
+    seattle = by_census_id["184255"]
+    assert seattle.candidate.value == (
+        "ocd-division/country:us/state:wa/place:seattle"
+    )
+    assert seattle.reason == "not_in_canonical_corpus"
+    assert seattle.review.canonical_ocdid is None
