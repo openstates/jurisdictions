@@ -37,6 +37,10 @@ from src.init_migration.pipeline_models import (
 from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
 from src.models.ocdid import OCDIdParsed
+from src.normalize_government import NormalizationResult, normalize_records
+from src.sources import census_gus
+from src.sources.government_units import GovernmentKind
+from src.sources.snapshot import load_snapshot, source_obj_from_snapshot
 from src.utils.deterministic_id import generate_id
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -309,17 +313,10 @@ def load_division_fixtures() -> list[Division]:
 
 
 def load_jurisdiction_fixtures() -> list[Jurisdiction]:
-    """The Jurisdiction fixture objects that construct under the current model.
+    """Return the jurisdiction fixtures loaded from golden sample output."""
+    from tests.fixtures.jurisdictions_sample import jur_list
 
-    The module is executed only up to the first object that fails validation
-    (its OCDid ends in a segment that is not a classification value), so the
-    objects defined before it are recovered without importing the module.
-    """
-    source = (FIXTURES_ROOT / "jurisdictions_sample.py").read_text()
-    head = source.split("MARIN_CITY_CSD_JURISDICTION =")[0]
-    namespace: dict[str, Any] = {}
-    exec(compile(head, "jurisdictions_sample.py", "exec"), namespace)
-    return [obj for obj in namespace.values() if isinstance(obj, Jurisdiction)]
+    return list(jur_list)
 
 
 def regenerate_from_fixtures(root: Path) -> list[Path]:
@@ -334,6 +331,30 @@ def load_roster() -> list[str]:
     """Division OCDids from the OCD master fixture, in file order."""
     with ROSTER_CSV.open(newline="") as handle:
         return [row["id"] for row in csv.DictReader(handle)]
+
+
+def load_normalized_government_fixtures() -> NormalizationResult:
+    """Run the Phase 5 normalizer over the controlled annual Census fixture."""
+    snapshot = load_snapshot(
+        FIXTURES_ROOT / "census_gus" / "gov_units_2026_general_purpose.csv"
+    )
+    parsed = census_gus.parse_sheet_snapshot(
+        snapshot,
+        GovernmentKind.GENERAL_PURPOSE,
+    )
+    if parsed.metadata is None:
+        raise ValueError("Census fixture did not carry snapshot metadata")
+
+    source = source_obj_from_snapshot(
+        parsed.metadata,
+        field=["government"],
+        source_description="Census government normalization input",
+    )
+    return normalize_records(
+        parsed.records,
+        source=source,
+        source_errors=parsed.errors,
+    )
 
 
 # ------------------------------------------------------------------- pipeline
