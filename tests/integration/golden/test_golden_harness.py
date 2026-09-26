@@ -16,7 +16,6 @@ import yaml
 from src.init_migration.pipeline_models import Status
 from src.normalize_government import GovernmentType
 from src.resolve_government import ResolutionStatus
-from src.utils.deterministic_id import generate_id
 from tests.integration.golden.harness import (
     ABSENT,
     FILE_PATH_FIELD,
@@ -162,7 +161,7 @@ def test_golden_relative_path_reproduces_checked_in_layout():
 
     sausalito = by_ocdid["ocd-division/country:us/state:ca/place:sausalito"]
     assert golden_relative_path(sausalito) == Path(
-        f"divisions/test/ca/local/sausalito_{generate_id(sausalito.ocdid)}.yaml"
+        f"divisions/test/ca/local/sausalito_{sausalito.id}.yaml"
     )
 
     anc = by_ocdid["ocd-division/country:us/district:dc/anc:1a/council_district:1"]
@@ -170,7 +169,7 @@ def test_golden_relative_path_reproduces_checked_in_layout():
 
     austin = by_ocdid["ocd-jurisdiction/country:us/state:tx/place:austin/government"]
     assert golden_relative_path(austin) == Path(
-        f"jurisdictions/test/tx/local/city_of_austin_{generate_id(austin.ocdid)}.yaml"
+        f"jurisdictions/test/tx/local/city_of_austin_{austin.id}.yaml"
     )
 
 
@@ -196,6 +195,7 @@ def test_jurisdiction_fixtures_recover_every_constructible_object():
     assert names == [
         "ANC 1A Government",
         "City of Austin",
+        "Marin City Community Services District Governing Board",
         "Sausalito City Government",
         "Seattle City Government",
         "Tacoma City Government",
@@ -206,14 +206,14 @@ def test_jurisdiction_fixtures_recover_every_constructible_object():
 
 
 @pytest.mark.integration
-def test_regenerate_from_fixtures_writes_eleven_files_and_nothing_under_golden(
+def test_regenerate_from_fixtures_writes_twelve_files_and_nothing_under_golden(
     tmp_path,
 ):
     before = _tree_digest(GOLDEN_ROOT)
 
     written = regenerate_from_fixtures(tmp_path)
 
-    assert len(written) == 11
+    assert len(written) == 12
     assert all(tmp_path in p.parents for p in written)
     assert _tree_digest(GOLDEN_ROOT) == before
 

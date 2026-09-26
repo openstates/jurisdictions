@@ -1,0 +1,22 @@
+id: f569b642-87d2-5984-8b09-e94546b9e7e4
+ocdid: ocd-jurisdiction/country:us/state:tx/county:bexar/government
+name: Bexar County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:bexar/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:38:50.882721Z'
+last_updated: '2026-09-25T17:38:51.033457Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:bexar/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

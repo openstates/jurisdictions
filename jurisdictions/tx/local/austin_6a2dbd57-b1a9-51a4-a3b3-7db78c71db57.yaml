@@ -1,0 +1,22 @@
+id: 6a2dbd57-b1a9-51a4-a3b3-7db78c71db57
+ocdid: ocd-jurisdiction/country:us/state:tx/place:austin/government
+name: Austin Council District 9 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:austin/council_district:9
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:51:28.452739Z'
+last_updated: '2026-09-25T17:51:28.605243Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:austin/council_district:9
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

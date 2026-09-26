@@ -319,17 +319,10 @@ def load_division_fixtures() -> list[Division]:
 
 
 def load_jurisdiction_fixtures() -> list[Jurisdiction]:
-    """The Jurisdiction fixture objects that construct under the current model.
+    """Return the jurisdiction fixtures loaded from golden sample output."""
+    from tests.fixtures.jurisdictions_sample import jur_list
 
-    The module is executed only up to the first object that fails validation
-    (its OCDid ends in a segment that is not a classification value), so the
-    objects defined before it are recovered without importing the module.
-    """
-    source = (FIXTURES_ROOT / "jurisdictions_sample.py").read_text()
-    head = source.split("MARIN_CITY_CSD_JURISDICTION =")[0]
-    namespace: dict[str, Any] = {}
-    exec(compile(head, "jurisdictions_sample.py", "exec"), namespace)
-    return [obj for obj in namespace.values() if isinstance(obj, Jurisdiction)]
+    return list(jur_list)
 
 
 def regenerate_from_fixtures(root: Path) -> list[Path]:

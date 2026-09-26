@@ -1,0 +1,21 @@
+id: eaec73a2-d9eb-5290-b76f-1823a101f925
+ocdid: ocd-jurisdiction/country:us/state:tx/county:bailey/government
+name: Bailey County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:bailey
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:38:07.070264Z'
+last_updated: '2026-09-25T17:38:07.070264Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

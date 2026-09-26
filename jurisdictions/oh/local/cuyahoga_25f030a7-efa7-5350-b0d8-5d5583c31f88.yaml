@@ -1,0 +1,22 @@
+id: 25f030a7-efa7-5350-b0d8-5d5583c31f88
+ocdid: ocd-jurisdiction/country:us/state:oh/county:cuyahoga/government
+name: Cuyahoga County Council District 9 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:oh/county:cuyahoga/council_district:9
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:52:48.705036Z'
+last_updated: '2026-09-25T17:52:48.851253Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:oh/county:cuyahoga/council_district:9
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

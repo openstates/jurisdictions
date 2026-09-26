@@ -1,0 +1,21 @@
+id: cfbc5fad-3951-54f2-9599-6625b96d0d3f
+ocdid: ocd-jurisdiction/country:us/state:wa/county:yakima/government
+name: Yakima County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:yakima
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:52:29.189176Z'
+last_updated: '2026-09-25T17:52:29.189176Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

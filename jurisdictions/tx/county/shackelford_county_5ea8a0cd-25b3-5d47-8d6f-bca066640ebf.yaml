@@ -1,0 +1,21 @@
+id: 5ea8a0cd-25b3-5d47-8d6f-bca066640ebf
+ocdid: ocd-jurisdiction/country:us/state:tx/county:shackelford/government
+name: Shackelford County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:shackelford
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:42:59.028113Z'
+last_updated: '2026-09-25T17:42:59.028113Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

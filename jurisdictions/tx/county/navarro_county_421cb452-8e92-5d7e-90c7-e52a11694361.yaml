@@ -1,0 +1,21 @@
+id: 421cb452-8e92-5d7e-90c7-e52a11694361
+ocdid: ocd-jurisdiction/country:us/state:tx/county:navarro/government
+name: Navarro County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:navarro
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:41:58.370246Z'
+last_updated: '2026-09-25T17:41:58.370246Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

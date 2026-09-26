@@ -1,0 +1,21 @@
+id: 057855dd-7e0a-5d3d-b1d6-c7e88abee79b
+ocdid: ocd-jurisdiction/country:us/state:tx/county:cameron/government
+name: Cameron County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:cameron
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:38:24.284651Z'
+last_updated: '2026-09-25T17:38:24.284651Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

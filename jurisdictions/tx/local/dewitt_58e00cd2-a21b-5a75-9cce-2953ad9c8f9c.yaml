@@ -1,0 +1,22 @@
+id: 58e00cd2-a21b-5a75-9cce-2953ad9c8f9c
+ocdid: ocd-jurisdiction/country:us/state:tx/county:dewitt/government
+name: DeWitt County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:dewitt/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:44:50.628727Z'
+last_updated: '2026-09-25T17:44:50.779245Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:dewitt/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

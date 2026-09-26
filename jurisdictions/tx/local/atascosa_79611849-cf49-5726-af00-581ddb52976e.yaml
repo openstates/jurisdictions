@@ -1,0 +1,22 @@
+id: 79611849-cf49-5726-af00-581ddb52976e
+ocdid: ocd-jurisdiction/country:us/state:tx/county:atascosa/government
+name: Atascosa County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:atascosa/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:38:44.573972Z'
+last_updated: '2026-09-25T17:38:44.721503Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:atascosa/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

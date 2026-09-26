@@ -1,0 +1,22 @@
+id: 4c0d761f-8fdc-5e97-9814-aec15f8a18b9
+ocdid: ocd-jurisdiction/country:us/state:tx/place:waco/government
+name: Waco Council District 5 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:waco/council_district:5
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:52:04.008066Z'
+last_updated: '2026-09-25T17:52:04.157476Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:waco/council_district:5
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: 2b46e125-c2e7-58ce-b283-266a00f244c4
+ocdid: ocd-jurisdiction/country:us/state:tx/county:wilson/government
+name: Wilson County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:wilson/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:50:15.758040Z'
+last_updated: '2026-09-25T17:50:15.903930Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:wilson/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

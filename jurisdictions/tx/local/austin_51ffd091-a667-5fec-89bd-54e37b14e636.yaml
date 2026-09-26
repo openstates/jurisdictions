@@ -1,0 +1,22 @@
+id: 51ffd091-a667-5fec-89bd-54e37b14e636
+ocdid: ocd-jurisdiction/country:us/state:tx/county:austin/government
+name: Austin County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:austin/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:38:45.335017Z'
+last_updated: '2026-09-25T17:38:45.481427Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:austin/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

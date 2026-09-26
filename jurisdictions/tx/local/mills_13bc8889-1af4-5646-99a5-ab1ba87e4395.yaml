@@ -1,0 +1,22 @@
+id: 13bc8889-1af4-5646-99a5-ab1ba87e4395
+ocdid: ocd-jurisdiction/country:us/state:tx/county:mills/government
+name: Mills County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:mills/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:54.446406Z'
+last_updated: '2026-09-25T17:47:54.595151Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:mills/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

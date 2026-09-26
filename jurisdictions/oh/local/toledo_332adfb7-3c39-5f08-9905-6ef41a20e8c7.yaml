@@ -1,0 +1,22 @@
+id: 332adfb7-3c39-5f08-9905-6ef41a20e8c7
+ocdid: ocd-jurisdiction/country:us/state:oh/place:toledo/government
+name: Toledo Council District 6 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:oh/place:toledo/council_district:6
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:37:56.561625Z'
+last_updated: '2026-09-25T17:37:56.709870Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:oh/place:toledo/council_district:6
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

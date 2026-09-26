@@ -1,0 +1,22 @@
+id: 2c2b078f-3da8-51dc-8fcd-6a1d3c6ee344
+ocdid: ocd-jurisdiction/country:us/state:tx/county:stonewall/government
+name: Stonewall County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:stonewall/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:49:23.969629Z'
+last_updated: '2026-09-25T17:49:24.113333Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:stonewall/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

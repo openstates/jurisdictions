@@ -1,0 +1,22 @@
+id: 4cdc136a-5aa5-5cf2-a4e5-0dfce0138191
+ocdid: ocd-jurisdiction/country:us/state:tx/county:taylor/government
+name: Taylor County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:taylor/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:49:30.411478Z'
+last_updated: '2026-09-25T17:49:30.559180Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:taylor/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

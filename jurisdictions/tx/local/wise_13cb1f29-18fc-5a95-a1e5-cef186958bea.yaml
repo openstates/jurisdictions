@@ -1,0 +1,22 @@
+id: 13cb1f29-18fc-5a95-a1e5-cef186958bea
+ocdid: ocd-jurisdiction/country:us/state:tx/county:wise/government
+name: Wise County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:wise/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:51:13.516552Z'
+last_updated: '2026-09-25T17:51:13.661900Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:wise/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

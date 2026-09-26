@@ -1,0 +1,21 @@
+id: 2b1d94fe-fd28-5394-ac87-34bde9cfd755
+ocdid: ocd-jurisdiction/country:us/state:tx/county:pecos/government
+name: Pecos County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:pecos
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:42:19.328703Z'
+last_updated: '2026-09-25T17:42:19.328703Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []
