@@ -155,6 +155,10 @@ class Division(BaseModel):
         ...,
         description="Human-readable name for division. Should be sourced from the Open Civic Data repo.",
     )
+    classification: str | None = Field(
+        default=None,
+        description="Provider-neutral division/geography classification, e.g. state, county, place, county_subdivision, or school_district.",
+    )
     other_names: List[str] = Field(
         default_factory=list,
         description="A list of alternate display names that refer to the same geo political division.",
@@ -195,7 +199,10 @@ class Division(BaseModel):
         None,
         description="Provider-neutral list of external identifiers (Census FIPS/GEOIDs, LEA IDs, DCGIS ANC IDs, etc.). Each entry carries its own SourceObj.",
     )
-    jurisdiction_id: str
+    jurisdiction_id: str | None = Field(
+        default=None,
+        description="Legacy single-jurisdiction backlink retained for compatibility. New canonical construction records Jurisdiction→Division relationships explicitly.",
+    )
 
     @model_validator(mode="after")
     def ensure_uuid5_id(self):

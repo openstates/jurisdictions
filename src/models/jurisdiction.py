@@ -58,6 +58,28 @@ class ClassificationEnum(str, Enum):
     SPECIAL_PURPOSE_DISTRICT = "special_purpose_district"  # NON-OCDid COMPLIANT; ADDED; Examples: Fire districts, water districts, park districts, etc. that have elected governing bodies but are not advisory boards and do not have the full range of powers of a local government.
 
 
+class DivisionRelationshipType(str, Enum):
+    """Directional relationship from a Jurisdiction to a Division."""
+
+    GOVERNS = "governs"
+    SERVES = "serves"
+    OVERLAPS = "overlaps"
+    CONTAINED_BY = "contained_by"
+
+
+class DivisionRelationship(BaseModel):
+    """Explicit Jurisdiction→Division relationship for graph/YAML projection."""
+
+    division_id: OCDIdStr = Field(
+        ...,
+        description="Canonical OCD Division ID at the target of this relationship.",
+    )
+    relationship: DivisionRelationshipType = Field(
+        default=DivisionRelationshipType.GOVERNS,
+        description="Directionally interpreted from this Jurisdiction to the target Division.",
+    )
+
+
 class URLEnum(str, Enum):
     """These are the allowed defined types for jurisdiction urls"""
 
@@ -155,6 +177,14 @@ class Jurisdiction(BaseModel):
     classification: ClassificationEnum = Field(
         ...,
         description="A jurisdiction category. **(required)** See ClassificationEnum.",
+    )
+    census_government_id: str | None = Field(
+        default=None,
+        description="Census government-unit identifier for the government entity. Stored as a string to preserve leading zeros.",
+    )
+    division_relationships: List[DivisionRelationship] = Field(
+        default_factory=list,
+        description="Explicit directional relationships from this Jurisdiction to canonical Divisions. Ordinary governments normally GOVERNS one Division.",
     )
     legislative_sessions: Dict[str, SessionDetail] = Field(
         default_factory=dict,
