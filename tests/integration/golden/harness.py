@@ -37,15 +37,28 @@ from src.init_migration.pipeline_models import (
 from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
 from src.models.ocdid import OCDIdParsed
+from src.ocdid_rule_engine import generate_candidate
+from src.ocdid_validation import (
+    OCDIDQuarantineRecord,
+    OCDIDValidationResult,
+    OCDIDValidationStatus,
+    build_quarantine_record,
+    validate_candidate,
+)
 from src.normalize_government import (
     GovernmentType,
     NormalizationResult,
     normalize_records,
 )
-from src.resolve_government import ResolutionResult, resolve_government
+from src.resolve_government import (
+    ResolutionResult,
+    ResolutionStatus,
+    resolve_government,
+)
 from src.sources import census_gus, census_tiger
 from src.sources.census_tiger import load_tiger_config
 from src.sources.government_units import GovernmentKind
+from src.sources.ocd_master import OCDMasterIndex
 from src.sources.snapshot import load_snapshot, source_obj_from_snapshot
 from src.utils.deterministic_id import generate_id
 
@@ -397,6 +410,46 @@ def resolve_golden_government_fixtures() -> dict[str, ResolutionResult]:
         for government in normalized.records
         if government.government_type is GovernmentType.MUNICIPAL
     }
+
+
+
+def validate_golden_government_fixtures() -> tuple[
+    dict[str, OCDIDValidationResult],
+    list[OCDIDQuarantineRecord],
+]:
+    """Run resolved municipal fixtures through Phase 7 and Phase 8."""
+    normalized = load_normalized_government_fixtures()
+    resolutions = resolve_golden_government_fixtures()
+    canonical = OCDMasterIndex.from_snapshots(load_snapshot(ROSTER_CSV))
+
+    results: dict[str, OCDIDValidationResult] = {}
+    quarantines: list[OCDIDQuarantineRecord] = []
+
+    for government in normalized.records:
+        if government.government_type is not GovernmentType.MUNICIPAL:
+            continue
+
+        resolution = resolutions[government.census_government_id]
+        if (
+            resolution.status is not ResolutionStatus.RESOLVED
+            or resolution.division is None
+        ):
+            continue
+
+        candidate = generate_candidate(government, resolution.division)
+        validation = validate_candidate(candidate, canonical)
+        results[government.census_government_id] = validation
+
+        if validation.status is OCDIDValidationStatus.QUARANTINED:
+            quarantines.append(
+                build_quarantine_record(
+                    government=government,
+                    division=resolution.division,
+                    validation=validation,
+                )
+            )
+
+    return results, quarantines
 
 
 # ------------------------------------------------------------------- pipeline
