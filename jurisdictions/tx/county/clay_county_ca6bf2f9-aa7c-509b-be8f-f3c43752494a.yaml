@@ -1,0 +1,21 @@
+id: ca6bf2f9-aa7c-509b-be8f-f3c43752494a
+ocdid: ocd-jurisdiction/country:us/state:tx/county:clay/government
+name: Clay County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:clay
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:38:31.317723Z'
+last_updated: '2026-09-25T17:38:31.317723Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

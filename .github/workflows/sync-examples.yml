@@ -1,0 +1,49 @@
+name: Sync examples from sample output
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tests/sample_output/**'
+      # A pipeline run rewrites the whole divisions/ tree and takes
+      # divisions/examples with it, so changes here must re-trigger the
+      # mirror to put the examples back.
+      - 'divisions/examples/**'
+      - 'jurisdictions/examples/**'
+      - 'src/utils/sync_examples.py'
+      - '.github/workflows/sync-examples.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-examples
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+
+      - run: uv sync --all-extras
+
+      - name: Mirror sample output into examples
+        run: uv run python -m src.utils.sync_examples
+
+      - name: Commit if the mirror changed
+        run: |
+          if [ -z "$(git status --porcelain divisions/examples jurisdictions/examples)" ]; then
+            echo "Examples already match tests/sample_output; nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add divisions/examples jurisdictions/examples
+          git commit -m "Sync examples from tests/sample_output"
+          git push

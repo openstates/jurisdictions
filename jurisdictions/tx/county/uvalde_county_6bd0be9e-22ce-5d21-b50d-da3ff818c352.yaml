@@ -1,0 +1,21 @@
+id: 6bd0be9e-22ce-5d21-b50d-da3ff818c352
+ocdid: ocd-jurisdiction/country:us/state:tx/county:uvalde/government
+name: Uvalde County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:uvalde
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:43:40.928137Z'
+last_updated: '2026-09-25T17:43:40.928137Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

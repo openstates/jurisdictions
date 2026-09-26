@@ -1,0 +1,50 @@
+accurate_asof: '2025-10-27T01:29:51Z'
+classification: government
+feature_flags: []
+id: b60ab7ed-add2-5de4-bd08-3da4aec2312b
+last_updated: '2025-10-27T01:29:51Z'
+legislative_sessions: {}
+metadata:
+  urls:
+  - url: https://www.austintexas.gov/department/city-council/council/council_meeting_info_center.htm
+    url_type: meetings
+  - url: https://www.austintexas.gov/government
+    url_type: people
+name: City of Austin
+ocdid: ocd-jurisdiction/country:us/state:tx/place:austin/government
+sourcing:
+- field:
+  - url
+  source_description: null
+  source_name: City of Austin ArcGIS Hub
+  source_type: human_researched
+  source_url:
+    url: https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/
+- field:
+  - term
+  - term.term_description
+  source_description: null
+  source_name: Austin Code of Ordinances
+  source_type: human_researched
+  source_url:
+    url: https://library.municode.com/tx/austin/codes/code_of_ordinances?nodeId=CH_ARTIIIEL_S2ELDACOTEELMARFEL
+- field:
+  - term
+  - term.term_limits
+  source_description: null
+  source_name: Austin Code of Ordinances
+  source_type: human_researched
+  source_url:
+    url: https://library.municode.com/tx/austin/codes/code_of_ordinances?nodeId=CH_ARTIITHCO_S5TELI
+term:
+  duration: 4
+  last_known_term_end_date: null
+  number_of_positions: 11
+  source_url: https://library.municode.com/tx/austin/codes/code_of_ordinances?nodeId=CH_ARTIIIEL_S2ELDACOTEELMARFEL
+  term_description: The regular term of the mayor and council members is four years.
+    Council terms shall be staggered so that a general election is held every two
+    years, and half, or as near to half as is practical, of the council is elected
+    at each election. The term "council member(s)" includes the mayor unless otherwise
+    provided.
+  term_limits: 2 consecutive terms
+url: https://www.austintexas.gov

@@ -1,0 +1,22 @@
+id: f29b8789-da42-56a1-a465-83a801dfc816
+ocdid: ocd-jurisdiction/country:us/state:tx/county:liberty/government
+name: Liberty County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:liberty/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:22.037186Z'
+last_updated: '2026-09-25T17:47:22.185704Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:liberty/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

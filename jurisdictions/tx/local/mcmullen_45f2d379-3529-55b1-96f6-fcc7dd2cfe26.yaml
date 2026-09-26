@@ -1,0 +1,22 @@
+id: 45f2d379-3529-55b1-96f6-fcc7dd2cfe26
+ocdid: ocd-jurisdiction/country:us/state:tx/county:mcmullen/government
+name: McMullen County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:mcmullen/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:46.779594Z'
+last_updated: '2026-09-25T17:47:46.925842Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:mcmullen/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

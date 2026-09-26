@@ -1,0 +1,22 @@
+id: 4d811dfa-e95c-5f4d-bd32-60a859b38ef9
+ocdid: ocd-jurisdiction/country:us/state:tx/county:midland/government
+name: Midland County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:midland/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:51.314263Z'
+last_updated: '2026-09-25T17:47:51.460815Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:midland/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

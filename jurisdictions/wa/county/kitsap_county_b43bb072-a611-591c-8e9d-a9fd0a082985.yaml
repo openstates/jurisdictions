@@ -1,0 +1,21 @@
+id: b43bb072-a611-591c-8e9d-a9fd0a082985
+ocdid: ocd-jurisdiction/country:us/state:wa/county:kitsap/government
+name: Kitsap County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:kitsap
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:52:05.391111Z'
+last_updated: '2026-09-25T17:52:05.391111Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

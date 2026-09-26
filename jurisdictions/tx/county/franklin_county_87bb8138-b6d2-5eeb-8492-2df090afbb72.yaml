@@ -1,0 +1,21 @@
+id: 87bb8138-b6d2-5eeb-8492-2df090afbb72
+ocdid: ocd-jurisdiction/country:us/state:tx/county:franklin/government
+name: Franklin County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:franklin
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:39:52.925444Z'
+last_updated: '2026-09-25T17:39:52.925444Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

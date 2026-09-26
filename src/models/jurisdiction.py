@@ -180,8 +180,8 @@ class Jurisdiction(BaseModel):
         default_factory=list,
         description="Describe how the data was sourced. Used to identify AI generated data.",
     )
-    metadata: JurisdictionMetadata = Field(
-        default_factory=dict,
+    metadata: Optional[JurisdictionMetadata] = Field(
+        default=None,
         description="Any other useful information that a researcher feels should be included.",
     )
 
@@ -211,16 +211,15 @@ class Jurisdiction(BaseModel):
             self.id = generate_id(self.ocdid)
         return self
 
-    # Untested
     @classmethod
-    def load_jurisdiction(cls, filepath):
+    def load_jurisdiction(cls, filepath: str | Path) -> "Jurisdiction":
         try:
-            data = yaml.safe_load(filepath)
-            cls = cls(**data)
+            data = yaml.safe_load(Path(filepath).read_text())
+            return cls(**data)
         except Exception as error:
             logger.error(
                 "Failed to load jurisdiction object",
-                extras={"error": error},
+                extra={"filepath": str(filepath)},
                 exc_info=True,
             )
             raise ValueError("Failed to load jurisdiction. Check filepath") from error
@@ -233,7 +232,7 @@ class Jurisdiction(BaseModel):
         # Convert model to dict using JSON mode to convert enums to strings
         data = self.model_dump(exclude_none=False, mode="json")
         with open(filepath, "w") as f:
-            yaml.safe_dump(data, f)
+            yaml.safe_dump(data, f, sort_keys=False)
         return filepath
 
     @classmethod

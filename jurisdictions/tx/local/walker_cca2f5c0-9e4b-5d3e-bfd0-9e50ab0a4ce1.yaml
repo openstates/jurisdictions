@@ -1,0 +1,22 @@
+id: cca2f5c0-9e4b-5d3e-bfd0-9e50ab0a4ce1
+ocdid: ocd-jurisdiction/country:us/state:tx/county:walker/government
+name: Walker County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:walker/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:49:56.304832Z'
+last_updated: '2026-09-25T17:49:56.458797Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:walker/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

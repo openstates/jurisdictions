@@ -1,0 +1,21 @@
+id: 77775bbb-26d3-5f8c-8a01-04a09e225e85
+ocdid: ocd-jurisdiction/country:us/state:tx/county:andrews/government
+name: Andrews County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:andrews
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:38:02.135722Z'
+last_updated: '2026-09-25T17:38:02.135722Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

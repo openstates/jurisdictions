@@ -1,0 +1,21 @@
+id: 028a291a-a5e8-592a-808d-ad682cfe623b
+ocdid: ocd-jurisdiction/country:us/state:tx/county:mason/government
+name: Mason County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:mason
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:41:31.824581Z'
+last_updated: '2026-09-25T17:41:31.824581Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

@@ -1,0 +1,21 @@
+id: 5f77927d-7cd0-5379-8e64-51eff928e916
+ocdid: ocd-jurisdiction/country:us/state:tx/county:deaf_smith/government
+name: Deaf Smith County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:deaf_smith
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:39:30.225052Z'
+last_updated: '2026-09-25T17:39:30.225052Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

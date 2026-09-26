@@ -1,0 +1,21 @@
+id: ce8096ef-673a-5306-acab-dca8e2aa424e
+ocdid: ocd-jurisdiction/country:us/state:tx/county:bosque/government
+name: Bosque County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:bosque
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:38:13.731504Z'
+last_updated: '2026-09-25T17:38:13.731504Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

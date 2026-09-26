@@ -1,0 +1,22 @@
+id: 92b65086-5527-59ad-bd22-1330236e8f4d
+ocdid: ocd-jurisdiction/country:us/state:tx/county:concho/government
+name: Concho County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:concho/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:44:25.429894Z'
+last_updated: '2026-09-25T17:44:25.577317Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:concho/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

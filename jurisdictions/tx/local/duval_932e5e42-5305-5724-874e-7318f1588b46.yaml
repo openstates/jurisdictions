@@ -1,0 +1,22 @@
+id: 932e5e42-5305-5724-874e-7318f1588b46
+ocdid: ocd-jurisdiction/country:us/state:tx/county:duval/government
+name: Duval County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:duval/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:44:58.807510Z'
+last_updated: '2026-09-25T17:44:58.952952Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:duval/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: 32da1008-6a69-54f1-a6b1-ee0232f80821
+ocdid: ocd-jurisdiction/country:us/state:tx/county:oldham/government
+name: Oldham County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:oldham/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:48:18.949367Z'
+last_updated: '2026-09-25T17:48:19.094954Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:oldham/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
