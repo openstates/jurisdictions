@@ -1,0 +1,22 @@
+id: 262044b2-f7b4-5d03-9583-d451a11b185e
+ocdid: ocd-jurisdiction/country:us/state:tx/county:delta/government
+name: Delta County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:delta/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:44:47.711861Z'
+last_updated: '2026-09-25T17:44:47.858010Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:delta/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

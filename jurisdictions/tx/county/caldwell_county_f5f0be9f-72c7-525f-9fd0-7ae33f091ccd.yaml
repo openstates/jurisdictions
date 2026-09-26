@@ -1,0 +1,21 @@
+id: f5f0be9f-72c7-525f-9fd0-7ae33f091ccd
+ocdid: ocd-jurisdiction/country:us/state:tx/county:caldwell/government
+name: Caldwell County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:caldwell
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:38:21.732920Z'
+last_updated: '2026-09-25T17:38:21.732920Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

@@ -1,0 +1,21 @@
+id: c30194de-4c7c-573c-8b48-2167158bca29
+ocdid: ocd-jurisdiction/country:us/state:tx/county:lee/government
+name: Lee County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:lee
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:41:13.596752Z'
+last_updated: '2026-09-25T17:41:13.596752Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

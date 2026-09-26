@@ -1,0 +1,22 @@
+id: a80d9160-0562-5cfd-9850-c5430d4c616c
+ocdid: ocd-jurisdiction/country:us/state:tx/county:val_verde/government
+name: Val Verde County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:val_verde/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:49:50.125280Z'
+last_updated: '2026-09-25T17:49:50.270851Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:val_verde/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

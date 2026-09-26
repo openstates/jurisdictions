@@ -1,0 +1,21 @@
+id: 143c6467-c483-5121-9f24-b66a4be9ccab
+ocdid: ocd-jurisdiction/country:us/state:wa/county:okanogan/government
+name: Okanogan County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:okanogan
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:52:08.284991Z'
+last_updated: '2026-09-25T17:52:08.284991Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: 18fb5682-fa12-5d97-a564-49665faa71af
+ocdid: ocd-jurisdiction/country:us/state:wa/county:thurston/government
+name: Thurston County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:thurston/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:52:26.242581Z'
+last_updated: '2026-09-25T17:52:26.392558Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:thurston/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

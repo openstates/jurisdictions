@@ -8,7 +8,9 @@ It includes YAML files with metadata for every government entity in the United S
 
 Our data is derived from Census Data and mapped to [Open Civic Data](https://github.com/opencivicdata/ocd-division-ids/tree/master/identifiers/country-us) Division identifiers (another long-standing open-source project).  
 
-The OpenStates/Jurisdictions YAML files are intended for use by application builders. View sample files [here](https://github.com/openstates/jurisdictions/tree/main/divisions/examples)
+The OpenStates/Jurisdictions YAML files are intended for use by application builders. View sample files for [divisions](https://github.com/openstates/jurisdictions/tree/main/divisions/examples) and [jurisdictions](https://github.com/openstates/jurisdictions/tree/main/jurisdictions/examples).
+
+Both `examples/` directories are generated — they mirror `tests/sample_output/` and are synced automatically whenever that output changes, so the samples always match what the models emit. To change an example, change the fixtures under `tests/fixtures/`; edits made directly to `examples/` are overwritten.
 
 By providing comprehensive, accurate, stable and human-verified set of Jurisdiction data for local U.S. government entities, we are helping developers more easily and quickly provide their users with up-to-date representative information, ballot information, public notices, public meetings, and more. 
 

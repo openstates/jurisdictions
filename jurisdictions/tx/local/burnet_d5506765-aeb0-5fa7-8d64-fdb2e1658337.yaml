@@ -1,0 +1,22 @@
+id: d5506765-aeb0-5fa7-8d64-fdb2e1658337
+ocdid: ocd-jurisdiction/country:us/state:tx/county:burnet/government
+name: Burnet County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:burnet/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:39:01.124867Z'
+last_updated: '2026-09-25T17:39:01.269763Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:burnet/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

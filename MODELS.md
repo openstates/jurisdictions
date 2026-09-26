@@ -423,6 +423,23 @@ ocd-division/country:us/state:ca/county:kern/place:delano_shafter
 
 ---
 
+## YAML Field Order
+
+**Serialized YAML must list keys in the order the model declares them, not alphabetically.** This applies at every level: a nested `Geometry`, `Boundary`, `Identifier`, or `SourceObj` follows its own model's field order too.
+
+The declaration order is deliberate — identity first (`id`, `ocdid`), then naming, then geography, then validity dates, then provenance. Alphabetical output scatters related fields (`accurate_asof` lands next to `country`; `ocdid` lands between `metadata` and `sourcing`), which makes a file harder to scan and makes diffs noisier than the change behind them.
+
+Pydantic's `model_dump()` already emits fields in declaration order, so preserving it is a matter of not re-sorting on the way out:
+
+```python
+data = self.model_dump(exclude_none=False, mode="json")
+yaml.safe_dump(data, f, sort_keys=False)   # sort_keys defaults to True
+```
+
+`sort_keys=False` is required on every dump path that writes a model to disk. To change the order of a YAML file, change the field order in the model — the serializer follows.
+
+---
+
 ## File Locations
 
 | Model | File | Imports |

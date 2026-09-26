@@ -1,0 +1,21 @@
+id: 3837d939-7966-5870-8660-ce508d39964c
+ocdid: ocd-jurisdiction/country:us/state:wa/county:pend_oreille/government
+name: Pend Oreille County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:pend_oreille
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:52:09.275649Z'
+last_updated: '2026-09-25T17:52:09.275649Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

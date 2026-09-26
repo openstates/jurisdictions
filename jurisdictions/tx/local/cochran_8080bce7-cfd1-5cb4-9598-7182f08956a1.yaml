@@ -1,0 +1,22 @@
+id: 8080bce7-cfd1-5cb4-9598-7182f08956a1
+ocdid: ocd-jurisdiction/country:us/state:tx/county:cochran/government
+name: Cochran County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:cochran/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:39:12.539094Z'
+last_updated: '2026-09-25T17:39:12.689400Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:cochran/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

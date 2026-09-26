@@ -1,0 +1,22 @@
+id: 39945f03-c2ed-5d64-8076-d131b432a2ca
+ocdid: ocd-jurisdiction/country:us/state:tx/county:gregg/government
+name: Gregg County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:gregg/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:45:48.222739Z'
+last_updated: '2026-09-25T17:45:48.367304Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:gregg/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

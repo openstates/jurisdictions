@@ -1,0 +1,21 @@
+id: 3812ce93-3340-5db9-8cb9-6af1c49ffb1a
+ocdid: ocd-jurisdiction/country:us/state:tx/county:schleicher/government
+name: Schleicher County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:schleicher
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:42:55.440233Z'
+last_updated: '2026-09-25T17:42:55.440233Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

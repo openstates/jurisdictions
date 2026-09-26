@@ -1,0 +1,22 @@
+id: a9f7db21-7de9-5752-8d1c-614f8e626689
+ocdid: ocd-jurisdiction/country:us/state:tx/county:willacy/government
+name: Willacy County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:willacy/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:50:11.397223Z'
+last_updated: '2026-09-25T17:50:11.542592Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:willacy/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

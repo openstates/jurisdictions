@@ -1,0 +1,21 @@
+id: 72bac6d5-b3ce-5062-8cd2-cf5964066c42
+ocdid: ocd-jurisdiction/country:us/state:tx/county:montgomery/government
+name: Montgomery County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:montgomery
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:41:50.787639Z'
+last_updated: '2026-09-25T17:41:50.787639Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

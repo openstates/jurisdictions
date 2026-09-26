@@ -1,0 +1,22 @@
+id: 4d0606ce-ee6d-5ed6-a50d-b1d9676318e9
+ocdid: ocd-jurisdiction/country:us/state:oh/place:cleveland/government
+name: Cleveland Ward 9 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:oh/place:cleveland/ward:9
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:37:41.527575Z'
+last_updated: '2026-09-25T17:37:41.680550Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:oh/place:cleveland/ward:9
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

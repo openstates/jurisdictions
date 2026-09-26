@@ -1,0 +1,22 @@
+id: d1b6dfb6-8b37-5b5b-ac62-01b45932fa90
+ocdid: ocd-jurisdiction/country:us/state:tx/place:el_paso/government
+name: El Paso Council District 8 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:el_paso/council_district:8
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:51:37.959951Z'
+last_updated: '2026-09-25T17:51:38.109731Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:el_paso/council_district:8
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

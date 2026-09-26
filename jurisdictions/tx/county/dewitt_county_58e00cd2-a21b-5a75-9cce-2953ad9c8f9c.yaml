@@ -1,0 +1,21 @@
+id: 58e00cd2-a21b-5a75-9cce-2953ad9c8f9c
+ocdid: ocd-jurisdiction/country:us/state:tx/county:dewitt/government
+name: Dewitt County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:dewitt
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:39:33.262182Z'
+last_updated: '2026-09-25T17:39:33.262182Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

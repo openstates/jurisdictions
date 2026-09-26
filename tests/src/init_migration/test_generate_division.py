@@ -7,9 +7,24 @@ from src.init_migration.generate_division import (
     DivGenerator,
     _leaf_segment_display_name,
 )
-from src.models.division import find_identifier
+from src.models.division import Identifiers, find_identifier
 from src.models.ocdid import OCDIdParsed
 from pathlib import Path
+
+
+def _identifier_values(
+    identifiers: Identifiers, id_type: str, authority: str = "census"
+) -> list[str]:
+    """Every value for an id_type.
+
+    ``find_identifier`` returns only the first match, but a division spanning
+    several counties carries one ``countyfp`` entry per county.
+    """
+    return [
+        identifier.value
+        for identifier in identifiers
+        if identifier.authority == authority and identifier.id_type == id_type
+    ]
 
 
 @pytest.fixture
@@ -17,7 +32,10 @@ def sample_req(tmp_path) -> GeneratorReq:
     """Create a GeneratorReq with current OCDidIngestResp types."""
     parsed = OCDIdParsed.parse_ocdid("ocd-division/country:us/state:ca")
     resp = OCDidIngestResp(
-        uuid=uuid5(NAMESPACE_URL, "ocd-division/country:us/state:ca"),
+        uuid=uuid5(
+            NAMESPACE_URL,
+            "ocd-division/country:us/state:ca",
+        ),
         ocdid=parsed,
         raw_record={},
     )
@@ -62,7 +80,10 @@ def test_div_generator_initializes(sample_req):
 def _req_for(ocdid: str) -> GeneratorReq:
     parsed = OCDIdParsed.parse_ocdid(ocdid)
     resp = OCDidIngestResp(
-        uuid=uuid5(NAMESPACE_URL, ocdid),
+        uuid=uuid5(
+            NAMESPACE_URL,
+            ocdid,
+        ),
         ocdid=parsed,
         raw_record={},
     )
@@ -98,12 +119,13 @@ def test_generate_division_from_county_record():
 
     division = dg.generate_division(COUNTY_VAL_REC, dg.uuid)
 
-    assert division.display_name == "Blount"
     identifiers = division.government_identifiers
+
+    assert division.display_name == "Blount"
     assert find_identifier(identifiers, "geoid") == "47009"
     assert find_identifier(identifiers, "statefp") == "47"
-    assert [i.value for i in identifiers if i.id_type == "countyfp"] == ["009"]
-    assert [i.value for i in identifiers if i.id_type == "county_names"] == ["Blount"]
+    assert _identifier_values(identifiers, "countyfp") == ["009"]
+    assert _identifier_values(identifiers, "county_names") == ["Blount"]
 
 
 @pytest.mark.parametrize(
@@ -151,30 +173,35 @@ def test_county_council_district_name_keeps_the_entity_word():
 
 
 def test_leaf_segment_display_name_returns_council_district():
+    # ocd-division/country:us/state:wa/place:seattle/council_district:1
     parsed_ocdid = {"place": "seattle", "council_district": "1"}
 
     assert _leaf_segment_display_name(parsed_ocdid) == "Seattle Council District 1"
 
 
 def test_leaf_segment_display_name_returns_ward():
+    # ocd-division/country:us/state:oh/place:cincinnati/ward:4
     parsed_ocdid = {"place": "cincinnati", "ward": "4"}
 
     assert _leaf_segment_display_name(parsed_ocdid) == "Cincinnati Ward 4"
 
 
 def test_anc_display_name_returns_anc_and_district():
+    # ocd-division/country:us/district:dc/anc:1a/council_district:1
     parsed_ocdid = {"district": "dc", "anc": "1a", "council_district": "1"}
 
     assert _leaf_segment_display_name(parsed_ocdid) == "ANC 1A District 1"
 
 
 def test_place_display_name_returns_place_and_district():
+    # ocd-division/country:us/state:tx/place:austin/council_district:8
     parsed_ocdid = {"place": "austin", "council_district": "8"}
 
     assert _leaf_segment_display_name(parsed_ocdid) == "Austin Council District 8"
 
 
 def test_unmatched_string_returns_none():
+    # ocd-division/country:us/state:wa/place:seattle
     parsed_ocdid = {"place": "seattle"}
 
     assert _leaf_segment_display_name(parsed_ocdid) is None

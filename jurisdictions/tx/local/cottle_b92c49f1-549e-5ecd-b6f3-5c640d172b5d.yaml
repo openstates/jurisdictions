@@ -1,0 +1,22 @@
+id: b92c49f1-549e-5ecd-b6f3-5c640d172b5d
+ocdid: ocd-jurisdiction/country:us/state:tx/county:cottle/government
+name: Cottle County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:cottle/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:44:31.502249Z'
+last_updated: '2026-09-25T17:44:31.652780Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:cottle/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

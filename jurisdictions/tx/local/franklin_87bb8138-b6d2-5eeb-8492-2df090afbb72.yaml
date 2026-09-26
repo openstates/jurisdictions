@@ -1,0 +1,22 @@
+id: 87bb8138-b6d2-5eeb-8492-2df090afbb72
+ocdid: ocd-jurisdiction/country:us/state:tx/county:franklin/government
+name: Franklin County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:franklin/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:45:26.588899Z'
+last_updated: '2026-09-25T17:45:26.738125Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:franklin/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
