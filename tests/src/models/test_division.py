@@ -116,7 +116,7 @@ def test_division_mutable_facts_do_not_change_uuid() -> None:
         ),
         Division(
             **{**base, "display_name": "City of Sausalito"},
-            also_known_as=["Sausalito city"],
+            other_names=["Sausalito city"],
         ),
         Division(**base, children=[f"{ocdid}/council_district:1"]),
     ]
@@ -336,3 +336,29 @@ def test_division_children_rejects_malformed_ocdids() -> None:
                 jurisdiction_id="ocd-jurisdiction/country:us/state:ca/place:sausalito/government",
                 children=[bad_child],
             )
+
+
+
+def test_division_other_names_serializes_alternate_display_names() -> None:
+    """``other_names`` holds alternate display name strings, not OCDids."""
+    division = Division(
+        ocdid="ocd-division/country:us/state:ca/place:marin_city",
+        country="us",
+        display_name="Marin City",
+        jurisdiction_id="ocd-jurisdiction/country:us/state:ca/place:marin_city/government",
+        other_names=["Marin City Census Designated Place"],
+    )
+
+    dumped = division.model_dump(mode="json")
+
+    assert dumped["other_names"] == ["Marin City Census Designated Place"]
+
+
+def test_division_other_names_defaults_to_empty_list() -> None:
+    """A Division with no alternate display names serializes an empty list."""
+    division = _build_division(
+        "ocd-division/country:us/state:wa/place:tacoma"
+    )
+
+    assert division.other_names == []
+    assert division.model_dump(mode="json")["other_names"] == []

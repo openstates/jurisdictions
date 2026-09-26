@@ -1,0 +1,21 @@
+id: 4e87416d-c314-5148-8b67-7bdcd94141ac
+ocdid: ocd-jurisdiction/country:us/state:tx/county:ellis/government
+name: Ellis County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:ellis
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:39:42.870960Z'
+last_updated: '2026-09-25T17:39:42.870960Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

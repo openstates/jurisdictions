@@ -1,0 +1,21 @@
+id: b5ce2b12-7675-57f8-b7c8-561c5db89e75
+ocdid: ocd-jurisdiction/country:us/state:wa/county:walla_walla/government
+name: Walla Walla County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:walla_walla
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:52:21.257672Z'
+last_updated: '2026-09-25T17:52:21.257672Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

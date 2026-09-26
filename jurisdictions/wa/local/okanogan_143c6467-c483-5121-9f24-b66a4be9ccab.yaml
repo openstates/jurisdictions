@@ -1,0 +1,22 @@
+id: 143c6467-c483-5121-9f24-b66a4be9ccab
+ocdid: ocd-jurisdiction/country:us/state:wa/county:okanogan/government
+name: Okanogan County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:okanogan/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:52:14.225641Z'
+last_updated: '2026-09-25T17:52:14.373154Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:okanogan/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

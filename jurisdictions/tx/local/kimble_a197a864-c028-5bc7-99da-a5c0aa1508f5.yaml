@@ -1,0 +1,22 @@
+id: a197a864-c028-5bc7-99da-a5c0aa1508f5
+ocdid: ocd-jurisdiction/country:us/state:tx/county:kimble/government
+name: Kimble County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:kimble/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:01.063213Z'
+last_updated: '2026-09-25T17:47:01.214458Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:kimble/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

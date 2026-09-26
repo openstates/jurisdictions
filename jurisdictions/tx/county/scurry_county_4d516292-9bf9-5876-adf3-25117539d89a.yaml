@@ -1,0 +1,21 @@
+id: 4d516292-9bf9-5876-adf3-25117539d89a
+ocdid: ocd-jurisdiction/country:us/state:tx/county:scurry/government
+name: Scurry County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:scurry
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:42:56.825566Z'
+last_updated: '2026-09-25T17:42:56.825566Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

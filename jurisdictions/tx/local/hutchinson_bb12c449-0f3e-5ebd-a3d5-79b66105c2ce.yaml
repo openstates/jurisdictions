@@ -1,0 +1,22 @@
+id: bb12c449-0f3e-5ebd-a3d5-79b66105c2ce
+ocdid: ocd-jurisdiction/country:us/state:tx/county:hutchinson/government
+name: Hutchinson County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:hutchinson/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:46:32.601171Z'
+last_updated: '2026-09-25T17:46:32.755155Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:hutchinson/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

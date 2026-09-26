@@ -72,7 +72,7 @@ def sample_division(sample_generator_request) -> Division:
         country="us",
         display_name="Seattle",
         geometries=[],
-        also_known_as=[],
+        other_names=[],
         sourcing=[],
         jurisdiction_id="ocd-jurisdiction/country:us/state:ca/place:seattle/government",
         government_identifiers=None,

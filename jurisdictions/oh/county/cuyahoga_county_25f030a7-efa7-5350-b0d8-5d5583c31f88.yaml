@@ -1,0 +1,21 @@
+id: 25f030a7-efa7-5350-b0d8-5d5583c31f88
+ocdid: ocd-jurisdiction/country:us/state:oh/county:cuyahoga/government
+name: Cuyahoga County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:oh/county:cuyahoga
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:52:45.405420Z'
+last_updated: '2026-09-25T17:52:45.405420Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

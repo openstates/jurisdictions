@@ -1,0 +1,22 @@
+id: 7b8a020a-fcd6-55f0-baf8-fa8525c9bca5
+ocdid: ocd-jurisdiction/country:us/state:tx/county:falls/government
+name: Falls County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:falls/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:45:12.836536Z'
+last_updated: '2026-09-25T17:45:12.983570Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:falls/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

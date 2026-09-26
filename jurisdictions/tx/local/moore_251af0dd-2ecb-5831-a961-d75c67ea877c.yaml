@@ -1,0 +1,22 @@
+id: 251af0dd-2ecb-5831-a961-d75c67ea877c
+ocdid: ocd-jurisdiction/country:us/state:tx/county:moore/government
+name: Moore County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:moore/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:48:00.994628Z'
+last_updated: '2026-09-25T17:48:01.146446Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:moore/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

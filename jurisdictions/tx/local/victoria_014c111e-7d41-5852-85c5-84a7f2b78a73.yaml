@@ -1,0 +1,22 @@
+id: 014c111e-7d41-5852-85c5-84a7f2b78a73
+ocdid: ocd-jurisdiction/country:us/state:tx/county:victoria/government
+name: Victoria County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:victoria/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:49:54.153997Z'
+last_updated: '2026-09-25T17:49:54.299127Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:victoria/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

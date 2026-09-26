@@ -1,0 +1,21 @@
+id: 4cdc136a-5aa5-5cf2-a4e5-0dfce0138191
+ocdid: ocd-jurisdiction/country:us/state:tx/county:taylor/government
+name: Taylor County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:taylor
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:43:21.531807Z'
+last_updated: '2026-09-25T17:43:21.531807Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

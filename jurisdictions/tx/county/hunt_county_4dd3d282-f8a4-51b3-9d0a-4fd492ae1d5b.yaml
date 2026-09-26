@@ -1,0 +1,21 @@
+id: 4dd3d282-f8a4-51b3-9d0a-4fd492ae1d5b
+ocdid: ocd-jurisdiction/country:us/state:tx/county:hunt/government
+name: Hunt County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:hunt
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:40:36.182003Z'
+last_updated: '2026-09-25T17:40:36.182003Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

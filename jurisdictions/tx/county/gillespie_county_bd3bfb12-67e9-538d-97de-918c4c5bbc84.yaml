@@ -1,0 +1,21 @@
+id: bd3bfb12-67e9-538d-97de-918c4c5bbc84
+ocdid: ocd-jurisdiction/country:us/state:tx/county:gillespie/government
+name: Gillespie County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:gillespie
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:39:59.999358Z'
+last_updated: '2026-09-25T17:39:59.999358Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

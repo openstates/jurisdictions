@@ -140,7 +140,7 @@ def _write_stub_division(
         country="us",
         display_name=display_name,
         geometries=[],
-        also_known_as=[],
+        other_names=[],
         jurisdiction_id=f"ocd-jurisdiction/{jur_part}/government",
         government_identifiers=identifiers or None,
         sourcing=[stub_source],

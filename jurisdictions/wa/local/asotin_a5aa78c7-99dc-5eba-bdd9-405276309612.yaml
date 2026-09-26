@@ -1,0 +1,22 @@
+id: a5aa78c7-99dc-5eba-bdd9-405276309612
+ocdid: ocd-jurisdiction/country:us/state:wa/county:asotin/government
+name: Asotin County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:asotin/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:52:58.418949Z'
+last_updated: '2026-09-25T17:52:58.567678Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:asotin/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
