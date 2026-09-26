@@ -28,6 +28,7 @@ from typing import Any
 
 import yaml
 
+from src.build_canonical_models import CanonicalModels, build_canonical_models
 from src.init_migration.generate_pipeline import GeneratePipeline
 from src.init_migration.pipeline_models import (
     GeneratorReq,
@@ -49,6 +50,12 @@ from src.normalize_government import (
     GovernmentType,
     NormalizationResult,
     normalize_records,
+)
+from src.render_yaml import (
+    record_relative_path,
+    slugify as render_slugify,
+    state_segment as render_state_segment,
+    write_yaml_record,
 )
 from src.resolve_government import (
     ResolutionResult,
@@ -280,46 +287,24 @@ def refuse_golden_root(path: Path) -> None:
 
 
 def slugify(name: str) -> str:
-    """Filename slug used by the checked-in golden files."""
-    return name.lower().replace(" ", "_")
+    """Filename slug used by controlled golden output."""
+    return render_slugify(name)
 
 
 def state_segment(ocdid: str) -> str:
     """Two-letter state directory for an OCDid (``district:dc`` counts)."""
-    parsed = OCDIdParsed.parse_ocdid(ocdid)
-    state = parsed.state or getattr(parsed, "district", None)
-    if not state:
-        raise ValueError(f"no state or district segment in {ocdid}")
-    return state.lower()
+    return render_state_segment(ocdid)
 
 
 def golden_relative_path(record: Division | Jurisdiction) -> Path:
     """``<kind>/test/<state>/local/<slug>_<id>.yaml`` for a fixture object."""
-    if isinstance(record, Division):
-        kind, name = DIVISIONS, record.display_name
-    else:
-        kind, name = JURISDICTIONS, record.name
-    return (
-        Path(kind)
-        / "test"
-        / state_segment(record.ocdid)
-        / "local"
-        / f"{slugify(name)}_{record.id}.yaml"
-    )
+    return record_relative_path(record, namespace="test")
 
 
 def dump_golden_record(record: Division | Jurisdiction, root: Path) -> Path:
-    """Write one record the way the golden files were written.
-
-    ``model_dump(mode="json", exclude_none=False)`` through ``yaml.safe_dump``
-    with its default sorted keys, at the golden layout under ``root``.
-    """
+    """Write one fixture object through the Phase 10 deterministic renderer."""
     refuse_golden_root(root)
-    path = root / golden_relative_path(record)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    data = record.model_dump(mode="json", exclude_none=False)
-    path.write_text(yaml.safe_dump(data))
-    return path
+    return write_yaml_record(record, root, namespace="test")
 
 
 # ------------------------------------------------------------------- fixtures
@@ -450,6 +435,65 @@ def validate_golden_government_fixtures() -> tuple[
             )
 
     return results, quarantines
+
+
+def canonicalize_golden_government_fixtures() -> tuple[
+    dict[str, CanonicalModels],
+    list[OCDIDQuarantineRecord],
+    list[str],
+]:
+    """Run the controlled fixture path through canonical model construction."""
+    normalized = load_normalized_government_fixtures()
+    governments = {
+        government.census_government_id: government
+        for government in normalized.records
+        if government.government_type is GovernmentType.MUNICIPAL
+    }
+    resolutions = resolve_golden_government_fixtures()
+    validations, quarantines = validate_golden_government_fixtures()
+
+    models: dict[str, CanonicalModels] = {}
+    for census_id, validation in validations.items():
+        if validation.status is not OCDIDValidationStatus.VERIFIED:
+            continue
+
+        resolution = resolutions[census_id]
+        if resolution.division is None:
+            raise ValueError(f"{census_id}: verified OCDID without resolved division")
+
+        models[census_id] = build_canonical_models(
+            government=governments[census_id],
+            resolved_division=resolution.division,
+            validation=validation,
+        )
+
+    unresolved = sorted(
+        census_id
+        for census_id, resolution in resolutions.items()
+        if resolution.status is not ResolutionStatus.RESOLVED
+    )
+    return models, quarantines, unresolved
+
+
+def render_canonical_golden_fixtures(
+    root: Path,
+) -> tuple[
+    dict[str, CanonicalModels],
+    list[OCDIDQuarantineRecord],
+    list[str],
+    list[Path],
+]:
+    """Render every verified canonical fixture using the Phase 10 renderer."""
+    refuse_golden_root(root)
+    models, quarantines, unresolved = canonicalize_golden_government_fixtures()
+
+    written: list[Path] = []
+    for census_id in sorted(models):
+        pair = models[census_id]
+        written.append(write_yaml_record(pair.division, root, namespace="test"))
+        written.append(write_yaml_record(pair.jurisdiction, root, namespace="test"))
+
+    return models, quarantines, unresolved, written
 
 
 # ------------------------------------------------------------------- pipeline

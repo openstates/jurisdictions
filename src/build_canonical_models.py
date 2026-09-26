@@ -69,6 +69,16 @@ def _retarget_source(source: SourceObj, fields: list[str]) -> SourceObj:
     return source.model_copy(update={"field": fields})
 
 
+def _source_observation_time(source: SourceObj, *, label: str):
+    """Return a stable timestamp carried by the source snapshot."""
+    observed_at = source.retrieval_date or source.publication_date
+    if observed_at is None:
+        raise ValueError(
+            f"{label} requires retrieval_date or publication_date for deterministic output"
+        )
+    return observed_at
+
+
 def _division_identifiers(
     division: CensusDivisionRecord,
 ) -> Identifiers:
@@ -152,6 +162,10 @@ def build_division(
         ],
         government_identifiers=identifiers,
         jurisdiction_id=None,
+        last_updated=_source_observation_time(
+            division.geometry_source,
+            label="division geometry source",
+        ),
     )
 
 
@@ -203,6 +217,10 @@ def build_jurisdiction(
                 ],
             )
         ],
+        last_updated=_source_observation_time(
+            government.source,
+            label="government source",
+        ),
     )
 
 

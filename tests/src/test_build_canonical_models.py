@@ -1,4 +1,5 @@
 import socket
+from datetime import datetime, timezone
 
 import pytest
 
@@ -31,6 +32,7 @@ def _source(*, field: list[str], dataset: str) -> SourceObj:
         source_description="Controlled Phase 9 fixture",
         dataset=dataset,
         release="2026",
+        retrieval_date=datetime(2026, 9, 23, 17, 17, 58, tzinfo=timezone.utc),
     )
 
 
@@ -275,3 +277,17 @@ def test_unsupported_phase9_government_type_fails_closed() -> None:
             resolved_division=_division(),
             validation=_verified(),
         )
+
+
+def test_canonical_models_use_snapshot_observation_time() -> None:
+    government = _government()
+    resolved_division = _division()
+
+    models = build_canonical_models(
+        government=government,
+        resolved_division=resolved_division,
+        validation=_verified(),
+    )
+
+    assert models.division.last_updated == resolved_division.geometry_source.retrieval_date
+    assert models.jurisdiction.last_updated == government.source.retrieval_date
