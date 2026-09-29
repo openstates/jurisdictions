@@ -1,0 +1,22 @@
+id: 7db18c55-bcf9-5f23-ae49-4ad863ab0337
+ocdid: ocd-jurisdiction/country:us/state:tx/county:newton/government
+name: Newton County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:newton/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:13:36.619077Z'
+last_updated: '2026-09-29T22:13:36.848543Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:newton/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

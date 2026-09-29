@@ -1,0 +1,22 @@
+id: 316668f1-c994-560b-9a63-97ccc2c494d2
+ocdid: ocd-jurisdiction/country:us/state:az/place:peoria/government
+name: Peoria Council District willow Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:az/place:peoria/council_district:willow
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:28:22.163221Z'
+last_updated: '2026-09-29T21:28:22.377160Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:az/place:peoria/council_district:willow
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

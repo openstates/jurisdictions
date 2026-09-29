@@ -1,0 +1,21 @@
+id: b5783e9f-cc43-562c-bfa5-cec9e831aa91
+ocdid: ocd-jurisdiction/country:us/state:az/county:pinal/government
+name: Pinal County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:az/county:pinal
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-29T21:28:13.993546Z'
+last_updated: '2026-09-29T21:28:13.993546Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: e22aae12-6f70-5a3b-92f8-1c212f541aac
+ocdid: ocd-jurisdiction/country:us/state:tx/county:anderson/government
+name: Anderson County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:anderson/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:40:26.458394Z'
+last_updated: '2026-09-29T21:40:26.676425Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:anderson/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: 3e9a7072-67d4-5864-b939-8c484aa71f5d
+ocdid: ocd-jurisdiction/country:us/state:al/county:chambers/government
+name: Chambers County Council District 6 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:chambers/council_district:6
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:21:21.344496Z'
+last_updated: '2026-09-29T21:21:21.568629Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:chambers/council_district:6
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

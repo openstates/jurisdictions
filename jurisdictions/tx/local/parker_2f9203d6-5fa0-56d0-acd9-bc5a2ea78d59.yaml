@@ -1,0 +1,22 @@
+id: 2f9203d6-5fa0-56d0-acd9-bc5a2ea78d59
+ocdid: ocd-jurisdiction/country:us/state:tx/county:parker/government
+name: Parker County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:parker/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:14:30.411114Z'
+last_updated: '2026-09-29T22:14:30.657509Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:parker/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

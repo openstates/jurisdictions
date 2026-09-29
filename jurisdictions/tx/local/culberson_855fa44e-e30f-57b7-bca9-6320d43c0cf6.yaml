@@ -1,0 +1,22 @@
+id: 855fa44e-e30f-57b7-bca9-6320d43c0cf6
+ocdid: ocd-jurisdiction/country:us/state:tx/county:culberson/government
+name: Culberson County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:culberson/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:02:28.794805Z'
+last_updated: '2026-09-29T22:02:29.017886Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:culberson/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

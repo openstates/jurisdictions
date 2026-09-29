@@ -1,0 +1,22 @@
+id: 11098adc-68b6-56bd-921b-37df10dc4d8d
+ocdid: ocd-jurisdiction/country:us/state:tx/county:gray/government
+name: Gray County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:gray/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:05:41.230853Z'
+last_updated: '2026-09-29T22:05:41.459588Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:gray/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

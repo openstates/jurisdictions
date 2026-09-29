@@ -1,0 +1,22 @@
+id: 1e907f01-1927-52b3-9b38-4a3fa9089e25
+ocdid: ocd-jurisdiction/country:us/state:az/place:phoenix/government
+name: Phoenix Council District 8 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:az/place:phoenix/council_district:8
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:29:14.020238Z'
+last_updated: '2026-09-29T21:29:14.243117Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:az/place:phoenix/council_district:8
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,21 @@
+id: 3e63f07b-981e-5645-98b1-61b86c4972e3
+ocdid: ocd-jurisdiction/country:us/state:al/county:coosa/government
+name: Coosa County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:coosa
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-29T21:22:21.756579Z'
+last_updated: '2026-09-29T21:22:21.756579Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

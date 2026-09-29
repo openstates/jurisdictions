@@ -1,0 +1,22 @@
+id: c04da9d3-9dad-52b0-b760-14faedb139a4
+ocdid: ocd-jurisdiction/country:us/state:wa/place:seattle/government
+name: Seattle Council District 7 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/place:seattle/council_district:7
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:34:22.870063Z'
+last_updated: '2026-09-29T22:34:23.096697Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/place:seattle/council_district:7
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

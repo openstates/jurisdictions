@@ -1,0 +1,22 @@
+id: 7f88e4a0-eac4-581f-833f-16f7fd0d7d8c
+ocdid: ocd-jurisdiction/country:us/state:tx/county:gonzales/government
+name: Gonzales County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:gonzales/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:05:37.701056Z'
+last_updated: '2026-09-29T22:05:37.924965Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:gonzales/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

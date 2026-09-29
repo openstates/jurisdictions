@@ -1,0 +1,22 @@
+id: bdec7fc3-91d1-50ec-ad66-aff5ea62193c
+ocdid: ocd-jurisdiction/country:us/state:wa/county:kitsap/government
+name: Kitsap County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:kitsap/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:31:17.460878Z'
+last_updated: '2026-09-29T22:31:17.680544Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:kitsap/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: be82a137-8f78-593a-ba7f-258edf76b940
+ocdid: ocd-jurisdiction/country:us/state:oh/place:akron/government
+name: Akron Ward 9 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:oh/place:akron/ward:9
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:32:23.934328Z'
+last_updated: '2026-09-29T21:32:24.157145Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:oh/place:akron/ward:9
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

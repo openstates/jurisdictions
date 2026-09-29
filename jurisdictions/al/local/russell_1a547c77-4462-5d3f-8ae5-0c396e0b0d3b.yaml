@@ -1,0 +1,22 @@
+id: 1a547c77-4462-5d3f-8ae5-0c396e0b0d3b
+ocdid: ocd-jurisdiction/country:us/state:al/county:russell/government
+name: Russell County Council District 7 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:russell/council_district:7
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:26:28.460145Z'
+last_updated: '2026-09-29T21:27:13.760543Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:russell/council_district:7
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

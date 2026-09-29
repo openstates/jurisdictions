@@ -1,0 +1,22 @@
+id: 9c6ae06b-8ae8-5b8a-8e21-bf36e0c1fe9f
+ocdid: ocd-jurisdiction/country:us/state:tx/county:brooks/government
+name: Brooks County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:brooks/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:42:34.469328Z'
+last_updated: '2026-09-29T21:42:34.688068Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:brooks/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

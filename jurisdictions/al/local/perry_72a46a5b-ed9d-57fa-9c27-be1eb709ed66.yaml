@@ -1,0 +1,22 @@
+id: 72a46a5b-ed9d-57fa-9c27-be1eb709ed66
+ocdid: ocd-jurisdiction/country:us/state:al/county:perry/government
+name: Perry County Council District 5 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:perry/council_district:5
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:26:20.249187Z'
+last_updated: '2026-09-29T21:26:20.477517Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:perry/council_district:5
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

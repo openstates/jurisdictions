@@ -1,0 +1,22 @@
+id: 8c666978-5fba-51bc-a940-95d48dcdf649
+ocdid: ocd-jurisdiction/country:us/state:wa/county:ferry/government
+name: Ferry County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:ferry/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:38:21.482749Z'
+last_updated: '2026-09-29T22:38:21.706409Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:ferry/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

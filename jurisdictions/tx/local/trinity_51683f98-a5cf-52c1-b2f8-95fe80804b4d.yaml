@@ -1,0 +1,22 @@
+id: 51683f98-a5cf-52c1-b2f8-95fe80804b4d
+ocdid: ocd-jurisdiction/country:us/state:tx/county:trinity/government
+name: Trinity County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:trinity/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:18:38.609870Z'
+last_updated: '2026-09-29T22:18:38.819133Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:trinity/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

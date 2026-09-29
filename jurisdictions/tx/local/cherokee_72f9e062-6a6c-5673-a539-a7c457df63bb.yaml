@@ -1,0 +1,22 @@
+id: 72f9e062-6a6c-5673-a539-a7c457df63bb
+ocdid: ocd-jurisdiction/country:us/state:tx/county:cherokee/government
+name: Cherokee County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:cherokee/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:43:35.970248Z'
+last_updated: '2026-09-29T21:43:36.186957Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:cherokee/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

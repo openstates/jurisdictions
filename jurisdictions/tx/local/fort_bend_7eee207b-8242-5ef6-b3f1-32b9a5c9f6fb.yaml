@@ -1,0 +1,22 @@
+id: 7eee207b-8242-5ef6-b3f1-32b9a5c9f6fb
+ocdid: ocd-jurisdiction/country:us/state:tx/county:fort_bend/government
+name: Fort Bend County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:fort_bend/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:04:38.803888Z'
+last_updated: '2026-09-29T22:04:39.030339Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:fort_bend/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

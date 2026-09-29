@@ -1,0 +1,21 @@
+id: 85b37371-d7a3-5374-91f0-09fd737ecc4b
+ocdid: ocd-jurisdiction/country:us/state:al/county:jackson/government
+name: Jackson County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:jackson
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-29T21:24:21.029126Z'
+last_updated: '2026-09-29T21:24:21.029126Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

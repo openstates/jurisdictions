@@ -1,0 +1,22 @@
+id: 20e09839-e4fc-5507-8a3f-f2142c77f836
+ocdid: ocd-jurisdiction/country:us/state:tx/county:morris/government
+name: Morris County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:morris/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:13:24.497886Z'
+last_updated: '2026-09-29T22:13:24.719777Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:morris/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: cbe57b1d-bc52-529b-8aa9-7829f07dbddb
+ocdid: ocd-jurisdiction/country:us/state:tx/county:randall/government
+name: Randall County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:randall/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:15:23.783521Z'
+last_updated: '2026-09-29T22:15:24.002371Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:randall/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

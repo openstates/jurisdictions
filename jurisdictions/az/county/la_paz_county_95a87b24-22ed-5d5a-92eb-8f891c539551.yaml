@@ -1,0 +1,21 @@
+id: 95a87b24-22ed-5d5a-92eb-8f891c539551
+ocdid: ocd-jurisdiction/country:us/state:az/county:la_paz/government
+name: La Paz County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:az/county:la_paz
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-29T22:40:31.160857Z'
+last_updated: '2026-09-29T22:40:31.160857Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

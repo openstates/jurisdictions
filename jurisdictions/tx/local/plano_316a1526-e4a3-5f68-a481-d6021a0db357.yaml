@@ -1,0 +1,22 @@
+id: 316a1526-e4a3-5f68-a481-d6021a0db357
+ocdid: ocd-jurisdiction/country:us/state:tx/place:plano/government
+name: Plano Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:plano/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:29:23.136553Z'
+last_updated: '2026-09-29T22:29:23.362290Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:plano/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

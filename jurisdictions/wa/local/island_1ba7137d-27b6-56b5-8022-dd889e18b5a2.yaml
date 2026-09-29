@@ -1,0 +1,22 @@
+id: 1ba7137d-27b6-56b5-8022-dd889e18b5a2
+ocdid: ocd-jurisdiction/country:us/state:wa/county:island/government
+name: Island County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:island/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:38:26.347662Z'
+last_updated: '2026-09-29T22:38:26.567916Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:island/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

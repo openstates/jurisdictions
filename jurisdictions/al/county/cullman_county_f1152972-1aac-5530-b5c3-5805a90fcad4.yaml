@@ -1,0 +1,21 @@
+id: f1152972-1aac-5530-b5c3-5805a90fcad4
+ocdid: ocd-jurisdiction/country:us/state:al/county:cullman/government
+name: Cullman County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:cullman
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-29T21:23:14.953159Z'
+last_updated: '2026-09-29T21:23:14.953159Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

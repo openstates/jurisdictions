@@ -1,0 +1,22 @@
+id: 33958014-a23d-5952-93f2-cdbfedfa6a55
+ocdid: ocd-jurisdiction/country:us/state:tx/county:marion/government
+name: Marion County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:marion/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:11:35.138391Z'
+last_updated: '2026-09-29T22:11:35.357044Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:marion/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

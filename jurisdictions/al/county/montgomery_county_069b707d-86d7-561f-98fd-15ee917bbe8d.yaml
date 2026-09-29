@@ -1,0 +1,21 @@
+id: 069b707d-86d7-561f-98fd-15ee917bbe8d
+ocdid: ocd-jurisdiction/country:us/state:al/county:montgomery/government
+name: Montgomery County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:montgomery
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-29T21:26:15.905645Z'
+last_updated: '2026-09-29T21:26:15.905645Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

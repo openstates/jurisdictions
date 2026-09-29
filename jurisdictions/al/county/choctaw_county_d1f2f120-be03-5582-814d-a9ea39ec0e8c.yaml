@@ -1,0 +1,21 @@
+id: d1f2f120-be03-5582-814d-a9ea39ec0e8c
+ocdid: ocd-jurisdiction/country:us/state:al/county:choctaw/government
+name: Choctaw County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:choctaw
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-29T21:21:22.913697Z'
+last_updated: '2026-09-29T21:21:22.913697Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: 885a0641-6948-5e84-8818-f51d0763c14d
+ocdid: ocd-jurisdiction/country:us/state:tx/county:crosby/government
+name: Crosby County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:crosby/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:02:25.172435Z'
+last_updated: '2026-09-29T22:02:25.386153Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:crosby/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

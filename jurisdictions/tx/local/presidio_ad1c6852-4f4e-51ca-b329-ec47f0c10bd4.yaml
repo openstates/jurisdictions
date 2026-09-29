@@ -1,0 +1,22 @@
+id: ad1c6852-4f4e-51ca-b329-ec47f0c10bd4
+ocdid: ocd-jurisdiction/country:us/state:tx/county:presidio/government
+name: Presidio County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:presidio/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:15:17.978715Z'
+last_updated: '2026-09-29T22:15:18.206234Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:presidio/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

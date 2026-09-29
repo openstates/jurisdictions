@@ -1,0 +1,22 @@
+id: affe4c3c-0535-5382-a603-4d3712d52a53
+ocdid: ocd-jurisdiction/country:us/state:tx/county:llano/government
+name: Llano County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:llano/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:11:21.639549Z'
+last_updated: '2026-09-29T22:11:21.869539Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:llano/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: 25e1e5ea-4bc5-505b-9056-76060c117200
+ocdid: ocd-jurisdiction/country:us/state:al/county:crenshaw/government
+name: Crenshaw County Council District 5 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:crenshaw/council_district:5
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:23:14.376155Z'
+last_updated: '2026-09-29T21:23:14.593818Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:crenshaw/council_district:5
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

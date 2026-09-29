@@ -1,0 +1,22 @@
+id: 2fb68485-f8d6-5677-9b84-606c4464fa01
+ocdid: ocd-jurisdiction/country:us/state:tx/county:rusk/government
+name: Rusk County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:rusk/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:16:19.961017Z'
+last_updated: '2026-09-29T22:16:20.179139Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:rusk/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

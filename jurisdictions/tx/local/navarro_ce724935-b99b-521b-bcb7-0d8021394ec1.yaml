@@ -1,0 +1,22 @@
+id: ce724935-b99b-521b-bcb7-0d8021394ec1
+ocdid: ocd-jurisdiction/country:us/state:tx/county:navarro/government
+name: Navarro County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:navarro/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:13:33.466279Z'
+last_updated: '2026-09-29T22:13:33.681657Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:navarro/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: 89f33262-561b-57aa-987c-89eab7554420
+ocdid: ocd-jurisdiction/country:us/state:wa/county:pierce/government
+name: Pierce County Council District 7 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:pierce/council_district:7
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:32:14.203616Z'
+last_updated: '2026-09-29T22:32:14.449527Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:pierce/council_district:7
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
