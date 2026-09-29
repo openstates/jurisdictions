@@ -1,0 +1,21 @@
+id: e1e65f63-6ecf-5bd9-87ed-291373757fd6
+ocdid: ocd-jurisdiction/country:us/state:al/county:fayette/government
+name: Fayette County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:fayette
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-29T21:23:23.359698Z'
+last_updated: '2026-09-29T21:23:23.359698Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

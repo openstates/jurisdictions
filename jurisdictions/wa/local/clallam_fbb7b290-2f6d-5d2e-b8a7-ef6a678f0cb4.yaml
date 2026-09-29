@@ -1,0 +1,22 @@
+id: fbb7b290-2f6d-5d2e-b8a7-ef6a678f0cb4
+ocdid: ocd-jurisdiction/country:us/state:wa/county:clallam/government
+name: Clallam County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:clallam/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:37:19.522841Z'
+last_updated: '2026-09-29T22:37:19.740788Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:clallam/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

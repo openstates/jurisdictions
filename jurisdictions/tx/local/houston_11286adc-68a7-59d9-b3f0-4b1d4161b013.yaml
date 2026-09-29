@@ -1,0 +1,22 @@
+id: 11286adc-68a7-59d9-b3f0-4b1d4161b013
+ocdid: ocd-jurisdiction/country:us/state:tx/county:houston/government
+name: Houston County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:houston/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:07:40.098940Z'
+last_updated: '2026-09-29T22:07:40.322734Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:houston/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

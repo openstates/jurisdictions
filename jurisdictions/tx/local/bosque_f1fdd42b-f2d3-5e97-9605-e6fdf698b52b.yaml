@@ -1,0 +1,22 @@
+id: f1fdd42b-f2d3-5e97-9605-e6fdf698b52b
+ocdid: ocd-jurisdiction/country:us/state:tx/county:bosque/government
+name: Bosque County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:bosque/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:42:15.652829Z'
+last_updated: '2026-09-29T21:42:15.863660Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:bosque/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

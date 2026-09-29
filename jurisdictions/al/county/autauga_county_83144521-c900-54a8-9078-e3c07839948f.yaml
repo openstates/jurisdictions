@@ -1,0 +1,21 @@
+id: 83144521-c900-54a8-9078-e3c07839948f
+ocdid: ocd-jurisdiction/country:us/state:al/county:autauga/government
+name: Autauga County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:autauga
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-29T21:21:02.397545Z'
+last_updated: '2026-09-29T21:21:02.397545Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

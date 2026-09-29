@@ -1,0 +1,21 @@
+id: 712601fc-535e-5b65-9a50-216b404a7b34
+ocdid: ocd-jurisdiction/country:us/state:al/county:randolph/government
+name: Randolph County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:randolph
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-29T21:26:24.797857Z'
+last_updated: '2026-09-29T21:26:24.797857Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

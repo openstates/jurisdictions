@@ -1,0 +1,22 @@
+id: 280f6a70-53ba-55ca-a392-0e71e12fe24d
+ocdid: ocd-jurisdiction/country:us/state:tx/county:smith/government
+name: Smith County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:smith/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:17:22.067454Z'
+last_updated: '2026-09-29T22:17:22.286557Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:smith/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

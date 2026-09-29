@@ -1,0 +1,22 @@
+id: bcbbd1e8-f9fa-5123-a868-4cd268846cee
+ocdid: ocd-jurisdiction/country:us/state:tx/county:irion/government
+name: Irion County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:irion/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:08:27.300297Z'
+last_updated: '2026-09-29T22:08:27.532380Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:irion/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

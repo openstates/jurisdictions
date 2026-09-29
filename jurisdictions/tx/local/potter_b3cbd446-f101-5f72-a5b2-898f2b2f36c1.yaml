@@ -1,0 +1,22 @@
+id: b3cbd446-f101-5f72-a5b2-898f2b2f36c1
+ocdid: ocd-jurisdiction/country:us/state:tx/county:potter/government
+name: Potter County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:potter/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:15:14.405449Z'
+last_updated: '2026-09-29T22:15:14.636963Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:potter/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

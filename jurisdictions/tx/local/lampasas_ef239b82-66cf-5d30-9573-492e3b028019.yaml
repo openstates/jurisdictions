@@ -1,0 +1,22 @@
+id: ef239b82-66cf-5d30-9573-492e3b028019
+ocdid: ocd-jurisdiction/country:us/state:tx/county:lampasas/government
+name: Lampasas County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:lampasas/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:10:31.326185Z'
+last_updated: '2026-09-29T22:10:31.545126Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:lampasas/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

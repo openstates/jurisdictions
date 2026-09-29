@@ -1,0 +1,22 @@
+id: 78ab5200-1f82-535a-8c03-e0f7396d8baf
+ocdid: ocd-jurisdiction/country:us/state:tx/county:tom_green/government
+name: Tom Green County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:tom_green/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:18:33.381549Z'
+last_updated: '2026-09-29T22:18:33.596377Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:tom_green/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

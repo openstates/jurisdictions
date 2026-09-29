@@ -1,0 +1,21 @@
+id: 3faee289-4ea0-52f2-99e8-97cdb587679e
+ocdid: ocd-jurisdiction/country:us/state:al/county:shelby/government
+name: Shelby County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:shelby
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-29T21:27:14.324861Z'
+last_updated: '2026-09-29T21:27:14.324861Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

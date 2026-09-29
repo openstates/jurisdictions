@@ -1,0 +1,21 @@
+id: f708921d-7784-551a-a39c-b7ec13c6b26f
+ocdid: ocd-jurisdiction/country:us/state:az/county:santa_cruz/government
+name: Santa Cruz County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:az/county:santa_cruz
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-29T21:28:15.182710Z'
+last_updated: '2026-09-29T21:28:15.182710Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

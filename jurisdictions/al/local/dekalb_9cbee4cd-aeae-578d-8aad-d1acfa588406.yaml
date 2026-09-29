@@ -1,0 +1,22 @@
+id: 9cbee4cd-aeae-578d-8aad-d1acfa588406
+ocdid: ocd-jurisdiction/country:us/state:al/county:dekalb/government
+name: DeKalb County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:dekalb/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:23:18.390249Z'
+last_updated: '2026-09-29T21:23:18.609629Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:dekalb/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

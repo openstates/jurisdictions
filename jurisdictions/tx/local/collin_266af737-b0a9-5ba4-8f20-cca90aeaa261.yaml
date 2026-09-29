@@ -1,0 +1,22 @@
+id: 266af737-b0a9-5ba4-8f20-cca90aeaa261
+ocdid: ocd-jurisdiction/country:us/state:tx/county:collin/government
+name: Collin County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:collin/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:01:26.775635Z'
+last_updated: '2026-09-29T22:01:26.997060Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:collin/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

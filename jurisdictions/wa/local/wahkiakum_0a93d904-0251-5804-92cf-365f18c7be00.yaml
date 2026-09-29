@@ -1,0 +1,22 @@
+id: 0a93d904-0251-5804-92cf-365f18c7be00
+ocdid: ocd-jurisdiction/country:us/state:wa/county:wahkiakum/government
+name: Wahkiakum County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:wahkiakum/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:33:19.944209Z'
+last_updated: '2026-09-29T22:33:20.189653Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:wahkiakum/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

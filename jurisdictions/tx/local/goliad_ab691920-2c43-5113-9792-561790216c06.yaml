@@ -1,0 +1,22 @@
+id: ab691920-2c43-5113-9792-561790216c06
+ocdid: ocd-jurisdiction/country:us/state:tx/county:goliad/government
+name: Goliad County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:goliad/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:05:34.406203Z'
+last_updated: '2026-09-29T22:05:34.623302Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:goliad/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

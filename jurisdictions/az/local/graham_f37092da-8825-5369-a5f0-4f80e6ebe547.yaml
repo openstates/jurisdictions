@@ -1,0 +1,22 @@
+id: f37092da-8825-5369-a5f0-4f80e6ebe547
+ocdid: ocd-jurisdiction/country:us/state:az/county:graham/government
+name: Graham County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:az/county:graham/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:40:29.738159Z'
+last_updated: '2026-09-29T22:40:29.985617Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:az/county:graham/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: 0fd88cfc-38ed-5286-8273-1a8f1cfa3c19
+ocdid: ocd-jurisdiction/country:us/state:al/county:calhoun/government
+name: Calhoun County Council District 5 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:calhoun/council_district:5
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:21:19.816360Z'
+last_updated: '2026-09-29T21:21:20.039188Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:calhoun/council_district:5
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

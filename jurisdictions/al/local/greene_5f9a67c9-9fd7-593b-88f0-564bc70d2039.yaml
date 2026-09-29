@@ -1,0 +1,22 @@
+id: 5f9a67c9-9fd7-593b-88f0-564bc70d2039
+ocdid: ocd-jurisdiction/country:us/state:al/county:greene/government
+name: Greene County Council District 5 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:greene/council_district:5
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:24:16.306934Z'
+last_updated: '2026-09-29T21:24:16.530743Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:greene/council_district:5
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

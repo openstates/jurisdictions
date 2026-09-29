@@ -1,0 +1,21 @@
+id: 440f6963-815f-5811-aa10-8f5443342f96
+ocdid: ocd-jurisdiction/country:us/state:al/county:franklin/government
+name: Franklin County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:franklin
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-29T21:23:25.154750Z'
+last_updated: '2026-09-29T21:23:25.154750Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

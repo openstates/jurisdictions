@@ -1,0 +1,22 @@
+id: 655ecb07-a2cb-520c-9475-f2727b30d97c
+ocdid: ocd-jurisdiction/country:us/state:al/county:tuscaloosa/government
+name: Tuscaloosa County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:tuscaloosa/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:39:18.482407Z'
+last_updated: '2026-09-29T22:39:18.702797Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:tuscaloosa/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

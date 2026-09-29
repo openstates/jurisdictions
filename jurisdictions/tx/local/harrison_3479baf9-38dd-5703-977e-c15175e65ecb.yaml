@@ -1,0 +1,22 @@
+id: 3479baf9-38dd-5703-977e-c15175e65ecb
+ocdid: ocd-jurisdiction/country:us/state:tx/county:harrison/government
+name: Harrison County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:harrison/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:06:39.890299Z'
+last_updated: '2026-09-29T22:06:40.107328Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:harrison/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

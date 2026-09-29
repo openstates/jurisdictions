@@ -1,0 +1,22 @@
+id: b28a20a1-4c58-5f65-9498-d661d21497d4
+ocdid: ocd-jurisdiction/country:us/state:tx/county:brazoria/government
+name: Brazoria County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:brazoria/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:42:21.679616Z'
+last_updated: '2026-09-29T21:42:21.901004Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:brazoria/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

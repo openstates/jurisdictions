@@ -1,0 +1,22 @@
+id: 6d833965-be54-5f05-abed-3c39bebe9824
+ocdid: ocd-jurisdiction/country:us/state:tx/county:bell/government
+name: Bell County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:bell/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:41:34.606039Z'
+last_updated: '2026-09-29T21:41:34.826339Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:bell/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

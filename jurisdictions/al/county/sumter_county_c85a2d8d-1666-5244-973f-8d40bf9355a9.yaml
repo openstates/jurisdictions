@@ -1,0 +1,21 @@
+id: c85a2d8d-1666-5244-973f-8d40bf9355a9
+ocdid: ocd-jurisdiction/country:us/state:al/county:sumter/government
+name: Sumter County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:sumter
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-29T21:27:18.845140Z'
+last_updated: '2026-09-29T21:27:18.845140Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

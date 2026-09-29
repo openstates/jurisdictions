@@ -1,0 +1,22 @@
+id: 9d38e64d-9cf5-56d0-b443-689a8ccd84cd
+ocdid: ocd-jurisdiction/country:us/state:tx/county:zapata/government
+name: Zapata County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:zapata/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:26:14.693216Z'
+last_updated: '2026-09-29T22:26:14.908264Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:zapata/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

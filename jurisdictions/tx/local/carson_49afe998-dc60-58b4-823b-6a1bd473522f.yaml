@@ -1,0 +1,22 @@
+id: 49afe998-dc60-58b4-823b-6a1bd473522f
+ocdid: ocd-jurisdiction/country:us/state:tx/county:carson/government
+name: Carson County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:carson/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:43:26.129844Z'
+last_updated: '2026-09-29T21:43:26.348148Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:carson/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

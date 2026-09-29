@@ -1,0 +1,22 @@
+id: b5783e9f-cc43-562c-bfa5-cec9e831aa91
+ocdid: ocd-jurisdiction/country:us/state:az/county:pinal/government
+name: Pinal County Council District 5 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:az/county:pinal/council_district:5
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:28:14.686970Z'
+last_updated: '2026-09-29T21:28:14.915259Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:az/county:pinal/council_district:5
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

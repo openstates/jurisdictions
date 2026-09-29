@@ -1,0 +1,22 @@
+id: 1d321b00-72f3-5abe-a26d-67f588952d00
+ocdid: ocd-jurisdiction/country:us/state:al/county:coffee/government
+name: Coffee County Council District 7 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:coffee/council_district:7
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T21:22:18.458175Z'
+last_updated: '2026-09-29T21:22:18.678982Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:coffee/council_district:7
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: 7be9cec1-fc4b-574a-aaf5-f282be710c1c
+ocdid: ocd-jurisdiction/country:us/state:tx/county:galveston/government
+name: Galveston County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:galveston/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:05:22.680337Z'
+last_updated: '2026-09-29T22:05:22.894392Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:galveston/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: 9cecf13a-97c8-5641-979b-c9602b00c7c0
+ocdid: ocd-jurisdiction/country:us/state:tx/county:roberts/government
+name: Roberts County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:roberts/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:15:42.331903Z'
+last_updated: '2026-09-29T22:15:42.581024Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:roberts/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

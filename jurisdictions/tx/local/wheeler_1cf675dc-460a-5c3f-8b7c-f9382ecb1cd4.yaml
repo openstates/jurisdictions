@@ -1,0 +1,22 @@
+id: 1cf675dc-460a-5c3f-8b7c-f9382ecb1cd4
+ocdid: ocd-jurisdiction/country:us/state:tx/county:wheeler/government
+name: Wheeler County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:wheeler/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:20:16.120751Z'
+last_updated: '2026-09-29T22:20:16.346944Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:wheeler/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

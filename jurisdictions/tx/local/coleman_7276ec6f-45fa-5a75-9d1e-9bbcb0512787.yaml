@@ -1,0 +1,22 @@
+id: 7276ec6f-45fa-5a75-9d1e-9bbcb0512787
+ocdid: ocd-jurisdiction/country:us/state:tx/county:coleman/government
+name: Coleman County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:coleman/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:01:24.335676Z'
+last_updated: '2026-09-29T22:01:24.550305Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:coleman/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: afaad7f3-4860-5460-baf8-55b7ba1f7549
+ocdid: ocd-jurisdiction/country:us/state:tx/county:hunt/government
+name: Hunt County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:hunt/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-29T22:08:21.455152Z'
+last_updated: '2026-09-29T22:08:21.693889Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:hunt/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

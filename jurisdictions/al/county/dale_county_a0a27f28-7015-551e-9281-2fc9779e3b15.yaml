@@ -1,0 +1,21 @@
+id: a0a27f28-7015-551e-9281-2fc9779e3b15
+ocdid: ocd-jurisdiction/country:us/state:al/county:dale/government
+name: Dale County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:al/county:dale
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-29T21:23:15.561376Z'
+last_updated: '2026-09-29T21:23:15.561376Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []
