@@ -385,6 +385,101 @@ def test_promoted_ingest_stub_preserves_existing_uuid(tmp_path, monkeypatch):
     assert matching == [output_path]
 
 
+_SEATTLE_VAL_REC = {
+    "GEOID_Census": "5363000",
+    "STATEFP": "53",
+    "NAMELSAD": "Seattle city",
+    "LSAD": "25",
+    "SLDUST_list": "",
+    "SLDLST_list": "",
+    "COUNTYFP_list": "033",
+    "COUNTY_NAMES": "King",
+    "COUSUBFP": "",
+    "PLACEFP": "63000",
+    "layer": "tl_2025_53_place",
+}
+
+
+def test_generate_division_reuses_existing_under_configured_output_root(
+    tmp_path, monkeypatch
+):
+    """Reuse must search the configured output root, not the process CWD.
+
+    A run whose output root is not the working directory would otherwise miss
+    its own previous output and write a second file for the same OCD ID.
+    """
+    import yaml
+
+    cwd = tmp_path / "cwd"
+    cwd.mkdir()
+    monkeypatch.chdir(cwd)
+
+    output_root = tmp_path / "generated"
+    ocdid = "ocd-division/country:us/state:wa/place:seattle"
+
+    existing = Division(
+        id=uuid5(NAMESPACE_URL, "existing-seattle"),
+        ocdid=ocdid,
+        country="us",
+        display_name="Existing Seattle",
+        jurisdiction_id=(
+            "ocd-jurisdiction/country:us/state:wa/place:seattle/government"
+        ),
+    )
+
+    div_dir = output_root / "divisions" / "wa" / "local"
+    div_dir.mkdir(parents=True)
+    existing_path = div_dir / "existing_seattle.yaml"
+    existing_path.write_text(
+        yaml.safe_dump(existing.model_dump(mode="json"), sort_keys=False)
+    )
+
+    dg = DivGenerator(req=_req_for(ocdid), output_root=output_root)
+    result = dg.generate_division(_SEATTLE_VAL_REC, dg.uuid)
+    output_path = dg.dump_division()
+
+    assert result.id == existing.id
+    assert output_path.resolve() == existing_path.resolve()
+    assert len(list(div_dir.glob("*.yaml"))) == 1
+
+
+def test_generate_division_reuses_existing_outside_local_dir(tmp_path):
+    """Reuse must find the OCD ID wherever in the state tree it was written.
+
+    Earlier runs left Divisions directly under the state directory, so a
+    search limited to `local/` would duplicate them.
+    """
+    import yaml
+
+    output_root = tmp_path / "generated"
+    ocdid = "ocd-division/country:us/state:wa/place:seattle"
+
+    existing = Division(
+        id=uuid5(NAMESPACE_URL, "state-level-seattle"),
+        ocdid=ocdid,
+        country="us",
+        display_name="Existing Seattle",
+        jurisdiction_id=(
+            "ocd-jurisdiction/country:us/state:wa/place:seattle/government"
+        ),
+    )
+
+    state_dir = output_root / "divisions" / "wa"
+    state_dir.mkdir(parents=True)
+    existing_path = state_dir / "washington_seattle.yaml"
+    existing_path.write_text(
+        yaml.safe_dump(existing.model_dump(mode="json"), sort_keys=False)
+    )
+
+    dg = DivGenerator(req=_req_for(ocdid), output_root=output_root)
+    result = dg.generate_division(_SEATTLE_VAL_REC, dg.uuid)
+    output_path = dg.dump_division()
+
+    assert result.id == existing.id
+    assert output_path.resolve() == existing_path.resolve()
+    assert not (output_root / "divisions" / "wa" / "local").exists()
+
+
 def test_duplicate_existing_division_ocdid_fails_closed(tmp_path, monkeypatch):
     """Two files carrying one Division OCDID must not be silently reused."""
     import yaml

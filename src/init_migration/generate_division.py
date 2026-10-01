@@ -16,6 +16,7 @@ from src.models.division import Division, Identifier, find_identifier
 from src.models.source import SourceObj, SourceType
 from src.utils.state_lookup import load_state_code_lookup
 from src.utils.place_name import coerce_lsad_code, namelsad_to_display_name
+from src.utils.yaml_manager import find_ocdid_paths
 from pathlib import Path
 from datetime import datetime, timezone
 from uuid import UUID
@@ -152,14 +153,16 @@ def _county_council_district_display_name(
 class DivGenerator:
     """Factory for generating Division objects with full/stub logic and persistence."""
 
-    def __init__(self, req: GeneratorReq):
+    def __init__(self, req: GeneratorReq, output_root: str | Path | None = None):
         self.req = req
         self.data = req.data
         self.uuid = self.data.uuid
         self.parsed_ocdid = ocdid_parser(self.data.ocdid.raw_ocdid)
         self.state_lookup = load_state_code_lookup()
         self.division: Division | None = None
+        self.output_root = Path(output_root) if output_root is not None else Path(".")
         self.existing_path: Path | None = None
+        self.promoted_stub_path: Path | None = None
         self.promoted_stub_id: UUID | None = None
 
     def generate_division(self, val_rec: dict, uuid: UUID) -> Division:
@@ -357,25 +360,16 @@ class DivGenerator:
             )
             raise
 
+    def _division_search_root(self, ocdid: str) -> Path:
+        """The state tree this generator reads and writes Divisions under."""
+        parsed = ocdid_parser(ocdid)
+        state = (parsed.get("state") or parsed.get("district") or "").lower()
+        return self.output_root / "divisions" / state
+
     def _find_existing_division_path(self, ocdid: str) -> Path | None:
         """Find an existing Division YAML by canonical OCD ID."""
         try:
-            parsed = ocdid_parser(ocdid)
-            state = (parsed.get("state") or parsed.get("district") or "").lower()
-            div_dir = Path(f"divisions/{state}/local")
-            if not div_dir.exists():
-                return None
-
-            matches: list[Path] = []
-            for filepath in sorted(div_dir.glob("*.yaml")):
-                try:
-                    data = yaml.safe_load(filepath.read_text()) or {}
-                except (OSError, yaml.YAMLError) as exc:
-                    logger.debug(f"Skipping unreadable Division YAML {filepath}: {exc}")
-                    continue
-
-                if data.get("ocdid") == ocdid:
-                    matches.append(filepath)
+            matches = find_ocdid_paths(ocdid, self._division_search_root(ocdid))
 
             if len(matches) > 1:
                 raise ValueError(
@@ -428,7 +422,7 @@ class DivGenerator:
             state = (parsed.get("state") or parsed.get("district") or "").lower()
 
             if output_dir is None:
-                output_dir = Path(".")
+                output_dir = self.output_root
 
             div_dir = output_dir / "divisions" / state / "local"
             div_dir.mkdir(parents=True, exist_ok=True)
@@ -442,20 +436,19 @@ class DivGenerator:
             with open(filepath, "w") as f:
                 yaml.dump(data, f, default_flow_style=False, sort_keys=False)
 
-            # Remove an obsolete ingest-only stub only when the replacement
-            # was written into the same directory. This preserves repo files
-            # during bounded tests that write to a temporary output root.
-            promoted_stub_path = getattr(self, "promoted_stub_path", None)
-            if promoted_stub_path is not None:
-                promoted_stub_path = Path(promoted_stub_path)
-                if (
-                    promoted_stub_path.resolve() != filepath.resolve()
-                    and promoted_stub_path.parent.resolve()
-                    == filepath.parent.resolve()
-                ):
-                    promoted_stub_path.unlink(missing_ok=True)
+            # Remove an obsolete ingest-only stub, but only when the replacement
+            # landed in the same tree the stub was found in. A caller that dumps
+            # somewhere other than its configured output root is writing a copy,
+            # and must not delete the original.
+            if self.promoted_stub_path is not None:
+                stub = self.promoted_stub_path.resolve()
+                written_path = filepath.resolve()
+                written_state_tree = (output_dir / "divisions" / state).resolve()
+                if stub != written_path and stub.is_relative_to(written_state_tree):
+                    stub.unlink(missing_ok=True)
                     logger.info(
-                        f"Removed promoted stub Division {promoted_stub_path}"
+                        "Removed promoted stub Division",
+                        extra={"path": str(stub)},
                     )
 
             logger.info(f"Division saved to {filepath}")

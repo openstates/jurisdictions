@@ -22,6 +22,7 @@ from src.models.division import Division, Identifier
 from src.models.ocdid import OCDIdParsed
 from src.models.source import SourceObj, SourceType
 from src.utils.state_lookup import load_state_code_lookup
+from src.utils.yaml_manager import find_ocdid_paths
 from src.models.jurisdiction import ClassificationEnum, Jurisdiction
 from src.init_migration.pipeline_models import REPO_URL
 
@@ -42,23 +43,6 @@ def _ancestor_level(ancestor: OCDIdParsed) -> str | None:
     if not sep or level not in _SUPPORTED_LEVELS:
         return None
     return level
-
-
-def _find_ocdid_paths(ocdid: str, root: Path) -> list[Path]:
-    """Find every YAML carrying an OCDID beneath a state tree."""
-    if not root.exists():
-        return []
-
-    matches = []
-    for path in root.rglob("*.yaml"):
-        try:
-            data = yaml.safe_load(path.read_text(encoding="utf-8"))
-        except Exception:
-            continue
-        if isinstance(data, dict) and data.get("ocdid") == ocdid:
-            matches.append(path)
-
-    return sorted(matches)
 
 
 def stub_exists(ocdid: str, search_dir: Path) -> bool:
@@ -322,8 +306,8 @@ def ensure_ancestor_stubs(
         div_root = division_output_dir / "divisions" / state_code
         jur_root = jurisdiction_output_dir / "jurisdictions" / state_code
 
-        div_matches = _find_ocdid_paths(ancestor_ocdid, div_root)
-        jur_matches = _find_ocdid_paths(jur_ocdid, jur_root)
+        div_matches = find_ocdid_paths(ancestor_ocdid, div_root)
+        jur_matches = find_ocdid_paths(jur_ocdid, jur_root)
 
         if len(div_matches) > 1:
             raise ValueError(

@@ -490,3 +490,157 @@ def test_generate_jurisdiction_reuses_existing_ocdid(
     assert result.name == "Existing Seattle Government"
     assert output_path.resolve() == existing_path.resolve()
     assert len(list(jur_dir.glob("*.yaml"))) == 1
+
+
+def test_generate_jurisdiction_reuses_existing_under_configured_output_root(
+    tmp_path,
+    monkeypatch,
+    sample_generator_request,
+    sample_division,
+):
+    """Reuse must search the configured output root, not the process CWD.
+
+    A run whose output root is not the working directory would otherwise miss
+    its own previous output and write a second file for the same OCD ID.
+    """
+    import yaml
+
+    cwd = tmp_path / "cwd"
+    cwd.mkdir()
+    monkeypatch.chdir(cwd)
+
+    output_root = tmp_path / "generated"
+    jurisdiction_ocdid = (
+        "ocd-jurisdiction/country:us/state:ca/place:seattle/government"
+    )
+
+    existing = Jurisdiction(
+        id=uuid5(NAMESPACE_URL, "existing-seattle-jurisdiction"),
+        ocdid=jurisdiction_ocdid,
+        name="Existing Seattle Government",
+        url="https://example.com",
+        classification="government",
+        metadata={"urls": []},
+    )
+
+    jur_dir = output_root / "jurisdictions" / "ca" / "local"
+    jur_dir.mkdir(parents=True)
+    existing_path = jur_dir / "existing_seattle.yaml"
+    existing_path.write_text(
+        yaml.safe_dump(existing.model_dump(mode="json"), sort_keys=False)
+    )
+
+    jur_gen = JurGenerator(
+        req=sample_generator_request,
+        division=sample_division,
+        output_root=output_root,
+    )
+
+    result = jur_gen.generate_jurisdiction(
+        division=sample_division,
+        uuid=jur_gen.uuid,
+        classification="government",
+    )
+    output_path = jur_gen.dump_jurisdiction()
+
+    assert result.id == existing.id
+    assert output_path.resolve() == existing_path.resolve()
+    assert len(list(jur_dir.glob("*.yaml"))) == 1
+
+
+def test_generate_jurisdiction_reuses_existing_outside_local_dir(
+    tmp_path,
+    sample_generator_request,
+    sample_division,
+):
+    """Reuse must find the OCD ID wherever in the state tree it was written.
+
+    Earlier runs left Jurisdictions directly under the state directory, so a
+    search limited to `local/` would duplicate them.
+    """
+    import yaml
+
+    output_root = tmp_path / "generated"
+    jurisdiction_ocdid = (
+        "ocd-jurisdiction/country:us/state:ca/place:seattle/government"
+    )
+
+    existing = Jurisdiction(
+        id=uuid5(NAMESPACE_URL, "state-level-seattle-jurisdiction"),
+        ocdid=jurisdiction_ocdid,
+        name="Existing Seattle Government",
+        url="https://example.com",
+        classification="government",
+        metadata={"urls": []},
+    )
+
+    state_dir = output_root / "jurisdictions" / "ca"
+    state_dir.mkdir(parents=True)
+    existing_path = state_dir / "california_seattle.yaml"
+    existing_path.write_text(
+        yaml.safe_dump(existing.model_dump(mode="json"), sort_keys=False)
+    )
+
+    jur_gen = JurGenerator(
+        req=sample_generator_request,
+        division=sample_division,
+        output_root=output_root,
+    )
+
+    result = jur_gen.generate_jurisdiction(
+        division=sample_division,
+        uuid=jur_gen.uuid,
+        classification="government",
+    )
+    output_path = jur_gen.dump_jurisdiction()
+
+    assert result.id == existing.id
+    assert output_path.resolve() == existing_path.resolve()
+    assert not (output_root / "jurisdictions" / "ca" / "local").exists()
+
+
+def test_duplicate_existing_jurisdiction_ocdid_fails_closed(
+    tmp_path,
+    sample_generator_request,
+    sample_division,
+):
+    """Two files carrying one Jurisdiction OCD ID must not be silently reused.
+
+    Picking one arbitrarily would leave the duplicate in place, so the run
+    stops instead and the conflict gets resolved in the data.
+    """
+    import yaml
+
+    output_root = tmp_path / "generated"
+    jurisdiction_ocdid = (
+        "ocd-jurisdiction/country:us/state:ca/place:seattle/government"
+    )
+
+    jur_dir = output_root / "jurisdictions" / "ca" / "local"
+    jur_dir.mkdir(parents=True)
+
+    for suffix in ("one", "two"):
+        existing = Jurisdiction(
+            id=uuid5(NAMESPACE_URL, f"duplicate-jurisdiction-{suffix}"),
+            ocdid=jurisdiction_ocdid,
+            name=f"Seattle {suffix}",
+            url="https://example.com",
+            classification="government",
+            metadata={"urls": []},
+        )
+        (jur_dir / f"{suffix}.yaml").write_text(
+            yaml.safe_dump(existing.model_dump(mode="json"), sort_keys=False)
+        )
+
+    jur_gen = JurGenerator(
+        req=sample_generator_request,
+        division=sample_division,
+        output_root=output_root,
+    )
+
+    with pytest.raises(ValueError, match="Duplicate Jurisdiction OCDID"):
+        jur_gen.generate_jurisdiction(
+            division=sample_division,
+            uuid=jur_gen.uuid,
+            classification="government",
+        )

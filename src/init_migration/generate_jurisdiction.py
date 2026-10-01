@@ -19,6 +19,7 @@ from src.models.jurisdiction import Jurisdiction
 from src.models.source import SourceType
 from src.models.ocdid import OCDIdParsed
 from src.utils.ocdid import ocdid_parser
+from src.utils.yaml_manager import find_ocdid_paths
 from pathlib import Path
 from datetime import datetime, timezone
 from uuid import UUID
@@ -55,18 +56,23 @@ class JurGenerator:
         self,
         req: GeneratorReq,
         division: Division | None = None,
+        output_root: str | Path | None = None,
     ):
         """Initialize JurGenerator with request data and optional Division.
 
         Args:
             req: GeneratorReq object with OCDid, UUID, and configuration.
             division: Optional Division object.
+            output_root: Root the generated Jurisdiction tree lives under.
+                Existing YAML is looked up beneath the same root it is
+                written to, so reruns reuse what the last run produced.
         """
         self.req = req
         self.data = req.data
         self.uuid = self.data.uuid
         self.division = division
         self.jurisdiction: Jurisdiction | None = None
+        self.output_root = Path(output_root) if output_root is not None else Path(".")
         self.existing_path: Path | None = None
 
     def _ai_lookup(self, division: Division) -> dict | None:
@@ -184,32 +190,37 @@ class JurGenerator:
             )
             raise
 
+    def _jurisdiction_state_code(self) -> str:
+        """State code for the request's Division OCD ID.
+
+        Jurisdiction OCD IDs end with an unkeyed classification segment, so
+        the state is read from the source Division ID instead.
+        """
+        parsed = ocdid_parser(self.req.data.ocdid.raw_ocdid)
+        return (parsed.get("state") or parsed.get("district") or "").lower()
+
+    def _jurisdiction_search_root(self) -> Path:
+        """The state tree this generator reads and writes Jurisdictions under."""
+        return self.output_root / "jurisdictions" / self._jurisdiction_state_code()
+
     def _find_existing_jurisdiction_path(
         self, jurisdiction_ocdid: str
     ) -> Path | None:
         """Find an existing Jurisdiction YAML by canonical OCD ID."""
         try:
-            # Use the source Division OCD ID to determine the state because
-            # jurisdiction IDs end with an unkeyed classification segment.
-            parsed = ocdid_parser(self.req.data.ocdid.raw_ocdid)
-            state = (parsed.get("state") or parsed.get("district") or "").lower()
-            jur_dir = Path(f"jurisdictions/{state}/local")
-            if not jur_dir.exists():
-                return None
+            matches = find_ocdid_paths(
+                jurisdiction_ocdid, self._jurisdiction_search_root()
+            )
 
-            for filepath in sorted(jur_dir.glob("*.yaml")):
-                try:
-                    data = yaml.safe_load(filepath.read_text()) or {}
-                except (OSError, yaml.YAMLError) as exc:
-                    logger.debug(
-                        f"Skipping unreadable Jurisdiction YAML {filepath}: {exc}"
-                    )
-                    continue
+            if len(matches) > 1:
+                raise ValueError(
+                    f"Duplicate Jurisdiction OCDID {jurisdiction_ocdid}: "
+                    f"{[str(path) for path in matches]}"
+                )
 
-                if data.get("ocdid") == jurisdiction_ocdid:
-                    return filepath
-
-            return None
+            return matches[0] if matches else None
+        except ValueError:
+            raise
         except Exception as exc:
             logger.debug(
                 f"Error locating existing Jurisdiction {jurisdiction_ocdid}: {exc}"
@@ -248,16 +259,10 @@ class JurGenerator:
                 self.jurisdiction.id,
             )
 
-            # Use the division OCD ID (from the request) to extract state —
-            # jurisdiction OCD IDs end with an unkeyed "/government" segment
-            # that ocdid_parser cannot handle.
-            div_parsed = ocdid_parser(self.req.data.ocdid.raw_ocdid)
-            state = (
-                div_parsed.get("state") or div_parsed.get("district") or ""
-            ).lower()
+            state = self._jurisdiction_state_code()
 
             if output_dir is None:
-                output_dir = Path(".")
+                output_dir = self.output_root
 
             jur_dir = output_dir / "jurisdictions" / state / "local"
             jur_dir.mkdir(parents=True, exist_ok=True)
