@@ -1,0 +1,22 @@
+id: eaec73a2-d9eb-5290-b76f-1823a101f925
+ocdid: ocd-jurisdiction/country:us/state:tx/county:bailey/government
+name: Bailey County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:bailey/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:38:46.108082Z'
+last_updated: '2026-09-25T17:38:46.256345Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:bailey/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

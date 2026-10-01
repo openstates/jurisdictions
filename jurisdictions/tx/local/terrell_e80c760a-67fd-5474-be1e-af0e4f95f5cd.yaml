@@ -1,0 +1,22 @@
+id: e80c760a-67fd-5474-be1e-af0e4f95f5cd
+ocdid: ocd-jurisdiction/country:us/state:tx/county:terrell/government
+name: Terrell County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:terrell/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:49:31.334085Z'
+last_updated: '2026-09-25T17:49:31.479989Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:terrell/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

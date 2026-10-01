@@ -1,0 +1,22 @@
+id: 988a9a53-6b4b-5ab0-9364-507ecc67393f
+ocdid: ocd-jurisdiction/country:us/state:tx/county:blanco/government
+name: Blanco County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:blanco/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:38:51.731717Z'
+last_updated: '2026-09-25T17:38:51.880644Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:blanco/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,21 @@
+id: 17467875-4d6f-5ceb-a98b-160ca46a9fa4
+ocdid: ocd-jurisdiction/country:us/state:tx/county:somervell/government
+name: Somervell County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:somervell
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:43:06.458436Z'
+last_updated: '2026-09-25T17:43:06.458436Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

@@ -1,0 +1,47 @@
+accurate_asof: '2026-03-07T00:00:00Z'
+classification: government
+feature_flags: []
+id: bd405187-c499-5b44-aee8-3800784ee617
+last_updated: '2026-03-07T00:00:00Z'
+legislative_sessions: {}
+metadata:
+  urls:
+  - url: https://www.seattle.gov/council/meet-the-council
+    url_type: people
+  - url: https://www.seattle.gov/cityclerk/agendas-and-legislative-resources/city-council-agendas
+    url_type: meetings
+name: Seattle City Government
+ocdid: ocd-jurisdiction/country:us/state:wa/place:seattle/government
+sourcing:
+- field:
+  - url
+  source_description: null
+  source_name: Seattle Official Site
+  source_type: human_researched
+  source_url:
+    url: https://www.seattle.gov/
+- field:
+  - term
+  source_description: null
+  source_name: Seattle City Clerk
+  source_type: human_researched
+  source_url:
+    url: https://www.seattle.gov/cityclerk/agendas-and-legislative-resources/terms-of-office-for-elected-officials
+- field:
+  - metadata
+  - metadata.urls
+  source_description: null
+  source_name: Seattle Council
+  source_type: human_researched
+  source_url:
+    url: https://www.seattle.gov/council
+term:
+  duration: 4
+  last_known_term_end_date: null
+  number_of_positions: 9
+  source_url: https://www.seattle.gov/cityclerk/agendas-and-legislative-resources/terms-of-office-for-elected-officials
+  term_description: Seattle City Council consists of nine councilmembers serving four-year
+    terms. Seven members are elected by district and two members are elected at-large,
+    per the Seattle City Charter.
+  term_limits: null
+url: https://www.seattle.gov/

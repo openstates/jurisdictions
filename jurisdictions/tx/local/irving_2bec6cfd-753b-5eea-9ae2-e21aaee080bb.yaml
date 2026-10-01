@@ -1,0 +1,22 @@
+id: 2bec6cfd-753b-5eea-9ae2-e21aaee080bb
+ocdid: ocd-jurisdiction/country:us/state:tx/place:irving/government
+name: Irving Council District 7 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:irving/council_district:7
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:51:46.762543Z'
+last_updated: '2026-09-25T17:51:46.915882Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:irving/council_district:7
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

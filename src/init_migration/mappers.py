@@ -12,8 +12,8 @@ ROOT = Path(__file__).parent.parent.parent
 ocdid_master_mapper = {
     "id": "id",
     "name": "display_name",
-    "sameAs": "also_known_as",
-    "sameAsNote": "metadata.also_known_as_note",
+    "sameAs": "other_names",
+    "sameAsNote": "metadata.other_names_note",
     "validThrough": "valid_asof",
     "openstates_district": "metadata.openstates_district",
     "placeholder_id": "metadata.placeholder_id",  # Only 5284 values

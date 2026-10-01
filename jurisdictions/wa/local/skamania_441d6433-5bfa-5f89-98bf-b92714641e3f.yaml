@@ -1,0 +1,22 @@
+id: 441d6433-5bfa-5f89-98bf-b92714641e3f
+ocdid: ocd-jurisdiction/country:us/state:wa/county:skamania/government
+name: Skamania County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:skamania/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:52:23.427626Z'
+last_updated: '2026-09-25T17:52:23.575094Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:skamania/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

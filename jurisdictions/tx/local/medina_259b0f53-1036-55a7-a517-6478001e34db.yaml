@@ -1,0 +1,22 @@
+id: 259b0f53-1036-55a7-a517-6478001e34db
+ocdid: ocd-jurisdiction/country:us/state:tx/county:medina/government
+name: Medina County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:medina/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:48.052796Z'
+last_updated: '2026-09-25T17:47:48.199115Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:medina/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

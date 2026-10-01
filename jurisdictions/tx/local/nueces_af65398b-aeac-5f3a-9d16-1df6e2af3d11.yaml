@@ -1,0 +1,22 @@
+id: af65398b-aeac-5f3a-9d16-1df6e2af3d11
+ocdid: ocd-jurisdiction/country:us/state:tx/county:nueces/government
+name: Nueces County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:nueces/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:48:14.983723Z'
+last_updated: '2026-09-25T17:48:15.137009Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:nueces/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

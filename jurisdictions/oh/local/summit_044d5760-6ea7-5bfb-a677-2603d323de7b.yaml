@@ -1,0 +1,22 @@
+id: 044d5760-6ea7-5bfb-a677-2603d323de7b
+ocdid: ocd-jurisdiction/country:us/state:oh/county:summit/government
+name: Summit County Council District 8 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:oh/county:summit/council_district:8
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:52:51.357839Z'
+last_updated: '2026-09-25T17:52:51.506254Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:oh/county:summit/council_district:8
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

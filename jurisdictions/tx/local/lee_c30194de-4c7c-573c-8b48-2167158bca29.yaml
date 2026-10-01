@@ -1,0 +1,22 @@
+id: c30194de-4c7c-573c-8b48-2167158bca29
+ocdid: ocd-jurisdiction/country:us/state:tx/county:lee/government
+name: Lee County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:lee/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:18.482284Z'
+last_updated: '2026-09-25T17:47:18.629633Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:lee/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

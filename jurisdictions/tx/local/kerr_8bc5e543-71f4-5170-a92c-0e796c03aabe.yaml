@@ -1,0 +1,22 @@
+id: 8bc5e543-71f4-5170-a92c-0e796c03aabe
+ocdid: ocd-jurisdiction/country:us/state:tx/county:kerr/government
+name: Kerr County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:kerr/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:46:58.472969Z'
+last_updated: '2026-09-25T17:46:58.619000Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:kerr/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

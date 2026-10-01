@@ -1,0 +1,22 @@
+id: dea62170-797a-5aa7-a72f-3acbdeac43e6
+ocdid: ocd-jurisdiction/country:us/state:wa/county:whitman/government
+name: Whitman County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:whitman/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:52:34.861750Z'
+last_updated: '2026-09-25T17:52:35.007499Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:whitman/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: d34dc24c-78f3-5836-84b7-1b3e1a5a0122
+ocdid: ocd-jurisdiction/country:us/state:tx/place:denton/government
+name: Denton Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:denton/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:51:36.245483Z'
+last_updated: '2026-09-25T17:51:36.394918Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:denton/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

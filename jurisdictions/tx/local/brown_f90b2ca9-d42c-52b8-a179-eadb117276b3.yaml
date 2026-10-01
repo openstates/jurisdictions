@@ -1,0 +1,22 @@
+id: f90b2ca9-d42c-52b8-a179-eadb117276b3
+ocdid: ocd-jurisdiction/country:us/state:tx/county:brown/government
+name: Brown County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:brown/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:38:59.337532Z'
+last_updated: '2026-09-25T17:38:59.486905Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:brown/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

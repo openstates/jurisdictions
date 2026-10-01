@@ -1,0 +1,32 @@
+id: 15500fba-9b17-546b-b41e-b0ad5be21382
+ocdid: ocd-division/country:us/state:tx/place:mesquite/council_district:1
+country: us
+display_name: Mesquite Council District 1
+other_names: []
+geometries: []
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-09-25T17:51:53.214846Z'
+last_updated: '2026-09-25T17:51:53.365963Z'
+sourcing:
+- field:
+  - ocdid
+  source_name: ocdid_ingest
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv
+  source_description: Open Civic Data Master repo
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: Mesquite Council District 1
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_ingest
+    source_type: human_researched
+    source_url:
+      ocd_repo: https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv
+    source_description: Open Civic Data Master repo
+jurisdiction_id: ocd-jurisdiction/country:us/state:tx/place:mesquite/government

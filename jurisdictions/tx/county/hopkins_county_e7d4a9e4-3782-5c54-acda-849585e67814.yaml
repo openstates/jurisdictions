@@ -1,0 +1,21 @@
+id: e7d4a9e4-3782-5c54-acda-849585e67814
+ocdid: ocd-jurisdiction/country:us/state:tx/county:hopkins/government
+name: Hopkins County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:hopkins
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:40:30.206004Z'
+last_updated: '2026-09-25T17:40:30.206004Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

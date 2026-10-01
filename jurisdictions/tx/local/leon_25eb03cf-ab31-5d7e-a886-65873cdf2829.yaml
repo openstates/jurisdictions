@@ -1,0 +1,22 @@
+id: 25eb03cf-ab31-5d7e-a886-65873cdf2829
+ocdid: ocd-jurisdiction/country:us/state:tx/county:leon/government
+name: Leon County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:leon/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:19.958813Z'
+last_updated: '2026-09-25T17:47:20.106383Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:leon/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

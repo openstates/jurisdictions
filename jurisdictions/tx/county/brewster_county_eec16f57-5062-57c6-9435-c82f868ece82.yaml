@@ -1,0 +1,21 @@
+id: eec16f57-5062-57c6-9435-c82f868ece82
+ocdid: ocd-jurisdiction/country:us/state:tx/county:brewster/government
+name: Brewster County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:brewster
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:38:16.839640Z'
+last_updated: '2026-09-25T17:38:16.839640Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

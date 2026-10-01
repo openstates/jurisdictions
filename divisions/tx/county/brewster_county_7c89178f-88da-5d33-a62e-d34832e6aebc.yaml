@@ -1,0 +1,55 @@
+id: 7c89178f-88da-5d33-a62e-d34832e6aebc
+ocdid: ocd-division/country:us/state:tx/county:brewster
+country: us
+display_name: Brewster County
+other_names: []
+geometries: []
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-09-25T17:38:16.838186Z'
+last_updated: '2026-09-25T17:38:16.838186Z'
+sourcing:
+- field:
+  - ocdid
+  source_name: ocdid_recursive_stub
+  source_type: programmatically_generated
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata: null
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: Brewster County
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_recursive_stub
+    source_type: programmatically_generated
+    source_url:
+      ocd_repo: https://github.com/openstates/jurisdictions
+    source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+- authority: census
+  id_type: statefp
+  value: '48'
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_recursive_stub
+    source_type: programmatically_generated
+    source_url:
+      ocd_repo: https://github.com/openstates/jurisdictions
+    source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+- authority: census
+  id_type: geoid
+  value: '48'
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_recursive_stub
+    source_type: programmatically_generated
+    source_url:
+      ocd_repo: https://github.com/openstates/jurisdictions
+    source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+jurisdiction_id: ocd-jurisdiction/country:us/state:tx/county:brewster/government

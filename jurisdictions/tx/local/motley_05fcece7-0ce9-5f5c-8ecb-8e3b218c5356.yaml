@@ -1,0 +1,22 @@
+id: 05fcece7-0ce9-5f5c-8ecb-8e3b218c5356
+ocdid: ocd-jurisdiction/country:us/state:tx/county:motley/government
+name: Motley County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:motley/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:48:04.122744Z'
+last_updated: '2026-09-25T17:48:04.271316Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:motley/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

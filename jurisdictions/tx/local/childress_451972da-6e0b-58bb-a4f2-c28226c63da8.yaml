@@ -1,0 +1,22 @@
+id: 451972da-6e0b-58bb-a4f2-c28226c63da8
+ocdid: ocd-jurisdiction/country:us/state:tx/county:childress/government
+name: Childress County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:childress/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:39:10.809658Z'
+last_updated: '2026-09-25T17:39:10.957141Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:childress/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

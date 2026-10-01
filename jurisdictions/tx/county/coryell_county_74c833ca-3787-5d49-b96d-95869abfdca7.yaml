@@ -1,0 +1,21 @@
+id: 74c833ca-3787-5d49-b96d-95869abfdca7
+ocdid: ocd-jurisdiction/country:us/state:tx/county:coryell/government
+name: Coryell County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:coryell
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:39:21.406658Z'
+last_updated: '2026-09-25T17:39:21.406658Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

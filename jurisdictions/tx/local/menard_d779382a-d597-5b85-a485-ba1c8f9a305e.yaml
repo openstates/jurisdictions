@@ -1,0 +1,22 @@
+id: d779382a-d597-5b85-a485-ba1c8f9a305e
+ocdid: ocd-jurisdiction/country:us/state:tx/county:menard/government
+name: Menard County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:menard/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:49.888110Z'
+last_updated: '2026-09-25T17:47:50.033766Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:menard/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

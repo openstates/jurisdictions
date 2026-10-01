@@ -1,0 +1,22 @@
+id: 0bd3fa1c-4592-5892-9acc-d0f7372fa9af
+ocdid: ocd-jurisdiction/country:us/state:tx/county:brazos/government
+name: Brazos County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:brazos/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:38:56.044991Z'
+last_updated: '2026-09-25T17:38:56.193235Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:brazos/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

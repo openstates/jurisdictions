@@ -1,0 +1,21 @@
+id: 262044b2-f7b4-5d03-9583-d451a11b185e
+ocdid: ocd-jurisdiction/country:us/state:tx/county:delta/government
+name: Delta County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:delta
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:39:31.268937Z'
+last_updated: '2026-09-25T17:39:31.268937Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

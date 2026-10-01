@@ -1,0 +1,21 @@
+id: e8bb1602-dd1a-5354-9a16-32f01acc37d4
+ocdid: ocd-jurisdiction/country:us/state:tx/county:glasscock/government
+name: Glasscock County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:glasscock
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:40:01.275269Z'
+last_updated: '2026-09-25T17:40:01.275269Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

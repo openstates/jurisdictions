@@ -1,0 +1,22 @@
+id: 4021c11d-f68f-53d6-a228-d5ff48f1792d
+ocdid: ocd-jurisdiction/country:us/state:tx/county:jim_wells/government
+name: Jim Wells County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:jim_wells/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:46:46.336478Z'
+last_updated: '2026-09-25T17:46:46.482603Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:jim_wells/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

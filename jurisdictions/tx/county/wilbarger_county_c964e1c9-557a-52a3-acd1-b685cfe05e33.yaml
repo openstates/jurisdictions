@@ -1,0 +1,21 @@
+id: c964e1c9-557a-52a3-acd1-b685cfe05e33
+ocdid: ocd-jurisdiction/country:us/state:tx/county:wilbarger/government
+name: Wilbarger County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:wilbarger
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:44:05.281442Z'
+last_updated: '2026-09-25T17:44:05.281442Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

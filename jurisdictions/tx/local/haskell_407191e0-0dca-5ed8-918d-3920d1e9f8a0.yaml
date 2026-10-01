@@ -1,0 +1,22 @@
+id: 407191e0-0dca-5ed8-918d-3920d1e9f8a0
+ocdid: ocd-jurisdiction/country:us/state:tx/county:haskell/government
+name: Haskell County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:haskell/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:46:08.577164Z'
+last_updated: '2026-09-25T17:46:08.721984Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:haskell/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

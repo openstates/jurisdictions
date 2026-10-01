@@ -1,0 +1,21 @@
+id: 4021c11d-f68f-53d6-a228-d5ff48f1792d
+ocdid: ocd-jurisdiction/country:us/state:tx/county:jim_wells/government
+name: Jim Wells County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:jim_wells
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:40:47.736876Z'
+last_updated: '2026-09-25T17:40:47.736876Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

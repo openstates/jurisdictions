@@ -1,0 +1,21 @@
+id: bbe690dd-4a97-508f-9721-465d4bfc180d
+ocdid: ocd-jurisdiction/country:us/state:wa/county:mason/government
+name: Mason County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:mason
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:52:07.786886Z'
+last_updated: '2026-09-25T17:52:07.786886Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

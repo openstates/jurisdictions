@@ -1,0 +1,21 @@
+id: bc3e84d9-19f5-58c0-b6e2-3391ad8a22b0
+ocdid: ocd-jurisdiction/country:us/state:tx/county:edwards/government
+name: Edwards County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:edwards
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:39:40.746369Z'
+last_updated: '2026-09-25T17:39:40.746369Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

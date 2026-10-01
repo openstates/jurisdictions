@@ -1,0 +1,21 @@
+id: 259b0f53-1036-55a7-a517-6478001e34db
+ocdid: ocd-jurisdiction/country:us/state:tx/county:medina/government
+name: Medina County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:medina
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:41:40.546221Z'
+last_updated: '2026-09-25T17:41:40.546221Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

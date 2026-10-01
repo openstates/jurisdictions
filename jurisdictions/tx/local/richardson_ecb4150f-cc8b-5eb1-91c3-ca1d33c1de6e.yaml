@@ -1,0 +1,22 @@
+id: ecb4150f-cc8b-5eb1-91c3-ca1d33c1de6e
+ocdid: ocd-jurisdiction/country:us/state:tx/place:richardson/government
+name: Richardson Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:richardson/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:51:59.342441Z'
+last_updated: '2026-09-25T17:51:59.491602Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:richardson/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

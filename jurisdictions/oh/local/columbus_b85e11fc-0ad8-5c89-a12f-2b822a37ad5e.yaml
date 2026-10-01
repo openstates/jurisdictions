@@ -1,0 +1,22 @@
+id: b85e11fc-0ad8-5c89-a12f-2b822a37ad5e
+ocdid: ocd-jurisdiction/country:us/state:oh/place:columbus/government
+name: Columbus Ward 9 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:oh/place:columbus/ward:9
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:37:55.566662Z'
+last_updated: '2026-09-25T17:37:55.719846Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:oh/place:columbus/ward:9
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

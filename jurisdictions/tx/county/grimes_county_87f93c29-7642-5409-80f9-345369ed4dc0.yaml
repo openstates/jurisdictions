@@ -1,0 +1,21 @@
+id: 87f93c29-7642-5409-80f9-345369ed4dc0
+ocdid: ocd-jurisdiction/country:us/state:tx/county:grimes/government
+name: Grimes County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:grimes
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:40:07.665653Z'
+last_updated: '2026-09-25T17:40:07.665653Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

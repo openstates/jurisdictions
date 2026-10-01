@@ -1,0 +1,22 @@
+id: 262d30ec-5170-59d3-a419-8fcafce851ca
+ocdid: ocd-jurisdiction/country:us/state:tx/county:runnels/government
+name: Runnels County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:runnels/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:48:54.613504Z'
+last_updated: '2026-09-25T17:48:54.758805Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:runnels/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: d63b158e-35c0-5010-b707-d23e27dce257
+ocdid: ocd-jurisdiction/country:us/state:tx/county:robertson/government
+name: Robertson County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:robertson/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:48:51.907284Z'
+last_updated: '2026-09-25T17:48:52.055204Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:robertson/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

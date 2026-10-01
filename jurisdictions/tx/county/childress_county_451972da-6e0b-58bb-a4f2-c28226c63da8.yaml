@@ -1,0 +1,21 @@
+id: 451972da-6e0b-58bb-a4f2-c28226c63da8
+ocdid: ocd-jurisdiction/country:us/state:tx/county:childress/government
+name: Childress County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:childress
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:38:30.460390Z'
+last_updated: '2026-09-25T17:38:30.460390Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

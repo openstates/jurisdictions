@@ -1,0 +1,22 @@
+id: 78c4365e-cc33-5ab7-9b82-27ad31777276
+ocdid: ocd-jurisdiction/country:us/state:tx/county:red_river/government
+name: Red River County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:red_river/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:48:44.665148Z'
+last_updated: '2026-09-25T17:48:44.812061Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:red_river/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: e9fbc8c4-fee0-5c6f-ae02-97b679295578
+ocdid: ocd-jurisdiction/country:us/state:tx/county:la_salle/government
+name: La Salle County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:la_salle/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:08.339173Z'
+last_updated: '2026-09-25T17:47:08.486669Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:la_salle/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

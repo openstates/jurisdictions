@@ -1,0 +1,22 @@
+id: f5f0be9f-72c7-525f-9fd0-7ae33f091ccd
+ocdid: ocd-jurisdiction/country:us/state:tx/county:caldwell/government
+name: Caldwell County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:caldwell/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:39:02.048142Z'
+last_updated: '2026-09-25T17:39:02.195623Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:caldwell/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

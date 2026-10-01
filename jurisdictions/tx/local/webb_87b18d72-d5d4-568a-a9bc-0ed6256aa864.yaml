@@ -1,0 +1,22 @@
+id: 87b18d72-d5d4-568a-a9bc-0ed6256aa864
+ocdid: ocd-jurisdiction/country:us/state:tx/county:webb/government
+name: Webb County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:webb/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:50:03.571378Z'
+last_updated: '2026-09-25T17:50:03.716294Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:webb/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

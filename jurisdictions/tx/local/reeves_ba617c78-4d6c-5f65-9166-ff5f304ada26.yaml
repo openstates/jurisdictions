@@ -1,0 +1,22 @@
+id: ba617c78-4d6c-5f65-9166-ff5f304ada26
+ocdid: ocd-jurisdiction/country:us/state:tx/county:reeves/government
+name: Reeves County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:reeves/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:48:45.971799Z'
+last_updated: '2026-09-25T17:48:46.120065Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:reeves/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

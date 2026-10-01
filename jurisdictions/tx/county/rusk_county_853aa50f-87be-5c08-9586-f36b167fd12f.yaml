@@ -1,0 +1,21 @@
+id: 853aa50f-87be-5c08-9586-f36b167fd12f
+ocdid: ocd-jurisdiction/country:us/state:tx/county:rusk/government
+name: Rusk County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:rusk
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:42:45.275775Z'
+last_updated: '2026-09-25T17:42:45.275775Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

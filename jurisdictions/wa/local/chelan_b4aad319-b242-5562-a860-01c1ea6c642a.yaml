@@ -1,0 +1,22 @@
+id: b4aad319-b242-5562-a860-01c1ea6c642a
+ocdid: ocd-jurisdiction/country:us/state:wa/county:chelan/government
+name: Chelan County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:chelan/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:52:59.587864Z'
+last_updated: '2026-09-25T17:52:59.737481Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:chelan/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

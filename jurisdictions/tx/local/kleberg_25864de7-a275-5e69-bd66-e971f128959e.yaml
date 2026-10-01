@@ -1,0 +1,22 @@
+id: 25864de7-a275-5e69-bd66-e971f128959e
+ocdid: ocd-jurisdiction/country:us/state:tx/county:kleberg/government
+name: Kleberg County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:kleberg/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:04.865509Z'
+last_updated: '2026-09-25T17:47:05.012618Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:kleberg/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

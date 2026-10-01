@@ -1,0 +1,21 @@
+id: 9b5f7cf8-538a-5580-b299-fc0449704c17
+ocdid: ocd-jurisdiction/country:us/state:tx/county:crockett/government
+name: Crockett County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:crockett
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:39:24.384681Z'
+last_updated: '2026-09-25T17:39:24.384681Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: a309362b-33a2-5a7b-ba3b-19c715db4989
+ocdid: ocd-jurisdiction/country:us/state:tx/county:harris/government
+name: Harris County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:harris/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:46:03.561582Z'
+last_updated: '2026-09-25T17:46:03.718380Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:harris/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

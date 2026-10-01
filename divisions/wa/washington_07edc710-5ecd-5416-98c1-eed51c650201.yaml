@@ -1,0 +1,55 @@
+id: 07edc710-5ecd-5416-98c1-eed51c650201
+ocdid: ocd-division/country:us/state:wa/place:tacoma
+country: us
+display_name: Washington
+other_names: []
+geometries: []
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-09-25T17:52:33.781089Z'
+last_updated: '2026-09-25T17:52:33.781089Z'
+sourcing:
+- field:
+  - ocdid
+  source_name: ocdid_recursive_stub
+  source_type: programmatically_generated
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata: null
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: Washington
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_recursive_stub
+    source_type: programmatically_generated
+    source_url:
+      ocd_repo: https://github.com/openstates/jurisdictions
+    source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+- authority: census
+  id_type: statefp
+  value: '53'
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_recursive_stub
+    source_type: programmatically_generated
+    source_url:
+      ocd_repo: https://github.com/openstates/jurisdictions
+    source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+- authority: census
+  id_type: geoid
+  value: '53'
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_recursive_stub
+    source_type: programmatically_generated
+    source_url:
+      ocd_repo: https://github.com/openstates/jurisdictions
+    source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+jurisdiction_id: ocd-jurisdiction/country:us/state:wa/place:tacoma/government

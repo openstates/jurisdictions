@@ -1,0 +1,22 @@
+id: 8d305241-a8eb-5f91-bee6-b5496768bb2b
+ocdid: ocd-jurisdiction/country:us/state:tx/county:mclennan/government
+name: McLennan County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:mclennan/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:45.021335Z'
+last_updated: '2026-09-25T17:47:45.171726Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:mclennan/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

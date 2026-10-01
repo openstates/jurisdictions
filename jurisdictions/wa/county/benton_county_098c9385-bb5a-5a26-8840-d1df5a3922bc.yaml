@@ -1,0 +1,21 @@
+id: 098c9385-bb5a-5a26-8840-d1df5a3922bc
+ocdid: ocd-jurisdiction/country:us/state:wa/county:benton/government
+name: Benton County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:benton
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:52:52.940831Z'
+last_updated: '2026-09-25T17:52:52.940831Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

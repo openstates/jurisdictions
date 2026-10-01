@@ -1,0 +1,22 @@
+id: 6a8d7fbc-6d19-52a9-aa40-6cc7316ef5b6
+ocdid: ocd-jurisdiction/country:us/state:wa/county:spokane/government
+name: Spokane County Council District 5 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:spokane/council_district:5
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:52:25.193132Z'
+last_updated: '2026-09-25T17:52:25.343775Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:spokane/council_district:5
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

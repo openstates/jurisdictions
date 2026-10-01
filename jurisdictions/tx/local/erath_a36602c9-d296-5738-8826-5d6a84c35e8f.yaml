@@ -1,0 +1,22 @@
+id: a36602c9-d296-5738-8826-5d6a84c35e8f
+ocdid: ocd-jurisdiction/country:us/state:tx/county:erath/government
+name: Erath County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:erath/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:45:11.089114Z'
+last_updated: '2026-09-25T17:45:11.233598Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:erath/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

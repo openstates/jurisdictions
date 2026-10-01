@@ -1,0 +1,21 @@
+id: 77efc5b2-9b85-5401-a4ba-812aa06bdfed
+ocdid: ocd-jurisdiction/country:us/state:tx/county:hays/government
+name: Hays County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:hays
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:40:21.795979Z'
+last_updated: '2026-09-25T17:40:21.795979Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

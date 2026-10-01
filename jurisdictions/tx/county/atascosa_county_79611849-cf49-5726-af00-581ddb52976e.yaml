@@ -1,0 +1,21 @@
+id: 79611849-cf49-5726-af00-581ddb52976e
+ocdid: ocd-jurisdiction/country:us/state:tx/county:atascosa/government
+name: Atascosa County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:atascosa
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:38:05.684453Z'
+last_updated: '2026-09-25T17:38:05.684453Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

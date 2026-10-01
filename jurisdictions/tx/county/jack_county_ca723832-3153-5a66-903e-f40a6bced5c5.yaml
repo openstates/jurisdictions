@@ -1,0 +1,21 @@
+id: ca723832-3153-5a66-903e-f40a6bced5c5
+ocdid: ocd-jurisdiction/country:us/state:tx/county:jack/government
+name: Jack County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:jack
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:40:39.996130Z'
+last_updated: '2026-09-25T17:40:39.996130Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

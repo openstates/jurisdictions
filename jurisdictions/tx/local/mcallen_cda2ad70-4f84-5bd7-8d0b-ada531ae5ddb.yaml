@@ -1,0 +1,22 @@
+id: cda2ad70-4f84-5bd7-8d0b-ada531ae5ddb
+ocdid: ocd-jurisdiction/country:us/state:tx/place:mcallen/government
+name: Mcallen Council District 6 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:mcallen/council_district:6
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:51:52.173286Z'
+last_updated: '2026-09-25T17:51:52.327437Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:mcallen/council_district:6
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

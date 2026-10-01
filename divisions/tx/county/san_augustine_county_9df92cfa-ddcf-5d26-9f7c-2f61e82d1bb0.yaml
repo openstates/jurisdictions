@@ -1,0 +1,55 @@
+id: 9df92cfa-ddcf-5d26-9f7c-2f61e82d1bb0
+ocdid: ocd-division/country:us/state:tx/county:san_augustine
+country: us
+display_name: San Augustine County
+other_names: []
+geometries: []
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-09-25T17:42:48.653797Z'
+last_updated: '2026-09-25T17:42:48.653797Z'
+sourcing:
+- field:
+  - ocdid
+  source_name: ocdid_recursive_stub
+  source_type: programmatically_generated
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata: null
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: San Augustine County
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_recursive_stub
+    source_type: programmatically_generated
+    source_url:
+      ocd_repo: https://github.com/openstates/jurisdictions
+    source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+- authority: census
+  id_type: statefp
+  value: '48'
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_recursive_stub
+    source_type: programmatically_generated
+    source_url:
+      ocd_repo: https://github.com/openstates/jurisdictions
+    source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+- authority: census
+  id_type: geoid
+  value: '48'
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_recursive_stub
+    source_type: programmatically_generated
+    source_url:
+      ocd_repo: https://github.com/openstates/jurisdictions
+    source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+jurisdiction_id: ocd-jurisdiction/country:us/state:tx/county:san_augustine/government

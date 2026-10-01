@@ -1,0 +1,21 @@
+id: 74a6eb58-2d33-5e57-8ec8-aef294f34b6e
+ocdid: ocd-jurisdiction/country:us/state:tx/county:hudspeth/government
+name: Hudspeth County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:hudspeth
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:40:34.611215Z'
+last_updated: '2026-09-25T17:40:34.611215Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

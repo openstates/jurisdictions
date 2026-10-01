@@ -1,0 +1,21 @@
+id: 7a195a0e-b42d-5afa-b5bd-52aae42fb2d2
+ocdid: ocd-jurisdiction/country:us/state:tx/county:kent/government
+name: Kent County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:kent
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:40:56.393659Z'
+last_updated: '2026-09-25T17:40:56.393659Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

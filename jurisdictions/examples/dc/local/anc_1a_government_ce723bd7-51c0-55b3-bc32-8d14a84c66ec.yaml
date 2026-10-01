@@ -1,0 +1,58 @@
+accurate_asof: '2025-10-27T01:29:51Z'
+classification: government
+feature_flags: []
+id: ce723bd7-51c0-55b3-bc32-8d14a84c66ec
+last_updated: '2025-10-27T01:29:51Z'
+legislative_sessions: {}
+metadata:
+  mailing_address: '3400 11th Street NW, Suite #200, Washington, DC 20010'
+  official_website: https://anc1a.org/
+  urls:
+  - url: https://openanc.org/map_2022/ancs/1A.html
+    url_type: people
+  - url: https://oanc.dc.gov/anc-meetings
+    url_type: meetings
+name: ANC 1A Government
+ocdid: ocd-jurisdiction/country:us/district:dc/anc:1a/government
+sourcing:
+- field:
+  - url
+  source_description: null
+  source_name: Office of Advisory Neighborhood Commissions
+  source_type: human_researched
+  source_url:
+    url: https://oanc.dc.gov/anc-profile/anc-1a
+- field:
+  - term
+  source_description: null
+  source_name: DC Code
+  source_type: human_researched
+  source_url:
+    url: https://code.dccouncil.gov/us/dc/council/code/sections/1-309.06
+- field:
+  - term
+  - term.number_of_positions
+  source_description: null
+  source_name: OpenANC
+  source_type: human_researched
+  source_url:
+    url: https://openanc.org/map_2022/ancs/1A.html
+- field:
+  - metadata
+  - metadata.urls
+  source_description: null
+  source_name: ANC 1A
+  source_type: human_researched
+  source_url:
+    url: https://anc1a.org/
+term:
+  duration: 2
+  last_known_term_end_date: null
+  number_of_positions: 10
+  source_url: https://code.dccouncil.gov/us/dc/council/code/sections/1-309.06
+  term_description: Each member of an Advisory Neighborhood Commission serves a term
+    of 2 years, beginning at noon on January 2 following the election (or the day
+    after certification, whichever is later). ANC 1A is composed of Single Member
+    District (SMD) commissioners (currently SMDs 1A01 through 1A10).
+  term_limits: null
+url: https://oanc.dc.gov/anc-profile/anc-1a

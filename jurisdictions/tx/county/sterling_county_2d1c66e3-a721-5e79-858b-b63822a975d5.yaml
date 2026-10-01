@@ -1,0 +1,21 @@
+id: 2d1c66e3-a721-5e79-858b-b63822a975d5
+ocdid: ocd-jurisdiction/country:us/state:tx/county:sterling/government
+name: Sterling County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:sterling
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:43:11.632112Z'
+last_updated: '2026-09-25T17:43:11.632112Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

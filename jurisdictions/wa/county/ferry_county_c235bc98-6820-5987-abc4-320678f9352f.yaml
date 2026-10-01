@@ -1,0 +1,21 @@
+id: c235bc98-6820-5987-abc4-320678f9352f
+ocdid: ocd-jurisdiction/country:us/state:wa/county:ferry/government
+name: Ferry County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:ferry
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:53:03.347932Z'
+last_updated: '2026-09-25T17:53:03.347932Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

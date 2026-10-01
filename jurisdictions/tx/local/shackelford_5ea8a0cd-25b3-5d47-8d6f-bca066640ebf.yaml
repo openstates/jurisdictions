@@ -1,0 +1,22 @@
+id: 5ea8a0cd-25b3-5d47-8d6f-bca066640ebf
+ocdid: ocd-jurisdiction/country:us/state:tx/county:shackelford/government
+name: Shackelford County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:shackelford/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:49:09.124194Z'
+last_updated: '2026-09-25T17:49:09.269688Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:shackelford/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

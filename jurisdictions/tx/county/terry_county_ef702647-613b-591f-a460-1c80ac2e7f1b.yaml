@@ -1,0 +1,21 @@
+id: ef702647-613b-591f-a460-1c80ac2e7f1b
+ocdid: ocd-jurisdiction/country:us/state:tx/county:terry/government
+name: Terry County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:terry
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:43:24.305535Z'
+last_updated: '2026-09-25T17:43:24.305535Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

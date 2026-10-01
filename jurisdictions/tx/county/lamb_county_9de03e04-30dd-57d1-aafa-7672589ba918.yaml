@@ -1,0 +1,21 @@
+id: 9de03e04-30dd-57d1-aafa-7672589ba918
+ocdid: ocd-jurisdiction/country:us/state:tx/county:lamb/government
+name: Lamb County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:lamb
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:41:09.098747Z'
+last_updated: '2026-09-25T17:41:09.098747Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

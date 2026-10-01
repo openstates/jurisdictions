@@ -1,0 +1,22 @@
+id: 3d127084-eca7-5d89-af33-d8d80006244d
+ocdid: ocd-jurisdiction/country:us/state:tx/county:johnson/government
+name: Johnson County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:johnson/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:46:48.826164Z'
+last_updated: '2026-09-25T17:46:48.972355Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:johnson/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

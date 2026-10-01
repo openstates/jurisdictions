@@ -1,0 +1,22 @@
+id: 54578de6-acdc-57a9-baba-eba6d9c6fe49
+ocdid: ocd-jurisdiction/country:us/state:tx/county:palo_pinto/government
+name: Palo Pinto County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:palo_pinto/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:48:23.145633Z'
+last_updated: '2026-09-25T17:48:23.294709Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:palo_pinto/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

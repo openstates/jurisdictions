@@ -1,0 +1,21 @@
+id: 130d4af5-eef2-58a9-b4b3-8f4a28602aaa
+ocdid: ocd-jurisdiction/country:us/state:tx/county:nacogdoches/government
+name: Nacogdoches County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:nacogdoches
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:41:57.084899Z'
+last_updated: '2026-09-25T17:41:57.084899Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

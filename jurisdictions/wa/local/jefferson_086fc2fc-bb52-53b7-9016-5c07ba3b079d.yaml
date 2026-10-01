@@ -1,0 +1,22 @@
+id: 086fc2fc-bb52-53b7-9016-5c07ba3b079d
+ocdid: ocd-jurisdiction/country:us/state:wa/county:jefferson/government
+name: Jefferson County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:jefferson/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:53:13.870700Z'
+last_updated: '2026-09-25T17:53:14.018521Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:jefferson/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

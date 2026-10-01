@@ -1,0 +1,22 @@
+id: 6bcfebc4-2f00-5f8d-90d3-83b02cd5136d
+ocdid: ocd-jurisdiction/country:us/state:tx/place:arlington/government
+name: Arlington Council District 5 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:arlington/council_district:5
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:51:26.016109Z'
+last_updated: '2026-09-25T17:51:26.167389Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:arlington/council_district:5
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

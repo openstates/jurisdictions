@@ -1,0 +1,22 @@
+id: 74b5dda7-54cd-5984-8192-1f5b88ffeeb7
+ocdid: ocd-jurisdiction/country:us/state:tx/county:waller/government
+name: Waller County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:waller/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:49:58.078263Z'
+last_updated: '2026-09-25T17:49:58.222300Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:waller/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

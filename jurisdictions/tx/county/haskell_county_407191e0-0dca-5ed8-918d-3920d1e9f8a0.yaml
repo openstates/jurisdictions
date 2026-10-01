@@ -1,0 +1,21 @@
+id: 407191e0-0dca-5ed8-918d-3920d1e9f8a0
+ocdid: ocd-jurisdiction/country:us/state:tx/county:haskell/government
+name: Haskell County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:haskell
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:40:20.665364Z'
+last_updated: '2026-09-25T17:40:20.665364Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

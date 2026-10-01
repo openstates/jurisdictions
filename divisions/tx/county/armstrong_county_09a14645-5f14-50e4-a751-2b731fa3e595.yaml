@@ -1,0 +1,55 @@
+id: 09a14645-5f14-50e4-a751-2b731fa3e595
+ocdid: ocd-division/country:us/state:tx/county:armstrong
+country: us
+display_name: Armstrong County
+other_names: []
+geometries: []
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-09-25T17:38:04.987494Z'
+last_updated: '2026-09-25T17:38:04.987494Z'
+sourcing:
+- field:
+  - ocdid
+  source_name: ocdid_recursive_stub
+  source_type: programmatically_generated
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata: null
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: Armstrong County
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_recursive_stub
+    source_type: programmatically_generated
+    source_url:
+      ocd_repo: https://github.com/openstates/jurisdictions
+    source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+- authority: census
+  id_type: statefp
+  value: '48'
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_recursive_stub
+    source_type: programmatically_generated
+    source_url:
+      ocd_repo: https://github.com/openstates/jurisdictions
+    source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+- authority: census
+  id_type: geoid
+  value: '48'
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_recursive_stub
+    source_type: programmatically_generated
+    source_url:
+      ocd_repo: https://github.com/openstates/jurisdictions
+    source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+jurisdiction_id: ocd-jurisdiction/country:us/state:tx/county:armstrong/government

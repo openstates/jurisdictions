@@ -1,0 +1,21 @@
+id: b92c49f1-549e-5ecd-b6f3-5c640d172b5d
+ocdid: ocd-jurisdiction/country:us/state:tx/county:cottle/government
+name: Cottle County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:cottle
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:39:22.451674Z'
+last_updated: '2026-09-25T17:39:22.451674Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

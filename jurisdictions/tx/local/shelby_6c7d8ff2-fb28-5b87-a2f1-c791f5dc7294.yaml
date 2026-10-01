@@ -1,0 +1,22 @@
+id: 6c7d8ff2-fb28-5b87-a2f1-c791f5dc7294
+ocdid: ocd-jurisdiction/country:us/state:tx/county:shelby/government
+name: Shelby County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:shelby/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:49:10.087545Z'
+last_updated: '2026-09-25T17:49:10.233431Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:shelby/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

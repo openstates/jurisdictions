@@ -1,0 +1,22 @@
+id: fd53eee7-29dd-5d7b-b961-f2803f2d27ea
+ocdid: ocd-jurisdiction/country:us/state:tx/county:reagan/government
+name: Reagan County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:reagan/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:48:41.467870Z'
+last_updated: '2026-09-25T17:48:41.620540Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:reagan/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

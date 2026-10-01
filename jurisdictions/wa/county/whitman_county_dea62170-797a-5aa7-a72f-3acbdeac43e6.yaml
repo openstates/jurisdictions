@@ -1,0 +1,21 @@
+id: dea62170-797a-5aa7-a72f-3acbdeac43e6
+ocdid: ocd-jurisdiction/country:us/state:wa/county:whitman/government
+name: Whitman County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:whitman
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:52:28.610165Z'
+last_updated: '2026-09-25T17:52:28.610165Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

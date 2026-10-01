@@ -1,0 +1,22 @@
+id: d513b522-109a-5bca-9bf9-f4ce49ce5f26
+ocdid: ocd-jurisdiction/country:us/state:wa/county:columbia/government
+name: Columbia County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:columbia/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:53:01.762561Z'
+last_updated: '2026-09-25T17:53:01.913463Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:columbia/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

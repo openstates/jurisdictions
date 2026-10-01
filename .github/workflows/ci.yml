@@ -24,3 +24,16 @@ jobs:
           python-version: "3.12"
       - run: uv sync --all-extras
       - run: uv run pytest -m "not integration and not slow"
+
+  examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - run: uv sync --all-extras
+      # Reports the example drift a sample_output change implies. The sync
+      # itself runs on push to main; this only surfaces it during review.
+      - run: uv run python -m src.utils.sync_examples --check
+        continue-on-error: true

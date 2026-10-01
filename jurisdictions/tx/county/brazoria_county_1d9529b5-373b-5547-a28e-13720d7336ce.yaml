@@ -1,0 +1,21 @@
+id: 1d9529b5-373b-5547-a28e-13720d7336ce
+ocdid: ocd-jurisdiction/country:us/state:tx/county:brazoria/government
+name: Brazoria County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:brazoria
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:38:15.287280Z'
+last_updated: '2026-09-25T17:38:15.287280Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

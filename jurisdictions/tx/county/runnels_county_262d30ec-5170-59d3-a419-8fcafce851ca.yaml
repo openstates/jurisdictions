@@ -1,0 +1,21 @@
+id: 262d30ec-5170-59d3-a419-8fcafce851ca
+ocdid: ocd-jurisdiction/country:us/state:tx/county:runnels/government
+name: Runnels County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:runnels
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:42:43.925232Z'
+last_updated: '2026-09-25T17:42:43.925232Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

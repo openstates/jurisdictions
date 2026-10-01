@@ -1,0 +1,22 @@
+id: 77775bbb-26d3-5f8c-8a01-04a09e225e85
+ocdid: ocd-jurisdiction/country:us/state:tx/county:andrews/government
+name: Andrews County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:andrews/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:38:40.172548Z'
+last_updated: '2026-09-25T17:38:40.331096Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:andrews/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

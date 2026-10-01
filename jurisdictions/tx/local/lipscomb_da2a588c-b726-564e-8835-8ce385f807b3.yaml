@@ -1,0 +1,22 @@
+id: da2a588c-b726-564e-8835-8ce385f807b3
+ocdid: ocd-jurisdiction/country:us/state:tx/county:lipscomb/government
+name: Lipscomb County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:lipscomb/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:24.681553Z'
+last_updated: '2026-09-25T17:47:24.831517Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:lipscomb/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: 8ff5b5d9-9fd9-5d80-af6e-006a8b9198de
+ocdid: ocd-jurisdiction/country:us/state:tx/county:hardeman/government
+name: Hardeman County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:hardeman/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:45:59.876419Z'
+last_updated: '2026-09-25T17:46:00.023594Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:hardeman/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: 3837d939-7966-5870-8660-ce508d39964c
+ocdid: ocd-jurisdiction/country:us/state:wa/county:pend_oreille/government
+name: Pend Oreille County Council District 3 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:pend_oreille/council_district:3
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:52:15.220905Z'
+last_updated: '2026-09-25T17:52:15.367234Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:pend_oreille/council_district:3
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

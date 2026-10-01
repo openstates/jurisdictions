@@ -1,0 +1,21 @@
+id: 39c7b30c-6c8d-5240-bdf0-c21047a3786f
+ocdid: ocd-jurisdiction/country:us/state:tx/county:sutton/government
+name: Sutton County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:sutton
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:43:16.169745Z'
+last_updated: '2026-09-25T17:43:16.169745Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

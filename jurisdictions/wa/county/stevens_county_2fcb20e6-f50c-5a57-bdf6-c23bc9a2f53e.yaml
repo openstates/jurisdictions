@@ -1,0 +1,21 @@
+id: 2fcb20e6-f50c-5a57-bdf6-c23bc9a2f53e
+ocdid: ocd-jurisdiction/country:us/state:wa/county:stevens/government
+name: Stevens County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:stevens
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:52:19.623966Z'
+last_updated: '2026-09-25T17:52:19.623966Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

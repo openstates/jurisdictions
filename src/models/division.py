@@ -1,4 +1,10 @@
-from pydantic import BaseModel, Field, ConfigDict, HttpUrl, model_validator
+from pydantic import (
+    BaseModel,
+    Field,
+    ConfigDict,
+    HttpUrl,
+    model_validator,
+)
 from typing import List, Optional
 from datetime import datetime, timezone
 from src.models.source import SourceObj
@@ -147,13 +153,13 @@ class Division(BaseModel):
         ...,
         description="Human-readable name for division. Should be sourced from the Open Civic Data repo.",
     )
+    other_names: List[str] = Field(
+        default_factory=list,
+        description="A list of alternate display names that refer to the same geo political division.",
+    )
     geometries: Optional[List[Geometry]] = Field(
         default_factory=list,
         description="A list of associated geometries, as defined by the Geometry model. Empty array if not set.",
-    )
-    also_known_as: List[str] = Field(
-        default_factory=list,
-        description="A list of alternate formatted OCDids that refer to the same geo political divisions.",
     )
     children: List[str] = Field(
         default_factory=list,
@@ -196,15 +202,16 @@ class Division(BaseModel):
             self.id = uuid5(NAMESPACE_URL, f"{self.ocdid}|{asof_date}")
         return self
 
-    # Untested
     @classmethod
-    def load_division(cls, filepath):
+    def load_division(cls, filepath: str | Path) -> "Division":
         try:
-            data = yaml.safe_load(filepath)
-            cls = cls(**data)
+            data = yaml.safe_load(Path(filepath).read_text())
+            return cls(**data)
         except Exception as error:
             logger.error(
-                "Failed to load division object", extras={"error": error}, exc_info=True
+                "Failed to load division object",
+                extra={"filepath": str(filepath)},
+                exc_info=True,
             )
             raise ValueError("Failed to load division. Check filepath") from error
 
@@ -218,7 +225,7 @@ class Division(BaseModel):
         filepath = base_path / f"{self.display_name}_{geoid}_{self.id}.yaml"
         data = self.model_dump(exclude_none=False, mode="json")
         with open(filepath, "w") as f:
-            yaml.safe_dump(data, f)
+            yaml.safe_dump(data, f, sort_keys=False)
         return filepath
 
     def flatten(self) -> dict:

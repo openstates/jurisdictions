@@ -1,0 +1,21 @@
+id: 74b5dda7-54cd-5984-8192-1f5b88ffeeb7
+ocdid: ocd-jurisdiction/country:us/state:tx/county:waller/government
+name: Waller County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:waller
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:43:51.817630Z'
+last_updated: '2026-09-25T17:43:51.817630Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

@@ -1,0 +1,21 @@
+id: a36602c9-d296-5738-8826-5d6a84c35e8f
+ocdid: ocd-jurisdiction/country:us/state:tx/county:erath/government
+name: Erath County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:erath
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:39:44.050845Z'
+last_updated: '2026-09-25T17:39:44.050845Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

@@ -1,0 +1,21 @@
+id: 4958fe0d-d9c0-5aed-8afc-3e7e025d541d
+ocdid: ocd-jurisdiction/country:us/state:tx/county:gray/government
+name: Gray County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:gray
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:40:04.568042Z'
+last_updated: '2026-09-25T17:40:04.568042Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

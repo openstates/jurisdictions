@@ -1,0 +1,22 @@
+id: dacbf200-cd1d-5980-8dd9-ad8938734776
+ocdid: ocd-jurisdiction/country:us/state:tx/county:bowie/government
+name: Bowie County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:bowie/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:38:54.369415Z'
+last_updated: '2026-09-25T17:38:54.518044Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:bowie/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

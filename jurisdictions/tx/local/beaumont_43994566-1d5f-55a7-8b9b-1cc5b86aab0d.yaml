@@ -1,0 +1,22 @@
+id: 43994566-1d5f-55a7-8b9b-1cc5b86aab0d
+ocdid: ocd-jurisdiction/country:us/state:tx/place:beaumont/government
+name: Beaumont Ward 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:beaumont/ward:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:51:29.400293Z'
+last_updated: '2026-09-25T17:51:29.550174Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:beaumont/ward:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

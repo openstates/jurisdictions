@@ -1,0 +1,22 @@
+id: 80d91d78-adb5-504a-b973-7ec254014675
+ocdid: ocd-jurisdiction/country:us/state:tx/county:live_oak/government
+name: Live Oak County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:live_oak/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:26.176101Z'
+last_updated: '2026-09-25T17:47:26.324803Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:live_oak/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

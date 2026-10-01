@@ -1,0 +1,22 @@
+id: 0d32e4e0-53e7-5807-9673-16949723e4d9
+ocdid: ocd-jurisdiction/country:us/state:tx/county:mcculloch/government
+name: McCulloch County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:mcculloch/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:47:43.534765Z'
+last_updated: '2026-09-25T17:47:43.684141Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:mcculloch/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

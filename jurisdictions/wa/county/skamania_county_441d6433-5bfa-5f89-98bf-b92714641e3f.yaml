@@ -1,0 +1,21 @@
+id: 441d6433-5bfa-5f89-98bf-b92714641e3f
+ocdid: ocd-jurisdiction/country:us/state:wa/county:skamania/government
+name: Skamania County Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:skamania
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-09-25T17:52:17.313290Z'
+last_updated: '2026-09-25T17:52:17.313290Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: 76b812b4-1f1d-52df-ad98-c0fb24ab02f9
+ocdid: ocd-jurisdiction/country:us/state:tx/place:laredo/government
+name: Laredo Council District 8 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:laredo/council_district:8
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:51:49.385253Z'
+last_updated: '2026-09-25T17:51:49.535233Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/place:laredo/council_district:8
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

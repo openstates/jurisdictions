@@ -1,0 +1,22 @@
+id: 73adca93-d3f8-5d16-b86f-de0826ef1968
+ocdid: ocd-jurisdiction/country:us/state:tx/county:garza/government
+name: Garza County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:garza/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:45:36.787210Z'
+last_updated: '2026-09-25T17:45:36.935432Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:garza/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

@@ -1,0 +1,22 @@
+id: e881bd47-b8fe-56c7-8d52-f27f8019c995
+ocdid: ocd-jurisdiction/country:us/state:tx/county:armstrong/government
+name: Armstrong County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:armstrong/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:38:43.802970Z'
+last_updated: '2026-09-25T17:38:43.951391Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:armstrong/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

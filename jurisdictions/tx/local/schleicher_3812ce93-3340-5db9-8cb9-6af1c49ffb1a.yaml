@@ -1,0 +1,22 @@
+id: 3812ce93-3340-5db9-8cb9-6af1c49ffb1a
+ocdid: ocd-jurisdiction/country:us/state:tx/county:schleicher/government
+name: Schleicher County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:schleicher/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:49:05.263808Z'
+last_updated: '2026-09-25T17:49:05.410210Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:schleicher/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []

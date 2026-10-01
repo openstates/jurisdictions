@@ -1,0 +1,22 @@
+id: 6f9cb8c5-f404-5242-bac8-8fae7c64419b
+ocdid: ocd-jurisdiction/country:us/state:tx/county:upton/government
+name: Upton County Council District 4 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:upton/council_district:4
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-09-25T17:49:46.196493Z'
+last_updated: '2026-09-25T17:49:46.345248Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:tx/county:upton/council_district:4
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
