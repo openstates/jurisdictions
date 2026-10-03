@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-29T22:40:41.019850+00:00",
+  "generated_at": "2026-09-25T17:53:17.100791+00:00",
   "tables": [
     {
       "name": "local_ocdids",
       "partitioned_by": "state",
-      "rows": 3603,
-      "bytes": 45193,
+      "rows": 3108,
+      "bytes": 45194,
       "files": {
         "ak": "local_ocdids/state=ak/data_0.parquet",
         "al": "local_ocdids/state=al/data_0.parquet",
@@ -33,7 +33,7 @@
       "name": "master_ocdids",
       "partitioned_by": "state",
       "rows": 194950,
-      "bytes": 4346584,
+      "bytes": 4337185,
       "files": {
         "": "master_ocdids/state=/data_0.parquet",
         "ak": "master_ocdids/state=ak/data_0.parquet",
@@ -155,8 +155,8 @@
     {
       "name": "ocdid_uuid_lookup",
       "partitioned_by": "state",
-      "rows": 2049,
-      "bytes": 110243,
+      "rows": 1554,
+      "bytes": 110069,
       "files": {
         "ak": "ocdid_uuid_lookup/state=ak/data_0.parquet",
         "al": "ocdid_uuid_lookup/state=al/data_0.parquet",
@@ -208,8 +208,8 @@
     {
       "name": "master_orphans",
       "file": "master_orphans.parquet",
-      "rows": 239671,
-      "bytes": 2180653,
+      "rows": 47668,
+      "bytes": 356028,
       "columns": [
         {
           "name": "id",
@@ -254,34 +254,6 @@
       "file": "generation_tracking_2026_09_25.parquet",
       "rows": 3108,
       "bytes": 65508,
-      "columns": [
-        {
-          "name": "original_id",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "status",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "error",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "division_path",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "jurisdiction_path",
-          "type": "VARCHAR"
-        }
-      ]
-    },
-    {
-      "name": "generation_tracking_2026_09_29",
-      "file": "generation_tracking_2026_09_29.parquet",
-      "rows": 3603,
-      "bytes": 86497,
       "columns": [
         {
           "name": "original_id",
