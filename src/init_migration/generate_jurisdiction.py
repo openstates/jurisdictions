@@ -18,7 +18,7 @@ from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
 from src.models.source import SourceType
 from src.models.ocdid import OCDIdParsed
-from src.utils.ocdid import ocdid_parser
+from src.utils.admin_levels import resolve_area_root, resolve_output_dir
 from src.utils.yaml_manager import find_ocdid_paths
 from pathlib import Path
 from datetime import datetime, timezone
@@ -190,18 +190,11 @@ class JurGenerator:
             )
             raise
 
-    def _jurisdiction_state_code(self) -> str:
-        """State code for the request's Division OCD ID.
-
-        Jurisdiction OCD IDs end with an unkeyed classification segment, so
-        the state is read from the source Division ID instead.
-        """
-        parsed = ocdid_parser(self.req.data.ocdid.raw_ocdid)
-        return (parsed.get("state") or parsed.get("district") or "").lower()
-
     def _jurisdiction_search_root(self) -> Path:
-        """The state tree this generator reads and writes Jurisdictions under."""
-        return self.output_root / "jurisdictions" / self._jurisdiction_state_code()
+        """The area tree this generator reads and writes Jurisdictions under."""
+        return resolve_area_root(
+            self.req.data.ocdid.raw_ocdid, "jurisdictions", self.output_root
+        )
 
     def _find_existing_jurisdiction_path(
         self, jurisdiction_ocdid: str
@@ -259,12 +252,14 @@ class JurGenerator:
                 self.jurisdiction.id,
             )
 
-            state = self._jurisdiction_state_code()
-
             if output_dir is None:
                 output_dir = self.output_root
 
-            jur_dir = output_dir / "jurisdictions" / state / "local"
+            # Resolved from the source Division ID: a Jurisdiction ID ends in
+            # an unkeyed classification segment that names no unit.
+            jur_dir = resolve_output_dir(
+                self.req.data.ocdid.raw_ocdid, "jurisdictions", output_dir
+            )
             jur_dir.mkdir(parents=True, exist_ok=True)
 
             data = self.jurisdiction.model_dump(mode="json", exclude_none=False)

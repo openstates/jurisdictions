@@ -398,3 +398,91 @@ def test_duplicate_ancestor_jurisdiction_fails_closed(tmp_path: Path):
 
     with pytest.raises(ValueError, match="Duplicate ancestor Jurisdiction OCDID"):
         ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
+
+
+@pytest.mark.parametrize(
+    ("leaf", "level", "expected_subdir"),
+    [
+        (
+            "ocd-division/country:us/state:ca/county:marin/place:sausalito",
+            "county",
+            "county",
+        ),
+        (
+            "ocd-division/country:us/state:ca/county:marin/place:sausalito"
+            "/council_district:1",
+            "place",
+            "local",
+        ),
+        (
+            "ocd-division/country:us/state:tx/place:austin/council_district:1",
+            "state",
+            None,
+        ),
+    ],
+)
+def test_stub_pairs_share_one_tier_directory(
+    tmp_path: Path, leaf, level, expected_subdir
+):
+    """A Division stub and its Jurisdiction stub land in the same tier.
+
+    When the two sides disagreed, one government was written to both
+    ``county/`` and ``local/`` and every later run saw a duplicate OCD ID.
+    """
+    parsed = OCDIdParsed.parse_ocdid(leaf)
+    results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
+
+    result = next(r for r in results if r["level"] == level)
+    div_path = Path(result["division_path"])
+    jur_path = Path(result["jurisdiction_path"])
+
+    assert div_path.relative_to(tmp_path).parts[0] == "divisions"
+    assert jur_path.relative_to(tmp_path).parts[0] == "jurisdictions"
+    # Same area and same tier subdirectory on both sides.
+    assert div_path.relative_to(tmp_path).parts[1:-1] == (
+        jur_path.relative_to(tmp_path).parts[1:-1]
+    )
+    if expected_subdir is None:
+        assert div_path.parent == tmp_path / "divisions" / div_path.parent.name
+    else:
+        assert div_path.parent.name == expected_subdir
+        assert jur_path.parent.name == expected_subdir
+
+
+def test_county_government_is_not_written_to_both_county_and_local(tmp_path: Path):
+    """One county government, one file.
+
+    Ancestor generation used to file county Jurisdictions under local/ while
+    the generator wrote them under county/, producing two files per county.
+    """
+    parsed = OCDIdParsed.parse_ocdid(
+        "ocd-division/country:us/state:tx/county:anderson/council_district:1"
+    )
+    ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
+
+    jur_ocdid = "ocd-jurisdiction/country:us/state:tx/county:anderson/government"
+    matches = [
+        path
+        for path in (tmp_path / "jurisdictions" / "tx").rglob("*.yaml")
+        if (yaml.safe_load(path.read_text()) or {}).get("ocdid") == jur_ocdid
+    ]
+
+    assert len(matches) == 1
+    assert matches[0].parent.name == "county"
+
+
+def test_rerunning_ancestor_generation_is_idempotent(tmp_path: Path):
+    """A second pass reuses every stub instead of writing a second copy."""
+    parsed = OCDIdParsed.parse_ocdid(
+        "ocd-division/country:us/state:tx/county:anderson/council_district:1"
+    )
+
+    first = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
+    before = sorted(p.name for p in tmp_path.rglob("*.yaml"))
+
+    second = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
+    after = sorted(p.name for p in tmp_path.rglob("*.yaml"))
+
+    assert all(r["action"] == "created" for r in first)
+    assert all(r["action"] == "skipped" for r in second)
+    assert before == after

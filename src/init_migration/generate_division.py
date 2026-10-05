@@ -16,6 +16,7 @@ from src.models.division import Division, Identifier, find_identifier
 from src.models.source import SourceObj, SourceType
 from src.utils.state_lookup import load_state_code_lookup
 from src.utils.place_name import coerce_lsad_code, namelsad_to_display_name
+from src.utils.admin_levels import resolve_area_root, resolve_output_dir
 from src.utils.yaml_manager import find_ocdid_paths
 from pathlib import Path
 from datetime import datetime, timezone
@@ -361,10 +362,8 @@ class DivGenerator:
             raise
 
     def _division_search_root(self, ocdid: str) -> Path:
-        """The state tree this generator reads and writes Divisions under."""
-        parsed = ocdid_parser(ocdid)
-        state = (parsed.get("state") or parsed.get("district") or "").lower()
-        return self.output_root / "divisions" / state
+        """The area tree this generator reads and writes Divisions under."""
+        return resolve_area_root(ocdid, "divisions", self.output_root)
 
     def _find_existing_division_path(self, ocdid: str) -> Path | None:
         """Find an existing Division YAML by canonical OCD ID."""
@@ -418,13 +417,10 @@ class DivGenerator:
                 self.division.id,
             )
 
-            parsed = ocdid_parser(self.division.ocdid)
-            state = (parsed.get("state") or parsed.get("district") or "").lower()
-
             if output_dir is None:
                 output_dir = self.output_root
 
-            div_dir = output_dir / "divisions" / state / "local"
+            div_dir = resolve_output_dir(self.division.ocdid, "divisions", output_dir)
             div_dir.mkdir(parents=True, exist_ok=True)
 
             data = self.division.model_dump(mode="json", exclude_none=False)
@@ -443,8 +439,10 @@ class DivGenerator:
             if self.promoted_stub_path is not None:
                 stub = self.promoted_stub_path.resolve()
                 written_path = filepath.resolve()
-                written_state_tree = (output_dir / "divisions" / state).resolve()
-                if stub != written_path and stub.is_relative_to(written_state_tree):
+                written_area_tree = resolve_area_root(
+                    self.division.ocdid, "divisions", output_dir
+                ).resolve()
+                if stub != written_path and stub.is_relative_to(written_area_tree):
                     stub.unlink(missing_ok=True)
                     logger.info(
                         "Removed promoted stub Division",
