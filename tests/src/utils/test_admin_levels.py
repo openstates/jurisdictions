@@ -175,12 +175,12 @@ def test_jurisdiction_ids_ignore_the_classification_segment():
         (
             "ocd-division/country:us/state:tx/county:harris",
             "divisions",
-            "divisions/tx/county",
+            "divisions/tx/regional",
         ),
         (
             "ocd-division/country:us/state:tx/county:harris/council_district:3",
             "divisions",
-            "divisions/tx/county",
+            "divisions/tx/regional",
         ),
         (
             "ocd-division/country:us/state:tx/place:austin",
@@ -205,7 +205,7 @@ def test_jurisdiction_ids_ignore_the_classification_segment():
         (
             "ocd-jurisdiction/country:us/state:tx/county:harris/government",
             "jurisdictions",
-            "jurisdictions/tx/county",
+            "jurisdictions/tx/regional",
         ),
         (
             "ocd-jurisdiction/country:us/state:wa/government",
@@ -233,12 +233,28 @@ def test_a_division_and_its_jurisdiction_resolve_to_matching_trees():
     division = "ocd-division/country:us/state:tx/county:harris/council_district:3"
     jurisdiction = "ocd-jurisdiction/country:us/state:tx/county:harris/government"
 
-    assert resolve_output_dir(division, "divisions") == Path("divisions/tx/county")
+    assert resolve_output_dir(division, "divisions") == Path("divisions/tx/regional")
     assert resolve_output_dir(jurisdiction, "jurisdictions") == Path(
-        "jurisdictions/tx/county"
+        "jurisdictions/tx/regional"
     )
 
 
 def test_unknown_kind_is_rejected():
     with pytest.raises(ValueError, match="kind"):
         resolve_output_dir("ocd-division/country:us/state:wa", "organizations")
+
+
+def test_regional_authorities_file_with_counties():
+    """A regional authority shares the county tier's directory.
+
+    Regional bodies are often county-level or span several counties, so
+    separating them from the counties they overlap would not help anyone.
+    """
+    county = "ocd-division/country:us/state:tx/county:harris"
+    regional = "ocd-division/country:us/state:tx/regional:houston_metro"
+
+    assert governing_level(regional) == AdministrativeLevel.REGIONAL
+    assert resolve_output_dir(regional, "divisions") == resolve_output_dir(
+        county, "divisions"
+    )
+    assert resolve_output_dir(regional, "divisions") == Path("divisions/tx/regional")

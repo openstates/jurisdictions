@@ -233,7 +233,7 @@ def test_ensure_ancestor_stubs_directory_layout_state(tmp_path: Path):
 
 
 def test_ensure_ancestor_stubs_directory_layout_county(tmp_path: Path):
-    """County stubs are written under {output}/divisions/{state}/county/."""
+    """County stubs are written under {output}/divisions/{state}/regional/."""
     parsed = OCDIdParsed.parse_ocdid(
         "ocd-division/country:us/state:ca/county:marin/place:sausalito"
     )
@@ -241,7 +241,7 @@ def test_ensure_ancestor_stubs_directory_layout_county(tmp_path: Path):
 
     county_result = next(r for r in results if r["level"] == "county")
     div_path = Path(county_result["division_path"])
-    assert "county" in div_path.parts
+    assert "regional" in div_path.parts
 
 
 def test_ensure_ancestor_stubs_ocdid_field_matches(tmp_path: Path):
@@ -406,7 +406,7 @@ def test_duplicate_ancestor_jurisdiction_fails_closed(tmp_path: Path):
         (
             "ocd-division/country:us/state:ca/county:marin/place:sausalito",
             "county",
-            "county",
+            "regional",
         ),
         (
             "ocd-division/country:us/state:ca/county:marin/place:sausalito"
@@ -453,7 +453,7 @@ def test_county_government_is_not_written_to_both_county_and_local(tmp_path: Pat
     """One county government, one file.
 
     Ancestor generation used to file county Jurisdictions under local/ while
-    the generator wrote them under county/, producing two files per county.
+    the generator wrote them elsewhere, producing two files per county.
     """
     parsed = OCDIdParsed.parse_ocdid(
         "ocd-division/country:us/state:tx/county:anderson/council_district:1"
@@ -468,7 +468,7 @@ def test_county_government_is_not_written_to_both_county_and_local(tmp_path: Pat
     ]
 
     assert len(matches) == 1
-    assert matches[0].parent.name == "county"
+    assert matches[0].parent.name == "regional"
 
 
 def test_rerunning_ancestor_generation_is_idempotent(tmp_path: Path):

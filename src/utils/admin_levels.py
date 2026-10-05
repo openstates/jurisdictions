@@ -10,6 +10,10 @@ governmental unit. Segments that merely subdivide a unit (``council_district``,
 ``ward``, ``board_of_education``) do not shift the level, so a county's council
 districts stay with the county and a city's stay with the city.
 
+The filing directories are ``{area}/``, ``{area}/regional/`` and
+``{area}/local/``. Counties file under ``regional/`` together with regional
+authorities, which are often county-level or span several counties.
+
 Every writer resolves its path through this module so that ancestor stub
 generation and the generators cannot disagree about where an OCD ID lives — a
 disagreement writes the same record to two paths.
@@ -79,6 +83,9 @@ US_SEGMENT_LEVELS: dict[str, AdministrativeLevel] = {
     "district": AdministrativeLevel.ADMINISTRATIVE_AREA_1,
     "territory": AdministrativeLevel.ADMINISTRATIVE_AREA_1,
     "county": AdministrativeLevel.ADMINISTRATIVE_AREA_2,
+    # A regional authority may be county-level or span several counties, so
+    # it is a unit in its own right and files alongside counties.
+    "regional": AdministrativeLevel.REGIONAL,
     "place": AdministrativeLevel.LOCALITY,
     "cdp": AdministrativeLevel.LOCALITY,
     "subdivision": AdministrativeLevel.LOCALITY,
@@ -112,11 +119,16 @@ UNIT_SEGMENTS = frozenset(
 )
 
 # Directory each unit level is filed under, relative to the area directory.
+#
+# Counties and regional authorities share ``regional/``. Google separates
+# them, but a regional authority is often county-level or spans several
+# counties, and splitting the two would leave cross-county bodies without a
+# home next to the counties they overlap.
 _LEVEL_DIRS: dict[AdministrativeLevel, str | None] = {
     AdministrativeLevel.COUNTRY: None,
     AdministrativeLevel.ADMINISTRATIVE_AREA_1: None,
     AdministrativeLevel.REGIONAL: "regional",
-    AdministrativeLevel.ADMINISTRATIVE_AREA_2: "county",
+    AdministrativeLevel.ADMINISTRATIVE_AREA_2: "regional",
     AdministrativeLevel.LOCALITY: "local",
 }
 
