@@ -417,7 +417,7 @@ class GeneratePipeline:
                 logger.info(
                     f"No matches found for {self.data.ocdid.raw_ocdid}, creating stub Division"
                 )
-                div_gen = DivGenerator(self.req)
+                div_gen = DivGenerator(self.req, output_root=self.division_output_dir)
                 self.division = div_gen.generate_division_stub(uuid=self.uuid)
                 if self.division:
                     response.division_path = str(
@@ -439,7 +439,7 @@ class GeneratePipeline:
                 logger.warning(
                     f"Multiple matches found for {self.data.ocdid.raw_ocdid}, flagging for review"
                 )
-                div_gen = DivGenerator(self.req)
+                div_gen = DivGenerator(self.req, output_root=self.division_output_dir)
                 self.division = div_gen.generate_division_stub(uuid=self.uuid)
                 if self.division and self.division.ocdid:
                     response.division_path = str(
@@ -466,7 +466,7 @@ class GeneratePipeline:
             matched_row = matches_df.row(0, named=True)
 
             # Generate full Division from the matched validation record
-            div_gen = DivGenerator(self.req)
+            div_gen = DivGenerator(self.req, output_root=self.division_output_dir)
             self.division = div_gen.generate_division(
                 val_rec=matched_row, uuid=self.uuid
             )
@@ -491,6 +491,7 @@ class GeneratePipeline:
                         jur_gen = JurGenerator(
                             self.req,
                             division=self.division,
+                            output_root=self.jurisdiction_output_dir,
                         )
                         self.jurisdiction = jur_gen.generate_jurisdiction(
                             division=self.division,

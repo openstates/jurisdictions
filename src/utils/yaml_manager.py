@@ -20,6 +20,32 @@ from src.models.jurisdiction import Jurisdiction
 logger = logging.getLogger(__name__)
 
 
+def find_ocdid_paths(ocdid: str, root: Path) -> list[Path]:
+    """Every YAML beneath `root` whose top-level `ocdid` matches.
+
+    The search is recursive because one OCD ID can land in more than one
+    directory of a state tree (`local/`, `county/`, or the state root), and
+    reuse has to find the file wherever a previous run put it.
+    """
+    if not root.exists():
+        return []
+
+    matches: list[Path] = []
+    for path in root.rglob("*.yaml"):
+        try:
+            data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        except (OSError, yaml.YAMLError) as exc:
+            logger.debug(
+                "Skipping unreadable YAML during OCDID search",
+                extra={"path": str(path), "error": str(exc)},
+            )
+            continue
+        if isinstance(data, dict) and data.get("ocdid") == ocdid:
+            matches.append(path)
+
+    return sorted(matches)
+
+
 class YamlManager:
     """
     CRUDL manager for YAML files with Pydantic model support.

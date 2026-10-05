@@ -18,7 +18,8 @@ from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
 from src.models.source import SourceType
 from src.models.ocdid import OCDIdParsed
-from src.utils.ocdid import ocdid_parser
+from src.utils.admin_levels import resolve_area_root, resolve_output_dir
+from src.utils.yaml_manager import find_ocdid_paths
 from pathlib import Path
 from datetime import datetime, timezone
 from uuid import UUID
@@ -55,18 +56,24 @@ class JurGenerator:
         self,
         req: GeneratorReq,
         division: Division | None = None,
+        output_root: str | Path | None = None,
     ):
         """Initialize JurGenerator with request data and optional Division.
 
         Args:
             req: GeneratorReq object with OCDid, UUID, and configuration.
             division: Optional Division object.
+            output_root: Root the generated Jurisdiction tree lives under.
+                Existing YAML is looked up beneath the same root it is
+                written to, so reruns reuse what the last run produced.
         """
         self.req = req
         self.data = req.data
         self.uuid = self.data.uuid
         self.division = division
         self.jurisdiction: Jurisdiction | None = None
+        self.output_root = Path(output_root) if output_root is not None else Path(".")
+        self.existing_path: Path | None = None
 
     def _ai_lookup(self, division: Division) -> dict | None:
         """Look up official jurisdiction name and URL via AI agent.
@@ -183,32 +190,61 @@ class JurGenerator:
             )
             raise
 
-    def _jurisdiction_exists(self, jurisdiction_ocdid: str) -> bool:
-        try:
-            parsed = ocdid_parser(jurisdiction_ocdid)
-            state = parsed.get("state", "").lower() if parsed.get("state") else ""
-            jur_dir = Path(f"jurisdictions/{state}/local")
-            if not jur_dir.exists():
-                return False
-            return False
-        except Exception as e:
-            logger.debug(f"Error checking if Jurisdiction exists: {e}")
-            return False
+    def _jurisdiction_search_root(self) -> Path:
+        """The area tree this generator reads and writes Jurisdictions under."""
+        return resolve_area_root(
+            self.req.data.ocdid.raw_ocdid, "jurisdictions", self.output_root
+        )
 
-    def _load_existing_jurisdiction(self, jurisdiction_ocdid: str) -> Jurisdiction:
+    def _find_existing_jurisdiction_path(
+        self, jurisdiction_ocdid: str
+    ) -> Path | None:
+        """Find an existing Jurisdiction YAML by canonical OCD ID."""
         try:
-            raise NotImplementedError("_load_existing_jurisdiction not yet implemented")
-        except Exception:
-            logger.error(
-                f"Failed to load existing Jurisdiction for {jurisdiction_ocdid}",
-                exc_info=True,
+            matches = find_ocdid_paths(
+                jurisdiction_ocdid, self._jurisdiction_search_root()
             )
+
+            if len(matches) > 1:
+                raise ValueError(
+                    f"Duplicate Jurisdiction OCDID {jurisdiction_ocdid}: "
+                    f"{[str(path) for path in matches]}"
+                )
+
+            return matches[0] if matches else None
+        except ValueError:
             raise
+        except Exception as exc:
+            logger.debug(
+                f"Error locating existing Jurisdiction {jurisdiction_ocdid}: {exc}"
+            )
+            return None
+
+    def _jurisdiction_exists(self, jurisdiction_ocdid: str) -> bool:
+        return self._find_existing_jurisdiction_path(jurisdiction_ocdid) is not None
+
+    def _load_existing_jurisdiction(
+        self, jurisdiction_ocdid: str
+    ) -> Jurisdiction:
+        filepath = self._find_existing_jurisdiction_path(jurisdiction_ocdid)
+        if filepath is None:
+            raise FileNotFoundError(
+                f"No existing Jurisdiction found for {jurisdiction_ocdid}"
+            )
+
+        data = yaml.safe_load(filepath.read_text())
+        jurisdiction = Jurisdiction.model_validate(data)
+        self.jurisdiction = jurisdiction
+        self.existing_path = filepath
+        return jurisdiction
 
     def dump_jurisdiction(self, output_dir: Path | None = None) -> Path:
         """Serialize and save Jurisdiction object to YAML file."""
         if not self.jurisdiction:
             raise ValueError("Jurisdiction object does not exist")
+
+        if self.existing_path is not None:
+            return self.existing_path
 
         try:
             filename = get_jurisdiction_filename(
@@ -216,18 +252,14 @@ class JurGenerator:
                 self.jurisdiction.id,
             )
 
-            # Use the division OCD ID (from the request) to extract state —
-            # jurisdiction OCD IDs end with an unkeyed "/government" segment
-            # that ocdid_parser cannot handle.
-            div_parsed = ocdid_parser(self.req.data.ocdid.raw_ocdid)
-            state = (
-                div_parsed.get("state") or div_parsed.get("district") or ""
-            ).lower()
-
             if output_dir is None:
-                output_dir = Path(".")
+                output_dir = self.output_root
 
-            jur_dir = output_dir / "jurisdictions" / state / "local"
+            # Resolved from the source Division ID: a Jurisdiction ID ends in
+            # an unkeyed classification segment that names no unit.
+            jur_dir = resolve_output_dir(
+                self.req.data.ocdid.raw_ocdid, "jurisdictions", output_dir
+            )
             jur_dir.mkdir(parents=True, exist_ok=True)
 
             data = self.jurisdiction.model_dump(mode="json", exclude_none=False)

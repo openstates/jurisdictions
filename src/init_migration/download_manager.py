@@ -124,10 +124,28 @@ class DownloadManager:
                         f"SELECT *, '{state}' AS state FROM {read_expr} WHERE 1=0"
                     )
 
-                conn.execute(
-                    f"INSERT INTO local_ocdids "
-                    f"SELECT *, '{state}' AS state FROM {read_expr}"
-                )
+                # Replace this state's staging rows so repeated runs are
+                # idempotent. One transaction, so a failed read leaves the
+                # previous rows intact rather than emptying the state.
+                conn.execute("BEGIN TRANSACTION")
+                try:
+                    conn.execute(
+                        "DELETE FROM local_ocdids WHERE state = ?",
+                        [state],
+                    )
+                    conn.execute(
+                        f"INSERT INTO local_ocdids "
+                        f"SELECT *, '{state}' AS state FROM {read_expr}"
+                    )
+                except Exception:
+                    conn.execute("ROLLBACK")
+                    logger.error(
+                        "Failed to reload local_ocdids rows",
+                        extra={"state": state},
+                        exc_info=True,
+                    )
+                    raise
+                conn.execute("COMMIT")
             finally:
                 Path(tmp_path).unlink(missing_ok=True)
 

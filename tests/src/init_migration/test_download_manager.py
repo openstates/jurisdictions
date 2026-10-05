@@ -140,3 +140,66 @@ async def test_run_downloads_handles_missing_local(tmp_path, respx_mock):
 
     assert stats["files_failed"] == 1
     assert stats["local_rows"] > 0
+
+
+def test_load_local_csv_replaces_existing_state_rows(tmp_path):
+    """Reloading one state should replace, not duplicate, its staging rows."""
+    db_path = str(tmp_path / "test.duckdb")
+    dm = DownloadManager(states=["wa"], db_path=db_path)
+
+    first_csv = (
+        b"ocd-division/country:us/state:wa/place:seattle,Seattle\n"
+        b"ocd-division/country:us/state:wa/place:tacoma,Tacoma\n"
+    )
+    second_csv = (
+        b"ocd-division/country:us/state:wa/place:seattle,Seattle\n"
+        b"ocd-division/country:us/state:wa/place:spokane,Spokane\n"
+    )
+
+    dm.load_local_csv(first_csv, state="wa")
+    dm.load_local_csv(second_csv, state="wa")
+
+    conn = duckdb.connect(db_path)
+    rows = conn.execute(
+        "SELECT id FROM local_ocdids WHERE state = 'wa' ORDER BY id"
+    ).fetchall()
+    conn.close()
+
+    assert len(rows) == 2
+    assert rows == [
+        ("ocd-division/country:us/state:wa/place:seattle",),
+        ("ocd-division/country:us/state:wa/place:spokane",),
+    ]
+
+
+def test_load_local_csv_keeps_previous_rows_when_reload_fails(tmp_path):
+    """A failed reload must not leave the state with no staging rows.
+
+    The replacement deletes before it inserts, so without one transaction a
+    transient read failure would destroy the last known-good rows.
+    """
+    db_path = str(tmp_path / "test.duckdb")
+    dm = DownloadManager(states=["wa"], db_path=db_path)
+
+    good_csv = (
+        b"ocd-division/country:us/state:wa/place:seattle,Seattle\n"
+        b"ocd-division/country:us/state:wa/place:tacoma,Tacoma\n"
+    )
+    dm.load_local_csv(good_csv, state="wa")
+
+    # Three columns against a two-column table — the INSERT fails after the
+    # DELETE has already run.
+    broken_csv = b"ocd-division/country:us/state:wa/place:spokane,Spokane,extra\n"
+    with pytest.raises(duckdb.Error):
+        dm.load_local_csv(broken_csv, state="wa")
+
+    conn = duckdb.connect(db_path)
+    rows = conn.execute(
+        "SELECT id FROM local_ocdids WHERE state = 'wa' ORDER BY id"
+    ).fetchall()
+    conn.close()
+
+    assert rows == [
+        ("ocd-division/country:us/state:wa/place:seattle",),
+        ("ocd-division/country:us/state:wa/place:tacoma",),
+    ]
