@@ -10,6 +10,7 @@ This document describes the core data models used in the OpenStates Jurisdiction
 |-------|---------|-----------|--|
 | **Division** | Geographic area | Where something is | `src/models/division.py` |
 | **Jurisdiction** | Governing entity | Who governs it | `src/models/jurisdiction.py` |
+| **Organization** | Governing body within jurisdiction | Departments, agencies, boards | `src/models/organization.py` |
 | **OCDIdParsed** | OCD ID breakdown | Standardized identifier | `src/models/ocdid.py` |
 | **SourceObj** | Data provenance | Where data came from | `src/models/source.py` |
 
@@ -89,6 +90,8 @@ class Jurisdiction(BaseModel):
     classification: ClassificationEnum  # Type of governing entity
     url: str | None                  # Official website
     metadata: dict                   # Additional attributes
+    organizations: list[Organization] | None  # Organizing bodies that govern the jurisdiction
+    governing_charter: HttpUrl | None  # URL to foundational legal document (charter, constitution, etc.)
     sources: list[SourceObj]         # Data provenance
     last_updated: datetime           # When this record was last verified/updated
 ```
@@ -149,6 +152,111 @@ ocdid: "ocd-jurisdiction/country:us/state:ca/county:los_angeles/place:los_angele
 name: "Los Angeles City Council"
 classification: "government"
 url: "https://www.lacity.gov"
+```
+
+**Jurisdiction with Organizations and Governing Charter:**
+```yaml
+id: "dddddddd-eeee-ffff-aaaa-cccccccccccc"
+ocdid: "ocd-jurisdiction/country:us/state:ca/place:seattle/government"
+name: "City of Seattle"
+classification: "government"
+url: "https://www.seattle.gov"
+governing_charter: "https://library.municode.com/wa/seattle/codes"
+organizations:
+  - name: "Seattle Parks Department"
+    classification: "department"
+    url: "https://www.seattle.gov/parks"
+    other_names:
+      - "Parks and Recreation"
+  - name: "Seattle Parks and Recreation Commission"
+    classification: "board"
+    url: "https://www.seattle.gov/parks/about-us/boards-commissions"
+  - name: "Public Safety Commission"
+    classification: "advisory_board"
+    url: "https://www.seattle.gov/government-summary/public-safety-commission"
+```
+
+---
+
+## Organization Model
+
+**Purpose:** Represents governing bodies and agencies within a jurisdiction (departments, committees, boards, commissions).
+
+**Related Concepts:**
+- [FAQ: Jurisdiction vs Organization](FAQ.md#what-is-the-difference-between-a-jurisdiction-and-an-organization)
+- [Popolo Project - Organization Specification](https://www.popoloproject.com/specs/organization.html)
+
+### Key Fields
+
+```python
+class Organization(BaseModel):
+    name: str                                      # Official organization name
+    classification: OrganizationClassificationEnum | None  # Popolo-compliant type
+    other_names: list[str] | None                 # Aliases for search/matching
+    url: HttpUrl | None                           # Official website
+    sourcing: list[SourceObj]                     # Data provenance
+```
+
+### When to Use Organization vs Creating a New Jurisdiction
+
+**Create an Organization when:**
+- The entity operates under a parent jurisdiction's authority
+- Examples: City Parks Department, County Planning Commission, Library Board
+
+**Create a Jurisdiction when:**
+- The entity is self-chartered by statute or constitutional authority
+- The entity has independent taxing authority
+- Examples: Port Authority of NY/NJ (chartered by Congress), School District
+
+### Classification Types
+
+Valid classifications for organizations (Popolo-compliant):
+
+```python
+class OrganizationClassificationEnum(str, Enum):
+    # Government entities
+    GOVERNMENT = "government"
+    LEGISLATURE = "legislature"
+    EXECUTIVE = "executive"
+    JUDICIARY = "judiciary"
+    
+    # Bodies and subdivisions
+    LEGISLATIVE_BODY = "legislative_body"
+    DEPARTMENT = "department"
+    AGENCY = "agency"
+    AUTHORITY = "authority"
+    
+    # Committees and boards
+    COMMITTEE = "committee"
+    BOARD = "board"
+    COMMISSION = "commission"
+    ADVISORY_BOARD = "advisory_board"
+```
+
+### Examples
+
+**Department Organization:**
+```yaml
+name: "Seattle Parks Department"
+classification: "department"
+url: "https://www.seattle.gov/parks"
+other_names:
+  - "Parks and Recreation"
+  - "SDOT Parks"
+```
+
+**Board Organization:**
+```yaml
+name: "Seattle Parks and Recreation Commission"
+classification: "board"
+url: "https://www.seattle.gov/parks/about-us/boards-commissions"
+```
+
+**Advisory Board Organization:**
+```yaml
+name: "Public Safety Commission"
+classification: "advisory_board"
+url: "https://www.seattle.gov/government-summary/public-safety-commission"
 ```
 
 ---
@@ -408,6 +516,7 @@ yaml.safe_dump(data, f, sort_keys=False)   # sort_keys defaults to True
 |-------|------|---------|
 | Division | `src/models/division.py` | `from src.models.division import Division` |
 | Jurisdiction | `src/models/jurisdiction.py` | `from src.models.jurisdiction import Jurisdiction` |
+| Organization | `src/models/organization.py` | `from src.models.organization import Organization, OrganizationClassificationEnum` |
 | OCDidParsed | `src/models/ocdid.py` | `from src.models.ocdid import OCDidParsed` |
 | SourceObj | `src/models/source.py` | `from src.models.source import SourceObj, SourceType` |
 
@@ -415,7 +524,7 @@ yaml.safe_dump(data, f, sort_keys=False)   # sort_keys defaults to True
 
 ## Further Reading
 
-- [FAQ.md](FAQ.md) - Conceptual questions about divisions and jurisdictions
+- [FAQ.md](FAQ.md) - Conceptual questions about divisions, jurisdictions, and organizations
 - [docs/data_model_relationships.md](docs/data_model_relationships.md) - Visual map of how models connect and relate
 - [README.md](README.md) - Project overview and setup
 - [docs/ocdid_matching_criteria.md](docs/ocdid_matching_criteria.md) - OCDID structure details
