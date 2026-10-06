@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field, ConfigDict, model_validator
 from typing import Dict, List, Optional
 from datetime import datetime, timezone
 from .source import SourceObj
+from .organization import Organization
 import yaml
 from uuid import NAMESPACE_URL, UUID, uuid5
 from pathlib import Path
@@ -178,6 +179,9 @@ class Jurisdiction(BaseModel):
         default=None,
         description="Any other useful information that a researcher feels should be included.",
     )
+    organizations: Optional[List[Organization]] = Field(
+        default=None,
+        description="The organizing bodies that govern a jurisdiction. Examples: City Council Committee, Parks and Recreation, Library Board, etc.",    )
 
     @model_validator(mode="after")
     def validate_jurisdiction_id(self) -> "Jurisdiction":
