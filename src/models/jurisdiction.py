@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel, Field, ConfigDict, model_validator
+from pydantic import BaseModel, Field, ConfigDict, model_validator, HttpUrl
 from typing import Dict, List, Optional
 from datetime import datetime, timezone
 from .source import SourceObj
@@ -177,6 +177,10 @@ class Jurisdiction(BaseModel):
     metadata: Optional[JurisdictionMetadata] = Field(
         default=None,
         description="Any other useful information that a researcher feels should be included.",
+    )
+    governing_charter: Optional[HttpUrl] = Field(
+        default=None,
+        description="The legal written policy document that clearly defines the respective roles, responsibilities and authorities of the jurisdiction. Example: City Charter, State Constitution, etc.",
     )
 
     @model_validator(mode="after")
