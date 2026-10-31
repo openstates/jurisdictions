@@ -12,7 +12,6 @@ Structural issues:
       Within "sourcing" the source data should be structured as a nested
       dictionary object that mirrors the structure of the rest of the model
       (dotted field path). The data 
-    - 
     - If the source for all fields is the same, the top-level "source" field can
     include only one source object per top level field on the SourceObj. 
     - Identifiers are also listed as nested objects and instead should be in the
