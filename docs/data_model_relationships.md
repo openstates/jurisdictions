@@ -141,6 +141,15 @@ Jurisdiction
 │       ├── url_type: URLEnum | str (PEOPLE, MEETINGS, or custom)
 │       └── url: str
 │
+├── organizations: Organization[]
+│   ├── name: str (e.g., "Seattle Parks Department")
+│   ├── classification: OrganizationClassificationEnum (department, board, etc.)
+│   ├── other_names: List[str] (aliases for search/matching)
+│   └── url: HttpUrl
+│
+├── governing_charter: HttpUrl
+│   └── Link to foundational legal document (city charter, constitution)
+│
 ├── legislative_sessions: SessionDetail[]
 │   ├── name: str (e.g., "2023-2024")
 │   ├── identifiers: str (session ID)
