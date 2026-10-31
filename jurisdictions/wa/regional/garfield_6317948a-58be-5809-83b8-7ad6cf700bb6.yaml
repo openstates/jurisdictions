@@ -1,0 +1,24 @@
+id: 6317948a-58be-5809-83b8-7ad6cf700bb6
+ocdid: ocd-jurisdiction/country:us/state:wa/county:garfield/government
+name: Garfield County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:garfield/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T17:36:27.688578Z'
+last_updated: '2026-10-31T17:36:28.467537Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:garfield/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

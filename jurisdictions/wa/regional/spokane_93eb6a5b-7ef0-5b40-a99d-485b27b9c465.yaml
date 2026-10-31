@@ -1,0 +1,24 @@
+id: 93eb6a5b-7ef0-5b40-a99d-485b27b9c465
+ocdid: ocd-jurisdiction/country:us/state:wa/county:spokane/government
+name: Spokane County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:spokane/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T17:40:04.967349Z'
+last_updated: '2026-10-31T17:40:06.723637Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:spokane/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null
