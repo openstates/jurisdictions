@@ -1,0 +1,24 @@
+id: f20d5879-9f04-513a-bf0a-f969e9f7634f
+ocdid: ocd-jurisdiction/country:us/state:wa/county:adams/government
+name: Adams County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:adams/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T17:35:52.609765Z'
+last_updated: '2026-10-31T17:35:53.109559Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:adams/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null
