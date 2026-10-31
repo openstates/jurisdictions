@@ -9,14 +9,14 @@ Responsibilities:
 
 import asyncio
 import tempfile
+from logging import getLogger
 from pathlib import Path
 
 import duckdb
-from logging import getLogger
 from rich.progress import (
+    BarColumn,
     Progress,
     SpinnerColumn,
-    BarColumn,
     TextColumn,
     TimeElapsedColumn,
 )
@@ -139,10 +139,9 @@ class DownloadManager:
                     )
                 except Exception:
                     conn.execute("ROLLBACK")
-                    logger.error(
+                    logger.exception(
                         "Failed to reload local_ocdids rows",
                         extra={"state": state},
-                        exc_info=True,
                     )
                     raise
                 conn.execute("COMMIT")
@@ -214,7 +213,7 @@ class DownloadManager:
                         stats["files_cached"] += 1
                     else:
                         stats["files_downloaded"] += 1
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.error(f"Failed to download master CSV: {e}")
                     stats["files_failed"] += 1
                 progress.advance(download_task)
@@ -232,7 +231,7 @@ class DownloadManager:
                         else:
                             stats["files_downloaded"] += 1
                         local_results[state] = data
-                    except Exception as e:
+                    except Exception as e:  # noqa: BLE001
                         logger.warning(f"Failed to download local CSV for {state}: {e}")
                         stats["files_failed"] += 1
                         local_results[state] = None

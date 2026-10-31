@@ -1,9 +1,11 @@
-import logging
 import json
-import duckdb
-from pathlib import Path
-from datetime import UTC, datetime
+import logging
 from dataclasses import dataclass
+from datetime import UTC, datetime
+from pathlib import Path
+
+import duckdb
+
 # from src.init_migration.main import GENERATION_TRACKING_PREFIX  # "generation_tracking"
 
 """

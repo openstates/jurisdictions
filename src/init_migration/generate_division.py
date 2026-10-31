@@ -9,20 +9,22 @@ Responsibilities:
 - Serialize Division objects to YAML files
 """
 
-from src.init_migration.pipeline_models import GeneratorReq
+import logging
+from datetime import UTC, datetime
+from pathlib import Path
+from uuid import UUID
+
+import yaml
+
 from src.init_migration.jurisdiction_seed import derive_jurisdiction_ocdid
-from src.utils.ocdid import ocdid_parser
+from src.init_migration.pipeline_models import GeneratorReq
 from src.models.division import Division, Identifier, find_identifier
 from src.models.source import SourceObj, SourceType
-from src.utils.state_lookup import load_state_code_lookup
-from src.utils.place_name import coerce_lsad_code, namelsad_to_display_name
 from src.utils.admin_levels import resolve_area_root, resolve_output_dir
+from src.utils.ocdid import ocdid_parser
+from src.utils.place_name import coerce_lsad_code, namelsad_to_display_name
+from src.utils.state_lookup import load_state_code_lookup
 from src.utils.yaml_manager import find_ocdid_paths
-from pathlib import Path
-from datetime import datetime, timezone
-from uuid import UUID
-import logging
-import yaml
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -261,7 +263,7 @@ class DivGenerator:
                 source=civicdata_source,
             )
 
-            now = datetime.now(timezone.utc)
+            now = datetime.now(UTC)
             self.division = Division(
                 id=self.promoted_stub_id,
                 ocdid=raw_ocdid,
@@ -280,9 +282,8 @@ class DivGenerator:
             return self.division
 
         except Exception:
-            logger.error(
+            logger.exception(
                 f"Failed to generate Division for {self.data.ocdid.raw_ocdid}",
-                exc_info=True,
             )
             raise
 
@@ -337,7 +338,7 @@ class DivGenerator:
                 source=stub_source,
             )
 
-            now = datetime.now(timezone.utc)
+            now = datetime.now(UTC)
             self.division = Division(
                 ocdid=raw_ocdid,
                 country="us",
@@ -355,9 +356,8 @@ class DivGenerator:
             return self.division
 
         except Exception:
-            logger.error(
+            logger.exception(
                 f"Failed to generate stub Division for {self.data.ocdid.raw_ocdid}",
-                exc_info=True,
             )
             raise
 
@@ -379,7 +379,7 @@ class DivGenerator:
             return matches[0] if matches else None
         except ValueError:
             raise
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             logger.debug(f"Error locating existing Division {ocdid}: {exc}")
             return None
 
@@ -453,7 +453,7 @@ class DivGenerator:
             return filepath
 
         except Exception:
-            logger.error("Failed to save Division to YAML", exc_info=True)
+            logger.exception("Failed to save Division to YAML")
             raise
 
 

@@ -65,24 +65,23 @@ Open Civic Data repo.
 
 from __future__ import annotations
 
-from typing import Optional
-from pydantic import BaseModel
-
-from src.models.jurisdiction import ClassificationEnum
-from src.utils.ocdid import ocdid_parser
-from src.data.lsad_mapper import get_lsad_map, LSADCode
 import re
 
+from pydantic import BaseModel
+
+from src.data.lsad_mapper import LSADCode, get_lsad_map
+from src.models.jurisdiction import ClassificationEnum
+from src.utils.ocdid import ocdid_parser
 
 LSAD_CODES: dict[str, LSADCode] = get_lsad_map()
 
 
 class JurisdictionSeed(BaseModel):
     has_jurisdiction: bool
-    classification: Optional[str] = None
-    jurisdiction_name: Optional[str] = None
-    jurisdiction_type_suffix: Optional[str] = None
-    reason: Optional[str] = None
+    classification: str | None = None
+    jurisdiction_name: str | None = None
+    jurisdiction_type_suffix: str | None = None
+    reason: str | None = None
 
 
 # LSAD codes that indicate purely statistical geographies with no governing body.
@@ -235,7 +234,7 @@ def _extract_primary_division_type(parsed_ocdid: dict) -> str:
     """
     # Skip metadata keys that don't represent geographic division types.
     parent_entity_keys = {"base", "country", "state", "district", "territory"}
-    div_keys = [k for k in parsed_ocdid.keys() if k not in parent_entity_keys]
+    div_keys = [k for k in parsed_ocdid if k not in parent_entity_keys]
 
     # Strip council_district (and other parent-entity sub-types) so the parent
     # type is used for classification decisions.

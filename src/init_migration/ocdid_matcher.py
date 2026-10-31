@@ -11,11 +11,11 @@ Responsibilities:
 """
 
 from dataclasses import dataclass, field
+from logging import getLogger
 from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
 import duckdb
-from logging import getLogger
 
 from src.init_migration.pipeline_models import OCDidIngestResp
 from src.models.ocdid import OCDIdParsed

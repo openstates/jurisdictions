@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import NAMESPACE_URL, uuid4, uuid5
 
 from hypothesis import given
@@ -50,7 +50,7 @@ def _sample_source() -> SourceObj:
 
 @given(ocdid=division_ocdid_strategy())
 def test_division_id_defaults_to_uuid5_from_ocdid_and_date(ocdid: str) -> None:
-    last_updated = datetime(2026, 4, 8, 12, 0, tzinfo=timezone.utc)
+    last_updated = datetime(2026, 4, 8, 12, 0, tzinfo=UTC)
     division = Division(
         ocdid=ocdid,
         country="us",
@@ -146,8 +146,8 @@ def test_geometry_json_round_trip_is_lossless() -> None:
     """Geometry must serialize and deserialize without loss (rework §18)."""
     source = _geometry_source()
     geometry = Geometry(
-        valid_from=datetime(2020, 1, 1, tzinfo=timezone.utc),
-        valid_to=datetime(2023, 12, 31, tzinfo=timezone.utc),
+        valid_from=datetime(2020, 1, 1, tzinfo=UTC),
+        valid_to=datetime(2023, 12, 31, tzinfo=UTC),
         boundary=Boundary(
             centroid=Centroid(coordinates=[-122.4853, 37.8591]),
             extent=Extent(extent=[-122.51, 37.84, -122.46, 37.87]),
@@ -182,7 +182,7 @@ def test_geometry_validity_window_accepts_none() -> None:
     assert restored.valid_to is None
 
     open_ended_end = Geometry(
-        boundary=Boundary(), valid_from=datetime(2024, 1, 1, tzinfo=timezone.utc)
+        boundary=Boundary(), valid_from=datetime(2024, 1, 1, tzinfo=UTC)
     )
     assert open_ended_end.valid_to is None
 
@@ -190,14 +190,14 @@ def test_geometry_validity_window_accepts_none() -> None:
 def test_division_geometry_versions_sort_by_valid_from() -> None:
     """Multiple geometry versions coexist on one Division and order by valid_from."""
     current = Geometry(
-        boundary=Boundary(), valid_from=datetime(2024, 1, 1, tzinfo=timezone.utc)
+        boundary=Boundary(), valid_from=datetime(2024, 1, 1, tzinfo=UTC)
     )
     historic = Geometry(
         boundary=Boundary(),
-        valid_from=datetime(2010, 1, 1, tzinfo=timezone.utc),
-        valid_to=datetime(2023, 12, 31, tzinfo=timezone.utc),
+        valid_from=datetime(2010, 1, 1, tzinfo=UTC),
+        valid_to=datetime(2023, 12, 31, tzinfo=UTC),
     )
-    unbounded = Geometry(boundary=Boundary(), valid_to=datetime(2009, 12, 31, tzinfo=timezone.utc))
+    unbounded = Geometry(boundary=Boundary(), valid_to=datetime(2009, 12, 31, tzinfo=UTC))
 
     division = Division(
         ocdid="ocd-division/country:us/state:ca/place:sausalito",
