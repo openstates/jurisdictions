@@ -7,7 +7,7 @@ import pytest
 import tempfile
 from pathlib import Path
 
-from src.utils.yaml_manager import YamlManager
+from src.utils.yaml_manager import YamlManager, find_ocdid_paths
 
 
 @pytest.fixture
@@ -293,3 +293,36 @@ class TestYamlManagerIntegration:
         assert len(parsed) == 2
         names = {r["name"] for r in parsed}
         assert names == {"Oakridge", "Bayview"}
+
+
+class TestFindOcdidPaths:
+    """Tests for the find_ocdid_paths module function."""
+
+    def test_finds_matches_at_any_depth(self, temp_dir):
+        """One OCD ID can land in several directories of a state tree."""
+        ocdid = "ocd-division/country:us/state:wa/place:seattle"
+
+        (temp_dir / "local").mkdir()
+        root_file = temp_dir / "washington_seattle.yaml"
+        nested_file = temp_dir / "local" / "seattle.yaml"
+        for path in (root_file, nested_file):
+            path.write_text(f"ocdid: {ocdid}\n")
+
+        (temp_dir / "local" / "tacoma.yaml").write_text(
+            "ocdid: ocd-division/country:us/state:wa/place:tacoma\n"
+        )
+
+        assert find_ocdid_paths(ocdid, temp_dir) == sorted([root_file, nested_file])
+
+    def test_returns_empty_for_missing_root(self, temp_dir):
+        """A state tree that was never generated is not an error."""
+        assert find_ocdid_paths("ocd-division/country:us/state:wa", temp_dir / "x") == []
+
+    def test_skips_unreadable_yaml(self, temp_dir):
+        """A malformed file must not abort the search."""
+        ocdid = "ocd-division/country:us/state:wa/place:seattle"
+        (temp_dir / "broken.yaml").write_text("{ this: is: not: yaml\n")
+        good = temp_dir / "good.yaml"
+        good.write_text(f"ocdid: {ocdid}\n")
+
+        assert find_ocdid_paths(ocdid, temp_dir) == [good]

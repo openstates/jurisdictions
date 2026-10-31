@@ -22,15 +22,34 @@ from src.models.division import Division, Identifier
 from src.models.ocdid import OCDIdParsed
 from src.models.source import SourceObj, SourceType
 from src.utils.state_lookup import load_state_code_lookup
+from src.utils.admin_levels import (
+    US_SEGMENT_LEVELS,
+    UNIT_SEGMENTS,
+    AdministrativeLevel,
+    classify_level,
+    resolve_area_root,
+    resolve_output_dir,
+)
+from src.utils.yaml_manager import find_ocdid_paths
 from src.models.jurisdiction import ClassificationEnum, Jurisdiction
 from src.init_migration.pipeline_models import REPO_URL
 
 logger = logging.getLogger(__name__)
 
-# Ancestor segment keys, in priority order used to detect the deepest level.
-_LEVEL_KEYS = ("county", "state", "district", "territory")
-
 _OCD_REPO_URL = REPO_URL
+
+
+def _ancestor_segment(ancestor: OCDIdParsed) -> str | None:
+    """Return the ancestor's terminal segment key, if it names a unit.
+
+    Ancestors are governmental units, so a terminal segment that only
+    subdivides one (a council district, say) has no stub to write.
+    """
+    terminal = ancestor.raw_ocdid.rsplit("/", 1)[-1]
+    segment, sep, _value = terminal.partition(":")
+    if not sep or segment not in UNIT_SEGMENTS:
+        return None
+    return segment
 
 
 def stub_exists(ocdid: str, search_dir: Path) -> bool:
@@ -69,26 +88,18 @@ def _resolve_state_info(state_code: str, state_lookup: list[dict]) -> tuple[str,
 
 
 def _ancestor_dirs(
-    level: str,
-    state_code: str,
+    ancestor_ocdid: str,
     division_output_dir: Path,
     jurisdiction_output_dir: Path,
 ) -> tuple[Path, Path]:
-    """Return `(div_dir, jur_dir)` for the given ancestor level.
+    """Return `(div_dir, jur_dir)` for an ancestor, by administrative level.
 
-    Mirrors the `DivGenerator.dump_division` convention of prepending
-    `"divisions"` / `"jurisdictions"` to the shared output-directory root.
-    State/district/territory stubs sit directly under `{state}/`.
-    County stubs sit under `{state}/county/`.
+    Both paths come from the same resolver the generators use, so a stub and
+    the record that later replaces it always land in the same directory.
     """
-    if level in ("state", "district", "territory"):
-        return (
-            division_output_dir / "divisions" / state_code,
-            jurisdiction_output_dir / "jurisdictions" / state_code,
-        )
     return (
-        division_output_dir / "divisions" / state_code / level,
-        jurisdiction_output_dir / "jurisdictions" / state_code / level,
+        resolve_output_dir(ancestor_ocdid, "divisions", division_output_dir),
+        resolve_output_dir(ancestor_ocdid, "jurisdictions", jurisdiction_output_dir),
     )
 
 
@@ -127,14 +138,20 @@ def _write_stub_division(
                 source=stub_source,
             )
         )
-        identifiers.append(
-            Identifier(
-                authority="census",
-                id_type="geoid",
-                value=state_fips,
-                source=stub_source,
+        # The state FIPS is the state's own GEOID, so it only belongs on a
+        # state-level division — a place would carry its own place GEOID.
+        if (
+            classify_level(ancestor.raw_ocdid)
+            == AdministrativeLevel.ADMINISTRATIVE_AREA_1
+        ):
+            identifiers.append(
+                Identifier(
+                    authority="census",
+                    id_type="geoid",
+                    value=state_fips,
+                    source=stub_source,
+                )
             )
-        )
     division = Division(
         ocdid=ancestor.raw_ocdid,
         country="us",
@@ -244,12 +261,10 @@ def ensure_ancestor_stubs(
 
     for ancestor in ancestors:
         ancestor_ocdid = ancestor.raw_ocdid
-        parsed = ancestor.model_dump(exclude_none=True)
-
-        level = next((k for k in _LEVEL_KEYS if k in parsed), None)
-        if not level:
+        segment = _ancestor_segment(ancestor)
+        if not segment:
             logger.debug(
-                "No recognised level in ancestor %s — skipping", ancestor_ocdid
+                "No governmental unit in ancestor %s — skipping", ancestor_ocdid
             )
             continue
 
@@ -261,31 +276,53 @@ def ensure_ancestor_stubs(
             continue
 
         state_fips, state_full = _resolve_state_info(state_code, state_lookup)
-        level_value: str = getattr(ancestor, level, "") or ""
+        segment_value: str = getattr(ancestor, segment, "") or ""
 
-        if level in ("state", "district", "territory"):
+        level = US_SEGMENT_LEVELS[segment]
+        if level == AdministrativeLevel.ADMINISTRATIVE_AREA_1:
             display_name = state_full
-        elif level == "county":
-            display_name = f"{level_value.replace('_', ' ').title()} County"
+        elif level == AdministrativeLevel.ADMINISTRATIVE_AREA_2:
+            display_name = f"{segment_value.replace('_', ' ').title()} County"
         else:
-            display_name = level_value.replace("_", " ").title()
+            display_name = segment_value.replace("_", " ").title()
 
         div_dir, jur_dir = _ancestor_dirs(
-            level, state_code, division_output_dir, jurisdiction_output_dir
+            ancestor_ocdid, division_output_dir, jurisdiction_output_dir
         )
 
         jur_ocdid = (
             f"ocd-jurisdiction/{ancestor_ocdid.replace('ocd-division/', '')}/government"
         )
-        div_exists = stub_exists(ancestor_ocdid, div_dir)
-        jur_exists = stub_exists(jur_ocdid, jur_dir)
+        div_root = resolve_area_root(ancestor_ocdid, "divisions", division_output_dir)
+        jur_root = resolve_area_root(
+            ancestor_ocdid, "jurisdictions", jurisdiction_output_dir
+        )
+
+        div_matches = find_ocdid_paths(ancestor_ocdid, div_root)
+        jur_matches = find_ocdid_paths(jur_ocdid, jur_root)
+
+        if len(div_matches) > 1:
+            raise ValueError(
+                f"Duplicate ancestor Division OCDID {ancestor_ocdid}: "
+                f"{[str(path) for path in div_matches]}"
+            )
+
+        if len(jur_matches) > 1:
+            raise ValueError(
+                f"Duplicate ancestor Jurisdiction OCDID {jur_ocdid}: "
+                f"{[str(path) for path in jur_matches]}"
+            )
+
+        div_exists = bool(div_matches)
+        jur_exists = bool(jur_matches)
 
         if div_exists and jur_exists:
             logger.debug("Ancestor stubs already exist for %s", ancestor.raw_ocdid)
             results.append(
                 {
                     "ocdid": ancestor_ocdid,
-                    "level": level,
+                    "level": segment,
+                    "admin_level": level.civic_name,
                     "action": "skipped",
                     "division_path": None,
                     "jurisdiction_path": None,
@@ -315,7 +352,8 @@ def ensure_ancestor_stubs(
         results.append(
             {
                 "ocdid": ancestor.raw_ocdid,
-                "level": level,
+                "level": segment,
+                "admin_level": level.civic_name,
                 "action": "created",
                 "division_path": str(div_path) if div_path else None,
                 "jurisdiction_path": str(jur_path) if jur_path else None,
