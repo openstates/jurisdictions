@@ -53,7 +53,7 @@ class Identifier(BaseModel):
     """A single external identifier from a specific authority.
 
     ``value`` is always a string so leading-zero identifiers (Census FIPS,
-    GEOIDs, LEA IDs) round-trip exactly.
+    GEOIDs, LEA IDs) are not mutated.
     """
 
     authority: str = Field(
@@ -155,13 +155,13 @@ class Division(BaseModel):
         ...,
         description="Human-readable name for division. Should be sourced from the Open Civic Data repo.",
     )
-    classification: str | None = Field(
-        default=None,
-        description="Provider-neutral division/geography classification, e.g. state, county, place, county_subdivision, or school_district.",
-    )
     other_names: List[str] = Field(
         default_factory=list,
         description="A list of alternate display names that refer to the same geo political division.",
+    )
+    classification: str | None = Field(
+        default=None,
+        description="Provider-neutral division/geography classification, e.g. state, county, place, county_subdivision, or school_district.",
     )
     geometries: Optional[List[Geometry]] = Field(
         default_factory=list,
