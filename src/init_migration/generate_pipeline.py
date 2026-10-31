@@ -325,6 +325,22 @@ class GeneratePipeline:
                 if row["normalized_place_name"] == target_name
             ]
 
+            # Exact normalized names can collide across Census place types
+            # (for example, an active city and a statistical CDP with the
+            # same name). If exactly one candidate is an active
+            # legal/government geography, use it. Otherwise preserve the
+            # ambiguity so the caller can quarantine it.
+            if len(matches) > 1 and target_layer == "place":
+                active_funcstats = {"A", "B", "C", "G"}
+                active_matches = [
+                    match
+                    for match in matches
+                    if str(match[0].get("FUNCSTAT") or "").strip().upper()
+                    in active_funcstats
+                ]
+                if len(active_matches) == 1:
+                    matches = active_matches
+
             if not matches:
                 matches = [
                     (row, score)
