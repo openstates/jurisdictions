@@ -71,8 +71,7 @@ def _division(**overrides) -> CensusDivisionRecord:
         "lea": None,
         "geometry_source": _source(field=["geometry"], dataset="TIGER/Line"),
         "geometry_url": (
-            "https://tigerweb.geo.census.gov/example?"
-            "where=GEOID%3D'0670364'&f=geojson"
+            "https://tigerweb.geo.census.gov/example?where=GEOID%3D'0670364'&f=geojson"
         ),
     }
     values.update(overrides)
@@ -133,10 +132,24 @@ def test_build_division_carries_external_identifiers_and_geometry() -> None:
     assert len(division.geometries or []) == 1
     geometry = division.geometries[0]
     assert str(geometry.url).endswith("where=GEOID%3D%270670364%27&f=geojson")
-    assert geometry.valid_from is None
+    assert geometry.valid_from == datetime(2026, 1, 1, tzinfo=timezone.utc)
     assert geometry.valid_to is None
     assert geometry.source is not None
     assert geometry.source.dataset == "TIGER/Line"
+
+
+def test_build_division_leaves_geometry_undated_without_release() -> None:
+    source = _source(field=["geometry"], dataset="TIGER/Line").model_copy(
+        update={"release": None}
+    )
+
+    division = build_division(
+        division=_division(geometry_source=source),
+        validation=_verified(),
+    )
+
+    assert division.geometries[0].valid_from is None
+    assert division.geometries[0].valid_to is None
 
 
 def test_build_division_preserves_distinct_tiger_names_as_aliases() -> None:
@@ -149,9 +162,7 @@ def test_build_division_preserves_distinct_tiger_names_as_aliases() -> None:
 
 
 def test_canonical_construction_rejects_quarantined_identity() -> None:
-    candidate = _candidate(
-        "ocd-division/country:us/state:ca/place:not_canonical"
-    )
+    candidate = _candidate("ocd-division/country:us/state:ca/place:not_canonical")
     validation = OCDIDValidationResult(
         status=OCDIDValidationStatus.QUARANTINED,
         candidate=candidate,
@@ -289,5 +300,7 @@ def test_canonical_models_use_snapshot_observation_time() -> None:
         validation=_verified(),
     )
 
-    assert models.division.last_updated == resolved_division.geometry_source.retrieval_date
+    assert (
+        models.division.last_updated == resolved_division.geometry_source.retrieval_date
+    )
     assert models.jurisdiction.last_updated == government.source.retrieval_date
