@@ -15,7 +15,7 @@ jobs:
     outputs:
       yaml_only: ${{ steps.filter.outputs.safe_paths }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -39,7 +39,7 @@ jobs:
 
       - name: Comment when changes are outside /divisions or /jurisdictions
         if: steps.filter.outputs.unsafe_paths == 'true'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -57,7 +57,7 @@ jobs:
     needs: check-yaml-only
     if: needs.check-yaml-only.outputs.yaml_only == 'true'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check if PR is approved
         id: check-approval
