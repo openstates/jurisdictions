@@ -1,0 +1,24 @@
+id: c625719b-f850-5c6f-af1f-7afb4585bb41
+ocdid: ocd-jurisdiction/country:us/state:ca/county:el_dorado/government
+name: El Dorado County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:el_dorado/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:31:49.680428Z'
+last_updated: '2026-10-31T18:31:49.961530Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:el_dorado/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

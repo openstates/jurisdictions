@@ -1553,3 +1553,584 @@ f8c3e4c1-e99b-5805-953c-b698224bbc6f,ocd-division/country:us/state:wa/place:seat
 248b3e33-5052-52c3-a3ac-5981372a5ef4,ocd-division/country:us/state:wa/place:tacoma/council_district:3,wa,Tacoma WA City Council district 3
 b4be338e-09a7-5376-8b59-a5c842f999c8,ocd-division/country:us/state:wa/place:tacoma/council_district:4,wa,Tacoma WA City Council district 4
 2d53b9e1-ef27-5aee-a4d2-4b02020421d0,ocd-division/country:us/state:wa/place:tacoma/council_district:5,wa,Tacoma WA City Council district 5
+faebaa52-e4b8-5d56-ac13-fa6bd44ccb48,ocd-division/country:us/state:ca/county:calaveras/council_district:1,ca,Calaveras County Supervisor District 1
+86e00caa-e949-5507-9cb6-c8bac6079cf3,ocd-division/country:us/state:ca/county:calaveras/council_district:2,ca,Calaveras County Supervisor District 2
+1c7f78dc-11a5-57bc-a4ed-14dcb64e449d,ocd-division/country:us/state:ca/county:calaveras/council_district:3,ca,Calaveras County Supervisor District 3
+3a9ee66d-5965-5313-896d-c9c5bc36f6ff,ocd-division/country:us/state:ca/county:calaveras/council_district:4,ca,Calaveras County Supervisor District 4
+c818d0f2-e2a5-570a-a95f-90813dcca29c,ocd-division/country:us/state:ca/county:calaveras/council_district:5,ca,Calaveras County Supervisor District 5
+ae8ce0d9-af2e-5814-b9ea-5a12ee8b86eb,ocd-division/country:us/state:ca/county:colusa/council_district:1,ca,Colusa County Supervisor District 1
+4494f167-d5d6-5863-b81d-8f82615be797,ocd-division/country:us/state:ca/county:colusa/council_district:2,ca,Colusa County Supervisor District 2
+19cb1d7a-d8ff-5625-a211-47af8bd2e0b6,ocd-division/country:us/state:ca/county:colusa/council_district:3,ca,Colusa County Supervisor District 3
+2e0586c0-5a90-5fc0-868c-a637fc937f57,ocd-division/country:us/state:ca/county:colusa/council_district:4,ca,Colusa County Supervisor District 4
+ad871730-8bd5-5b56-9ca2-e700c9f077a3,ocd-division/country:us/state:ca/county:colusa/council_district:5,ca,Colusa County Supervisor District 5
+e466010a-1aea-59ae-bc4c-56003f520c42,ocd-division/country:us/state:ca/county:contra_costa/council_district:1,ca,Contra Costa County CA Board of Supervisors District 1
+19c990d9-48d6-5115-bd76-c59d6e9c05d4,ocd-division/country:us/state:ca/county:contra_costa/council_district:2,ca,Contra Costa County CA Board of Supervisors District 2
+975c5534-e61c-5da9-af2a-1d054407e626,ocd-division/country:us/state:ca/county:contra_costa/council_district:3,ca,Contra Costa County CA Board of Supervisors District 3
+1f876f0e-73c5-5dc1-97da-e0e07f343eec,ocd-division/country:us/state:ca/county:contra_costa/council_district:4,ca,Contra Costa County CA Board of Supervisors District 4
+1ddf20ed-e4f0-543c-b8a9-7709a1f58486,ocd-division/country:us/state:ca/county:contra_costa/council_district:5,ca,Contra Costa County CA Board of Supervisors District 5
+735d485b-fdba-5908-8f93-6ba363d1cbbc,ocd-division/country:us/state:ca/county:del_norte/council_district:1,ca,Del Norte County Supervisor District 1
+bf7b0bab-25b3-5db5-98b5-e6bf34758a46,ocd-division/country:us/state:ca/county:del_norte/council_district:2,ca,Del Norte County Supervisor District 2
+1eff9199-a915-5673-a383-d9230c106399,ocd-division/country:us/state:ca/county:del_norte/council_district:3,ca,Del Norte County Supervisor District 3
+e3151e26-b5d9-5c2c-8ad5-fc995d9e8d7f,ocd-division/country:us/state:ca/county:del_norte/council_district:4,ca,Del Norte County Supervisor District 4
+376942f6-95ae-5f2d-a0a5-49ddc9ef1172,ocd-division/country:us/state:ca/county:del_norte/council_district:5,ca,Del Norte County Supervisor District 5
+33cce2f4-6c23-5af2-9c3b-9c6105601573,ocd-division/country:us/state:ca/county:el_dorado/council_district:1,ca,El Dorado County Supervisor District 1
+f8da4acf-8d16-54c7-be2d-967f939f7650,ocd-division/country:us/state:ca/county:el_dorado/council_district:2,ca,El Dorado County Supervisor District 2
+6093d723-ea60-5af8-a767-e0579cb465c3,ocd-division/country:us/state:ca/county:el_dorado/council_district:3,ca,El Dorado County Supervisor District 3
+de5ba9dc-939f-56a8-b922-02a694bda678,ocd-division/country:us/state:ca/county:el_dorado/council_district:4,ca,El Dorado County Supervisor District 4
+00db0dd7-b107-5bf6-9ac3-ba30289633d9,ocd-division/country:us/state:ca/county:el_dorado/council_district:5,ca,El Dorado County Supervisor District 5
+f6ba1734-fafe-573d-bfce-a46d75e6a33c,ocd-division/country:us/state:ca/county:fresno/council_district:1,ca,Fresno County CA Board of Supervisors District 1
+54cadc8c-63cd-5098-9742-6989a02fd298,ocd-division/country:us/state:ca/county:fresno/council_district:2,ca,Fresno County CA Board of Supervisors District 2
+a0a96357-aecc-5fa7-883c-f3492a06e268,ocd-division/country:us/state:ca/county:fresno/council_district:3,ca,Fresno County CA Board of Supervisors District 3
+aa16eb5e-d6e6-5afd-9bf4-3ed93cb81f47,ocd-division/country:us/state:ca/county:fresno/council_district:4,ca,Fresno County CA Board of Supervisors District 4
+b52660ca-431a-56e1-8c81-47e46b89fc2d,ocd-division/country:us/state:ca/county:fresno/council_district:5,ca,Fresno County CA Board of Supervisors District 5
+5197bf39-237a-50d0-9ceb-a82d209b7552,ocd-division/country:us/state:ca/county:glenn/council_district:1,ca,Glenn County Supervisor District 1
+f88ebc96-5b7a-5aac-a884-a40ce83fcc20,ocd-division/country:us/state:ca/county:glenn/council_district:2,ca,Glenn County Supervisor District 2
+78fa12e1-a0da-55ea-b713-018964a4fed5,ocd-division/country:us/state:ca/county:glenn/council_district:3,ca,Glenn County Supervisor District 3
+d9640dc1-4c6b-50ff-8c13-a520652aa163,ocd-division/country:us/state:ca/county:glenn/council_district:4,ca,Glenn County Supervisor District 4
+da885c5b-c027-5b07-ad2c-95736a764390,ocd-division/country:us/state:ca/county:glenn/council_district:5,ca,Glenn County Supervisor District 5
+8998a933-d182-54be-909a-3b6764015c64,ocd-division/country:us/state:ca/county:humboldt/council_district:1,ca,Humboldt County Supervisor District 1
+59b3ca1f-c712-5a6a-ba33-46c055657b71,ocd-division/country:us/state:ca/county:humboldt/council_district:2,ca,Humboldt County Supervisor District 2
+e2e4727e-7bcd-510f-951d-a70c94080688,ocd-division/country:us/state:ca/county:humboldt/council_district:3,ca,Humboldt County Supervisor District 3
+dac0c66e-75a4-532b-aac6-c7b52fb521ed,ocd-division/country:us/state:ca/county:humboldt/council_district:4,ca,Humboldt County Supervisor District 4
+dc6230f0-9d9b-56b1-93a5-d80f93e25634,ocd-division/country:us/state:ca/county:humboldt/council_district:5,ca,Humboldt County Supervisor District 5
+32d84f66-cad1-54f3-813b-c39cfddf39b2,ocd-division/country:us/state:ca/county:imperial/council_district:1,ca,Imperial County Supervisor District 1
+09b7f193-4fdf-5663-933d-3a34d737dd3d,ocd-division/country:us/state:ca/county:imperial/council_district:2,ca,Imperial County Supervisor District 2
+b4ab3e4d-f428-564c-baf1-5193a0cf5e45,ocd-division/country:us/state:ca/county:imperial/council_district:3,ca,Imperial County Supervisor District 3
+5ee009e3-1874-5269-bbd6-689cdfaccfc4,ocd-division/country:us/state:ca/county:imperial/council_district:4,ca,Imperial County Supervisor District 4
+9b22403f-39a5-537a-8ee7-ecea877a365a,ocd-division/country:us/state:ca/county:imperial/council_district:5,ca,Imperial County Supervisor District 5
+3f304ab8-13a7-5b00-837b-152346d8899c,ocd-division/country:us/state:ca/county:inyo/council_district:1,ca,Inyo County Supervisor District 1
+35fc5d9e-9ab6-59cd-8c6c-7f7abf6e24c4,ocd-division/country:us/state:ca/county:inyo/council_district:2,ca,Inyo County Supervisor District 2
+9efdba93-37f6-5e73-92dc-56b37500bcd2,ocd-division/country:us/state:ca/county:inyo/council_district:3,ca,Inyo County Supervisor District 3
+27c065cc-48a0-5b5b-be87-d9916aa88643,ocd-division/country:us/state:ca/county:inyo/council_district:4,ca,Inyo County Supervisor District 4
+3b2a7fd8-c098-5897-9688-85cbbd32f2a9,ocd-division/country:us/state:ca/county:inyo/council_district:5,ca,Inyo County Supervisor District 5
+ff2f2f01-bc79-5bc8-8c4c-9673babb3656,ocd-division/country:us/state:ca/county:kern/council_district:1,ca,Kern County CA Board of Supervisors District 1
+e8850db1-727d-5acf-8d87-1c6c9e5a0c2f,ocd-division/country:us/state:ca/county:kern/council_district:2,ca,Kern County CA Board of Supervisors District 2
+c7837bd7-d663-58d0-8dd2-8d67152406b5,ocd-division/country:us/state:ca/county:kern/council_district:3,ca,Kern County CA Board of Supervisors District 3
+569385fd-e29d-5366-a85a-999c8bf5a3b6,ocd-division/country:us/state:ca/county:kern/council_district:4,ca,Kern County CA Board of Supervisors District 4
+e3ee077d-6b7b-57f1-811f-931e8b38dac1,ocd-division/country:us/state:ca/county:kern/council_district:5,ca,Kern County CA Board of Supervisors District 5
+8719011e-18b1-5d50-a801-5b7a54ca8695,ocd-division/country:us/state:ca/county:kings/council_district:1,ca,Kings County Supervisor District 1
+2a201f04-4115-51cc-8e80-aafc8b7eff9c,ocd-division/country:us/state:ca/county:kings/council_district:2,ca,Kings County Supervisor District 2
+da1ab4c1-9426-548b-9f12-56f05ac17c6e,ocd-division/country:us/state:ca/county:kings/council_district:3,ca,Kings County Supervisor District 3
+85cbb031-516d-563a-b22f-8b7b4d9941e9,ocd-division/country:us/state:ca/county:kings/council_district:4,ca,Kings County Supervisor District 4
+86613b45-406a-5546-b0d2-f1ba528c9657,ocd-division/country:us/state:ca/county:kings/council_district:5,ca,Kings County Supervisor District 5
+7329c54f-301f-50fb-8f1c-6f9769f2fcae,ocd-division/country:us/state:ca/county:lake/council_district:1,ca,Lake County Supervisor District 1
+fa3b0241-3f9f-5178-be14-cf4065334c8a,ocd-division/country:us/state:ca/county:lake/council_district:2,ca,Lake County Supervisor District 2
+d1ad42e5-054f-512a-8351-722752a4c53e,ocd-division/country:us/state:ca/county:lake/council_district:3,ca,Lake County Supervisor District 3
+7216e4ef-0227-5ed3-a893-d2913ccbbb45,ocd-division/country:us/state:ca/county:lake/council_district:4,ca,Lake County Supervisor District 4
+0d34c776-85a8-51ad-bb5e-ec7009a5bc2c,ocd-division/country:us/state:ca/county:lake/council_district:5,ca,Lake County Supervisor District 5
+d7696f71-bf03-5ced-b39e-984188b16a6b,ocd-division/country:us/state:ca/county:lassen/council_district:1,ca,Lassen County Supervisor District 1
+427a6a08-198e-5d3f-91d9-ca9c187c2ee4,ocd-division/country:us/state:ca/county:lassen/council_district:2,ca,Lassen County Supervisor District 2
+de1a0c9e-c0dc-56de-b558-b45cfcf284e4,ocd-division/country:us/state:ca/county:lassen/council_district:3,ca,Lassen County Supervisor District 3
+45a5ae6a-4b44-572e-8b29-2b67a14c402a,ocd-division/country:us/state:ca/county:lassen/council_district:4,ca,Lassen County Supervisor District 4
+b0e0af93-736d-5a85-967f-556da1bb4bd0,ocd-division/country:us/state:ca/county:lassen/council_district:5,ca,Lassen County Supervisor District 5
+d1df2f11-2a28-5c60-90d7-e1a003501ab1,ocd-division/country:us/state:ca/county:los_angeles/council_district:1,ca,Los Angeles CA county supervisor district 1
+26b80256-a848-5c06-9ed7-d431e0b4feb9,ocd-division/country:us/state:ca/county:los_angeles/council_district:2,ca,Los Angeles CA county supervisor district 2
+34643b35-1a4f-51e6-99c1-cac8a6893389,ocd-division/country:us/state:ca/county:los_angeles/council_district:3,ca,Los Angeles CA county supervisor district 3
+437be203-53e6-5b37-a07a-595d04383d6d,ocd-division/country:us/state:ca/county:los_angeles/council_district:4,ca,Los Angeles CA county supervisor district 4
+38c3ced1-b608-5488-9158-bece181c5e1c,ocd-division/country:us/state:ca/county:los_angeles/council_district:5,ca,Los Angeles CA county supervisor district 5
+cb71d5f8-44ca-5dc1-9e9f-ee2bc23e1f2f,ocd-division/country:us/state:ca/county:los_angeles/health_care:antelope_valley,ca,Antelope Valley Health Care
+5cde46d2-d86e-5bf5-9385-d17a1791f4fe,ocd-division/country:us/state:ca/county:los_angeles/health_care:beach_cities,ca,Beach Cities Health Care
+51c2fa96-9855-5f0a-b39b-8e4ecb34928f,ocd-division/country:us/state:ca/county:los_angeles/la_metro_sector:north_county_san_fernando_valley,ca,Los Angeles CA county supervisor North County/San Fernando Valley
+eb03f4f4-cd31-5c2f-a411-97bee4900a1a,ocd-division/country:us/state:ca/county:los_angeles/la_metro_sector:san_gabriel_valley,ca,Los Angeles CA county supervisor San Gabriel Valley
+44689aab-5fe4-50f1-b079-a9bbc3c3057f,ocd-division/country:us/state:ca/county:los_angeles/la_metro_sector:southeast_long_beach,ca,Los Angeles CA county supervisor Southeast Long Beach
+57251bb6-d753-51be-ac01-7aeda24508b5,ocd-division/country:us/state:ca/county:los_angeles/la_metro_sector:southwest_corridor,ca,Los Angeles CA county supervisor Southwest Corridor
+8269b1d7-9169-55d0-8fdc-94dd3e600f30,ocd-division/country:us/state:ca/county:los_angeles/school_board_district:1,ca,Los Angeles CA Unified School Board district 1
+b207958b-051f-539d-a7be-22f6515887b9,ocd-division/country:us/state:ca/county:los_angeles/school_board_district:2,ca,Los Angeles CA Unified School Board district 2
+b19e5b2a-9998-50f7-8386-fe3f48f60f66,ocd-division/country:us/state:ca/county:los_angeles/school_board_district:3,ca,Los Angeles CA Unified School Board district 3
+75d7455a-064c-5393-aa77-dad38a698e1b,ocd-division/country:us/state:ca/county:los_angeles/school_board_district:4,ca,Los Angeles CA Unified School Board district 4
+14c954fc-6669-5618-87e1-60714027df51,ocd-division/country:us/state:ca/county:los_angeles/school_board_district:5,ca,Los Angeles CA Unified School Board district 5
+16dd105e-facd-5d82-8444-f0e43a5eb9e8,ocd-division/country:us/state:ca/county:los_angeles/school_board_district:6,ca,Los Angeles CA Unified School Board district 6
+c6e2ab88-0e5a-51c8-8ac0-d5c581fecc7c,ocd-division/country:us/state:ca/county:los_angeles/school_board_district:7,ca,Los Angeles CA Unified School Board district 7
+eb4b0550-605b-581f-91a2-b4b334854be0,ocd-division/country:us/state:ca/county:los_angeles/water:castaic_lake_water_agency,ca,Castaic Lake Water Agency
+149cb796-5401-5372-8d7c-b422bdeebc8a,ocd-division/country:us/state:ca/county:los_angeles/water:castaic_lake_water_agency/region:1,ca,Castaic Lake Water Agency Division 1
+cfec6478-c390-537b-87aa-0a0ae65860d0,ocd-division/country:us/state:ca/county:los_angeles/water:castaic_lake_water_agency/region:2,ca,Castaic Lake Water Agency Division 2
+4758ec73-f25b-531f-9284-6ee677c1e98b,ocd-division/country:us/state:ca/county:los_angeles/water:central_basin_municipal,ca,Central Basin Municipal Water
+7b015351-f267-5ed9-9048-86cae0af7d11,ocd-division/country:us/state:ca/county:los_angeles/water:central_basin_municipal/region:1,ca,Central Basin Municipal Water Division 1
+a2f4da1b-3b77-5c29-8c37-6bf082e22fd7,ocd-division/country:us/state:ca/county:los_angeles/water:central_basin_municipal/region:4,ca,Central Basin Municipal Water Division 4
+6382c030-ad1c-5c98-9456-d9fdfc3a8530,ocd-division/country:us/state:ca/county:los_angeles/water:central_basin_municipal/region:5,ca,Central Basin Municipal Water Division 5
+69703cc7-fb74-5e63-8d70-19fcc0d294ed,ocd-division/country:us/state:ca/county:los_angeles/water:replenishment_district_of_southern_california,ca,Water Replenishment District Of Southern California
+514cdff7-9726-5252-bfd2-e953f95e4a17,ocd-division/country:us/state:ca/county:los_angeles/water:replenishment_district_of_southern_california/region:2,ca,Water Replenishment District Of Southern California Division 2
+f02f596a-80a5-5e2a-b1de-483ee0822bc5,ocd-division/country:us/state:ca/county:los_angeles/water:replenishment_district_of_southern_california/region:5,ca,Water Replenishment District Of Southern California Division 5
+09830c7c-f510-58c2-903d-35590934e744,ocd-division/country:us/state:ca/county:los_angeles/water:san_gabriel_valley_municipal,ca,San Gabriel Valley Municipal Water
+54a572a6-6462-59e9-b152-5a8c03ed9e7c,ocd-division/country:us/state:ca/county:los_angeles/water:san_gabriel_valley_municipal/region:2,ca,San Gabriel Valley Municipal Water Division 2
+1d79a8d8-b0af-5609-a99c-e4d37abe54c7,ocd-division/country:us/state:ca/county:los_angeles/water:three_valleys_municipal,ca,Three Valleys Municipal Water
+d497150f-b5cc-531b-8e69-90b656f9c5c2,ocd-division/country:us/state:ca/county:los_angeles/water:three_valleys_municipal/region:6,ca,Three Valleys Municipal Water Division 6
+2631b034-6754-5915-aa77-4f8cf057718a,ocd-division/country:us/state:ca/county:los_angeles/water:upper_san_gabriel_valley_municipal,ca,Upper San Gabriel Valley Municipal Water
+0cf44f9f-6e36-5b41-a70a-36582a55c52a,ocd-division/country:us/state:ca/county:los_angeles/water:upper_san_gabriel_valley_municipal/region:3,ca,Upper San Gabriel Valley Municipal Water Division 3
+aa7730d8-4acf-594d-8a2f-e0a64eec1d2a,ocd-division/country:us/state:ca/county:los_angeles/water:upper_san_gabriel_valley_municipal/region:4,ca,Upper San Gabriel Valley Municipal Water Division 4
+6bb127b6-4a3c-5b50-9bd2-8e5f89ed2c7c,ocd-division/country:us/state:ca/county:los_angeles/water:west_basin_municipal,ca,West Basin Municipal Water
+73e0117e-6483-537b-a0fa-fc3f7249b30a,ocd-division/country:us/state:ca/county:los_angeles/water:west_basin_municipal/region:5,ca,West Basin Municipal Water Division 5
+53c6c659-e372-50d3-adfd-f5afd2525368,ocd-division/country:us/state:ca/county:madera/council_district:1,ca,Madera County Supervisor District 1
+2efee07b-6742-504a-96d2-43cd89cd7e04,ocd-division/country:us/state:ca/county:madera/council_district:2,ca,Madera County Supervisor District 2
+8c97eae5-a88c-520b-a27e-2d64e76e36e6,ocd-division/country:us/state:ca/county:madera/council_district:3,ca,Madera County Supervisor District 3
+1b4d9aa0-4abe-5821-9ef0-34d0720df4d5,ocd-division/country:us/state:ca/county:madera/council_district:4,ca,Madera County Supervisor District 4
+c74359ee-0779-5154-837d-c0de64c2168f,ocd-division/country:us/state:ca/county:madera/council_district:5,ca,Madera County Supervisor District 5
+b1bd7397-47e0-55b6-8f69-97176bf7f7f1,ocd-division/country:us/state:ca/county:marin/council_district:1,ca,Marin County CA Board of Supervisors District 1
+358d9fe9-7ca3-5035-80dd-eb4c55046143,ocd-division/country:us/state:ca/county:marin/council_district:2,ca,Marin County CA Board of Supervisors District 2
+ca9aa7e3-5823-5431-a9e3-ff0694b97187,ocd-division/country:us/state:ca/county:marin/council_district:3,ca,Marin County CA Board of Supervisors District 3
+b0617a73-c2d7-5404-bc18-dd0c74cece18,ocd-division/country:us/state:ca/county:marin/council_district:4,ca,Marin County CA Board of Supervisors District 4
+9f578be3-5e14-51ee-8ada-21eb8b1891e6,ocd-division/country:us/state:ca/county:marin/council_district:5,ca,Marin County CA Board of Supervisors District 5
+6bbbb51e-08eb-5081-97bf-cac53578ca53,ocd-division/country:us/state:ca/county:mariposa/council_district:1,ca,Mariposa County Supervisor District 1
+9cd02c47-9ed5-5a14-b146-dff537394c20,ocd-division/country:us/state:ca/county:mariposa/council_district:2,ca,Mariposa County Supervisor District 2
+8bfc6315-e05d-551c-a379-87b6d5c48c67,ocd-division/country:us/state:ca/county:mariposa/council_district:3,ca,Mariposa County Supervisor District 3
+693ff5fa-6ece-582f-a0ad-762f6d9817d7,ocd-division/country:us/state:ca/county:mariposa/council_district:4,ca,Mariposa County Supervisor District 4
+d2df5683-5af5-5008-b288-e353804ca6da,ocd-division/country:us/state:ca/county:mariposa/council_district:5,ca,Mariposa County Supervisor District 5
+e517b912-7ff2-580d-ae64-555b0db9cda7,ocd-division/country:us/state:ca/county:mendocino/council_district:1,ca,Mendocino County Supervisor District 1
+e0b6507b-b2b1-5746-8900-dc6c4d66ce04,ocd-division/country:us/state:ca/county:mendocino/council_district:2,ca,Mendocino County Supervisor District 2
+e7f4dec5-947b-584a-8c85-33e05cc6e93e,ocd-division/country:us/state:ca/county:mendocino/council_district:3,ca,Mendocino County Supervisor District 3
+b34031e2-a6c7-5453-8a5a-fd1f2e8d54c9,ocd-division/country:us/state:ca/county:mendocino/council_district:4,ca,Mendocino County Supervisor District 4
+bb90c8d2-c608-50d0-aefa-17b2e350fa5a,ocd-division/country:us/state:ca/county:mendocino/council_district:5,ca,Mendocino County Supervisor District 5
+9606134a-7d60-57f7-9d13-a59928fed07e,ocd-division/country:us/state:ca/county:merced/council_district:1,ca,Merced County Supervisor District 1
+fb630ed5-86a4-5cd9-87e5-5b41b426a2e6,ocd-division/country:us/state:ca/county:merced/council_district:2,ca,Merced County Supervisor District 2
+4a90d69e-27dd-586c-a515-31833d7dd21d,ocd-division/country:us/state:ca/county:merced/council_district:3,ca,Merced County Supervisor District 3
+64e0a2e4-132b-5882-957e-ebf7b7e01a77,ocd-division/country:us/state:ca/county:merced/council_district:4,ca,Merced County Supervisor District 4
+62755716-5293-539a-8042-75a0f0c39736,ocd-division/country:us/state:ca/county:merced/council_district:5,ca,Merced County Supervisor District 5
+103b2178-6892-53cf-a1d2-0e973064594d,ocd-division/country:us/state:ca/county:modoc/council_district:1,ca,Modoc County Supervisor District 1
+72e40d16-22c9-550c-b82c-5210021fd620,ocd-division/country:us/state:ca/county:modoc/council_district:2,ca,Modoc County Supervisor District 2
+d674b44c-c93c-5448-89c3-39460aac7612,ocd-division/country:us/state:ca/county:modoc/council_district:3,ca,Modoc County Supervisor District 3
+6430a52d-102d-5968-9c10-e8b0ddbe41ff,ocd-division/country:us/state:ca/county:modoc/council_district:4,ca,Modoc County Supervisor District 4
+397226ba-30cc-516a-8873-9adb890a16b4,ocd-division/country:us/state:ca/county:modoc/council_district:5,ca,Modoc County Supervisor District 5
+de70b01b-f43c-5105-b0e1-92d798132f3d,ocd-division/country:us/state:ca/county:mono/council_district:1,ca,Mono County Supervisor District 1
+cf5e5d8d-49e1-539e-ad3d-0afe79e0d157,ocd-division/country:us/state:ca/county:mono/council_district:2,ca,Mono County Supervisor District 2
+1d3869ed-01c6-5448-9b27-21b796d52024,ocd-division/country:us/state:ca/county:mono/council_district:3,ca,Mono County Supervisor District 3
+8e82e90e-395c-53d7-8afe-6e24548d88f4,ocd-division/country:us/state:ca/county:mono/council_district:4,ca,Mono County Supervisor District 4
+a543aeb7-0efa-5d5f-b685-87b8d07a23b3,ocd-division/country:us/state:ca/county:mono/council_district:5,ca,Mono County Supervisor District 5
+e3727daa-bdd6-5a16-9895-89ee775a8efa,ocd-division/country:us/state:ca/county:monterey/council_district:1,ca,Monterey County CA Board of Supervisors District 1
+2a4fe762-bde1-592b-a600-9cf82c3c2513,ocd-division/country:us/state:ca/county:monterey/council_district:2,ca,Monterey County CA Board of Supervisors District 2
+be18f5bb-14bb-58f2-8236-bf9557242292,ocd-division/country:us/state:ca/county:monterey/council_district:3,ca,Monterey County CA Board of Supervisors District 3
+5b497182-1d37-5590-825e-a504eee115e7,ocd-division/country:us/state:ca/county:monterey/council_district:4,ca,Monterey County CA Board of Supervisors District 4
+a8df1a39-e73f-546d-966c-08d01da8c235,ocd-division/country:us/state:ca/county:monterey/council_district:5,ca,Monterey County CA Board of Supervisors District 5
+885d8954-6336-53ae-bc78-276c5c0bf6f4,ocd-division/country:us/state:ca/county:napa/council_district:1,ca,Napa County Supervisor District 1
+e4220e12-1179-51dd-8b48-5929574974fa,ocd-division/country:us/state:ca/county:napa/council_district:2,ca,Napa County Supervisor District 2
+49145b71-b1a9-50c2-a5a9-0cca9bdc0e00,ocd-division/country:us/state:ca/county:napa/council_district:3,ca,Napa County Supervisor District 3
+b51c6926-36dc-53ad-bdd0-b1edfbe94c60,ocd-division/country:us/state:ca/county:napa/council_district:4,ca,Napa County Supervisor District 4
+e198f098-8475-5c2a-8cf6-6d7d502138a8,ocd-division/country:us/state:ca/county:napa/council_district:5,ca,Napa County Supervisor District 5
+d062748f-e0ce-5389-a0cb-b48080296265,ocd-division/country:us/state:ca/county:nevada/council_district:1,ca,Nevada County Supervisor District 1
+5dd38469-ebc1-5b45-b429-93cc0703f862,ocd-division/country:us/state:ca/county:nevada/council_district:2,ca,Nevada County Supervisor District 2
+76e9982a-1501-50c1-9769-6b7da5445301,ocd-division/country:us/state:ca/county:nevada/council_district:3,ca,Nevada County Supervisor District 3
+4b4deb60-0097-53c3-9707-fd5d59814bc3,ocd-division/country:us/state:ca/county:nevada/council_district:4,ca,Nevada County Supervisor District 4
+98621b7f-4bfd-505d-8523-83805a7fcfcf,ocd-division/country:us/state:ca/county:nevada/council_district:5,ca,Nevada County Supervisor District 5
+7a9a02c6-ba36-5404-8ee5-0c04614368ff,ocd-division/country:us/state:ca/county:orange/council_district:1,ca,Orange County CA Board of Supervisors District 1
+239b3f78-e9fb-5f5c-9f07-ac41ed1a2d8d,ocd-division/country:us/state:ca/county:orange/council_district:2,ca,Orange County CA Board of Supervisors District 2
+8ef21674-adbf-5469-8396-0ed97f581117,ocd-division/country:us/state:ca/county:orange/council_district:3,ca,Orange County CA Board of Supervisors District 3
+22c7f7b7-99f0-55d5-9ca5-3c57c610f98e,ocd-division/country:us/state:ca/county:orange/council_district:4,ca,Orange County CA Board of Supervisors District 4
+9b97528b-c7bc-5131-9364-64d900e41625,ocd-division/country:us/state:ca/county:orange/council_district:5,ca,Orange County CA Board of Supervisors District 5
+c787b819-92b7-5ee6-997b-4bd4dad313b6,ocd-division/country:us/state:ca/county:placer/council_district:1,ca,Placer County Supervisor District 1
+41f5d252-bde4-5f2a-a66f-2ab616eb12b7,ocd-division/country:us/state:ca/county:placer/council_district:2,ca,Placer County Supervisor District 2
+06f9f274-4ed0-5550-8310-b3feace203ef,ocd-division/country:us/state:ca/county:placer/council_district:3,ca,Placer County Supervisor District 3
+82da64b7-e83e-550e-9dff-bd8f0bb82ca7,ocd-division/country:us/state:ca/county:placer/council_district:4,ca,Placer County Supervisor District 4
+6dc73f65-744d-5a7a-83ae-41afad082453,ocd-division/country:us/state:ca/county:placer/council_district:5,ca,Placer County Supervisor District 5
+6d60f30a-7a5c-5c54-91e6-d0108a07ffc7,ocd-division/country:us/state:ca/county:plumas/council_district:1,ca,Plumas County Supervisor District 1
+2a214acf-4b19-549f-9a9b-29686a509f25,ocd-division/country:us/state:ca/county:plumas/council_district:2,ca,Plumas County Supervisor District 2
+0d329c03-5cf4-5d40-9f63-511df171f643,ocd-division/country:us/state:ca/county:plumas/council_district:3,ca,Plumas County Supervisor District 3
+34c4b493-5842-5427-9962-0f5698aec7b7,ocd-division/country:us/state:ca/county:plumas/council_district:4,ca,Plumas County Supervisor District 4
+77f26e56-ef0e-57b2-9cdc-d2f86a666206,ocd-division/country:us/state:ca/county:plumas/council_district:5,ca,Plumas County Supervisor District 5
+81c12163-3cb1-5282-ab93-b8dfcac4f2d2,ocd-division/country:us/state:ca/county:riverside/council_district:1,ca,Riverside County CA Board of Supervisors District 1
+27051581-1994-56b9-b5e0-c99a18c58609,ocd-division/country:us/state:ca/county:riverside/council_district:2,ca,Riverside County CA Board of Supervisors District 2
+d2bebb7f-1070-5bf9-9d98-3e315c76ce53,ocd-division/country:us/state:ca/county:riverside/council_district:3,ca,Riverside County CA Board of Supervisors District 3
+fcb7e025-572d-5ac8-beb2-f2bcce46df47,ocd-division/country:us/state:ca/county:riverside/council_district:4,ca,Riverside County CA Board of Supervisors District 4
+567e7363-ae1c-5d1e-9635-19c13b29c4f3,ocd-division/country:us/state:ca/county:riverside/council_district:5,ca,Riverside County CA Board of Supervisors District 5
+40544d2d-2bb3-544d-8776-8d9d23b68777,ocd-division/country:us/state:ca/county:sacramento/council_district:1,ca,Sacramento County CA Board of Supervisors District 1
+11d2f7c7-dc38-5bed-a23e-9ce2d05679d3,ocd-division/country:us/state:ca/county:sacramento/council_district:2,ca,Sacramento County CA Board of Supervisors District 2
+b3c24c5f-c3ea-5da5-a26f-2ca4a693aecd,ocd-division/country:us/state:ca/county:sacramento/council_district:3,ca,Sacramento County CA Board of Supervisors District 3
+c4bc2e46-265a-5095-a2cb-b5d12a30600b,ocd-division/country:us/state:ca/county:sacramento/council_district:4,ca,Sacramento County CA Board of Supervisors District 4
+50ef6f02-8d62-598f-b0ee-dd27ef6997fa,ocd-division/country:us/state:ca/county:sacramento/council_district:5,ca,Sacramento County CA Board of Supervisors District 5
+1e33a270-1816-59f9-a8b8-8ceaf27a12bb,ocd-division/country:us/state:ca/county:san_benito/council_district:1,ca,San Benito County Supervisor District 1
+aacd8342-17ef-526c-8ddc-67d02a8a1945,ocd-division/country:us/state:ca/county:san_benito/council_district:2,ca,San Benito County Supervisor District 2
+3e3ae48c-510e-54cc-8c43-ef4c0721f8ff,ocd-division/country:us/state:ca/county:san_benito/council_district:3,ca,San Benito County Supervisor District 3
+de5103a4-8a14-535b-9009-f5cb6f8d62e3,ocd-division/country:us/state:ca/county:san_benito/council_district:4,ca,San Benito County Supervisor District 4
+abf8c7ef-9f2d-557a-a939-2684f2316044,ocd-division/country:us/state:ca/county:san_benito/council_district:5,ca,San Benito County Supervisor District 5
+a5ca350f-bb1b-5d90-b433-16a446a3f810,ocd-division/country:us/state:ca/county:san_bernardino/council_district:1,ca,San Bernardino County CA Board of Supervisors District 1
+76b8f466-8193-5714-afd5-3d1532b9a663,ocd-division/country:us/state:ca/county:san_bernardino/council_district:2,ca,San Bernardino County CA Board of Supervisors District 2
+192e30c2-b9d7-5169-8f77-ec98e922b15b,ocd-division/country:us/state:ca/county:san_bernardino/council_district:3,ca,San Bernardino County CA Board of Supervisors District 3
+2d1403a3-9a6b-536d-9604-c02340be1dcf,ocd-division/country:us/state:ca/county:san_bernardino/council_district:4,ca,San Bernardino County CA Board of Supervisors District 4
+97a1635d-2e72-56e3-9c5e-9bebe2803a8c,ocd-division/country:us/state:ca/county:san_bernardino/council_district:5,ca,San Bernardino County CA Board of Supervisors District 5
+8ef10e8e-ccb4-5722-8315-c1a7b3e85cb8,ocd-division/country:us/state:ca/county:san_diego/council_district:1,ca,San Diego County CA Board of Supervisors District 1
+a8acbfec-cc62-5d4c-8977-c853d88b9aa7,ocd-division/country:us/state:ca/county:san_diego/council_district:2,ca,San Diego County CA Board of Supervisors District 2
+1eeb6ede-6756-5bb7-a304-59a4a6e45445,ocd-division/country:us/state:ca/county:san_diego/council_district:3,ca,San Diego County CA Board of Supervisors District 3
+9f061dfe-615c-5388-ac34-d9c51d4e751d,ocd-division/country:us/state:ca/county:san_diego/council_district:4,ca,San Diego County CA Board of Supervisors District 4
+82ad8ea9-ff51-58c2-954a-4988fa6f1d68,ocd-division/country:us/state:ca/county:san_diego/council_district:5,ca,San Diego County CA Board of Supervisors District 5
+c5adbfbc-9d05-5d81-b468-bafd7bebec50,ocd-division/country:us/state:ca/county:san_francisco/council_district:1,ca,San Francisco CA city-county council district 1
+80e225f2-6e26-57ce-8f9f-eee01b08a5ce,ocd-division/country:us/state:ca/county:san_francisco/council_district:10,ca,San Francisco CA city-county council district 10
+4f303a82-52ae-52fa-b9e4-7e28d3e5eed4,ocd-division/country:us/state:ca/county:san_francisco/council_district:11,ca,San Francisco CA city-county council district 11
+b65d05a9-4003-5089-936a-77cf78fd1321,ocd-division/country:us/state:ca/county:san_francisco/council_district:2,ca,San Francisco CA city-county council district 2
+cfc94fc6-4187-5e78-8e72-135bed3eb3d8,ocd-division/country:us/state:ca/county:san_francisco/council_district:3,ca,San Francisco CA city-county council district 3
+be631df3-1bb3-5e5d-b9cd-5102abcc6547,ocd-division/country:us/state:ca/county:san_francisco/council_district:4,ca,San Francisco CA city-county council district 4
+6308421b-f74e-5f55-9ed8-519109c177f8,ocd-division/country:us/state:ca/county:san_francisco/council_district:5,ca,San Francisco CA city-county council district 5
+3e20c7ce-d513-5ea9-84ba-a525e10acef9,ocd-division/country:us/state:ca/county:san_francisco/council_district:6,ca,San Francisco CA city-county council district 6
+249630eb-6db9-5840-8066-de6770332b7a,ocd-division/country:us/state:ca/county:san_francisco/council_district:7,ca,San Francisco CA city-county council district 7
+e0587d52-8066-50e7-93dc-11a85009e6bc,ocd-division/country:us/state:ca/county:san_francisco/council_district:8,ca,San Francisco CA city-county council district 8
+f0cc6888-d0c4-53e6-9bd6-ad7ac2864f1b,ocd-division/country:us/state:ca/county:san_francisco/council_district:9,ca,San Francisco CA city-county council district 9
+719968e8-2bd1-5b6e-90ea-a81f0ce3c13d,ocd-division/country:us/state:ca/county:san_joaquin/council_district:1,ca,San Joaquin County CA Board of Supervisors District 1
+ebc257f1-4490-5fff-8e0e-b5f326b8343e,ocd-division/country:us/state:ca/county:san_joaquin/council_district:2,ca,San Joaquin County CA Board of Supervisors District 2
+2958020f-5f5b-5dcc-a0c9-a64a21e603d4,ocd-division/country:us/state:ca/county:san_joaquin/council_district:3,ca,San Joaquin County CA Board of Supervisors District 3
+8ab3d6cf-c90e-5a35-a6c2-ddc6cae17735,ocd-division/country:us/state:ca/county:san_joaquin/council_district:4,ca,San Joaquin County CA Board of Supervisors District 4
+9cea7bf2-b763-52d1-8be0-edb1cd1d7488,ocd-division/country:us/state:ca/county:san_joaquin/council_district:5,ca,San Joaquin County CA Board of Supervisors District 5
+b5c0bf05-7df8-5e91-b748-962f8005ee14,ocd-division/country:us/state:ca/county:san_luis_obispo/council_district:1,ca,San Luis Obispo County CA Board of Supervisors District 1
+cd81f68b-e2fc-5188-a194-e5c2171d6750,ocd-division/country:us/state:ca/county:san_luis_obispo/council_district:2,ca,San Luis Obispo County CA Board of Supervisors District 2
+a68ce8ae-24cc-56dd-bb02-36b6febd1bfa,ocd-division/country:us/state:ca/county:san_luis_obispo/council_district:3,ca,San Luis Obispo County CA Board of Supervisors District 3
+0e5a7b02-eb0e-575c-b124-3d6037edbc96,ocd-division/country:us/state:ca/county:san_luis_obispo/council_district:4,ca,San Luis Obispo County CA Board of Supervisors District 4
+69467214-2bfe-5866-8173-5592229c03a7,ocd-division/country:us/state:ca/county:san_luis_obispo/council_district:5,ca,San Luis Obispo County CA Board of Supervisors District 5
+cd41ed50-a4d5-59a5-b207-e06146715b44,ocd-division/country:us/state:ca/county:san_mateo/council_district:1,ca,San Mateo County CA Board of Supervisors District 1
+c1fe87ff-6692-5619-846e-60fc23287166,ocd-division/country:us/state:ca/county:san_mateo/council_district:2,ca,San Mateo County CA Board of Supervisors District 2
+94d2b937-08ff-592e-8d2e-2b050dd4c274,ocd-division/country:us/state:ca/county:san_mateo/council_district:3,ca,San Mateo County CA Board of Supervisors District 3
+50d8f413-beb8-5c0d-bc4a-ffa1d55becf9,ocd-division/country:us/state:ca/county:san_mateo/council_district:4,ca,San Mateo County CA Board of Supervisors District 4
+bdbb6f76-2ed3-501a-ac7a-25ab609a0ebd,ocd-division/country:us/state:ca/county:san_mateo/council_district:5,ca,San Mateo County CA Board of Supervisors District 5
+491e9529-7590-5d08-bbf7-380b6b3666ba,ocd-division/country:us/state:ca/county:santa_barbara/council_district:1,ca,Santa Barbara County CA Board of Supervisors District 1
+5a3d95e3-2fa8-5050-86b3-0b51440ca7fc,ocd-division/country:us/state:ca/county:santa_barbara/council_district:2,ca,Santa Barbara County CA Board of Supervisors District 2
+b8cfd64f-0c8d-55bb-93c6-93d8da796564,ocd-division/country:us/state:ca/county:santa_barbara/council_district:3,ca,Santa Barbara County CA Board of Supervisors District 3
+7408179e-b2da-5dd2-a5f5-f416d91afd3a,ocd-division/country:us/state:ca/county:santa_barbara/council_district:4,ca,Santa Barbara County CA Board of Supervisors District 4
+d126885c-194b-50cf-866a-dde095ef0fb8,ocd-division/country:us/state:ca/county:santa_barbara/council_district:5,ca,Santa Barbara County CA Board of Supervisors District 5
+b6e2aa14-a8c5-5f4f-a95c-6e306e87f01a,ocd-division/country:us/state:ca/county:santa_clara/council_district:1,ca,Santa Clara County CA Board of Supervisors District 1
+9faa2ba2-645e-5cc9-b213-a2e94544f9a2,ocd-division/country:us/state:ca/county:santa_clara/council_district:2,ca,Santa Clara County CA Board of Supervisors District 2
+4d3b5bc6-5b82-56cb-ba2e-32f71cb12108,ocd-division/country:us/state:ca/county:santa_clara/council_district:3,ca,Santa Clara County CA Board of Supervisors District 3
+7ff44393-33a0-5a6b-870f-674867e844c5,ocd-division/country:us/state:ca/county:santa_clara/council_district:4,ca,Santa Clara County CA Board of Supervisors District 4
+b7839fcc-c90e-5514-832c-aa0147c16423,ocd-division/country:us/state:ca/county:santa_clara/council_district:5,ca,Santa Clara County CA Board of Supervisors District 5
+2a64a42d-4fd9-5ef2-83d0-d225f9fd6950,ocd-division/country:us/state:ca/county:santa_cruz/council_district:1,ca,Santa Cruz County Supervisor District 1
+44d7b5ce-e042-599e-bfd6-008553c4b06b,ocd-division/country:us/state:ca/county:santa_cruz/council_district:2,ca,Santa Cruz County Supervisor District 2
+d81e4359-0d52-5753-b544-46558c74fa95,ocd-division/country:us/state:ca/county:santa_cruz/council_district:3,ca,Santa Cruz County Supervisor District 3
+15b7f2ae-ea34-5fe6-b43d-599adf577d3c,ocd-division/country:us/state:ca/county:santa_cruz/council_district:4,ca,Santa Cruz County Supervisor District 4
+57aa2aeb-9f08-527c-abef-f72bc066eaba,ocd-division/country:us/state:ca/county:santa_cruz/council_district:5,ca,Santa Cruz County Supervisor District 5
+478559fb-c04c-51d9-ae62-25a98a488ad1,ocd-division/country:us/state:ca/county:shasta/council_district:1,ca,Shasta County Supervisor District 1
+70cc2f8c-0e17-5aa6-b919-d98eae58816c,ocd-division/country:us/state:ca/county:shasta/council_district:2,ca,Shasta County Supervisor District 2
+6bf6ebd7-f90c-5348-bc33-67d5644661a0,ocd-division/country:us/state:ca/county:shasta/council_district:3,ca,Shasta County Supervisor District 3
+5b0d0d81-0409-5bd5-b16e-e5e8ae2962dc,ocd-division/country:us/state:ca/county:shasta/council_district:4,ca,Shasta County Supervisor District 4
+6a00a554-974d-5cbd-b548-7a36b20a348a,ocd-division/country:us/state:ca/county:shasta/council_district:5,ca,Shasta County Supervisor District 5
+647dcf8a-42b2-5ba2-a652-e66a46b90693,ocd-division/country:us/state:ca/county:sierra/council_district:1,ca,Sierra County Supervisor District 1
+3bafcfb5-293e-5788-ae6f-68cbef442d24,ocd-division/country:us/state:ca/county:sierra/council_district:2,ca,Sierra County Supervisor District 2
+e15fa340-e211-549d-899a-a5293dd28330,ocd-division/country:us/state:ca/county:sierra/council_district:3,ca,Sierra County Supervisor District 3
+ccacc0b6-52f0-56e1-b2e1-35ee0ac30d2f,ocd-division/country:us/state:ca/county:sierra/council_district:4,ca,Sierra County Supervisor District 4
+3d163f11-a9c4-5df7-9ab9-119db74b155e,ocd-division/country:us/state:ca/county:sierra/council_district:5,ca,Sierra County Supervisor District 5
+a1bd5feb-203e-5a15-b811-82fcf9412d27,ocd-division/country:us/state:ca/county:siskiyou/council_district:1,ca,Siskiyou County Supervisor District 1
+d53f1029-cda7-561b-868c-7277af854f21,ocd-division/country:us/state:ca/county:siskiyou/council_district:2,ca,Siskiyou County Supervisor District 2
+aa466bb1-9258-5f77-acbf-4dd812afcc94,ocd-division/country:us/state:ca/county:siskiyou/council_district:3,ca,Siskiyou County Supervisor District 3
+5c8c709e-0f8c-51d5-96b6-af28da9ee541,ocd-division/country:us/state:ca/county:siskiyou/council_district:4,ca,Siskiyou County Supervisor District 4
+e8184566-fa78-5616-9de5-51daeda19cf7,ocd-division/country:us/state:ca/county:siskiyou/council_district:5,ca,Siskiyou County Supervisor District 5
+34377a88-ae3c-5939-a66e-557b3da0998c,ocd-division/country:us/state:ca/county:solano/council_district:1,ca,Solano County CA Board of Supervisors District 1
+9ec21620-8aef-5e95-bfaa-d83a33167b53,ocd-division/country:us/state:ca/county:solano/council_district:2,ca,Solano County CA Board of Supervisors District 2
+01aaf98b-18ca-55b6-a82b-cb736f7973cb,ocd-division/country:us/state:ca/county:solano/council_district:3,ca,Solano County CA Board of Supervisors District 3
+44e73d65-527e-5762-9727-ba8289425efb,ocd-division/country:us/state:ca/county:solano/council_district:4,ca,Solano County CA Board of Supervisors District 4
+75bb28b1-7623-5729-bfc7-b485202ab099,ocd-division/country:us/state:ca/county:solano/council_district:5,ca,Solano County CA Board of Supervisors District 5
+4653c097-7446-5a48-b568-9e64a9074394,ocd-division/country:us/state:ca/county:sonoma/council_district:1,ca,Sonoma County CA Board of Supervisors District 1
+0ed79284-573f-5f09-aa67-b7e57cf8d223,ocd-division/country:us/state:ca/county:sonoma/council_district:2,ca,Sonoma County CA Board of Supervisors District 2
+7b8d50ce-009d-58a5-b101-bf43fabefcc9,ocd-division/country:us/state:ca/county:sonoma/council_district:3,ca,Sonoma County CA Board of Supervisors District 3
+c6704a64-157f-5695-88a4-470c9b40ff47,ocd-division/country:us/state:ca/county:sonoma/council_district:4,ca,Sonoma County CA Board of Supervisors District 4
+b7bee4ea-16bf-588a-b774-7cfa6d8c5fe2,ocd-division/country:us/state:ca/county:sonoma/council_district:5,ca,Sonoma County CA Board of Supervisors District 5
+30e5a059-103b-5490-8a72-49a2bdcb50d8,ocd-division/country:us/state:ca/county:stanislaus/council_district:1,ca,Stanislaus County CA Board of Supervisors District 1
+530a0991-99cf-5824-94a8-36d446524251,ocd-division/country:us/state:ca/county:stanislaus/council_district:2,ca,Stanislaus County CA Board of Supervisors District 2
+6345b4f5-3c2e-521f-a113-9c7d2bfad6a0,ocd-division/country:us/state:ca/county:stanislaus/council_district:3,ca,Stanislaus County CA Board of Supervisors District 3
+f98f935d-07b4-5cdc-a531-0f8b48b0e30b,ocd-division/country:us/state:ca/county:stanislaus/council_district:4,ca,Stanislaus County CA Board of Supervisors District 4
+de53e003-9e04-5868-92dd-9b7db2db2433,ocd-division/country:us/state:ca/county:stanislaus/council_district:5,ca,Stanislaus County CA Board of Supervisors District 5
+38269a88-f0b4-55d6-bce1-8cedcbc0eecc,ocd-division/country:us/state:ca/county:sutter/council_district:1,ca,Sutter County Supervisor District 1
+062440b5-cd54-5047-a0a3-9584f8aefea5,ocd-division/country:us/state:ca/county:sutter/council_district:2,ca,Sutter County Supervisor District 2
+04e9e2ff-54ba-5c7c-9899-50f89e56fce1,ocd-division/country:us/state:ca/county:sutter/council_district:3,ca,Sutter County Supervisor District 3
+36e6d4c5-a6aa-51e0-b71c-5306a5aba5a8,ocd-division/country:us/state:ca/county:sutter/council_district:4,ca,Sutter County Supervisor District 4
+b0a4a338-aeb8-58bd-ba3b-cab588da540c,ocd-division/country:us/state:ca/county:sutter/council_district:5,ca,Sutter County Supervisor District 5
+7a38f19a-3355-52c6-91cf-6c78cf9718c2,ocd-division/country:us/state:ca/county:tehama/council_district:1,ca,Tehama County Supervisor District 1
+2abfa1a9-af82-54b4-8a47-13f742cbb97c,ocd-division/country:us/state:ca/county:tehama/council_district:2,ca,Tehama County Supervisor District 2
+7dbe0570-6a1e-5cff-83ac-81402ea03ceb,ocd-division/country:us/state:ca/county:tehama/council_district:3,ca,Tehama County Supervisor District 3
+b71eded2-a475-562f-953d-7c9572a51cde,ocd-division/country:us/state:ca/county:tehama/council_district:4,ca,Tehama County Supervisor District 4
+9ea2b4f5-2cc5-567a-a724-6451a7ac0ef2,ocd-division/country:us/state:ca/county:tehama/council_district:5,ca,Tehama County Supervisor District 5
+81038ed9-e940-5304-aac6-3fe63246f831,ocd-division/country:us/state:ca/county:trinity/council_district:1,ca,Trinity County Supervisor District 1
+e3c9405e-c1f2-5b09-8f0e-244657d6c2ea,ocd-division/country:us/state:ca/county:trinity/council_district:2,ca,Trinity County Supervisor District 2
+40b4cbb6-8fd8-5fdc-94e2-4dcb9d1aa22e,ocd-division/country:us/state:ca/county:trinity/council_district:3,ca,Trinity County Supervisor District 3
+470ee0ea-1337-5022-a73d-3c65ac23dbfb,ocd-division/country:us/state:ca/county:trinity/council_district:4,ca,Trinity County Supervisor District 4
+1b28f521-b655-5f1c-b050-fdd9fe57e22a,ocd-division/country:us/state:ca/county:trinity/council_district:5,ca,Trinity County Supervisor District 5
+70633c64-3bf6-5bbb-a4c2-390533b58aef,ocd-division/country:us/state:ca/county:tulare/council_district:1,ca,Tulare County Supervisor District 1
+365479b6-5b7f-5149-a977-8623ec8d210e,ocd-division/country:us/state:ca/county:tulare/council_district:2,ca,Tulare County Supervisor District 2
+7961702d-8440-5de0-be0d-3cb267c9a0e6,ocd-division/country:us/state:ca/county:tulare/council_district:3,ca,Tulare County Supervisor District 3
+05f9111f-e6c2-5cd8-b210-40a9acc0423f,ocd-division/country:us/state:ca/county:tulare/council_district:4,ca,Tulare County Supervisor District 4
+1fd7aaf5-12c0-5421-a65d-988f67680e1f,ocd-division/country:us/state:ca/county:tulare/council_district:5,ca,Tulare County Supervisor District 5
+3bc30883-f842-5f86-8c8c-65a0a3a7f2be,ocd-division/country:us/state:ca/county:tuolumne/council_district:1,ca,Tuolumne County Supervisor District 1
+6e704c96-e16a-5e4a-9774-67b61ac1b94d,ocd-division/country:us/state:ca/county:tuolumne/council_district:2,ca,Tuolumne County Supervisor District 2
+845b363c-66c0-57f4-9cb7-f9e5fc8cfe28,ocd-division/country:us/state:ca/county:tuolumne/council_district:3,ca,Tuolumne County Supervisor District 3
+f4227442-da31-59f3-9f7c-0db3f8a2cee9,ocd-division/country:us/state:ca/county:tuolumne/council_district:4,ca,Tuolumne County Supervisor District 4
+d55e1418-54fb-58a1-bc57-1cb8539faad3,ocd-division/country:us/state:ca/county:tuolumne/council_district:5,ca,Tuolumne County Supervisor District 5
+c7538054-4d00-5904-882f-433cc5f0817c,ocd-division/country:us/state:ca/county:ventura/council_district:1,ca,Ventura County CA Board of Supervisors District 1
+4c0e3cf3-4110-5b22-9091-f2b747db3025,ocd-division/country:us/state:ca/county:ventura/council_district:2,ca,Ventura County CA Board of Supervisors District 2
+719c67cc-d019-51e9-9d95-c5d30babff62,ocd-division/country:us/state:ca/county:ventura/council_district:3,ca,Ventura County CA Board of Supervisors District 3
+e6457cb3-23af-5fb8-85a9-0fe2fddff074,ocd-division/country:us/state:ca/county:ventura/council_district:4,ca,Ventura County CA Board of Supervisors District 4
+0611eb86-7bdb-5d1c-ac1a-66a11f7b74ee,ocd-division/country:us/state:ca/county:ventura/council_district:5,ca,Ventura County CA Board of Supervisors District 5
+6486a4fa-1c9b-5a19-a268-c9126b27a5eb,ocd-division/country:us/state:ca/county:yolo/council_district:1,ca,Yolo County Supervisor District 1
+863d1a32-ae30-5684-b79a-33bc0a63d0a6,ocd-division/country:us/state:ca/county:yolo/council_district:2,ca,Yolo County Supervisor District 2
+1ebc85bc-0e31-55aa-9532-067bc918381f,ocd-division/country:us/state:ca/county:yolo/council_district:3,ca,Yolo County Supervisor District 3
+b06612e6-1810-50d6-a357-e553a4fd36f7,ocd-division/country:us/state:ca/county:yolo/council_district:4,ca,Yolo County Supervisor District 4
+316897b8-a459-55dc-9ec4-53e6b78b4467,ocd-division/country:us/state:ca/county:yolo/council_district:5,ca,Yolo County Supervisor District 5
+5a5aeaf0-0c41-5512-8db6-db465906dfac,ocd-division/country:us/state:ca/county:yuba/council_district:1,ca,Yuba County Supervisor District 1
+13a0ed50-96bc-5a4f-85eb-e31d5a34e92e,ocd-division/country:us/state:ca/county:yuba/council_district:2,ca,Yuba County Supervisor District 2
+35d2aa97-ec90-518e-9ecd-15a91545abed,ocd-division/country:us/state:ca/county:yuba/council_district:3,ca,Yuba County Supervisor District 3
+74b310ef-bf8a-5da7-97c2-60406e640bbe,ocd-division/country:us/state:ca/county:yuba/council_district:4,ca,Yuba County Supervisor District 4
+f2f1f376-84f2-5a5c-8d66-36ed6dbe9f33,ocd-division/country:us/state:ca/county:yuba/council_district:5,ca,Yuba County Supervisor District 5
+4f05b82d-964a-5fd7-a75d-ed5ac19e45aa,ocd-division/country:us/state:ca/place:anaheim/council_district:1,ca,Anaheim City Council Member District 1
+7ca1bbec-a254-502e-9c92-3c58772b7c73,ocd-division/country:us/state:ca/place:anaheim/council_district:2,ca,Anaheim City Council Member District 2
+9cde560e-a888-5165-a390-d98004c54ad4,ocd-division/country:us/state:ca/place:anaheim/council_district:3,ca,Anaheim City Council Member District 3
+902abf6d-5f7d-5936-861c-ade41c1df387,ocd-division/country:us/state:ca/place:anaheim/council_district:4,ca,Anaheim City Council Member District 4
+412ffdac-4b7a-5801-a644-01dee824353a,ocd-division/country:us/state:ca/place:anaheim/council_district:5,ca,Anaheim City Council Member District 5
+30bfce81-77ee-5616-b6af-96b56ea4fa33,ocd-division/country:us/state:ca/place:anaheim/council_district:6,ca,Anaheim City Council Member District 6
+333004db-f035-55d9-a64d-be363401d8b0,ocd-division/country:us/state:ca/place:bakersfield/ward:1,ca,Bakersfield CA - ward 1
+dfb6b54a-a8d2-51ca-935c-fc7910ef8439,ocd-division/country:us/state:ca/place:bakersfield/ward:2,ca,Bakersfield CA - ward 2
+194ddc08-3cb4-5b8d-bb14-9b6def5ec506,ocd-division/country:us/state:ca/place:bakersfield/ward:3,ca,Bakersfield CA - ward 3
+fd188da5-00a5-5033-9b46-3734c3f8b752,ocd-division/country:us/state:ca/place:bakersfield/ward:4,ca,Bakersfield CA - ward 4
+5feea746-e0ad-5c86-b231-77ede6331959,ocd-division/country:us/state:ca/place:bakersfield/ward:5,ca,Bakersfield CA - ward 5
+02306f58-fe0c-54f4-9380-38aa2d49bc3d,ocd-division/country:us/state:ca/place:bakersfield/ward:6,ca,Bakersfield CA - ward 6
+812bfe32-ce07-5463-ad0b-44745470b6d1,ocd-division/country:us/state:ca/place:bakersfield/ward:7,ca,Bakersfield CA - ward 7
+e42c8932-93ea-5b3f-86e6-8fd9fa0422d8,ocd-division/country:us/state:ca/place:berkeley/council_district:1,ca,Berkeley CA City Council district 1
+30ba9b27-6ed7-5c6c-9ae3-c1995a8ebd06,ocd-division/country:us/state:ca/place:berkeley/council_district:2,ca,Berkeley CA City Council district 2
+94c91f9c-521b-5174-bb92-ab380cc2b282,ocd-division/country:us/state:ca/place:berkeley/council_district:3,ca,Berkeley CA City Council district 3
+718429a9-98b8-5c0f-9735-1b444525d3fd,ocd-division/country:us/state:ca/place:berkeley/council_district:4,ca,Berkeley CA City Council district 4
+47128d6b-5a7c-588d-a4eb-db6c8760a1f5,ocd-division/country:us/state:ca/place:berkeley/council_district:5,ca,Berkeley CA City Council district 5
+62d52e33-2764-553a-bb34-61d724fc1673,ocd-division/country:us/state:ca/place:berkeley/council_district:6,ca,Berkeley CA City Council district 6
+c28ed803-e0a8-5734-a04f-36436c5382ec,ocd-division/country:us/state:ca/place:berkeley/council_district:7,ca,Berkeley CA City Council district 7
+2bde74c9-35dd-5bc4-949a-796eca52679b,ocd-division/country:us/state:ca/place:berkeley/council_district:8,ca,Berkeley CA City Council district 8
+69a1439d-409e-58c8-b83a-51a36347630a,ocd-division/country:us/state:ca/place:chula_vista/council_district:1,ca,Chula Vista City Councl Member District 1
+89f29003-387e-5e18-9712-9b2c04745d87,ocd-division/country:us/state:ca/place:chula_vista/council_district:2,ca,Chula Vista City Councl Member District 2
+8084fae5-54d9-58a6-bcf4-2bbacfbc8638,ocd-division/country:us/state:ca/place:chula_vista/council_district:3,ca,Chula Vista City Councl Member District 3
+51dc6689-9a13-5480-ab72-3075aa3cf28c,ocd-division/country:us/state:ca/place:chula_vista/council_district:4,ca,Chula Vista City Councl Member District 4
+37e6af1f-70b9-53c3-ae01-300ae1f49ba4,ocd-division/country:us/state:ca/place:corona/council_district:1,ca,Corona City Council Member District 1
+78869c48-2057-5346-af5a-9d9753db1012,ocd-division/country:us/state:ca/place:corona/council_district:2,ca,Corona City Council Member District 2
+ce4a4d2c-f74d-5061-8953-af5c08fc33e7,ocd-division/country:us/state:ca/place:corona/council_district:3,ca,Corona City Council Member District 3
+5c28ddc9-7b60-5e64-81be-b64516374276,ocd-division/country:us/state:ca/place:corona/council_district:4,ca,Corona City Council Member District 4
+4ce6d1f0-1ad6-5519-bf55-02907f22e961,ocd-division/country:us/state:ca/place:corona/council_district:5,ca,Corona City Council Member District 5
+50d53b61-ae28-5a36-b276-e1db18d4726d,ocd-division/country:us/state:ca/place:downey/council_district:1,ca,Downey CA city council district 1
+d406a4c6-f207-55f8-9928-260788e3bddc,ocd-division/country:us/state:ca/place:downey/council_district:2,ca,Downey CA city council district 2
+e3e6ec25-c0ae-5211-87f1-4101315a0fda,ocd-division/country:us/state:ca/place:downey/council_district:3,ca,Downey CA city council district 3
+f28addd8-6583-5e5b-8abe-b98480e62b33,ocd-division/country:us/state:ca/place:downey/council_district:4,ca,Downey CA city council district 4
+98a19317-bab3-5a59-8101-a08f36d9469d,ocd-division/country:us/state:ca/place:downey/council_district:5,ca,Downey CA city council district 5
+bb42de84-53c9-574f-bfa0-2da87f20eeb5,ocd-division/country:us/state:ca/place:elk_grove/council_district:1,ca,Elk Grove CA City Council District 1
+8e1b09f6-0714-5f5f-aa0b-420ec0663b79,ocd-division/country:us/state:ca/place:elk_grove/council_district:2,ca,Elk Grove CA City Council District 2
+e2d8eada-b4d3-5e3d-9197-3512362a238f,ocd-division/country:us/state:ca/place:elk_grove/council_district:3,ca,Elk Grove CA City Council District 3
+84c729c5-732d-5d31-a2b3-89cd5f99610b,ocd-division/country:us/state:ca/place:elk_grove/council_district:4,ca,Elk Grove CA City Council District 4
+c6d4bc6b-97e0-5b9c-9702-2b75b7a66557,ocd-division/country:us/state:ca/place:escondido/council_district:1,ca,Escondido City Council Member District 1
+6128705f-4797-5d40-b0fb-9e67b8b7d668,ocd-division/country:us/state:ca/place:escondido/council_district:2,ca,Escondido City Council Member District 2
+f78e9436-d893-529b-aac5-75e2525399e2,ocd-division/country:us/state:ca/place:escondido/council_district:3,ca,Escondido City Council Member District 3
+e0c34a7d-9c8c-547f-a45f-fe6b095e9ad2,ocd-division/country:us/state:ca/place:escondido/council_district:4,ca,Escondido City Council Member District 4
+5ca46534-d2ba-5b3e-8f7f-c2a171f6ea0a,ocd-division/country:us/state:ca/place:fontana/council_district:1,ca,Fontana City Council Member District 1
+1ea850e1-06c5-54a3-a6b5-403c0decd4b5,ocd-division/country:us/state:ca/place:fontana/council_district:2,ca,Fontana City Council Member District 2
+5302c77e-9e5e-5e5a-bcaf-0acab8b09334,ocd-division/country:us/state:ca/place:fontana/council_district:3,ca,Fontana City Council Member District 3
+8a8aea64-45c3-5958-a012-e71a63ceee42,ocd-division/country:us/state:ca/place:fontana/council_district:4,ca,Fontana City Council Member District 4
+3c31aef5-a04d-50e5-a1b9-ef9e6cd0b77b,ocd-division/country:us/state:ca/place:fremont/council_district:1,ca,Fremont City Council Member District 1
+180a1261-8367-5072-9707-5df67c0afcb3,ocd-division/country:us/state:ca/place:fremont/council_district:2,ca,Fremont City Council Member District 2
+d1c775da-7c95-5878-bad1-2c1f7f7917f1,ocd-division/country:us/state:ca/place:fremont/council_district:3,ca,Fremont City Council Member District 3
+b35193bf-a250-556c-a5f0-574f6b3bf23a,ocd-division/country:us/state:ca/place:fremont/council_district:4,ca,Fremont City Council Member District 4
+71302e26-1a9d-577e-b31a-25d37781cecf,ocd-division/country:us/state:ca/place:fremont/council_district:5,ca,Fremont City Council Member District 5
+a3a04f17-55ee-52c1-af91-98833fb952f4,ocd-division/country:us/state:ca/place:fremont/council_district:6,ca,Fremont City Council Member District 6
+2a20f735-457d-59a0-83f2-98698d36e416,ocd-division/country:us/state:ca/place:fresno/council_district:1,ca,Fresno CA city council district 1
+9d65d70e-a0ea-5121-aed2-d587225b07be,ocd-division/country:us/state:ca/place:fresno/council_district:2,ca,Fresno CA city council district 2
+e674de82-c071-5346-9792-c3844d013880,ocd-division/country:us/state:ca/place:fresno/council_district:3,ca,Fresno CA city council district 3
+7dbb8578-a741-5c65-a3e1-ba0a49faec1c,ocd-division/country:us/state:ca/place:fresno/council_district:4,ca,Fresno CA city council district 4
+bc05dd43-f343-5a9c-aa40-944f2038aff0,ocd-division/country:us/state:ca/place:fresno/council_district:5,ca,Fresno CA city council district 5
+3b0b6a42-9c52-5327-b8b9-9159aa77ccf0,ocd-division/country:us/state:ca/place:fresno/council_district:6,ca,Fresno CA city council district 6
+663a6d85-1108-5c2b-8d69-bbb5159ac303,ocd-division/country:us/state:ca/place:fresno/council_district:7,ca,Fresno CA city council district 7
+ebea9147-e880-5fd0-8b66-b56cc72e6ea9,ocd-division/country:us/state:ca/place:fullerton/council_district:1,ca,Fullerton City Council Member District 1
+86a355f6-3c0c-5891-954b-da27927b53d0,ocd-division/country:us/state:ca/place:fullerton/council_district:2,ca,Fullerton City Council Member District 2
+ea1eee7b-c6d9-57cd-8d53-c02b0dbf0983,ocd-division/country:us/state:ca/place:fullerton/council_district:3,ca,Fullerton City Council Member District 3
+e04d7b8c-6817-50fb-bf07-2fd390fbce2e,ocd-division/country:us/state:ca/place:fullerton/council_district:4,ca,Fullerton City Council Member District 4
+55753548-3283-58f0-8a51-a059b3310822,ocd-division/country:us/state:ca/place:fullerton/council_district:5,ca,Fullerton City Council Member District 5
+35b8df4f-aaec-51d5-9fc5-31fcfc53fabc,ocd-division/country:us/state:ca/place:garden_grove/council_district:1,ca,Garden Grove City Council Member District 1
+da7f635e-3ed8-54a7-bfbc-c685d1eb7f1f,ocd-division/country:us/state:ca/place:garden_grove/council_district:2,ca,Garden Grove City Council Member District 2
+82dc9030-e502-5bd0-b55f-fd31f327d4db,ocd-division/country:us/state:ca/place:garden_grove/council_district:3,ca,Garden Grove City Council Member District 3
+abc1e81c-00f3-5bc1-a4ce-92f02463f4ea,ocd-division/country:us/state:ca/place:garden_grove/council_district:4,ca,Garden Grove City Council Member District 4
+a4674efd-4f5e-5ca5-82ab-e9e1a2d46e45,ocd-division/country:us/state:ca/place:garden_grove/council_district:5,ca,Garden Grove City Council Member District 5
+de645c8f-639f-593a-8c6e-b8fb917b8fa9,ocd-division/country:us/state:ca/place:garden_grove/council_district:6,ca,Garden Grove City Council Member District 6
+8deae1ca-5040-5b77-8ca7-be21dc1fc2e0,ocd-division/country:us/state:ca/place:inglewood/council_district:1,ca,Inglewood CA city council district 1
+12f5d8dd-8e74-59a1-a2f3-1132e275c8d3,ocd-division/country:us/state:ca/place:inglewood/council_district:2,ca,Inglewood CA city council district 2
+5c409038-6fd6-54bb-b97a-b651aab550a0,ocd-division/country:us/state:ca/place:inglewood/council_district:3,ca,Inglewood CA city council district 3
+3a09718d-2c8c-599d-a363-e9ed6907766e,ocd-division/country:us/state:ca/place:inglewood/council_district:4,ca,Inglewood CA city council district 4
+ae4af483-a58a-592e-8108-9f5678f6b527,ocd-division/country:us/state:ca/place:long_beach/council_district:1,ca,Long Beach CA City Council district 1
+039fabb3-06b2-5786-92c7-52f93ca4c5a0,ocd-division/country:us/state:ca/place:long_beach/council_district:2,ca,Long Beach CA City Council district 2
+fe242ba0-292a-5b60-9343-a8a0512a0070,ocd-division/country:us/state:ca/place:long_beach/council_district:3,ca,Long Beach CA City Council district 3
+8c306c83-dec6-5778-8aef-7c1467e5417b,ocd-division/country:us/state:ca/place:long_beach/council_district:4,ca,Long Beach CA City Council district 4
+ed329720-3c38-5a19-b038-608b2d2068c3,ocd-division/country:us/state:ca/place:long_beach/council_district:5,ca,Long Beach CA City Council district 5
+f5174cb6-5b74-5d7e-900c-0bd3ab3ab0e8,ocd-division/country:us/state:ca/place:long_beach/council_district:6,ca,Long Beach CA City Council district 6
+6b5c9e7d-adb1-5f36-ad5c-1afd54e06d60,ocd-division/country:us/state:ca/place:long_beach/council_district:7,ca,Long Beach CA City Council district 7
+416f577f-dc1b-55b2-8c31-425a6c63d7e9,ocd-division/country:us/state:ca/place:long_beach/council_district:8,ca,Long Beach CA City Council district 8
+7b589e5c-c65e-5708-912d-d6d94c6a5178,ocd-division/country:us/state:ca/place:long_beach/council_district:9,ca,Long Beach CA City Council district 9
+1189de9f-2add-5f0c-b1e8-ef4b015ca505,ocd-division/country:us/state:ca/place:los_angeles/council_district:1,ca,Los Angeles CA city council district 1
+864f58b8-bc00-5846-9d3d-abd4657a0725,ocd-division/country:us/state:ca/place:los_angeles/council_district:10,ca,Los Angeles CA city council district 10
+9c7f06b0-dd0f-585d-a174-86139c42210a,ocd-division/country:us/state:ca/place:los_angeles/council_district:11,ca,Los Angeles CA city council district 11
+fd0a2c30-86b2-56cb-b602-0961b3a3245f,ocd-division/country:us/state:ca/place:los_angeles/council_district:12,ca,Los Angeles CA city council district 12
+8aa7f5ff-af20-5212-9473-b5c2e0ac3ae2,ocd-division/country:us/state:ca/place:los_angeles/council_district:13,ca,Los Angeles CA city council district 13
+f3a9e61d-f573-5460-8a36-72d3b9935f0d,ocd-division/country:us/state:ca/place:los_angeles/council_district:14,ca,Los Angeles CA city council district 14
+841d122c-6779-5ba1-b93a-8ee67ebbaec1,ocd-division/country:us/state:ca/place:los_angeles/council_district:15,ca,Los Angeles CA city council district 15
+6edf89d4-d89f-59f7-95c8-2f3e19957080,ocd-division/country:us/state:ca/place:los_angeles/council_district:2,ca,Los Angeles CA city council district 2
+8e493ca5-108f-5504-84a0-e9a9d256c130,ocd-division/country:us/state:ca/place:los_angeles/council_district:3,ca,Los Angeles CA city council district 3
+eeb02f6b-35a3-5d15-b269-fa0c0678168a,ocd-division/country:us/state:ca/place:los_angeles/council_district:4,ca,Los Angeles CA city council district 4
+3edab8cc-a86e-51aa-a44c-6315473fa496,ocd-division/country:us/state:ca/place:los_angeles/council_district:5,ca,Los Angeles CA city council district 5
+e18cd728-876d-5be2-a8c3-6b352655029b,ocd-division/country:us/state:ca/place:los_angeles/council_district:6,ca,Los Angeles CA city council district 6
+edc754f2-1be9-560e-9b58-cecc91ac0cd0,ocd-division/country:us/state:ca/place:los_angeles/council_district:7,ca,Los Angeles CA city council district 7
+1d27610c-ff3b-5e03-9b0f-33fdd1f2539e,ocd-division/country:us/state:ca/place:los_angeles/council_district:8,ca,Los Angeles CA city council district 8
+5690e349-c676-5acd-b47f-4078eef3a619,ocd-division/country:us/state:ca/place:los_angeles/council_district:9,ca,Los Angeles CA city council district 9
+2b18a163-a6a7-513c-87d6-deada05d03dd,ocd-division/country:us/state:ca/place:modesto/council_district:1,ca,Modesto CA city council district 1
+6a568ba3-6ffc-591f-8127-de3ca9559a78,ocd-division/country:us/state:ca/place:modesto/council_district:2,ca,Modesto CA city council district 2
+eca5bf5b-8ac0-5f6e-9e04-f36def36e05d,ocd-division/country:us/state:ca/place:modesto/council_district:3,ca,Modesto CA city council district 3
+4bca944f-bd6b-5aba-93f8-692b01c74975,ocd-division/country:us/state:ca/place:modesto/council_district:4,ca,Modesto CA city council district 4
+a8245a29-7201-57ff-b373-1e55c66d1070,ocd-division/country:us/state:ca/place:modesto/council_district:5,ca,Modesto CA city council district 5
+fa178ce6-a827-51eb-bcde-94332a622eb6,ocd-division/country:us/state:ca/place:modesto/council_district:6,ca,Modesto CA city council district 6
+b5132a56-52a2-5984-9009-79c263f94898,ocd-division/country:us/state:ca/place:moreno_valley/council_district:1,ca,Moreno Valley CA city council district 1
+7a3d28c6-2d8a-5649-b12e-6ad5f2fe5b5c,ocd-division/country:us/state:ca/place:moreno_valley/council_district:2,ca,Moreno Valley CA city council district 2
+f16e1f9f-daa7-512f-b197-fbd564aadbc4,ocd-division/country:us/state:ca/place:moreno_valley/council_district:3,ca,Moreno Valley CA city council district 3
+c47c21e7-fa7e-5a12-8b09-acbca7aa6ed8,ocd-division/country:us/state:ca/place:moreno_valley/council_district:4,ca,Moreno Valley CA city council district 4
+86e8fad3-d7e8-5223-a4b0-8d1a9498cb76,ocd-division/country:us/state:ca/place:moreno_valley/council_district:5,ca,Moreno Valley CA city council district 5
+15a987f5-09f6-55d4-b058-95e993ec9c8a,ocd-division/country:us/state:ca/place:oakland/council_district:1,ca,Oakland CA city council district 1
+9eaa5106-8d15-561f-b406-1381dd344f76,ocd-division/country:us/state:ca/place:oakland/council_district:2,ca,Oakland CA city council district 2
+00245dc4-766d-52b2-9d48-480b6f4d34b9,ocd-division/country:us/state:ca/place:oakland/council_district:3,ca,Oakland CA city council district 3
+1b7704fc-26d8-5aeb-919d-ba1214d4005e,ocd-division/country:us/state:ca/place:oakland/council_district:4,ca,Oakland CA city council district 4
+632ff512-c4d9-5f9a-867c-16d4c10131d2,ocd-division/country:us/state:ca/place:oakland/council_district:5,ca,Oakland CA city council district 5
+afdfee1c-18af-5afb-a3f3-4e0d8e7c20ed,ocd-division/country:us/state:ca/place:oakland/council_district:6,ca,Oakland CA city council district 6
+65cbde0f-dcb9-5be6-b6b7-22bc21cc1fd2,ocd-division/country:us/state:ca/place:oakland/council_district:7,ca,Oakland CA city council district 7
+59b7fc6b-fe03-555e-bc7d-34a820b9c50d,ocd-division/country:us/state:ca/place:oceanside/council_district:1,ca,Oceanside City Council Member District 1
+36be122e-d67f-5655-b3f7-a91df1755e4c,ocd-division/country:us/state:ca/place:oceanside/council_district:2,ca,Oceanside City Council Member District 2
+caf20cb8-8f32-553a-abe9-5cdd0d3e267f,ocd-division/country:us/state:ca/place:oceanside/council_district:3,ca,Oceanside City Council Member District 3
+f96c6ece-bfc8-54ab-bc5e-024365da7df0,ocd-division/country:us/state:ca/place:oceanside/council_district:4,ca,Oceanside City Council Member District 4
+1d29c230-39ab-5040-8b27-33220c8a3ab0,ocd-division/country:us/state:ca/place:orange/council_district:1,ca,Orange City Council Member District 1
+7ab4422b-44de-5ede-b5e9-8b37a066794a,ocd-division/country:us/state:ca/place:orange/council_district:2,ca,Orange City Council Member District 2
+df0270ce-f05a-5acf-972f-b0b8ca618c68,ocd-division/country:us/state:ca/place:orange/council_district:3,ca,Orange City Council Member District 3
+7b142560-b5e4-5e22-9eae-3a80e2f988d8,ocd-division/country:us/state:ca/place:orange/council_district:4,ca,Orange City Council Member District 4
+1e8b969a-6927-5ed3-aec4-04639b97a83e,ocd-division/country:us/state:ca/place:orange/council_district:5,ca,Orange City Council Member District 5
+199edd34-40bd-5b39-a518-e2a5a576c5c8,ocd-division/country:us/state:ca/place:orange/council_district:6,ca,Orange City Council Member District 6
+898e8d85-e661-5050-ad28-e3f16d033de8,ocd-division/country:us/state:ca/place:oxnard/council_district:1,ca,Oxnard City Council Member District 1
+cc7c82dc-97cf-5cf3-af4a-4001a37cecbe,ocd-division/country:us/state:ca/place:oxnard/council_district:2,ca,Oxnard City Council Member District 2
+ad24b725-0b4f-58f7-b43d-9d213c076a5b,ocd-division/country:us/state:ca/place:oxnard/council_district:3,ca,Oxnard City Council Member District 3
+7ef0d3d3-a096-581c-b8e2-6ef1785adf93,ocd-division/country:us/state:ca/place:oxnard/council_district:4,ca,Oxnard City Council Member District 4
+f175cf95-945c-55ca-aad9-17343f353c47,ocd-division/country:us/state:ca/place:oxnard/council_district:5,ca,Oxnard City Council Member District 5
+2377ec49-6d52-5a6a-9c15-110d783feb69,ocd-division/country:us/state:ca/place:oxnard/council_district:6,ca,Oxnard City Council Member District 6
+e4f1c19f-3f25-58d6-b544-27b8c90fe5bf,ocd-division/country:us/state:ca/place:palmdale/council_district:1,ca,City Of Palmdale 1st Council
+cac0db20-6c1f-581e-a630-d02ef383e897,ocd-division/country:us/state:ca/place:palmdale/council_district:2,ca,City Of Palmdale 2nd Council
+db3d1c92-89ac-5eae-a558-6c31c350fe4e,ocd-division/country:us/state:ca/place:palmdale/council_district:3,ca,City Of Palmdale 3rd Council
+cb18d28c-a67c-595f-95a0-dd897dc69a21,ocd-division/country:us/state:ca/place:palmdale/council_district:4,ca,City Of Palmdale 4th Council
+7a2f9b00-c980-56de-a887-19e2274ab54d,ocd-division/country:us/state:ca/place:pasadena/council_district:1,ca,Pasadena CA city council district 1
+96c02220-a6b8-545e-b324-06ebb4e6ec34,ocd-division/country:us/state:ca/place:pasadena/council_district:2,ca,Pasadena CA city council district 2
+93e33d74-2537-5e2b-aa2a-0d507e961e08,ocd-division/country:us/state:ca/place:pasadena/council_district:3,ca,Pasadena CA city council district 3
+193480d9-a232-53ee-8b93-437365f7d562,ocd-division/country:us/state:ca/place:pasadena/council_district:4,ca,Pasadena CA city council district 4
+9e4ba144-68db-5690-bd3f-5a7c5d8ee2b9,ocd-division/country:us/state:ca/place:pasadena/council_district:5,ca,Pasadena CA city council district 5
+52b0b534-07ba-55ab-9790-daa577cf9712,ocd-division/country:us/state:ca/place:pasadena/council_district:6,ca,Pasadena CA city council district 6
+780dfee4-7afa-5a18-997f-bd071722c9c7,ocd-division/country:us/state:ca/place:pasadena/council_district:7,ca,Pasadena CA city council district 7
+f750bb37-f8b3-5fbe-8b1a-39b74d5c83bd,ocd-division/country:us/state:ca/place:pomona/council_district:1,ca,Pomona CA city council district 1
+88e86bc7-2bfc-5301-90b4-f868c137ed9b,ocd-division/country:us/state:ca/place:pomona/council_district:2,ca,Pomona CA city council district 2
+def78cc2-88ac-50df-a321-a001d3596b2d,ocd-division/country:us/state:ca/place:pomona/council_district:3,ca,Pomona CA city council district 3
+aa03a47c-2c9f-57e9-b6e5-e821c5c13967,ocd-division/country:us/state:ca/place:pomona/council_district:4,ca,Pomona CA city council district 4
+a7bd39d7-9f64-5a7e-8238-4e1d45761979,ocd-division/country:us/state:ca/place:pomona/council_district:5,ca,Pomona CA city council district 5
+01976ce4-b16d-5d4e-aae2-078362122f1e,ocd-division/country:us/state:ca/place:pomona/council_district:6,ca,Pomona CA city council district 6
+cbc59069-3d19-5f6a-936e-31dec198e946,ocd-division/country:us/state:ca/place:rancho_cucamonga/council_district:1,ca,Rancho Cucamonga City Council Member District 1
+035c8f45-fc5b-50fd-aa07-18bcecb8343d,ocd-division/country:us/state:ca/place:rancho_cucamonga/council_district:2,ca,Rancho Cucamonga City Council Member District 2
+9e4dfd36-831a-5aa1-bc0a-07c634e58e1f,ocd-division/country:us/state:ca/place:rancho_cucamonga/council_district:3,ca,Rancho Cucamonga City Council Member District 3
+357343f3-68f0-5bcd-87d4-3f88e535f4c0,ocd-division/country:us/state:ca/place:rancho_cucamonga/council_district:4,ca,Rancho Cucamonga City Council Member District 4
+9ecfbd50-236d-5072-a199-7940873a1b4e,ocd-division/country:us/state:ca/place:riverside/ward:1,ca,Riverside CA City Council ward 1
+714c8a35-48e2-586e-bf23-b752bb8afd1d,ocd-division/country:us/state:ca/place:riverside/ward:2,ca,Riverside CA City Council ward 2
+8fe87b54-1e8d-5453-9ee7-2e3ad06a7022,ocd-division/country:us/state:ca/place:riverside/ward:3,ca,Riverside CA City Council ward 3
+2d8005dc-a1c1-5a82-9124-005caf05ae0c,ocd-division/country:us/state:ca/place:riverside/ward:4,ca,Riverside CA City Council ward 4
+049e5537-c7e4-511e-9dad-f2c1b3586401,ocd-division/country:us/state:ca/place:riverside/ward:5,ca,Riverside CA City Council ward 5
+c18330b2-2332-576c-9c83-8c1cdee14808,ocd-division/country:us/state:ca/place:riverside/ward:6,ca,Riverside CA City Council ward 6
+30ffbd46-d02d-5ed8-ad52-9b5a54beeb67,ocd-division/country:us/state:ca/place:riverside/ward:7,ca,Riverside CA City Council ward 7
+21dab829-7544-5d67-812f-d2637e047589,ocd-division/country:us/state:ca/place:roseville/council_district:1,ca,Roseville CA city council district 1
+5910b19a-d30b-5f49-a73c-91211eb50ff0,ocd-division/country:us/state:ca/place:roseville/council_district:2,ca,Roseville CA city council district 2
+53b5dd36-7715-5879-baef-cc4055fd3f98,ocd-division/country:us/state:ca/place:roseville/council_district:3,ca,Roseville CA city council district 3
+d686d6ef-7761-5a4a-a3b9-ce361a0a4436,ocd-division/country:us/state:ca/place:roseville/council_district:4,ca,Roseville CA city council district 4
+515b9c76-d038-5e08-b48e-7511fba7bde1,ocd-division/country:us/state:ca/place:roseville/council_district:5,ca,Roseville CA city council district 5
+a7619ef2-e23a-5a88-b1fc-37e9920ec098,ocd-division/country:us/state:ca/place:sacramento/council_district:1,ca,Sacramento CA city council district 1
+95649930-3894-56f0-b4c9-6e47522e2bb4,ocd-division/country:us/state:ca/place:sacramento/council_district:2,ca,Sacramento CA city council district 2
+195b3a38-8da4-5a95-8ba9-ed6743258c3c,ocd-division/country:us/state:ca/place:sacramento/council_district:3,ca,Sacramento CA city council district 3
+57674103-091c-58ca-a072-5534a637d049,ocd-division/country:us/state:ca/place:sacramento/council_district:4,ca,Sacramento CA city council district 4
+77949b44-4f9c-5713-a031-c2e171bd6016,ocd-division/country:us/state:ca/place:sacramento/council_district:5,ca,Sacramento CA city council district 5
+613c4907-0ad2-598a-a674-d12abb078daa,ocd-division/country:us/state:ca/place:sacramento/council_district:6,ca,Sacramento CA city council district 6
+28e490ad-03ae-5a55-a6a1-68214874eb20,ocd-division/country:us/state:ca/place:sacramento/council_district:7,ca,Sacramento CA city council district 7
+376ab121-348a-5e4b-a414-6c5400f26a90,ocd-division/country:us/state:ca/place:sacramento/council_district:8,ca,Sacramento CA city council district 8
+c26c4a65-78c3-5954-bae1-0f0b0aa6644b,ocd-division/country:us/state:ca/place:salinas/council_district:1,ca,Salinas CA city council district 1
+d4d18145-3e80-595d-b628-8dc6f6675a6a,ocd-division/country:us/state:ca/place:salinas/council_district:2,ca,Salinas CA city council district 2
+0f37b87b-eed4-52b7-a9be-4590f76c81cb,ocd-division/country:us/state:ca/place:salinas/council_district:3,ca,Salinas CA city council district 3
+2cd1f22c-f77b-5824-99cd-2eb31446d9b1,ocd-division/country:us/state:ca/place:salinas/council_district:4,ca,Salinas CA city council district 4
+b6674125-9132-56d7-b70b-d3d3943d0633,ocd-division/country:us/state:ca/place:salinas/council_district:5,ca,Salinas CA city council district 5
+9c450b5e-e51e-5f46-93f4-4b46c84847d4,ocd-division/country:us/state:ca/place:salinas/council_district:6,ca,Salinas CA city council district 6
+9aac3023-b81b-50ee-b495-06cb6fc2a467,ocd-division/country:us/state:ca/place:san_bernardino/ward:1,ca,San Bernardino CA ward 1
+1233f293-d3c8-5569-b5d7-46ad2ae27705,ocd-division/country:us/state:ca/place:san_bernardino/ward:2,ca,San Bernardino CA ward 2
+7a40830a-9ae5-5e55-92a9-bad678847604,ocd-division/country:us/state:ca/place:san_bernardino/ward:3,ca,San Bernardino CA ward 3
+b0f1536a-2100-5414-9a5d-82717864782d,ocd-division/country:us/state:ca/place:san_bernardino/ward:4,ca,San Bernardino CA ward 4
+8b2e1508-5395-572a-84ad-3fec4664ff3d,ocd-division/country:us/state:ca/place:san_bernardino/ward:5,ca,San Bernardino CA ward 5
+d478dc36-6d23-5624-9cf1-a8261cc4e4f0,ocd-division/country:us/state:ca/place:san_bernardino/ward:6,ca,San Bernardino CA ward 6
+61a6f0c8-8d5b-51b3-836e-d43ddee5c6a8,ocd-division/country:us/state:ca/place:san_bernardino/ward:7,ca,San Bernardino CA ward 7
+84292cfe-6980-52bb-bf58-bbf641a986e1,ocd-division/country:us/state:ca/place:san_diego/council_district:1,ca,San Diego CA city council district 1
+9842efa6-9d34-5091-aaab-c49eb100c0e9,ocd-division/country:us/state:ca/place:san_diego/council_district:2,ca,San Diego CA city council district 2
+657df55a-fa1c-5c89-a1e3-99e73d8c289e,ocd-division/country:us/state:ca/place:san_diego/council_district:3,ca,San Diego CA city council district 3
+8128d50b-ec4e-5828-8785-77ac46441680,ocd-division/country:us/state:ca/place:san_diego/council_district:4,ca,San Diego CA city council district 4
+546b1962-526e-5017-a8f5-7b8f536882bb,ocd-division/country:us/state:ca/place:san_diego/council_district:5,ca,San Diego CA city council district 5
+9d4cb7f3-268d-5b30-aa10-f1ccfe4ece97,ocd-division/country:us/state:ca/place:san_diego/council_district:6,ca,San Diego CA city council district 6
+a50f7368-61e0-5881-a55a-f44655bf0d6e,ocd-division/country:us/state:ca/place:san_diego/council_district:7,ca,San Diego CA city council district 7
+809ef2fb-58ec-5b96-9156-87e14cf2ab35,ocd-division/country:us/state:ca/place:san_diego/council_district:8,ca,San Diego CA city council district 8
+1a5a12bc-5854-520c-9608-99f468166096,ocd-division/country:us/state:ca/place:san_diego/council_district:9,ca,San Diego CA city council district 9
+fccd91e6-fe54-5444-ba7b-fea114276f9c,ocd-division/country:us/state:ca/place:san_jose/council_district:1,ca,San Jose CA city council district 1
+7d94d2a8-f1c1-5a42-8863-ae23ad54efe6,ocd-division/country:us/state:ca/place:san_jose/council_district:10,ca,San Jose CA city council district 10
+78a99af9-173b-5335-865a-db97981a9d8e,ocd-division/country:us/state:ca/place:san_jose/council_district:2,ca,San Jose CA city council district 2
+fbedcd01-980b-5c2c-bf07-09f992860497,ocd-division/country:us/state:ca/place:san_jose/council_district:3,ca,San Jose CA city council district 3
+d3b47efb-d76e-506e-bd80-f7339d277e4b,ocd-division/country:us/state:ca/board_of_equalization:1,ca,California Board of Equalization District 1
+650f701c-c2ea-5a2a-8c4e-80ce2b2ce930,ocd-division/country:us/state:ca/board_of_equalization:2,ca,California Board of Equalization District 2
+e5eae4e3-99c4-5aed-8dcb-c32a11415904,ocd-division/country:us/state:ca/board_of_equalization:3,ca,California Board of Equalization District 3
+afe31e0a-bf3c-5917-bfa6-2f7e94378cce,ocd-division/country:us/state:ca/board_of_equalization:4,ca,California Board of Equalization District 4
+3df48847-518f-51d9-8a5b-99da83bdf2a9,ocd-division/country:us/state:ca/county:alameda/council_district:1,ca,Alameda County CA Board of Supervisors District 1
+2caa50d2-0535-5dcc-9e42-68aa5a191924,ocd-division/country:us/state:ca/county:alameda/council_district:2,ca,Alameda County CA Board of Supervisors District 2
+f5f08998-1f78-5d02-ac84-9aaefd7b62bf,ocd-division/country:us/state:ca/county:alameda/council_district:3,ca,Alameda County CA Board of Supervisors District 3
+d5a781a7-8791-57d6-828e-1a75f86f6ca6,ocd-division/country:us/state:ca/county:alameda/council_district:4,ca,Alameda County CA Board of Supervisors District 4
+4f9128f0-ed37-57cb-b4d1-21e0d742b83f,ocd-division/country:us/state:ca/county:alameda/council_district:5,ca,Alameda County CA Board of Supervisors District 5
+a2429629-754f-5d08-ae13-f7b53a8cebf0,ocd-division/country:us/state:ca/county:alpine/council_district:1,ca,Alpine County Supervisor District 1
+42c0a058-c99f-55a5-b501-0620d51466da,ocd-division/country:us/state:ca/county:alpine/council_district:2,ca,Alpine County Supervisor District 2
+f3ca4d35-4c10-547d-a433-d38d7a311245,ocd-division/country:us/state:ca/county:alpine/council_district:3,ca,Alpine County Supervisor District 3
+af5ef4ec-a976-569d-8721-8f11edf00d29,ocd-division/country:us/state:ca/county:alpine/council_district:4,ca,Alpine County Supervisor District 4
+b85f9e70-f9ff-52f8-be20-4ea33df7fbaa,ocd-division/country:us/state:ca/county:alpine/council_district:5,ca,Alpine County Supervisor District 5
+9d53c4a2-9b42-5105-b6ca-576c9e525f41,ocd-division/country:us/state:ca/county:amador/council_district:1,ca,Amador County Supervisor District 1
+b75bd2a6-d030-5045-b293-71ea168bc0a0,ocd-division/country:us/state:ca/county:amador/council_district:2,ca,Amador County Supervisor District 2
+ecf2dfbe-f088-587f-a49a-ec8389af673f,ocd-division/country:us/state:ca/county:amador/council_district:3,ca,Amador County Supervisor District 3
+ae7f56fc-bc57-5ba5-b7d0-362e737595e0,ocd-division/country:us/state:ca/county:amador/council_district:4,ca,Amador County Supervisor District 4
+71cc3d5d-56c1-50cc-84db-074f221c511e,ocd-division/country:us/state:ca/county:amador/council_district:5,ca,Amador County Supervisor District 5
+ca3b45f2-309d-55c4-8975-75b8f9740433,ocd-division/country:us/state:ca/county:butte/council_district:1,ca,Butte County Supervisor District 1
+758fe238-07d4-56e7-8856-111dd3bb94d2,ocd-division/country:us/state:ca/county:butte/council_district:2,ca,Butte County Supervisor District 2
+8f000cde-8175-50ae-a06f-61ebd79fe86d,ocd-division/country:us/state:ca/county:butte/council_district:3,ca,Butte County Supervisor District 3
+4e176322-d35b-531f-8c84-73c0f879e318,ocd-division/country:us/state:ca/county:butte/council_district:4,ca,Butte County Supervisor District 4
+0ddd4766-d1f6-5440-90cd-78fcdc31336c,ocd-division/country:us/state:ca/county:butte/council_district:5,ca,Butte County Supervisor District 5
+14851bc5-34a4-59b1-a668-5bdd95530b5a,ocd-division/country:us/state:ca/place:san_jose/council_district:4,ca,San Jose CA city council district 4
+ac87d274-c0a5-5903-86b7-a4664901308e,ocd-division/country:us/state:ca/place:san_jose/council_district:5,ca,San Jose CA city council district 5
+c2e3669a-8bac-527d-92d0-d85f6a4ec46d,ocd-division/country:us/state:ca/place:san_jose/council_district:6,ca,San Jose CA city council district 6
+d7216ab1-205f-52c7-96cb-ddc6d870b2d2,ocd-division/country:us/state:ca/place:san_jose/council_district:7,ca,San Jose CA city council district 7
+99312a7e-d688-5b47-91b6-a5e630d4fa3e,ocd-division/country:us/state:ca/place:san_jose/council_district:8,ca,San Jose CA city council district 8
+9b93ba4b-27bd-5a63-b37c-990a07f3a05b,ocd-division/country:us/state:ca/place:san_jose/council_district:9,ca,San Jose CA city council district 9
+cc20c051-bf68-5e4b-91c7-760f9bbc2dd7,ocd-division/country:us/state:ca/place:santa_ana/ward:1,ca,Santa Ana CA City Council ward 1
+60c06953-fee7-58f0-97ab-93292a80a574,ocd-division/country:us/state:ca/place:santa_ana/ward:2,ca,Santa Ana CA City Council ward 2
+31110e3b-3cc2-58cc-a687-5adc541f6b3d,ocd-division/country:us/state:ca/place:santa_ana/ward:3,ca,Santa Ana CA City Council ward 3
+483efb8f-4270-55be-be8b-a8e5e93c9413,ocd-division/country:us/state:ca/place:santa_ana/ward:4,ca,Santa Ana CA City Council ward 4
+d521be3d-e639-559a-8180-31bb4b095ccf,ocd-division/country:us/state:ca/place:santa_ana/ward:5,ca,Santa Ana CA City Council ward 5
+4cd7030d-13ce-5e57-b3e4-f220f660a1c0,ocd-division/country:us/state:ca/place:santa_ana/ward:6,ca,Santa Ana CA City Council ward 6
+834363c2-a07b-5dcf-a196-19022862f526,ocd-division/country:us/state:ca/place:santa_rosa/council_district:1,ca,Santa Rosa CA city council district 1
+9d08f299-2db7-598f-a6b4-52cbd1c9f1b8,ocd-division/country:us/state:ca/place:santa_rosa/council_district:2,ca,Santa Rosa CA city council district 2
+33c8102b-9049-5de6-a7f6-5ae9a63c8da1,ocd-division/country:us/state:ca/place:santa_rosa/council_district:3,ca,Santa Rosa CA city council district 3
+5ff28565-cdbe-52e7-8a91-9bab3abdca1a,ocd-division/country:us/state:ca/place:santa_rosa/council_district:4,ca,Santa Rosa CA city council district 4
+70636d0d-034d-55b8-884e-a2e2c78d5200,ocd-division/country:us/state:ca/place:santa_rosa/council_district:5,ca,Santa Rosa CA city council district 5
+9730222f-28fa-5d1e-a196-167c11d3a94d,ocd-division/country:us/state:ca/place:santa_rosa/council_district:6,ca,Santa Rosa CA city council district 6
+6062f1ea-2bb4-536d-94b0-995b8e1b96b5,ocd-division/country:us/state:ca/place:santa_rosa/council_district:7,ca,Santa Rosa CA city council district 7
+a4dcd4bd-bda5-521f-b632-edeeeb41cc6f,ocd-division/country:us/state:ca/place:stockton/council_district:1,ca,Stockton CA City Council district 1
+d776f207-4b21-52c0-ba81-4ac3678881f8,ocd-division/country:us/state:ca/place:stockton/council_district:2,ca,Stockton CA City Council district 2
+f61bc512-3fcb-5027-bee6-35fe1c72107a,ocd-division/country:us/state:ca/place:stockton/council_district:3,ca,Stockton CA City Council district 3
+eb8bdadd-4981-567b-bf3d-07dc6b5144d8,ocd-division/country:us/state:ca/place:stockton/council_district:4,ca,Stockton CA City Council district 4
+26eebdd3-90a4-542f-b681-5f982da23a5a,ocd-division/country:us/state:ca/place:stockton/council_district:5,ca,Stockton CA City Council district 5
+745a2fb8-728f-534f-8890-d65b8b30d7f9,ocd-division/country:us/state:ca/place:stockton/council_district:6,ca,Stockton CA City Council district 6
+d148b945-e1e8-5353-9da9-ce222db1e22a,ocd-division/country:us/state:ca/place:sunnyvale/council_district:1,ca,Sunnyvale City Council Member District 1
+a63eb265-1012-5de5-9696-d2bbb844d176,ocd-division/country:us/state:ca/place:sunnyvale/council_district:2,ca,Sunnyvale City Council Member District 2
+dbf0f489-fd85-5351-9d52-ba17bacd9aa0,ocd-division/country:us/state:ca/place:sunnyvale/council_district:3,ca,Sunnyvale City Council Member District 3
+8841f9ac-2d6e-5fd2-b3e0-c89c20e4e807,ocd-division/country:us/state:ca/place:sunnyvale/council_district:4,ca,Sunnyvale City Council Member District 4
+7decbf0c-25e8-5213-af0b-daaec49487ca,ocd-division/country:us/state:ca/place:sunnyvale/council_district:5,ca,Sunnyvale City Council Member District 5
+fc267a67-4ded-5f04-be0f-a4ea8ebe58fb,ocd-division/country:us/state:ca/place:sunnyvale/council_district:6,ca,Sunnyvale City Council Member District 6
+f53b6cd2-ce4f-5063-a9e8-3669e6c3cd48,ocd-division/country:us/state:ca/place:visalia/council_district:1,ca,Visalia CA city council district 1
+d97ae04a-1563-5c21-b5c5-f0bb217d95ec,ocd-division/country:us/state:ca/place:visalia/council_district:2,ca,Visalia CA city council district 2
+fdad490b-4125-5667-bbc6-dd4a068c6b33,ocd-division/country:us/state:ca/place:visalia/council_district:3,ca,Visalia CA city council district 3
+3a0a5c5f-d7dc-51c4-9337-6e644095077b,ocd-division/country:us/state:ca/place:visalia/council_district:4,ca,Visalia CA city council district 4
+4f8f69b4-23b2-5741-bec5-64ae369fca3c,ocd-division/country:us/state:ca/place:visalia/council_district:5,ca,Visalia CA city council district 5
+903d616f-f828-528c-a7aa-53324129da41,ocd-division/country:us/state:ca/transit:caltrans,ca,California Department of Transportation
+134dfd35-31b0-5e1f-8029-745d36d974e9,ocd-division/country:us/state:ca/transit:caltrans/district:1,ca,California Department of Transportation District 1
+f2f87faf-076b-5b92-a42d-a765a41f004f,ocd-division/country:us/state:ca/transit:caltrans/district:10,ca,California Department of Transportation District 10
+80d73873-e04f-5410-a092-792e5ba7584b,ocd-division/country:us/state:ca/transit:caltrans/district:11,ca,California Department of Transportation District 11
+e7db7d62-9ac0-59a9-9327-f3706e372468,ocd-division/country:us/state:ca/transit:caltrans/district:12,ca,California Department of Transportation District 12
+cec3c275-983c-5dc5-a849-eb19bed9b015,ocd-division/country:us/state:ca/transit:caltrans/district:2,ca,California Department of Transportation District 2
+645fbd9e-a6d1-5a39-8275-9b2948ca51ff,ocd-division/country:us/state:ca/transit:caltrans/district:3,ca,California Department of Transportation District 3
+5ec0dc4e-21f3-5786-a487-858d26c381e6,ocd-division/country:us/state:ca/transit:caltrans/district:4,ca,California Department of Transportation District 4
+1fd94ec6-a4b7-5a6c-a550-a1af915c847b,ocd-division/country:us/state:ca/transit:caltrans/district:5,ca,California Department of Transportation District 5
+ecfd45e1-1f7d-55f5-a522-c82eb4e3307a,ocd-division/country:us/state:ca/transit:caltrans/district:6,ca,California Department of Transportation District 6
+2211b6f0-ee75-54d4-8be5-7aaf9cd7ef60,ocd-division/country:us/state:ca/transit:caltrans/district:7,ca,California Department of Transportation District 7
+3b7508a0-cd5d-54e5-882a-e94c3a99edf9,ocd-division/country:us/state:ca/transit:caltrans/district:8,ca,California Department of Transportation District 8
+cb47d469-c340-57f2-9292-99d60a91aca7,ocd-division/country:us/state:ca/transit:caltrans/district:9,ca,California Department of Transportation District 9

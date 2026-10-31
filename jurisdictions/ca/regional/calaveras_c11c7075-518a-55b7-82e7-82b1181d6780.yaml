@@ -1,0 +1,24 @@
+id: c11c7075-518a-55b7-82e7-82b1181d6780
+ocdid: ocd-jurisdiction/country:us/state:ca/county:calaveras/government
+name: Calaveras County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:calaveras/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:31:42.760803Z'
+last_updated: '2026-10-31T18:31:42.968532Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:calaveras/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

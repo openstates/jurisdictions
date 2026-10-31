@@ -1,0 +1,24 @@
+id: 4ae482a9-2cdf-5576-a2be-3b09fe598cab
+ocdid: ocd-jurisdiction/country:us/state:ca/county:mono/government
+name: Mono County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:mono/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:35:19.902949Z'
+last_updated: '2026-10-31T18:35:21.090957Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:mono/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

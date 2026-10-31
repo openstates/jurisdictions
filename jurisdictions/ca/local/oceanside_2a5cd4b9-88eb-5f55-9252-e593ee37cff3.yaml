@@ -1,0 +1,24 @@
+id: 2a5cd4b9-88eb-5f55-9252-e593ee37cff3
+ocdid: ocd-jurisdiction/country:us/state:ca/place:oceanside/government
+name: Oceanside Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:oceanside/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T19:01:53.448395Z'
+last_updated: '2026-10-31T19:01:56.119044Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:oceanside/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

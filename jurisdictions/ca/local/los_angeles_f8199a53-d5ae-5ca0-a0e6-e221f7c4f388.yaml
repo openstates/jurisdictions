@@ -1,0 +1,24 @@
+id: f8199a53-d5ae-5ca0-a0e6-e221f7c4f388
+ocdid: ocd-jurisdiction/country:us/state:ca/place:los_angeles/government
+name: Los Angeles Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:los_angeles/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:57:35.877900Z'
+last_updated: '2026-10-31T18:57:38.424919Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:los_angeles/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

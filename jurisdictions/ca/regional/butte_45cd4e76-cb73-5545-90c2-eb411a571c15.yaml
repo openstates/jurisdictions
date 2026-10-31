@@ -1,0 +1,24 @@
+id: 45cd4e76-cb73-5545-90c2-eb411a571c15
+ocdid: ocd-jurisdiction/country:us/state:ca/county:butte/government
+name: Butte County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:butte/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T19:16:14.474615Z'
+last_updated: '2026-10-31T19:16:17.887820Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:butte/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

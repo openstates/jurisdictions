@@ -1,0 +1,24 @@
+id: 1d9671fd-bca0-5f05-968d-f9f4bc8017c3
+ocdid: ocd-jurisdiction/country:us/state:ca/county:fresno/government
+name: Fresno County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:fresno/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:31:52.301331Z'
+last_updated: '2026-10-31T18:31:52.602135Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:fresno/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

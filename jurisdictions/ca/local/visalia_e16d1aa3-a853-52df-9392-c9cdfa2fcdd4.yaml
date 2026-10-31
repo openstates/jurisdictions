@@ -1,0 +1,24 @@
+id: e16d1aa3-a853-52df-9392-c9cdfa2fcdd4
+ocdid: ocd-jurisdiction/country:us/state:ca/place:visalia/government
+name: Visalia Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:visalia/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T19:22:35.321363Z'
+last_updated: '2026-10-31T19:22:39.035144Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:visalia/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

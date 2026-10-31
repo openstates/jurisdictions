@@ -1,0 +1,24 @@
+id: b481beeb-3e46-5931-8305-1a8430528b05
+ocdid: ocd-jurisdiction/country:us/state:ca/place:moreno_valley/government
+name: Moreno Valley Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:moreno_valley/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T19:00:19.400322Z'
+last_updated: '2026-10-31T19:00:22.128389Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:moreno_valley/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

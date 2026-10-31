@@ -1,0 +1,24 @@
+id: 5a08a89a-a489-5b83-b8bd-ef5880e2adcc
+ocdid: ocd-jurisdiction/country:us/state:ca/county:kings/government
+name: Kings County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:kings/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:32:15.521743Z'
+last_updated: '2026-10-31T18:32:15.948663Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:kings/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

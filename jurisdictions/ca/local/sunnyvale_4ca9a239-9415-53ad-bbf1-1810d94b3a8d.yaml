@@ -1,0 +1,24 @@
+id: 4ca9a239-9415-53ad-bbf1-1810d94b3a8d
+ocdid: ocd-jurisdiction/country:us/state:ca/place:sunnyvale/government
+name: Sunnyvale Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:sunnyvale/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T19:21:30.967936Z'
+last_updated: '2026-10-31T19:21:34.688887Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:sunnyvale/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

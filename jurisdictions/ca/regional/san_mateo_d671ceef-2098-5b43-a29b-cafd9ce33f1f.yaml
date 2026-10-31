@@ -1,0 +1,24 @@
+id: d671ceef-2098-5b43-a29b-cafd9ce33f1f
+ocdid: ocd-jurisdiction/country:us/state:ca/county:san_mateo/government
+name: San Mateo County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:san_mateo/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:40:37.093903Z'
+last_updated: '2026-10-31T18:40:38.793567Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:san_mateo/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

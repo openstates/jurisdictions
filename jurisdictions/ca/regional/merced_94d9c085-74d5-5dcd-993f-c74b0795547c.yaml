@@ -1,0 +1,24 @@
+id: 94d9c085-74d5-5dcd-993f-c74b0795547c
+ocdid: ocd-jurisdiction/country:us/state:ca/county:merced/government
+name: Merced County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:merced/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:34:48.095449Z'
+last_updated: '2026-10-31T18:34:49.271226Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:merced/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

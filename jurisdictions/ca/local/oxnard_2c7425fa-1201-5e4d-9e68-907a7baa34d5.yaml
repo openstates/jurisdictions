@@ -1,0 +1,24 @@
+id: 2c7425fa-1201-5e4d-9e68-907a7baa34d5
+ocdid: ocd-jurisdiction/country:us/state:ca/place:oxnard/government
+name: Oxnard Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:oxnard/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T19:03:12.064393Z'
+last_updated: '2026-10-31T19:03:14.760656Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:oxnard/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

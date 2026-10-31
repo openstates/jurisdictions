@@ -1,0 +1,24 @@
+id: c114aa60-b8f7-5ba9-84b5-38513c6efd96
+ocdid: ocd-jurisdiction/country:us/state:ca/county:del_norte/government
+name: Del Norte County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:del_norte/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:31:47.354545Z'
+last_updated: '2026-10-31T18:31:47.679881Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:del_norte/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

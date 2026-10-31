@@ -1,0 +1,24 @@
+id: eb85b1c8-6288-586a-b1e2-3a217ea9ee63
+ocdid: ocd-jurisdiction/country:us/state:ca/county:amador/government
+name: Amador County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:amador/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T19:15:24.385160Z'
+last_updated: '2026-10-31T19:15:27.762357Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:amador/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

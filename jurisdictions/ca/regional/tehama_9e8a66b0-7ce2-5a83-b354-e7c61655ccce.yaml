@@ -1,0 +1,24 @@
+id: 9e8a66b0-7ce2-5a83-b354-e7c61655ccce
+ocdid: ocd-jurisdiction/country:us/state:ca/county:tehama/government
+name: Tehama County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:tehama/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:45:13.431329Z'
+last_updated: '2026-10-31T18:45:15.384507Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:tehama/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

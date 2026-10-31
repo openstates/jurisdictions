@@ -1,0 +1,24 @@
+id: c5bc3c0c-8646-54d2-9ed1-f4b2260150f2
+ocdid: ocd-jurisdiction/country:us/state:ca/county:lake/government
+name: Lake County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:lake/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:32:20.501616Z'
+last_updated: '2026-10-31T18:32:20.944195Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:lake/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

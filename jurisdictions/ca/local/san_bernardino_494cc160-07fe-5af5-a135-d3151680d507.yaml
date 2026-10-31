@@ -1,0 +1,24 @@
+id: 494cc160-07fe-5af5-a135-d3151680d507
+ocdid: ocd-jurisdiction/country:us/state:ca/place:san_bernardino/government
+name: San Bernardino Ward 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:san_bernardino/ward:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T19:10:27.242793Z'
+last_updated: '2026-10-31T19:10:30.183445Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:san_bernardino/ward:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

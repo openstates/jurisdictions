@@ -1,0 +1,24 @@
+id: b1690750-7fc2-5fc4-bf67-00f4eb3e5a9b
+ocdid: ocd-jurisdiction/country:us/state:ca/county:san_diego/government
+name: San Diego County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:san_diego/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:38:41.956423Z'
+last_updated: '2026-10-31T18:38:43.465013Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:san_diego/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

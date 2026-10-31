@@ -1,0 +1,24 @@
+id: b901a28c-b179-55e3-ae4d-05043dd047cf
+ocdid: ocd-jurisdiction/country:us/state:ca/county:sutter/government
+name: Sutter County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:sutter/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:44:46.359643Z'
+last_updated: '2026-10-31T18:44:48.226030Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:sutter/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

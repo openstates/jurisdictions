@@ -1,0 +1,24 @@
+id: 434a1275-5bc6-552d-985d-cd189185d262
+ocdid: ocd-jurisdiction/country:us/state:ca/place:san_jose/government
+name: San Jose Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:san_jose/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T19:12:44.587918Z'
+last_updated: '2026-10-31T19:12:47.607850Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:san_jose/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

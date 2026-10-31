@@ -1,0 +1,24 @@
+id: 95667510-3b47-5dfe-9884-4bd863ab38fb
+ocdid: ocd-jurisdiction/country:us/state:ca/county:madera/government
+name: Madera County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:madera/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:33:46.557667Z'
+last_updated: '2026-10-31T18:33:47.645227Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:madera/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

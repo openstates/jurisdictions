@@ -1,0 +1,24 @@
+id: 336a90ea-066f-5c36-baf4-78008c482b88
+ocdid: ocd-jurisdiction/country:us/state:ca/county:alpine/government
+name: Alpine County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:alpine/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T19:14:35.219892Z'
+last_updated: '2026-10-31T19:14:38.604295Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:alpine/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

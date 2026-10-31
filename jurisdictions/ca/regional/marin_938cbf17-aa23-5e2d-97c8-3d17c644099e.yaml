@@ -1,0 +1,24 @@
+id: 938cbf17-aa23-5e2d-97c8-3d17c644099e
+ocdid: ocd-jurisdiction/country:us/state:ca/county:marin/government
+name: Marin County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:marin/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:34:02.115261Z'
+last_updated: '2026-10-31T18:34:03.248801Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:marin/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

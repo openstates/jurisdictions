@@ -1,0 +1,24 @@
+id: 786d9135-68aa-5d47-886a-bf8c5658c3af
+ocdid: ocd-jurisdiction/country:us/state:ca/county:nevada/government
+name: Nevada County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:nevada/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:36:10.120602Z'
+last_updated: '2026-10-31T18:36:11.390034Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:nevada/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

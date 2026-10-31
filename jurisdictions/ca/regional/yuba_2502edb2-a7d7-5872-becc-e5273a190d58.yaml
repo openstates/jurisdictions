@@ -1,0 +1,24 @@
+id: 2502edb2-a7d7-5872-becc-e5273a190d58
+ocdid: ocd-jurisdiction/country:us/state:ca/county:yuba/government
+name: Yuba County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:yuba/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:48:02.006766Z'
+last_updated: '2026-10-31T18:48:04.170428Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:yuba/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

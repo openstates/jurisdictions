@@ -1,0 +1,24 @@
+id: 93a031f3-0979-5f32-9d34-cc0a54b9ab34
+ocdid: ocd-jurisdiction/country:us/state:ca/place:modesto/government
+name: Modesto Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:modesto/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:59:32.328262Z'
+last_updated: '2026-10-31T18:59:35.074648Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:modesto/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

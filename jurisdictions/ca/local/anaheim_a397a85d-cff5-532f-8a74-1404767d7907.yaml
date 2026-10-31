@@ -1,0 +1,24 @@
+id: a397a85d-cff5-532f-8a74-1404767d7907
+ocdid: ocd-jurisdiction/country:us/state:ca/place:anaheim/government
+name: Anaheim Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:anaheim/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T18:48:31.952507Z'
+last_updated: '2026-10-31T18:48:34.029269Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:anaheim/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

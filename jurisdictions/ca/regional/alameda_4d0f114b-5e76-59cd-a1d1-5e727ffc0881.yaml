@@ -1,0 +1,24 @@
+id: 4d0f114b-5e76-59cd-a1d1-5e727ffc0881
+ocdid: ocd-jurisdiction/country:us/state:ca/county:alameda/government
+name: Alameda County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:alameda/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T19:13:44.801539Z'
+last_updated: '2026-10-31T19:13:48.259179Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/county:alameda/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

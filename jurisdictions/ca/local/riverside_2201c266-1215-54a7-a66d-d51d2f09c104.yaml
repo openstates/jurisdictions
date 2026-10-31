@@ -1,0 +1,24 @@
+id: 2201c266-1215-54a7-a66d-d51d2f09c104
+ocdid: ocd-jurisdiction/country:us/state:ca/place:riverside/government
+name: Riverside Ward 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:riverside/ward:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T19:06:46.934179Z'
+last_updated: '2026-10-31T19:06:49.809445Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:riverside/ward:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

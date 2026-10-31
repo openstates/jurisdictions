@@ -1,0 +1,24 @@
+id: db87d71f-bf3e-5d93-8f9c-31da1cffe173
+ocdid: ocd-jurisdiction/country:us/state:ca/place:sacramento/government
+name: Sacramento Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:sacramento/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T19:08:27.597361Z'
+last_updated: '2026-10-31T19:08:30.549071Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:ca/place:sacramento/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null
