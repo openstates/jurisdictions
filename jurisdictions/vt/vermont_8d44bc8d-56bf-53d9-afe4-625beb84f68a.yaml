@@ -1,0 +1,21 @@
+id: 8d44bc8d-56bf-53d9-afe4-625beb84f68a
+ocdid: ocd-jurisdiction/country:us/state:vt/government
+name: Vermont Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:vt
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-10-31T18:40:38.290654Z'
+last_updated: '2026-10-31T18:40:38.290654Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []
