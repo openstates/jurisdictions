@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel, Field, ConfigDict, model_validator
+from pydantic import BaseModel, Field, ConfigDict, model_validator, HttpUrl
 from typing import Dict, List, Optional
 from datetime import datetime, timezone
 from .source import SourceObj
@@ -181,7 +181,12 @@ class Jurisdiction(BaseModel):
     )
     organizations: Optional[List[Organization]] = Field(
         default=None,
-        description="The organizing bodies that govern a jurisdiction. Examples: City Council Committee, Parks and Recreation, Library Board, etc.",    )
+        description="The organizing bodies that govern a jurisdiction. Examples: City Council Committee, Parks and Recreation, Library Board, etc.",
+    )
+    governing_charter: Optional[HttpUrl] = Field(
+        default=None,
+        description="The legal written policy document that clearly defines the respective roles, responsibilities and authorities of the jurisdiction. Example: City Charter, State Constitution, etc.",
+    )
 
     @model_validator(mode="after")
     def validate_jurisdiction_id(self) -> "Jurisdiction":
