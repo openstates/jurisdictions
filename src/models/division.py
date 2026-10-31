@@ -1,18 +1,19 @@
+import logging
+from datetime import UTC, datetime
+from pathlib import Path
+from uuid import NAMESPACE_URL, UUID, uuid5
+
+import yaml
 from pydantic import (
     BaseModel,
-    Field,
     ConfigDict,
+    Field,
     HttpUrl,
     model_validator,
 )
-from typing import List, Optional
-from datetime import datetime, timezone
-from src.models.source import SourceObj
-import yaml
-from uuid import NAMESPACE_URL, UUID, uuid5
-from pathlib import Path
-import logging
+
 from src.models.ocdid import OCDIdStr
+from src.models.source import SourceObj
 
 logger = logging.getLogger(__name__)
 
@@ -21,22 +22,22 @@ PROJECT_PATH = "divisions/"
 
 class Centroid(BaseModel):
     geo_type: str = Field(default="Point")
-    coordinates: List[float] = Field(
+    coordinates: list[float] = Field(
         ...,
         description="A two-item array defining the centroid (center) of the geometry. Example: [-176.59989528409687, 51.88215100813731]",
     )
 
 
 class Extent(BaseModel):
-    extent: List[float] = Field(
+    extent: list[float] = Field(
         ...,
         description="Object describing the extents. [left-most, lower-most, right-most, upper-most]",
     )
 
 
 class Boundary(BaseModel):
-    centroid: Optional[Centroid] = None
-    extent: Optional[Extent] = None
+    centroid: Centroid | None = None
+    extent: Extent | None = None
 
 
 class Population(BaseModel):
@@ -45,7 +46,7 @@ class Population(BaseModel):
 
 class DivisionMetadata(BaseModel):
     model_config = ConfigDict(extra="allow")
-    population: Optional[Population] = None
+    population: Population | None = None
 
 
 class Identifier(BaseModel):
@@ -133,7 +134,7 @@ def sort_geometries(geometries: list[Geometry] | None) -> list[Geometry]:
         geometries,
         key=lambda geometry: (
             geometry.valid_from is not None,
-            geometry.valid_from or datetime.min.replace(tzinfo=timezone.utc),
+            geometry.valid_from or datetime.min.replace(tzinfo=UTC),
         ),
     )
 
@@ -153,43 +154,43 @@ class Division(BaseModel):
         ...,
         description="Human-readable name for division. Should be sourced from the Open Civic Data repo.",
     )
-    other_names: List[str] = Field(
+    other_names: list[str] = Field(
         default_factory=list,
         description="A list of alternate display names that refer to the same geo political division.",
     )
-    geometries: Optional[List[Geometry]] = Field(
+    geometries: list[Geometry] | None = Field(
         default_factory=list,
         description="A list of associated geometries, as defined by the Geometry model. Empty array if not set.",
     )
-    children: List[str] = Field(
+    children: list[str] = Field(
         default_factory=list,
         description="A list of child division ids — the OCDids of the Divisions contained by this one. Projects to the PARENT_OF graph edge.",
     )
-    valid_thru: Optional[datetime] = Field(
+    valid_thru: datetime | None = Field(
         default=None,
         description="If a division is set to be retired, use this date to indicate when the division is no longer valid.",
     )
-    valid_asof: Optional[datetime] = Field(
+    valid_asof: datetime | None = Field(
         default=None,
         description="If a new division is created use this date to indicate when the division will become active.",
     )
-    accurate_asof: Optional[datetime] = Field(
+    accurate_asof: datetime | None = Field(
         default=None,
         description="The datetime ('2025-05-01:00:00:00' ISO 8601 standard format when the data for the record is known to be accurate by the researcher. This may or may not be the same data as the 'last_updated' date below.",
     )
     last_updated: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
+        default_factory=lambda: datetime.now(UTC),
         description="The datetime that the data in the record was last updated by the researcher (or it's agent).",
     )
-    sourcing: List[SourceObj] = Field(
+    sourcing: list[SourceObj] = Field(
         default_factory=list,
         description="Describe how the data was sourced. Used to identify AI generated data.",
     )
-    metadata: Optional[DivisionMetadata] = Field(
+    metadata: DivisionMetadata | None = Field(
         None,
         description="Any other useful information that a researcher feels should be included.",
     )
-    government_identifiers: Optional[Identifiers] = Field(
+    government_identifiers: Identifiers | None = Field(
         None,
         description="Provider-neutral list of external identifiers (Census FIPS/GEOIDs, LEA IDs, DCGIS ANC IDs, etc.). Each entry carries its own SourceObj.",
     )
@@ -198,7 +199,7 @@ class Division(BaseModel):
     @model_validator(mode="after")
     def ensure_uuid5_id(self):
         if self.id is None:
-            asof_date = self.last_updated.astimezone(timezone.utc).date().isoformat()
+            asof_date = self.last_updated.astimezone(UTC).date().isoformat()
             self.id = uuid5(NAMESPACE_URL, f"{self.ocdid}|{asof_date}")
         return self
 
@@ -208,10 +209,9 @@ class Division(BaseModel):
             data = yaml.safe_load(Path(filepath).read_text())
             return cls(**data)
         except Exception as error:
-            logger.error(
+            logger.exception(
                 "Failed to load division object",
                 extra={"filepath": str(filepath)},
-                exc_info=True,
             )
             raise ValueError("Failed to load division. Check filepath") from error
 

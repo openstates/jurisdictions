@@ -9,8 +9,9 @@ from __future__ import annotations
 
 import json
 import logging
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
 import yaml
 
@@ -110,7 +111,7 @@ class YamlManager:
             ValueError: If data is not a dict.
         """
         if not isinstance(data, dict):
-            raise ValueError("Data must be a dictionary")
+            raise ValueError("Data must be a dictionary")  # noqa: TRY004
 
         path = self._resolve_path(filepath)
 
@@ -151,7 +152,7 @@ class YamlManager:
             return {}
 
         if not isinstance(data, dict):
-            raise ValueError(
+            raise ValueError(  # noqa: TRY004
                 f"Expected YAML mapping at top level, got {type(data).__name__}"
             )
 

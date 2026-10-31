@@ -11,7 +11,6 @@ from src.utils.admin_levels import (
     resolve_output_dir,
 )
 
-
 # --- The level vocabulary ---
 
 
@@ -132,8 +131,8 @@ def test_classify_level(ocdid, expected):
             AdministrativeLevel.LOCALITY,
         ),
         (
-            "ocd-division/country:us/state:tx/county:harris/cdp:bunker_hill"
-            "/special_district:utility",
+            ("ocd-division/country:us/state:tx/county:harris/cdp:bunker_hill"
+            "/special_district:utility"),
             AdministrativeLevel.LOCALITY,
         ),
     ],

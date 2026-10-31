@@ -1,9 +1,9 @@
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal
 
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field, model_validator
 
-from src.utils.ocdid import ocdid_parser
 from src.errors import OCDIdParsingError
+from src.utils.ocdid import ocdid_parser
 
 
 def validate_ocdid(value: str) -> str:
@@ -48,15 +48,15 @@ class OCDIdParsed(BaseModel):
 
     model_config = ConfigDict(extra="allow")
 
-    type: Optional[OCDIdType] = Field(
+    type: OCDIdType | None = Field(
         default=None,
         description="The Open Civic Data identifier namespace: 'ocd-division' or 'ocd-jurisdiction'.",
     )
     country: str = "us"
-    state: Optional[str] = None
-    county: Optional[str] = None
-    place: Optional[str] = None
-    subdivision: Optional[str] = None
+    state: str | None = None
+    county: str | None = None
+    place: str | None = None
+    subdivision: str | None = None
     base_ocdid: OCDIdStr = Field(
         description="The base OCD ID without the jurisdiction type prefix, e.g., 'ocd-jurisdiction/country:us/state:wa/place:seattle/government' -> 'ocd-division/country:us/state:wa/place:seattle'"
     )
@@ -93,7 +93,7 @@ class OCDIdParsed(BaseModel):
     def parse_ocdid(cls, raw_ocdid: str) -> "OCDIdParsed":
         try:
             valid_ocdid = validate_ocdid(raw_ocdid)
-            if valid_ocdid.startswith(("ocd-jurisdiction/")):
+            if valid_ocdid.startswith("ocd-jurisdiction/"):
                 # Ensure the raw OCD ID is valid
 
                 # Drop the jurisdiction classification segment
@@ -126,7 +126,7 @@ class OCDIdParsed(BaseModel):
     @classmethod
     def get_jurisdiction_classification(
         cls, ocdid: "OCDIdParsed | OCDIdStr"
-    ) -> Optional[str]:
+    ) -> str | None:
         """
         Extract the jurisdiction classification from an OCD ID. This
         handler accepts both parsed OCDIdParsed objects and valid OCD ID

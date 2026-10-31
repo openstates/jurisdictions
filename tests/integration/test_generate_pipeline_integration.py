@@ -18,21 +18,21 @@ Sample Records:
   5. Austin Council District 8 (TX) — should match & generate
 """
 
-import pytest
-import yaml
-from datetime import datetime, timezone
+import csv
+from datetime import UTC, datetime
 from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
-import csv
 
+import pytest
+import yaml
+
+from src.init_migration.generate_pipeline import GeneratePipeline
 from src.init_migration.pipeline_models import (
     GeneratorReq,
     OCDidIngestResp,
     Status,
 )
-from src.init_migration.generate_pipeline import GeneratePipeline
 from src.models.ocdid import OCDIdParsed
-
 
 # Sample 5 records for integration test
 SAMPLE_OCDIDS = [
@@ -323,7 +323,7 @@ def test_find_matches_returns_exactly_one_place(
     validation_csv_files, ocdid, expected_namelsad
 ):
     """Each place OCDid resolves to exactly one validation record."""
-    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=UTC)
     req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
     pipeline = GeneratePipeline(req)
 
@@ -342,7 +342,7 @@ def test_find_matches_excludes_non_place_rows(validation_csv_files):
 
     County subdivisions, states, and counties all leave PLACEFP blank.
     """
-    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=UTC)
     ocdid = "ocd-division/country:us/state:wa/place:seattle"
     req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
     pipeline = GeneratePipeline(req)
@@ -362,7 +362,7 @@ def test_find_matches_returns_exactly_one_state(validation_csv_files):
     while the OCDid carries the USPS code ("wa"), so the code is expanded via
     the state lookup before matching.
     """
-    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=UTC)
     ocdid = "ocd-division/country:us/state:wa"
     req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
     pipeline = GeneratePipeline(req)
@@ -381,7 +381,7 @@ def test_find_matches_returns_exactly_one_state(validation_csv_files):
 @pytest.mark.integration
 def test_find_matches_returns_exactly_one_county(validation_csv_files):
     """A `county:` OCDid resolves to exactly one row on the county layer."""
-    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=UTC)
     ocdid = "ocd-division/country:us/state:wa/county:king"
     req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
     pipeline = GeneratePipeline(req)
@@ -427,7 +427,7 @@ def test_find_matches_isolates_layers(
     names ("King city" / "King County", "Washington city" / "Washington"), so a
     name-only match would cross layers.
     """
-    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=UTC)
     req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
     pipeline = GeneratePipeline(req)
 
@@ -448,7 +448,7 @@ def test_find_matches_isolates_layers(
 @pytest.mark.integration
 def test_load_validation_csv_unifies_all_three_tabs(validation_csv_files):
     """validation_df carries place, state, and county rows from all three tabs."""
-    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=UTC)
     ocdid = "ocd-division/country:us/state:wa/place:seattle"
     req = _create_generator_req(ocdid, validation_csv_files, asof_dt)
     pipeline = GeneratePipeline(req)
@@ -485,7 +485,7 @@ async def test_generate_pipeline_5_sample_records(tmp_path, validation_csv_files
       4. Seattle CD1 → SUCCESS (match found)
       5. Austin CD8 → SUCCESS (match found)
     """
-    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=UTC)
     division_output = tmp_path / "divisions"
     jurisdiction_output = tmp_path / "jurisdictions"
     division_output.mkdir()
@@ -560,7 +560,7 @@ async def test_generate_pipeline_successful_record_output(
     tmp_path, validation_csv_files
 ):
     """Verify successful record (Sausalito) produces valid Division and Jurisdiction."""
-    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=UTC)
     division_output = tmp_path / "divisions"
     jurisdiction_output = tmp_path / "jurisdictions"
     division_output.mkdir()
@@ -584,7 +584,7 @@ async def test_generate_pipeline_successful_record_output(
     # Verify Division file exists and is valid YAML
     div_path = Path(response.division_path)
     assert div_path.exists(), f"Division file not found: {div_path}"
-    with open(div_path) as f:
+    with open(div_path) as f:  # noqa: ASYNC230
         div_data = yaml.safe_load(f)
     assert div_data is not None
     assert div_data["ocdid"] == ocdid
@@ -595,7 +595,7 @@ async def test_generate_pipeline_successful_record_output(
     # Verify Jurisdiction file exists and is valid YAML
     jur_path = Path(response.jurisdiction_path)
     assert jur_path.exists(), f"Jurisdiction file not found: {jur_path}"
-    with open(jur_path) as f:
+    with open(jur_path) as f:  # noqa: ASYNC230
         jur_data = yaml.safe_load(f)
     assert jur_data is not None
     expected_jur_ocdid = (
@@ -620,7 +620,7 @@ async def test_generate_pipeline_successful_record_output(
 @pytest.mark.asyncio
 async def test_generate_pipeline_quarantine_tracking(tmp_path, validation_csv_files):
     """Verify quarantine records are properly tracked for no-match cases."""
-    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=UTC)
     division_output = tmp_path / "divisions"
     jurisdiction_output = tmp_path / "jurisdictions"
     division_output.mkdir()
@@ -650,7 +650,7 @@ async def test_generate_pipeline_quarantine_tracking(tmp_path, validation_csv_fi
         if response.division_path:
             div_path = Path(response.division_path)
             assert div_path.exists(), f"Stub division not found for {ocdid}"
-            with open(div_path) as f:
+            with open(div_path) as f:  # noqa: ASYNC230
                 div_data = yaml.safe_load(f)
             assert div_data["ocdid"] == ocdid
 
@@ -669,7 +669,7 @@ async def test_generate_pipeline_council_district_logic(tmp_path, validation_csv
       - Generate jurisdiction at the place level (not council district level)
       - Set classification to 'government'
     """
-    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=UTC)
     division_output = tmp_path / "divisions"
     jurisdiction_output = tmp_path / "jurisdictions"
     division_output.mkdir()
@@ -690,7 +690,7 @@ async def test_generate_pipeline_council_district_logic(tmp_path, validation_csv
 
     # Load jurisdiction and verify it's at place level
     jur_path = Path(response.jurisdiction_path)
-    with open(jur_path) as f:
+    with open(jur_path) as f:  # noqa: ASYNC230
         jur_data = yaml.safe_load(f)
 
     # Jurisdiction should NOT include council_district in ocdid
@@ -712,7 +712,7 @@ async def test_generate_pipeline_deduplication(tmp_path, validation_csv_files):
     When processing two council districts from the same place (Seattle),
     the second should skip jurisdiction creation (already exists).
     """
-    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+    asof_dt = datetime(2026, 4, 11, 12, 0, 0, tzinfo=UTC)
     division_output = tmp_path / "divisions"
     jurisdiction_output = tmp_path / "jurisdictions"
     division_output.mkdir()
