@@ -1,0 +1,32 @@
+id: 4ebb3375-d3ef-5634-bd51-a6ed1be9ad98
+ocdid: ocd-division/country:us/state:vt/place:rutland_city/ward:3
+country: us
+display_name: Rutland City Ward 3
+other_names: []
+geometries: []
+children: []
+valid_thru: null
+valid_asof: null
+accurate_asof: '2026-10-31T18:40:42.315453Z'
+last_updated: '2026-10-31T18:40:42.724540Z'
+sourcing:
+- field:
+  - ocdid
+  source_name: ocdid_ingest
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv
+  source_description: Open Civic Data Master repo
+government_identifiers:
+- authority: census
+  id_type: namelsad
+  value: Rutland City Ward 3
+  source:
+    field:
+    - ocdid
+    source_name: ocdid_ingest
+    source_type: human_researched
+    source_url:
+      ocd_repo: https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv
+    source_description: Open Civic Data Master repo
+jurisdiction_id: ocd-jurisdiction/country:us/state:vt/place:rutland_city/government
