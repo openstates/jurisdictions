@@ -9,7 +9,7 @@ filename. The id is always ``generate_id(ocdid)``.
 from __future__ import annotations
 
 import csv
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -28,8 +28,8 @@ from tests.integration.golden.harness import (
 
 SAUSALITO = "ocd-division/country:us/state:ca/place:sausalito"
 SAUSALITO_GOV = "ocd-jurisdiction/country:us/state:ca/place:sausalito/government"
-ASOF_A = datetime(2025, 10, 27, 1, 29, 51, tzinfo=timezone.utc)
-ASOF_B = datetime(2026, 4, 11, 12, 0, 0, tzinfo=timezone.utc)
+ASOF_A = datetime(2025, 10, 27, 1, 29, 51, tzinfo=UTC)
+ASOF_B = datetime(2026, 4, 11, 12, 0, 0, tzinfo=UTC)
 
 
 def _with_changed_row(tmp_path: Path, **changes: str) -> tuple[Path, Path, Path]:

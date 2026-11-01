@@ -19,7 +19,7 @@ class UnexpectedContentError(Error):
     For example, when HTML is returned instead of CSV or JSON.
     """
 
-    def __init__(self, message, url: str = None, content_type: str = None):
+    def __init__(self, message, url: str | None = None, content_type: str | None = None):
         super().__init__(message)
         self.message = message
         self.url = url
@@ -44,7 +44,7 @@ class CacheError(Error):
     Raised when there are issues reading from or writing to the ETag cache.
     """
 
-    def __init__(self, message, cache_path: str = None):
+    def __init__(self, message, cache_path: str | None = None):
         super().__init__(message)
         self.message = message
         self.cache_path = cache_path

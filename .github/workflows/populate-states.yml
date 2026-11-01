@@ -1,0 +1,100 @@
+name: Populate states
+
+on:
+  workflow_dispatch:
+    inputs:
+      states:
+        description: "Comma-separated state codes to populate (e.g. wa,tx)"
+        required: true
+        type: string
+      include_data:
+        description: "Also commit data/ (DuckDB + Parquet). Off by default: Parquet files are rewritten byte-differently on every run."
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  populate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Validate states
+        env:
+          STATES: ${{ inputs.states }}
+        run: |
+          if ! [[ "$STATES" =~ ^[a-z]{2}(,[a-z]{2})*$ ]]; then
+            echo "::error::states must be comma-separated two-letter lowercase codes, got: $STATES"
+            exit 1
+          fi
+
+      - uses: docker/setup-buildx-action@v4
+
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          load: true
+          tags: jurisdictions:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run pipeline
+        shell: bash
+        env:
+          STATES: ${{ inputs.states }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p logs
+          docker run --rm -e GITHUB_TOKEN \
+            -v "$PWD/divisions:/app/divisions" \
+            -v "$PWD/jurisdictions:/app/jurisdictions" \
+            -v "$PWD/data:/app/data" \
+            -v "$PWD/logs:/app/logs" \
+            jurisdictions:ci --state "$STATES" --force 2>&1 | tee run.log
+          sudo chown -R "$(id -u):$(id -g)" divisions jurisdictions data logs
+
+      - name: Build PR body and paths
+        id: pr
+        env:
+          STATES: ${{ inputs.states }}
+          INCLUDE_DATA: ${{ inputs.include_data }}
+        run: |
+          {
+            echo "Populated states: \`$STATES\`"
+            echo
+            echo "Generated with \`python -m src.init_migration.main --state $STATES --force\` in the Docker image."
+            echo
+            echo '```text'
+            sed -n '/Pipeline Summary/,/Total runtime/p' run.log
+            echo '```'
+          } > pr-body.md
+          {
+            echo 'paths<<EOF'
+            echo 'divisions/**'
+            echo 'jurisdictions/**'
+            if [ "$INCLUDE_DATA" = "true" ]; then
+              echo 'data/**'
+            fi
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: pipeline-logs
+          path: |
+            logs/
+            run.log
+
+      - uses: peter-evans/create-pull-request@v8
+        with:
+          branch: populate/${{ github.run_id }}
+          title: "Populate ${{ inputs.states }}"
+          commit-message: "Populate ${{ inputs.states }}"
+          body-path: pr-body.md
+          add-paths: ${{ steps.pr.outputs.paths }}

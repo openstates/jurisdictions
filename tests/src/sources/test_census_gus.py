@@ -4,7 +4,7 @@ import csv
 import io
 import json
 import zipfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import httpx
@@ -41,7 +41,7 @@ SPECIAL = FIXTURES / "gov_units_2026_special_district.csv"
 SCHOOL = FIXTURES / "gov_units_2026_school_district.csv"
 DEPENDENT = FIXTURES / "gov_units_2026_dependent_school_system.csv"
 PENSION = FIXTURES / "gov_units_2026_public_pension_system.csv"
-RETRIEVED_AT = datetime(2026, 9, 23, tzinfo=timezone.utc)
+RETRIEVED_AT = datetime(2026, 9, 23, tzinfo=UTC)
 
 
 def by_id(result):
@@ -179,10 +179,10 @@ class TestFixtures:
         assert source.release == "2026"
         assert str(source.source_url) == government_units_url(2026)
         assert source.publication_date == datetime(
-            2026, 9, 15, 14, 8, 55, tzinfo=timezone.utc
+            2026, 9, 15, 14, 8, 55, tzinfo=UTC
         )
         assert source.retrieval_date == datetime(
-            2026, 9, 23, 17, 17, 58, tzinfo=timezone.utc
+            2026, 9, 23, 17, 17, 58, tzinfo=UTC
         )
         assert source.dataset.startswith("Governments Master Address File")
 

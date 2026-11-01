@@ -2,6 +2,7 @@
 
 import io
 import zipfile
+from datetime import UTC, datetime
 
 import openpyxl
 import pytest
@@ -18,7 +19,6 @@ from src.sources.government_units import (
     workbook_bytes,
 )
 from src.sources.snapshot import Snapshot, SnapshotMetadata
-from datetime import datetime, timezone
 
 LAYOUT = Layout(
     sheets={
@@ -316,5 +316,5 @@ def _metadata(filename: str) -> SnapshotMetadata:
         url="https://example.com/" + filename,
         sha256="0" * 64,
         size_bytes=0,
-        retrieved_at=datetime(2026, 9, 19, tzinfo=timezone.utc),
+        retrieved_at=datetime(2026, 9, 19, tzinfo=UTC),
     )

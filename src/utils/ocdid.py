@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # Copyright 2023 Unified for Progress. All Rights Reserved.
 
 """
@@ -7,9 +6,11 @@ Generate OCDids
 ====================
 """
 
-from typing import Any
-import i18naddress
 import logging
+from typing import Any
+
+import i18naddress
+
 from src.errors import OCDIdParsingError
 
 logging.basicConfig(level=logging.INFO)

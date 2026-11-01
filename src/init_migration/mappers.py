@@ -2,10 +2,10 @@
 Dictionaries representing file mappings for initial data migration.
 """
 
-from pydantic import BaseModel
 import json
 from pathlib import Path
 
+from pydantic import BaseModel
 
 ROOT = Path(__file__).parent.parent.parent
 

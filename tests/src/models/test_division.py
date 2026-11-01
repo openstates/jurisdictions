@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import NAMESPACE_URL, uuid4, uuid5
 
 from hypothesis import given
@@ -57,7 +57,7 @@ def test_division_id_defaults_to_uuid5_of_ocdid(ocdid: str) -> None:
         country="us",
         display_name="Sample Division",
         jurisdiction_id="ocd-jurisdiction/country:us/state:wa/place:seattle/government",
-        last_updated=datetime(2026, 4, 8, 12, 0, tzinfo=timezone.utc),
+        last_updated=datetime(2026, 4, 8, 12, 0, tzinfo=UTC),
     )
 
     assert division.id == uuid5(NAMESPACE_URL, ocdid)
@@ -76,7 +76,7 @@ def test_division_mutable_facts_do_not_change_uuid() -> None:
         "country": "us",
         "display_name": "Sausalito",
         "jurisdiction_id": "ocd-jurisdiction/country:us/state:ca/place:sausalito/government",
-        "last_updated": datetime(2025, 10, 27, 1, 29, 51, tzinfo=timezone.utc),
+        "last_updated": datetime(2025, 10, 27, 1, 29, 51, tzinfo=UTC),
     }
     source = _geometry_source()
     later_release = SourceObj(
@@ -86,20 +86,20 @@ def test_division_mutable_facts_do_not_change_uuid() -> None:
         source_type=SourceType.HUMAN,
         source_description=None,
         release="2025",
-        retrieval_date=datetime(2026, 9, 1, tzinfo=timezone.utc),
+        retrieval_date=datetime(2026, 9, 1, tzinfo=UTC),
     )
     variants = [
         Division(**base),
         Division(
-            **{**base, "last_updated": datetime(2026, 9, 14, tzinfo=timezone.utc)}
+            **{**base, "last_updated": datetime(2026, 9, 14, tzinfo=UTC)}
         ),
-        Division(**base, accurate_asof=datetime(2026, 1, 1, tzinfo=timezone.utc)),
+        Division(**base, accurate_asof=datetime(2026, 1, 1, tzinfo=UTC)),
         Division(
             **base,
             geometries=[
                 Geometry(
                     boundary=Boundary(centroid=Centroid(coordinates=[-122.48, 37.86])),
-                    valid_from=datetime(2024, 1, 1, tzinfo=timezone.utc),
+                    valid_from=datetime(2024, 1, 1, tzinfo=UTC),
                     source=source,
                 )
             ],
@@ -209,8 +209,8 @@ def test_geometry_json_round_trip_is_lossless() -> None:
     """Geometry must serialize and deserialize without loss."""
     source = _geometry_source()
     geometry = Geometry(
-        valid_from=datetime(2020, 1, 1, tzinfo=timezone.utc),
-        valid_to=datetime(2023, 12, 31, tzinfo=timezone.utc),
+        valid_from=datetime(2020, 1, 1, tzinfo=UTC),
+        valid_to=datetime(2023, 12, 31, tzinfo=UTC),
         boundary=Boundary(
             centroid=Centroid(coordinates=[-122.4853, 37.8591]),
             extent=Extent(extent=[-122.51, 37.84, -122.46, 37.87]),
@@ -245,7 +245,7 @@ def test_geometry_validity_window_accepts_none() -> None:
     assert restored.valid_to is None
 
     open_ended_end = Geometry(
-        boundary=Boundary(), valid_from=datetime(2024, 1, 1, tzinfo=timezone.utc)
+        boundary=Boundary(), valid_from=datetime(2024, 1, 1, tzinfo=UTC)
     )
     assert open_ended_end.valid_to is None
 
@@ -253,14 +253,14 @@ def test_geometry_validity_window_accepts_none() -> None:
 def test_division_geometry_versions_sort_by_valid_from() -> None:
     """Multiple geometry versions coexist on one Division and order by valid_from."""
     current = Geometry(
-        boundary=Boundary(), valid_from=datetime(2024, 1, 1, tzinfo=timezone.utc)
+        boundary=Boundary(), valid_from=datetime(2024, 1, 1, tzinfo=UTC)
     )
     historic = Geometry(
         boundary=Boundary(),
-        valid_from=datetime(2010, 1, 1, tzinfo=timezone.utc),
-        valid_to=datetime(2023, 12, 31, tzinfo=timezone.utc),
+        valid_from=datetime(2010, 1, 1, tzinfo=UTC),
+        valid_to=datetime(2023, 12, 31, tzinfo=UTC),
     )
-    unbounded = Geometry(boundary=Boundary(), valid_to=datetime(2009, 12, 31, tzinfo=timezone.utc))
+    unbounded = Geometry(boundary=Boundary(), valid_to=datetime(2009, 12, 31, tzinfo=UTC))
 
     division = Division(
         ocdid="ocd-division/country:us/state:ca/place:sausalito",

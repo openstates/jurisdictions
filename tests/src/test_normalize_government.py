@@ -4,19 +4,19 @@ import pytest
 from pydantic import ValidationError
 
 from src.models.source import SourceObj, SourceType
-from src.sources import census_governments, census_gus
-from src.sources.snapshot import load_snapshot, source_obj_from_snapshot
 from src.normalize_government import (
     GovernmentType,
     normalize_name,
     normalize_record,
     normalize_records,
 )
+from src.sources import census_governments, census_gus
 from src.sources.government_units import (
     CensusGovernmentRecord,
     CensusRowError,
     GovernmentKind,
 )
+from src.sources.snapshot import load_snapshot, source_obj_from_snapshot
 
 
 def _source() -> SourceObj:

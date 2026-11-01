@@ -27,9 +27,9 @@ from enum import IntEnum
 from pathlib import Path
 
 __all__ = [
-    "AdministrativeLevel",
-    "US_SEGMENT_LEVELS",
     "UNIT_SEGMENTS",
+    "US_SEGMENT_LEVELS",
+    "AdministrativeLevel",
     "classify_level",
     "governing_level",
     "resolve_area_root",

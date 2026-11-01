@@ -1,6 +1,6 @@
 """Tests for the OCD master adapter: offline index, exact lookup, suggestions."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import httpx
@@ -24,7 +24,7 @@ from src.sources.ocd_master import (
 from src.sources.snapshot import SnapshotStore, load_snapshot
 
 FIXTURE = Path("tests/fixtures/ocd_master/country-us.csv")
-RETRIEVED_AT = datetime(2026, 9, 18, tzinfo=timezone.utc)
+RETRIEVED_AT = datetime(2026, 9, 18, tzinfo=UTC)
 
 SAUSALITO = "ocd-division/country:us/state:ca/place:sausalito"
 MARIN_CITY = "ocd-division/country:us/state:ca/county:marin/cdp:marin_city"
@@ -99,7 +99,7 @@ class TestFixtureIndex:
         assert source.release == "master"
         assert source.publication_date is None
         assert source.retrieval_date == datetime(
-            2026, 9, 15, 23, 23, 56, tzinfo=timezone.utc
+            2026, 9, 15, 23, 23, 56, tzinfo=UTC
         )
         assert str(source.source_url) == master_url()
 

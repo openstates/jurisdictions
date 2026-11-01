@@ -6,8 +6,8 @@ generate OCDIDs or canonical Division/Jurisdiction models.
 
 from __future__ import annotations
 
+from collections.abc import Iterable, Mapping
 from enum import Enum
-from typing import Iterable, Mapping
 
 from pydantic import BaseModel, ConfigDict
 
@@ -16,8 +16,10 @@ from src.normalize_government import GovernmentRecord, GovernmentType
 from src.sources.census_tiger import (
     TigerConfig,
     TigerRecord,
-    geometry_url as tiger_geometry_url,
     place_layer_key,
+)
+from src.sources.census_tiger import (
+    geometry_url as tiger_geometry_url,
 )
 
 

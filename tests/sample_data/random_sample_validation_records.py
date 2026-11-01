@@ -5,8 +5,8 @@ Utility script that was run manually to create stratified sample datasets from a
 """
 
 import pandas as pd
-from src.utils.csv_utils import fetch_csv_rows
 
+from src.utils.csv_utils import fetch_csv_rows
 
 DIVISIONS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121"
 

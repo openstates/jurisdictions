@@ -7,7 +7,7 @@ run, and that record must equal the checked-in golden file.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -24,7 +24,7 @@ from tests.integration.golden.harness import (
 )
 
 ANC_1A = "ocd-division/country:us/district:dc/anc:1a/council_district:1"
-ASOF = datetime(2025, 10, 27, 1, 29, 51, tzinfo=timezone.utc)
+ASOF = datetime(2025, 10, 27, 1, 29, 51, tzinfo=UTC)
 GOLDEN_RECORD = GOLDEN_ROOT / quarantine_relative_path(ANC_1A, "anc_1a_district_1")
 
 

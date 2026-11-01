@@ -28,17 +28,22 @@ from rich.console import Console
 from rich.table import Table
 from tqdm import tqdm
 
-from src.utils.state_lookup import load_state_code_lookup
 from src.init_migration.download_manager import DownloadManager
-from src.init_migration.ocdid_matcher import OCDidMatcher, MatchResults, DEFAULT_DB_PATH, DEFAULT_PARQUET_PATH
 from src.init_migration.generate_pipeline import GeneratePipeline
+from src.init_migration.ocdid_matcher import (
+    DEFAULT_DB_PATH,
+    DEFAULT_PARQUET_PATH,
+    MatchResults,
+    OCDidMatcher,
+)
 from src.init_migration.pipeline_models import (
     COUNTIES_SHEET_CSV_URL,
     DIVISIONS_SHEET_CSV_URL,
     STATES_SHEET_CSV_URL,
     GeneratorReq,
 )
-from src.utils.parquet import export_to_parquet 
+from src.utils.parquet import export_to_parquet
+from src.utils.state_lookup import load_state_code_lookup
 
 logger = logging.getLogger(__name__)
 

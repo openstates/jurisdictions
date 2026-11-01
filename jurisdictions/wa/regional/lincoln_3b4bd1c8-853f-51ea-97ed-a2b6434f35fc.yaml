@@ -1,0 +1,24 @@
+id: 3b4bd1c8-853f-51ea-97ed-a2b6434f35fc
+ocdid: ocd-jurisdiction/country:us/state:wa/county:lincoln/government
+name: Lincoln County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:lincoln/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T17:37:54.631535Z'
+last_updated: '2026-10-31T17:37:55.933988Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:lincoln/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

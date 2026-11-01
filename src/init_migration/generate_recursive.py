@@ -13,26 +13,26 @@ filling in their full data.  The only contract enforced here is:
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import yaml
 
+from src.init_migration.pipeline_models import REPO_URL
 from src.models.division import Division, Identifier
+from src.models.jurisdiction import ClassificationEnum, Jurisdiction
 from src.models.ocdid import OCDIdParsed
 from src.models.source import SourceObj, SourceType
-from src.utils.state_lookup import load_state_code_lookup
 from src.utils.admin_levels import (
-    US_SEGMENT_LEVELS,
     UNIT_SEGMENTS,
+    US_SEGMENT_LEVELS,
     AdministrativeLevel,
     classify_level,
     resolve_area_root,
     resolve_output_dir,
 )
+from src.utils.state_lookup import load_state_code_lookup
 from src.utils.yaml_manager import find_ocdid_paths
-from src.models.jurisdiction import ClassificationEnum, Jurisdiction
-from src.init_migration.pipeline_models import REPO_URL
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +71,7 @@ def stub_exists(ocdid: str, search_dir: Path) -> bool:
             data = yaml.safe_load(yaml_path.read_text(encoding="utf-8"))
             if isinstance(data, dict) and data.get("ocdid") == ocdid:
                 return True
-        except Exception:
+        except Exception:  # noqa: BLE001
             logger.debug("Could not read %s during stub check", yaml_path)
     return False
 
@@ -111,7 +111,7 @@ def _write_stub_division(
 ) -> Path:
     """Write a placeholder Division YAML and return the file path."""
     jur_part = ancestor.raw_ocdid.replace("ocd-division/", "")
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     stub_source = SourceObj(
         field=["ocdid"],
         source_name="ocdid_recursive_stub",
@@ -201,7 +201,7 @@ def _write_stub_jurisdiction(
         source_description="Placeholder stub — created by recursive ancestor traversal",
     )
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     jurisdiction = Jurisdiction(
         ocdid=jur_ocdid,
         name=f"{display_name} Government",

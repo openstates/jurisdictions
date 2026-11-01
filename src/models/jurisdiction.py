@@ -1,18 +1,18 @@
+import logging
+from datetime import UTC, datetime
 from enum import Enum
-from pydantic import BaseModel, Field, ConfigDict, HttpUrl, model_validator
-from typing import Dict, List, Optional
-from datetime import datetime, timezone
-from .source import SourceObj
-from .organization import Organization
-import yaml
-from uuid import UUID
 from pathlib import Path
+from uuid import UUID
 
-from src.models.ocdid import OCDIdStr, OCDIdParsed, get_ocdid_type
+import yaml
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
+
+from src.models.ocdid import OCDIdParsed, OCDIdStr, get_ocdid_type
 from src.utils.datetime import ymd
 from src.utils.deterministic_id import generate_id
 
-import logging
+from .organization import Organization
+from .source import SourceObj
 
 logger = logging.getLogger(__name__)
 
@@ -135,7 +135,7 @@ class TermDetail(BaseModel):
         ...,
         description="The number of distinct positions that are elected to represent the jurisdiction inclusive of at-large positions. For a city council with 5 members and , this would be 7.",
     )
-    term_limits: Optional[str] = Field(
+    term_limits: str | None = Field(
         default=None,
         description="Typically defined as the number of terms an office holder can hold. Can be a string description of the term limits if any.",
     )
@@ -143,7 +143,7 @@ class TermDetail(BaseModel):
         ...,
         description="The source url that defines the terms for the jurisdiction. Validated as an http(s) URL. Must be a .gov source. Can often be found in the incorporation charter or state constitution.",
     )
-    last_known_term_end_date: Optional[datetime] = Field(
+    last_known_term_end_date: datetime | None = Field(
         default=None,
         description="The last known start of the most recent term. This date allows future term start and end dates to be computed programmatically.",
     )
@@ -183,43 +183,43 @@ class Jurisdiction(BaseModel):
         default=None,
         description="Census government-unit identifier for the government entity. Stored as a string to preserve leading zeros.",
     )
-    division_relationships: List[DivisionRelationship] = Field(
+    division_relationships: list[DivisionRelationship] = Field(
         default_factory=list,
         description="Explicit directional relationships from this Jurisdiction to canonical Divisions. Ordinary governments normally GOVERNS one Division.",
     )
-    legislative_sessions: Dict[str, SessionDetail] = Field(
+    legislative_sessions: dict[str, SessionDetail] = Field(
         default_factory=dict,
         description="Dictionary describing sessions, each key is a session slug that must also appear in one ``sessions`` list in ``terms``.  Values consist of several fields giving more detail about the session. **(required)**",
     )
-    feature_flags: List[str] = Field(
+    feature_flags: list[str] = Field(
         default_factory=list,
         description="A way to mark certain features as available on a per-jurisdiction basis. Each element in feature_flags is of type (string) **(required, minItems: 0)** ",
     )
-    term: Optional[TermDetail] = Field(
+    term: TermDetail | None = Field(
         default=None,
         description="The details of the terms for elected officials representing this jurisdiction if applicable otherwise omit.",
     )
-    accurate_asof: Optional[datetime] = Field(
+    accurate_asof: datetime | None = Field(
         default=None,
         description="The datetime ('2025-05-01:00:00:00' ISO 8601 standard format when the data for the record is known to be accurate by the researcher. This may or may not be the same data as the 'last_updated' date below. **REQUIRED**",
     )
     last_updated: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
+        default_factory=lambda: datetime.now(UTC),
         description="The datetime that the data in the record was last updated by the researcher (or it's agent).",
     )
-    sourcing: List[SourceObj] = Field(
+    sourcing: list[SourceObj] = Field(
         default_factory=list,
         description="Describe how the data was sourced. Used to identify AI generated data.",
     )
-    metadata: Optional[JurisdictionMetadata] = Field(
+    metadata: JurisdictionMetadata | None = Field(
         default=None,
         description="Any other useful information that a researcher feels should be included.",
     )
-    organizations: Optional[List[Organization]] = Field(
+    organizations: list[Organization] | None = Field(
         default=None,
         description="The organizing bodies that govern a jurisdiction. Examples: City Council Committee, Parks and Recreation, Library Board, etc.",
     )
-    governing_charter: Optional[HttpUrl] = Field(
+    governing_charter: HttpUrl | None = Field(
         default=None,
         description="The legal written policy document that clearly defines the respective roles, responsibilities and authorities of the jurisdiction. Example: City Charter, State Constitution, etc.",
     )
@@ -256,10 +256,9 @@ class Jurisdiction(BaseModel):
             data = yaml.safe_load(Path(filepath).read_text())
             return cls(**data)
         except Exception as error:
-            logger.error(
+            logger.exception(
                 "Failed to load jurisdiction object",
                 extra={"filepath": str(filepath)},
-                exc_info=True,
             )
             raise ValueError("Failed to load jurisdiction. Check filepath") from error
 
@@ -279,7 +278,6 @@ class Jurisdiction(BaseModel):
         """Given an ocd-id, convert it to a jurisdiction id"""
         # TODO:
         # - write this code
-        pass
 
     def jurisdiction_id_to_division_id(self):
         # TODO convert the division id back to a jurisdiction id.

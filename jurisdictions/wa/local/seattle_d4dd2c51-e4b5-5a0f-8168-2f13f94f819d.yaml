@@ -1,0 +1,24 @@
+id: d4dd2c51-e4b5-5a0f-8168-2f13f94f819d
+ocdid: ocd-jurisdiction/country:us/state:wa/place:seattle/government
+name: Seattle Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/place:seattle/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T17:43:10.104440Z'
+last_updated: '2026-10-31T17:43:12.292669Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/place:seattle/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

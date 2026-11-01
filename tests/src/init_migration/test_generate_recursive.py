@@ -8,7 +8,6 @@ import yaml
 from src.init_migration.generate_recursive import ensure_ancestor_stubs, stub_exists
 from src.models.ocdid import OCDIdParsed
 
-
 # ---------------------------------------------------------------------------
 # OCDidParsed.build_ancestors — pure, no I/O
 # ---------------------------------------------------------------------------
@@ -411,8 +410,8 @@ def test_duplicate_ancestor_jurisdiction_fails_closed(tmp_path: Path):
             "regional",
         ),
         (
-            "ocd-division/country:us/state:ca/county:marin/place:sausalito"
-            "/council_district:1",
+            ("ocd-division/country:us/state:ca/county:marin/place:sausalito"
+            "/council_district:1"),
             "place",
             "local",
         ),
