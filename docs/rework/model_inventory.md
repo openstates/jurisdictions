@@ -261,7 +261,7 @@ Ordered by blast radius.
 - **Risk**: `url: str` is currently required and all `SessionDetail`,
   `TermDetail.source_url`, `Jurisdiction.url` interact.
 - **Blast radius**: `JurGenerator.generate_jurisdiction` fabricates a
-  fallback `url = f"https://opencivicdata.org/division/{division.ocdid}"`
+  fallback `url = f"https://github.com/openstates/jurisdictions/blob/main/divisions/{division.ocdid}"`
   when AI lookup is disabled — that fabricated URL bakes an OCDID into
   a non-URL, and getting rid of it may break existing quarantine paths.
 

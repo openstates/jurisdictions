@@ -147,7 +147,9 @@ class JurGenerator:
                 fallback_name = f"{division.display_name} Government"
             else:
                 fallback_name = f"{division.display_name} {classification.replace('_', ' ').title()}"
-            fallback_url = f"https://opencivicdata.org/division/{division.ocdid}"
+
+            ## TODO:  Remove this fallback URL when the rework pipeline lands. The jurisdiction URL should either be resolved from the Government Units Survey data or AI lookup, not hardcoded to the GitHub repository. If no url can be identified with high confidence the field should be left empty. Empty URLs will handled manually and resolved as part of the quarantine process in the rework pipeline.
+            fallback_url = f"https://github.com/openstates/jurisdictions/blob/main/divisions/{division.ocdid}"
 
             # --- Name / URL ---
             name = (ai or {}).get("name") or fallback_name
@@ -172,7 +174,7 @@ class JurGenerator:
                         "field": ["ocdid", "name", "classification"],
                         "source_name": "derived_from_division",
                         "source_url": {
-                            "division": f"https://opencivicdata.org/division/{division.ocdid}"
+                            "division": f"https://github.com/openstates/jurisdictions/blob/main/divisions/{division.ocdid}"
                         },
                         "source_type": SourceType.HUMAN,
                         "source_description": "Jurisdiction derived from Division object",
