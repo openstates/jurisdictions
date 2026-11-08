@@ -1,10 +1,9 @@
 """
-Matching OCD IDs between local and master tables, UUID generation, and
-lookup table management.
+Selecting OCD IDs from the master table, UUID generation, and lookup table
+management.
 
 Responsibilities:
-- Exact join of local_ocdids against master_ocdids on `id` column
-- Classify records: match, local orphan, master orphan
+- Select every master_ocdids row for the requested states, skipping precincts
 - Generate UUID5 values from OCD IDs
 - Store UUID-OCD-ID lookup table in DuckDB + CSV backup
 - Support idempotent re-runs
@@ -27,18 +26,20 @@ DEFAULT_PARQUET_PATH = "data/parquet"
 DEFAULT_DB_PATH = "data/ocdid_pipeline.duckdb"
 DEFAULT_CSV_BACKUP = "data/ocdid_uuid_lookup.csv"
 
+# States use `state:`, DC uses `district:`, and territories use `territory:`.
+STATE_SEGMENTS = ("state", "district", "territory")
+
 
 @dataclass
 class MatchResults:
-    """Container for matching results."""
+    """Container for selection results."""
 
     matched: list[OCDidIngestResp] = field(default_factory=list)
-    local_orphans: list[dict] = field(default_factory=list)
-    master_orphans: list[dict] = field(default_factory=list)
+    skipped_precincts: int = 0
 
 
 class OCDidMatcher:
-    """Matches local OCD IDs against master, generates UUIDs, stores lookup."""
+    """Selects master OCD IDs per state, generates UUIDs, stores lookup."""
 
     def __init__(
         self,
@@ -50,47 +51,51 @@ class OCDidMatcher:
         self.states = [s.lower() for s in states] if states else []
         self.csv_backup_path = csv_backup_path
 
+    def _state_filter(self) -> tuple[str, list[str]]:
+        """Build a WHERE clause matching each state's own row and its children."""
+        clauses = []
+        params = []
+        for state in self.states:
+            for segment in STATE_SEGMENTS:
+                prefix = f"ocd-division/country:us/{segment}:{state}"
+                clauses.append("(id = ? OR id LIKE ?)")
+                params.extend([prefix, f"{prefix}/%"])
+        if not clauses:
+            return "", []
+        return "WHERE " + " OR ".join(clauses), params
+
     def run_matching(self, show_progress: bool = False) -> MatchResults:
-        """Run the full matching pipeline.
+        """Select the master rows to generate and store the UUID lookup.
 
         Args:
             show_progress: Show rich progress bar for matching phase.
 
         Returns:
-            MatchResults with matched OCDidIngestResp list and orphan lists.
+            MatchResults with the selected OCDidIngestResp list.
         """
         results = MatchResults()
         conn = duckdb.connect(self.db_path)
 
         try:
-            # Build state filter clause
-            if self.states:
-                placeholders = ", ".join(f"'{s}'" for s in self.states)
-                state_filter = f"WHERE l.state IN ({placeholders})"
-            else:
-                state_filter = ""
-
-            # --- Matched records: inner join ---
-            # Select all master columns (m.*) because the master list is the
-            # source of truth. Local state files are only used to cross-check
-            # that the national list has all state OIDs and to detect drift.
-            # l.state is included for filtering/grouping but not in raw_record.
-            cursor = conn.execute(f"""
-                SELECT m.*, l.state AS _local_state
-                FROM local_ocdids l
-                INNER JOIN master_ocdids m ON l.id = m.id
-                {state_filter}
-            """)
+            # The master list is the source of truth; select every row for
+            # the requested states.
+            where, params = self._state_filter()
+            cursor = conn.execute(f"SELECT * FROM master_ocdids {where}", params)
             col_names = [desc[0] for desc in cursor.description]
-            matched_rows = cursor.fetchall()
+            rows = cursor.fetchall()
 
-            for row in matched_rows:
+            for row in rows:
                 row_dict = dict(zip(col_names, row))
-                row_dict.pop("_local_state", None)
                 ocdid_str = row_dict["id"]
 
                 # Parse OCD ID
                 parsed_dict = ocdid_parser(ocdid_str)
+
+                # Voting precincts are not governments; skip them.
+                if "precinct" in parsed_dict:
+                    results.skipped_precincts += 1
+                    continue
+
                 parsed = OCDIdParsed(
                     base_ocdid=ocdid_str,
                     raw_ocdid=ocdid_str,
@@ -110,55 +115,17 @@ class OCDidMatcher:
                 )
                 results.matched.append(resp)
 
-            logger.info(f"Matched {len(results.matched)} records")
-
-            # --- Local orphans: left anti-join ---
-            local_orphan_rows = conn.execute(f"""
-                SELECT l.id, l.name, l.state
-                FROM local_ocdids l
-                LEFT JOIN master_ocdids m ON l.id = m.id
-                WHERE m.id IS NULL
-                {"AND l.state IN (" + placeholders + ")" if self.states else ""}
-            """).fetchall()
-
-            orphan_cols = ["id", "name", "state"]
-            results.local_orphans = [
-                dict(zip(orphan_cols, row)) for row in local_orphan_rows
-            ]
-            if results.local_orphans:
-                logger.warning(f"Found {len(results.local_orphans)} local orphan(s)")
-
-            # --- Master orphans: right anti-join (for selected states) ---
-            if self.states:
-                state_patterns = " OR ".join(
-                    f"m.id LIKE '%/state:{s}/%'" for s in self.states
-                )
-                master_orphan_rows = conn.execute(f"""
-                    SELECT m.id, m.name
-                    FROM master_ocdids m
-                    LEFT JOIN local_ocdids l ON m.id = l.id
-                    WHERE l.id IS NULL AND ({state_patterns})
-                """).fetchall()
-            else:
-                master_orphan_rows = conn.execute("""
-                    SELECT m.id, m.name
-                    FROM master_ocdids m
-                    LEFT JOIN local_ocdids l ON m.id = l.id
-                    WHERE l.id IS NULL
-                """).fetchall()
-
-            master_orphan_cols = ["id", "name"]
-            results.master_orphans = [
-                dict(zip(master_orphan_cols, row)) for row in master_orphan_rows
-            ]
-            if results.master_orphans:
-                logger.warning(f"Found {len(results.master_orphans)} master orphan(s)")
+            logger.info(
+                "Selected master records",
+                extra={
+                    "selected": len(results.matched),
+                    "skipped_precincts": results.skipped_precincts,
+                    "states": self.states,
+                },
+            )
 
             # --- Store lookup table ---
             self._store_lookup_table(conn, results)
-
-            # --- Store orphan tables ---
-            self._store_orphan_tables(conn, results)
 
         finally:
             conn.close()
@@ -203,31 +170,3 @@ class OCDidMatcher:
                 f"COPY ocdid_uuid_lookup TO '{self.csv_backup_path}' (HEADER, DELIMITER ',')"
             )
             logger.info(f"CSV backup written to {self.csv_backup_path}")
-
-    def _store_orphan_tables(
-        self, conn: duckdb.DuckDBPyConnection, results: MatchResults
-    ) -> None:
-        """Store orphan records in DuckDB quarantine tables."""
-        # Local orphans
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS local_orphans (
-                id TEXT, name TEXT, state TEXT
-            )
-        """)
-        for orphan in results.local_orphans:
-            conn.execute(
-                "INSERT INTO local_orphans VALUES (?, ?, ?)",
-                [orphan["id"], orphan.get("name", ""), orphan.get("state", "")],
-            )
-
-        # Master orphans
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS master_orphans (
-                id TEXT, name TEXT
-            )
-        """)
-        for orphan in results.master_orphans:
-            conn.execute(
-                "INSERT INTO master_orphans VALUES (?, ?)",
-                [orphan["id"], orphan.get("name", "")],
-            )

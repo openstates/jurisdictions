@@ -113,11 +113,8 @@ def clean_duckdb():
     conn = duckdb.connect(db_path)
 
     tables = [
-        "local_ocdids",
         "master_ocdids",
         "ocdid_uuid_lookup",
-        "local_orphans",
-        "master_orphans",
     ]
 
     for table in tables:

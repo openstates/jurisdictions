@@ -42,22 +42,24 @@ everything is invoked from `main.main()`.
 sequences four phases, all synchronous in-process except async downloads:
 
 ```
-Phase 1 (download)  →  Phase 2 (match)  →  Phase 3 (generate)  →  Phase 4 (tracking)
+Phase 1 (download)  →  Phase 2 (select) →  Phase 3 (generate)  →  Phase 4 (tracking)
 DownloadManager        OCDidMatcher         GeneratePipeline        store_generation_tracking
 async httpx            DuckDB SQL           polars + fuzzy match    DuckDB per-day table
 ```
 
 ### Phase 1 — Download and load ([src/init_migration/download_manager.py](../../src/init_migration/download_manager.py))
 
-Inputs (constants at [src/init_migration/download_manager.py:28-32](../../src/init_migration/download_manager.py#L28-L32)):
+Inputs (constants at [src/init_migration/download_manager.py:27-30](../../src/init_migration/download_manager.py#L27-L30)):
 
 - `RAW_BASE = https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers`
 - `MASTER_PATH = country-us.csv` (national OCD division-id master)
-- `LOCAL_TEMPLATE = country-us/state-{state}-local_gov.csv` (per-state local government list)
+
+The per-state `state-{state}-local_gov.csv` files are no longer downloaded;
+the master list is the only OCD source.
 
 Network activity:
 
-- One `GET` for the master CSV, one per state for the local CSV, all through
+- One `GET` for the master CSV through
   [AsyncDownloader](../../src/init_migration/downloader.py) (`httpx.AsyncClient`, HTTP/2 opportunistic).
 - Conditional revalidation via ETag / Last-Modified. Cache persisted to
   `.etag_cache.json` at repo root ([src/init_migration/downloader.py:56-70](../../src/init_migration/downloader.py#L56-L70)).
@@ -69,40 +71,36 @@ Network activity:
 
 Persistence:
 
-- Each downloaded CSV is written to a `tempfile.NamedTemporaryFile` and then
+- The downloaded CSV is written to a `tempfile.NamedTemporaryFile` and then
   ingested by DuckDB's `read_csv_auto` into `master_ocdids` (`CREATE OR
-  REPLACE`) or `local_ocdids` (append, tagged with `state` column) at
-  [src/init_migration/download_manager.py:77-141](../../src/init_migration/download_manager.py#L77-L141).
+  REPLACE`) by `DownloadManager.load_master_csv()`.
 - DuckDB file path defaults to `data/ocdid_pipeline.duckdb`
   ([src/init_migration/download_manager.py:32](../../src/init_migration/download_manager.py#L32)).
 
 Outputs: `download_stats` dict `{files_downloaded, files_cached,
-files_failed, master_rows, local_rows}`.
+files_failed, master_rows}`.
 
-### Phase 2 — Match ([src/init_migration/ocdid_matcher.py](../../src/init_migration/ocdid_matcher.py))
+### Phase 2 — Select ([src/init_migration/ocdid_matcher.py](../../src/init_migration/ocdid_matcher.py))
 
-Inputs: `master_ocdids`, `local_ocdids` (DuckDB), optional state filter.
+Inputs: `master_ocdids` (DuckDB), optional state filter.
 
 Behavior:
 
-- Inner-join `local ↔ master` on the literal `id` column
-  ([src/init_migration/ocdid_matcher.py:77-83](../../src/init_migration/ocdid_matcher.py#L77-L83)); master row wins as "canonical".
-- For each matched row, `ocdid_parser()` splits the OCDID string on `/` and
+- Selects every `master_ocdids` row for the requested states: the state's own
+  row plus everything under it. States use `state:`, DC uses `district:`, and
+  territories use `territory:`. With no state filter, every row is selected.
+- Rows whose `ocdid_parser()` output contains a `precinct` segment are
+  skipped (voting precincts are not governments) and counted in
+  `skipped_precincts`.
+- For each selected row, `ocdid_parser()` splits the OCDID string on `/` and
   builds an `OCDIdParsed`, then a UUID5 is generated with
   `uuid5(NAMESPACE_URL, ocdid_str)` — **no date input** here, unlike the
   model's own `ensure_uuid5_id` validator (see below).
-- Left-anti-join produces `local_orphans` (in the state file but not in
-  master); right-anti-join gated to the requested states produces
-  `master_orphans`.
-- Persists `ocdid_uuid_lookup`, `local_orphans`, `master_orphans` tables in
-  the same DuckDB file, plus a CSV backup at `data/ocdid_uuid_lookup.csv`.
-- Lookup insert uses `WHERE NOT EXISTS` for idempotency
-  ([src/init_migration/ocdid_matcher.py:180-197](../../src/init_migration/ocdid_matcher.py#L180-L197));
-  orphan tables are `CREATE TABLE IF NOT EXISTS` + naked `INSERT` per row,
-  so re-runs append duplicates (`tests/conftest.py` `clean_duckdb` fixture
-  drops the tables around integration tests to compensate).
+- Persists `ocdid_uuid_lookup` in the same DuckDB file, plus a CSV backup at
+  `data/ocdid_uuid_lookup.csv`. The lookup insert uses `WHERE NOT EXISTS` for
+  idempotency.
 
-Outputs: `MatchResults(matched: list[OCDidIngestResp], local_orphans, master_orphans)`.
+Outputs: `MatchResults(matched: list[OCDidIngestResp], skipped_precincts: int)`.
 
 ### Phase 3 — Generate ([src/init_migration/generate_pipeline.py](../../src/init_migration/generate_pipeline.py))
 
@@ -201,17 +199,16 @@ Model-level validation happens only in Pydantic constructors:
 - `OCDIdStr` (Annotated type) enforces `ocd-division/` or `ocd-jurisdiction/`
   prefix and ≥2 segments ([src/models/ocdid.py:9-26](../../src/models/ocdid.py#L9-L26)).
 
-There is no independent "OCD validation" pass — the master ↔ local join
-in Phase 2 is the only canonical-membership check, and it happens *before*
-generation, not after candidate OCDID synthesis.
+There is no independent "OCD validation" pass — every selected ID comes
+from the master list in Phase 2, *before* generation, not after candidate
+OCDID synthesis.
 
 ## 4. Hidden and mutable state
 
 - **DuckDB file** `data/ocdid_pipeline.duckdb`
   ([src/init_migration/download_manager.py:32](../../src/init_migration/download_manager.py#L32)) — persistent across
   runs; some tables replace (`master_ocdids`, generation tracking per day),
-  others append (`local_ocdids`, `local_orphans`, `master_orphans`, and
-  `ocdid_uuid_lookup` before the idempotency guard).
+  others append (`ocdid_uuid_lookup`, guarded by `WHERE NOT EXISTS`).
 - **ETag cache** `.etag_cache.json` at repo root, written on
   `AsyncDownloader.__aexit__` ([src/init_migration/downloader.py:156-187](../../src/init_migration/downloader.py#L156-L187)).
 - **Validation-CSV cache** `${TMPDIR}/phase3_validation.csv` — refreshed on
@@ -231,7 +228,6 @@ generation, not after candidate OCDID synthesis.
 | Call site | URL / endpoint | Reachability of alternative |
 | --- | --- | --- |
 | `DownloadManager.master_url()` | `raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv` | ETag-cached; can be served from local snapshot post-Phase-4 |
-| `DownloadManager.local_urls()` | `.../identifiers/country-us/state-<state>-local_gov.csv` | Same |
 | `main._cache_validation_csv` | `docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121` | **Uncacheable**: no ETag support in current code — every process start fetches; hard dep on live Google Sheets. |
 | `src/data/lsad_mapper.py:fetch_lsad_rows` | `www.census.gov/library/reference/code-lists/legal-status-codes.html` | Live HTML scrape; `src/data/lsad_map.json` is checked in, so runtime callers hit disk. |
 | Clients (`src/clients/*.py`) | OpenAI, Gemini, Ollama, Brave, DDG | Not wired into `run_pipeline`; scaffolding only. `JurGenerator._ai_lookup` is a stub that raises `NotImplementedError` when `jurisdiction_ai_url=True`. |
@@ -272,11 +268,11 @@ generation, not after candidate OCDID synthesis.
                                 ▲                                ▲
                                 │                                │
         opencivicdata GitHub    │                                │
-        (master + per-state)  ──┴─► AsyncDownloader ──► DuckDB (master_ocdids / local_ocdids)
+        (master only)         ──┴─► AsyncDownloader ──► DuckDB (master_ocdids)
                                                             │
                                                             ▼
                                                      OCDidMatcher
-                                     (inner join → OCDidIngestResp; anti-joins → orphans)
+                         (select state rows, skip precincts → OCDidIngestResp)
                                                             │
                                                             ▼
         civicdata.tech Google Sheet ──► TMPDIR/phase3_validation.csv ──► GeneratePipeline

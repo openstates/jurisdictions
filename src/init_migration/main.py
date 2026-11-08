@@ -138,10 +138,8 @@ def print_summary(
     table.add_row("Files cached (ETag)", str(download_stats.get("files_cached", 0)))
     table.add_row("Files failed", str(download_stats.get("files_failed", 0)))
     table.add_row("Master rows loaded", str(download_stats.get("master_rows", 0)))
-    table.add_row("Local rows loaded", str(download_stats.get("local_rows", 0)))
-    table.add_row("Matched records", str(len(match_results.matched)))
-    table.add_row("Local orphans", str(len(match_results.local_orphans)))
-    table.add_row("Master orphans", str(len(match_results.master_orphans)))
+    table.add_row("Selected records", str(len(match_results.matched)))
+    table.add_row("Precincts skipped", str(match_results.skipped_precincts))
 
     if phase3_stats:
         table.add_section()
@@ -240,8 +238,8 @@ async def run_pipeline(args: argparse.Namespace) -> MatchResults:
     """Run the full Stage 1 pipeline.
 
     Returns:
-        MatchResults containing matched, local_orphan, and master_orphan records
-        for Stage 2 consumption.
+        MatchResults containing the selected master records for Stage 2
+        consumption.
     """
     console = Console()
     states = resolve_states(args.state)
@@ -261,7 +259,7 @@ async def run_pipeline(args: argparse.Namespace) -> MatchResults:
         extra={"elapsed_sec": round(phase1_elapsed, 2), "states": states},
     )
 
-    # Phase 2: Match and build
+    # Phase 2: Select master records and build lookup
     phase2_start = time.perf_counter()
     matcher = OCDidMatcher(states=states)
     match_results = matcher.run_matching(show_progress=True)
@@ -274,7 +272,7 @@ async def run_pipeline(args: argparse.Namespace) -> MatchResults:
         },
     )
 
-    # Phase 3: Generate Division and Jurisdiction YAML for every matched record
+    # Phase 3: Generate Division and Jurisdiction YAML for every selected record
     phase3_stats = {"success": 0, "skipped": 0, "partial": 0, "failed": 0}
     tracking_rows: list[tuple[str, str, str | None, str | None, str | None]] = []
     if match_results.matched:

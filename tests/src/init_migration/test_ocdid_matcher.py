@@ -1,4 +1,4 @@
-"""Tests for OCDidMatcher — join logic, UUID generation, lookup table."""
+"""Tests for OCDidMatcher — master row selection, UUID generation, lookup table."""
 
 from pathlib import Path
 
@@ -11,50 +11,73 @@ from src.init_migration.pipeline_models import OCDidIngestResp
 
 @pytest.fixture
 def populated_db(tmp_path):
-    """Create a DuckDB with master and local tables for testing."""
+    """Create a DuckDB with a master table for testing."""
     db_path = str(tmp_path / "test.duckdb")
     conn = duckdb.connect(db_path)
 
     conn.execute("""
         CREATE TABLE master_ocdids AS SELECT * FROM (VALUES
+            ('ocd-division/country:us/state:wa', 'Washington'),
             ('ocd-division/country:us/state:wa/place:seattle', 'Seattle'),
             ('ocd-division/country:us/state:wa/place:tacoma', 'Tacoma'),
-            ('ocd-division/country:us/state:tx/place:austin', 'Austin')
+            ('ocd-division/country:us/state:wa/county:king/precinct:1', 'King Precinct 1'),
+            ('ocd-division/country:us/state:wv/place:charleston', 'Charleston'),
+            ('ocd-division/country:us/state:tx/place:austin', 'Austin'),
+            ('ocd-division/country:us/district:dc', 'District of Columbia'),
+            ('ocd-division/country:us/district:dc/ward:1', 'Ward 1')
         ) AS t(id, name)
-    """)
-
-    conn.execute("""
-        CREATE TABLE local_ocdids AS SELECT * FROM (VALUES
-            ('ocd-division/country:us/state:wa/place:seattle', 'Seattle', 'wa'),
-            ('ocd-division/country:us/state:wa/place:tacoma', 'Tacoma', 'wa'),
-            ('ocd-division/country:us/state:wa/place:olympia', 'Olympia', 'wa'),
-            ('ocd-division/country:us/state:tx/place:austin', 'Austin', 'tx')
-        ) AS t(id, name, state)
     """)
 
     conn.close()
     return db_path
 
 
-def test_match_finds_matching_records(populated_db):
-    """Records in both master and local should be classified as matches."""
-    matcher = OCDidMatcher(db_path=populated_db, states=["wa"], csv_backup_path="")
-    results = matcher.run_matching()
-    matched_ocdids = {r.ocdid.raw_ocdid for r in results.matched}
-    assert "ocd-division/country:us/state:wa/place:seattle" in matched_ocdids
-    assert "ocd-division/country:us/state:wa/place:tacoma" in matched_ocdids
+def _selected_ids(db_path: str, states: list[str]) -> set[str]:
+    matcher = OCDidMatcher(db_path=db_path, states=states, csv_backup_path="")
+    return {r.ocdid.raw_ocdid for r in matcher.run_matching().matched}
 
 
-def test_match_detects_local_orphans(populated_db):
-    """Records in local but not master should be local orphans."""
+def test_selects_every_master_row_for_state(populated_db):
+    """All master rows for the state, including the state row itself, are selected."""
+    assert _selected_ids(populated_db, ["wa"]) == {
+        "ocd-division/country:us/state:wa",
+        "ocd-division/country:us/state:wa/place:seattle",
+        "ocd-division/country:us/state:wa/place:tacoma",
+    }
+
+
+def test_skips_precincts(populated_db):
+    """Precinct rows are not selected and are counted as skipped."""
     matcher = OCDidMatcher(db_path=populated_db, states=["wa"], csv_backup_path="")
     results = matcher.run_matching()
-    orphan_ids = {r["id"] for r in results.local_orphans}
-    assert "ocd-division/country:us/state:wa/place:olympia" in orphan_ids
+    selected = {r.ocdid.raw_ocdid for r in results.matched}
+    assert (
+        "ocd-division/country:us/state:wa/county:king/precinct:1" not in selected
+    )
+    assert results.skipped_precincts == 1
+
+
+def test_excludes_other_states(populated_db):
+    """A state code must not select rows from a state sharing its prefix."""
+    selected = _selected_ids(populated_db, ["wa"])
+    assert not any("state:wv" in i or "state:tx" in i for i in selected)
+
+
+def test_selects_district_of_columbia(populated_db):
+    """DC uses the district: segment rather than state:."""
+    assert _selected_ids(populated_db, ["dc"]) == {
+        "ocd-division/country:us/district:dc",
+        "ocd-division/country:us/district:dc/ward:1",
+    }
+
+
+def test_selects_all_rows_without_state_filter(populated_db):
+    """With no states given, every non-precinct master row is selected."""
+    assert len(_selected_ids(populated_db, [])) == 7
 
 
 def test_match_returns_ocdid_ingest_resp(populated_db):
-    """Each matched record should produce a valid OCDidIngestResp."""
+    """Each selected record should produce a valid OCDidIngestResp."""
     matcher = OCDidMatcher(db_path=populated_db, states=["wa"], csv_backup_path="")
     results = matcher.run_matching()
     for resp in results.matched:
@@ -65,13 +88,12 @@ def test_match_returns_ocdid_ingest_resp(populated_db):
 
 
 def test_raw_record_contains_master_data(populated_db):
-    """raw_record should contain master list columns, not local columns."""
+    """raw_record should contain the master list columns."""
     matcher = OCDidMatcher(db_path=populated_db, states=["wa"], csv_backup_path="")
     results = matcher.run_matching()
     for resp in results.matched:
         assert "id" in resp.raw_record
         assert "name" in resp.raw_record
-        assert "_local_state" not in resp.raw_record
 
 
 def test_match_generates_deterministic_uuids(populated_db):
@@ -95,7 +117,7 @@ def test_lookup_table_created_in_duckdb(populated_db):
     conn = duckdb.connect(populated_db)
     count = conn.execute("SELECT COUNT(*) FROM ocdid_uuid_lookup").fetchone()[0]
     conn.close()
-    assert count >= 2  # seattle + tacoma
+    assert count == 3  # washington + seattle + tacoma
 
 
 def test_lookup_csv_backup_created(populated_db, tmp_path):
@@ -110,14 +132,13 @@ def test_lookup_csv_backup_created(populated_db, tmp_path):
     assert "seattle" in content
 
 
-def test_orphan_tables_created_in_duckdb(populated_db):
-    """run_matching() should create local_orphans and master_orphans tables."""
+def test_no_orphan_tables_created(populated_db):
+    """run_matching() should no longer create orphan tables."""
     matcher = OCDidMatcher(db_path=populated_db, states=["wa"], csv_backup_path="")
     matcher.run_matching()
 
     conn = duckdb.connect(populated_db)
-    local_orphan_count = conn.execute("SELECT COUNT(*) FROM local_orphans").fetchone()[
-        0
-    ]
+    tables = {row[0] for row in conn.execute("SHOW TABLES").fetchall()}
     conn.close()
-    assert local_orphan_count >= 1  # olympia
+    assert "local_orphans" not in tables
+    assert "master_orphans" not in tables

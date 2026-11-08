@@ -20,28 +20,15 @@ from src.init_migration.pipeline_models import (
 # data/ocdid_pipeline.duckdb. Attempted to mock but still generates.
 
 
-# Master dataset with 5 entries: 4 matches (2 in TX, 1 in DC, 1 in HI), 1 master orphan (HI), and no local orphans
+# Master dataset: 4 records selected for tx/dc/hi (2 TX, 1 DC, 1 HI),
+# 1 HI precinct skipped, and 1 WA record outside the requested states
 MASTER_CSV = b"""id,name
 ocd-division/country:us/state:tx/place:austin,Austin
 ocd-division/country:us/state:tx/place:houston,Houston
-ocd-division/country:us/state:dc/place:washington,Washington
+ocd-division/country:us/district:dc,District of Columbia
 ocd-division/country:us/state:hi/place:honolulu,Honolulu
-ocd-division/country:us/state:hi/place:hilo,Hilo
-"""
-
-# Texas State dataset with two matches and one local orphan (dallas) that should be detected, but no master orphans
-LOCAL_TX_CSV = b"""ocd-division/country:us/state:tx/place:austin,Austin
-ocd-division/country:us/state:tx/place:houston,Houston
-ocd-division/country:us/state:tx/place:dallas,Dallas
-"""
-
-# DC State dataset with one match and no orphans
-LOCAL_DC_CSV = b"""ocd-division/country:us/state:dc/place:washington,Washington
-"""
-
-# Hawaii State dataset with one match, one local orphan, and one master orphan
-LOCAL_HI_CSV = b"""ocd-division/country:us/state:hi/place:honolulu,Honolulu
-ocd-division/country:us/state:hi/place:maui,Maui
+ocd-division/country:us/state:hi/county:hawaii/precinct:1,Hawaii Precinct 1
+ocd-division/country:us/state:wa/place:seattle,Seattle
 """
 
 VALIDATION_CSV = b"""DIVISION_ID,NAMELSAD,LSAD
@@ -74,7 +61,7 @@ class FakeGeneratePipeline:
 @pytest.mark.asyncio
 @patch("src.init_migration.main.store_generation_tracking")
 @patch("src.init_migration.main.GeneratePipeline", FakeGeneratePipeline)
-async def test_run_pipeline_multi_state_with_orphans_and_failures(
+async def test_run_pipeline_multi_state_selects_from_master(
     mock_store_generation_tracking,
     tmp_path,
     monkeypatch,
@@ -114,23 +101,6 @@ async def test_run_pipeline_multi_state_with_orphans_and_failures(
             return_value=httpx.Response(200, content=MASTER_CSV)
         )
 
-        # Local state datasets
-        for url in dm.local_urls():
-            if "state-tx" in url:
-                respx_mock.get(url).mock(
-                    return_value=httpx.Response(200, content=LOCAL_TX_CSV)
-                )
-            elif "state-dc" in url:
-                respx_mock.get(url).mock(
-                    return_value=httpx.Response(200, content=LOCAL_DC_CSV)
-                )
-            elif "state-hi" in url:
-                respx_mock.get(url).mock(
-                    return_value=httpx.Response(200, content=LOCAL_HI_CSV)
-                )
-            elif "state-zz" in url:
-                respx_mock.get(url).mock(return_value=httpx.Response(404))
-
         # Phase 3 caches all three validation tabs; the states and counties tabs
         # return header-only CSVs so the concat still lines up.
         respx_mock.get(DIVISIONS_SHEET_CSV_URL).mock(
@@ -150,17 +120,13 @@ async def test_run_pipeline_multi_state_with_orphans_and_failures(
 
         results = await run_pipeline(args)
 
-    assert len(results.matched) == 4
-    assert len(results.local_orphans) == 2
-    assert len(results.master_orphans) == 1
-
-    orphan_ids = {row["id"] for row in results.local_orphans}
-
-    assert "ocd-division/country:us/state:tx/place:dallas" in orphan_ids
-    assert "ocd-division/country:us/state:hi/place:maui" in orphan_ids
-
-    assert (
-        results.master_orphans[0]["id"] == "ocd-division/country:us/state:hi/place:hilo"
-    )
+    selected_ids = {r.ocdid.raw_ocdid for r in results.matched}
+    assert selected_ids == {
+        "ocd-division/country:us/state:tx/place:austin",
+        "ocd-division/country:us/state:tx/place:houston",
+        "ocd-division/country:us/district:dc",
+        "ocd-division/country:us/state:hi/place:honolulu",
+    }
+    assert results.skipped_precincts == 1
 
     mock_store_generation_tracking.assert_called_once()

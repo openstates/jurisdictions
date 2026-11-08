@@ -25,14 +25,11 @@ class TableExportConfig:
     select_expr: str = "*"
 
 TABLE_CONFIG = [
-    TableExportConfig(name="local_ocdids", partition_col="state", sort_cols=["state", "id"]),
     TableExportConfig(
         name="master_ocdids", partition_col="state", sort_cols=["state"],
         select_expr="*, regexp_extract(id, 'state:([a-z]{2})', 1) AS state",
     ),
     TableExportConfig(name="ocdid_uuid_lookup", partition_col="state", sort_cols=["state", "ocdid"]),
-    TableExportConfig(name="local_orphans", partition_col="state", sort_cols=["state", "id"]),
-    TableExportConfig(name="master_orphans", partition_col=None, sort_cols=["id"]),
 ]
 
 def describe_columns(conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig) -> list[dict]:
