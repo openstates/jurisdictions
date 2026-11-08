@@ -3,7 +3,7 @@ id: census-pipeline-rework-plan
 type: planning
 owner: maintainers
 status: active
-last_updated: 2026-09-23
+last_updated: 2026-11-08
 tags: [planning, rework, census, pipeline]
 ---
 
@@ -381,6 +381,37 @@ Fixture source → parse → normalize → resolve → OCD candidate → canonic
 validation → models → YAML → compare. 100% expected success and quarantine
 fixtures pass.
 
+### Task 10.5 — Run source manifest
+Every run records the source data it consumed, in two places:
+
+- `source_manifest.yaml` at the top level of the run's output directory
+  (sibling of `divisions/` and `jurisdictions/`).
+- A `source_manifest` table in the pipeline DuckDB database.
+
+One entry per snapshot the run actually read (not the whole cache), built
+from its Task 4.4 sidecar: `source`, `source_name`, `dataset`, `release`,
+`filename`, `url`, `sha256`, `size_bytes`, `retrieved_at`,
+`publication_date`. Derived datasets (the Task 4.6 merge) list the
+`sha256` of each input they were built from. The manifest also records the
+pipeline code commit and a `run_id` derived from a hash of the sorted
+entries plus that commit.
+
+The YAML is deterministic: entries sorted by `(source, dataset, release,
+filename)`, no wall-clock fields, so Task 10.1 and Task 14.2 byte-identity
+hold. The DuckDB table is append-only, keyed by `(run_id, source,
+filename)`, and adds the run's start/finish timestamps and output
+directory so past runs stay queryable. Manifest record types are Pydantic
+models.
+
+A run fails, rather than writing output, if any consumed snapshot lacks
+sidecar metadata or its checksum no longer matches. Adding
+`source_manifest.yaml` to `tests/sample_output/` follows Sample Output
+Change Control; until approved, the golden comparison ignores that file.
+
+Tests: fixture snapshots → expected manifest entries; two runs on the same
+inputs → identical YAML and `run_id`; missing sidecar or checksum mismatch
+→ run fails; DuckDB rows match the YAML entries.
+
 ## Phase 11 — Existing Sample Output Migration
 
 ### Task 11.1 — Diff new vs main
@@ -508,7 +539,9 @@ Create/update runbooks for:
 ## Phase 20 — Final Acceptance Suite
 
 **Functional**: GUS loads; TIGER loads; OCD master loads; supported
-governments resolve; unknown IDs quarantine; YAML deterministic.
+governments resolve; unknown IDs quarantine; YAML deterministic; every
+run writes a source manifest (YAML + DuckDB) covering all consumed
+snapshots.
 
 **Model**: stable UUID; provenance preserved; temporal geometry preserved;
 website nullable; no fake GEOIDs.
