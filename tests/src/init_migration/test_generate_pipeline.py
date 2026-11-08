@@ -29,9 +29,7 @@ def test_place_exact_match_prefers_single_active_funcstat():
         ]
     )
 
-    matches = pipeline.find_matches(
-        "ocd-division/country:us/state:tx/place:mesquite"
-    )
+    matches = pipeline.find_matches("ocd-division/country:us/state:tx/place:mesquite")
 
     assert matches.height == 1
     assert matches["GEOID"].to_list() == ["4847892"]
@@ -65,8 +63,6 @@ def test_place_exact_match_preserves_ambiguity_with_multiple_active_rows():
         ]
     )
 
-    matches = pipeline.find_matches(
-        "ocd-division/country:us/state:tx/place:example"
-    )
+    matches = pipeline.find_matches("ocd-division/country:us/state:tx/place:example")
 
     assert matches.height == 3

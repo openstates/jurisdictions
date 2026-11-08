@@ -113,15 +113,9 @@ def test_find_identifier_returns_first_match_by_authority_and_type() -> None:
     source = _sample_source()
     identifiers = [
         Identifier(authority="census", id_type="statefp", value="06", source=source),
-        Identifier(
-            authority="census", id_type="countyfp", value="041", source=source
-        ),
-        Identifier(
-            authority="census", id_type="countyfp", value="075", source=source
-        ),
-        Identifier(
-            authority="dcgis", id_type="anc_id", value="1A", source=source
-        ),
+        Identifier(authority="census", id_type="countyfp", value="041", source=source),
+        Identifier(authority="census", id_type="countyfp", value="075", source=source),
+        Identifier(authority="dcgis", id_type="anc_id", value="1A", source=source),
     ]
 
     assert find_identifier(identifiers, "statefp") == "06"
@@ -189,15 +183,15 @@ def test_geometry_validity_window_accepts_none() -> None:
 
 def test_division_geometry_versions_sort_by_valid_from() -> None:
     """Multiple geometry versions coexist on one Division and order by valid_from."""
-    current = Geometry(
-        boundary=Boundary(), valid_from=datetime(2024, 1, 1, tzinfo=UTC)
-    )
+    current = Geometry(boundary=Boundary(), valid_from=datetime(2024, 1, 1, tzinfo=UTC))
     historic = Geometry(
         boundary=Boundary(),
         valid_from=datetime(2010, 1, 1, tzinfo=UTC),
         valid_to=datetime(2023, 12, 31, tzinfo=UTC),
     )
-    unbounded = Geometry(boundary=Boundary(), valid_to=datetime(2009, 12, 31, tzinfo=UTC))
+    unbounded = Geometry(
+        boundary=Boundary(), valid_to=datetime(2009, 12, 31, tzinfo=UTC)
+    )
 
     division = Division(
         ocdid="ocd-division/country:us/state:ca/place:sausalito",

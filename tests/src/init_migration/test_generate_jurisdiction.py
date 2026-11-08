@@ -242,7 +242,7 @@ class TestGenerateJurisdiction:
         )
 
         # With AI disabled, should use OpenCivicData fallback
-        assert "opencivicdata.org" in jurisdiction.url
+        assert "github.com/openstates/jurisdictions" in jurisdiction.url
         assert sample_division.ocdid in jurisdiction.url
 
     def test_generate_with_different_classifications(
@@ -453,9 +453,7 @@ def test_generate_jurisdiction_reuses_existing_ocdid(
 
     monkeypatch.chdir(tmp_path)
 
-    jurisdiction_ocdid = (
-        "ocd-jurisdiction/country:us/state:ca/place:seattle/government"
-    )
+    jurisdiction_ocdid = "ocd-jurisdiction/country:us/state:ca/place:seattle/government"
 
     existing = Jurisdiction(
         id=uuid5(NAMESPACE_URL, "existing-seattle-jurisdiction"),
@@ -510,9 +508,7 @@ def test_generate_jurisdiction_reuses_existing_under_configured_output_root(
     monkeypatch.chdir(cwd)
 
     output_root = tmp_path / "generated"
-    jurisdiction_ocdid = (
-        "ocd-jurisdiction/country:us/state:ca/place:seattle/government"
-    )
+    jurisdiction_ocdid = "ocd-jurisdiction/country:us/state:ca/place:seattle/government"
 
     existing = Jurisdiction(
         id=uuid5(NAMESPACE_URL, "existing-seattle-jurisdiction"),
@@ -561,9 +557,7 @@ def test_generate_jurisdiction_reuses_existing_outside_local_dir(
     import yaml
 
     output_root = tmp_path / "generated"
-    jurisdiction_ocdid = (
-        "ocd-jurisdiction/country:us/state:ca/place:seattle/government"
-    )
+    jurisdiction_ocdid = "ocd-jurisdiction/country:us/state:ca/place:seattle/government"
 
     existing = Jurisdiction(
         id=uuid5(NAMESPACE_URL, "state-level-seattle-jurisdiction"),
@@ -612,9 +606,7 @@ def test_duplicate_existing_jurisdiction_ocdid_fails_closed(
     import yaml
 
     output_root = tmp_path / "generated"
-    jurisdiction_ocdid = (
-        "ocd-jurisdiction/country:us/state:ca/place:seattle/government"
-    )
+    jurisdiction_ocdid = "ocd-jurisdiction/country:us/state:ca/place:seattle/government"
 
     jur_dir = output_root / "jurisdictions" / "ca" / "local"
     jur_dir.mkdir(parents=True)

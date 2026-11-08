@@ -202,12 +202,9 @@ class DivGenerator:
                 existing_geoid = find_identifier(
                     existing.government_identifiers, "geoid"
                 )
-                is_ingest_stub = (
-                    not existing_geoid
-                    and any(
-                        getattr(source, "source_name", None) == "ocdid_ingest"
-                        for source in (existing.sourcing or [])
-                    )
+                is_ingest_stub = not existing_geoid and any(
+                    getattr(source, "source_name", None) == "ocdid_ingest"
+                    for source in (existing.sourcing or [])
                 )
 
                 if not is_ingest_stub:
@@ -219,9 +216,7 @@ class DivGenerator:
                 # A prior no-match run may have emitted an OCDID-only stub.
                 # Now that authoritative validation exists, regenerate the full
                 # Division rather than allowing the stub to block enrichment.
-                logger.info(
-                    f"Promoting existing stub Division for {raw_ocdid}"
-                )
+                logger.info(f"Promoting existing stub Division for {raw_ocdid}")
                 self.promoted_stub_path = existing_path
                 self.promoted_stub_id = existing.id
                 self.existing_path = None
@@ -327,9 +322,7 @@ class DivGenerator:
                 source_type=SourceType.HUMAN,
                 source_description="Open Civic Data Master repo",
             )
-            stub_geoid = (
-                f"{state_fips}{place.zfill(5)}" if state_fips and place else ""
-            )
+            stub_geoid = f"{state_fips}{place.zfill(5)}" if state_fips and place else ""
             identifiers = _build_census_identifiers(
                 namelsad=display_name,
                 statefp=state_fips,

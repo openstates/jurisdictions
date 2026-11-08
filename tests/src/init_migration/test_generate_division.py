@@ -296,11 +296,11 @@ def test_dump_division_uses_dc_directory_for_district_ocdid(tmp_path, monkeypatc
     )
     output_path = dg.dump_division(output_dir=tmp_path)
 
-    assert output_path.parent.resolve() == (
-        tmp_path / "divisions" / "dc" / "local"
-    ).resolve()
+    assert (
+        output_path.parent.resolve()
+        == (tmp_path / "divisions" / "dc" / "local").resolve()
+    )
     assert output_path.exists()
-
 
 
 def test_promoted_ingest_stub_preserves_existing_uuid(tmp_path, monkeypatch):
@@ -309,10 +309,7 @@ def test_promoted_ingest_stub_preserves_existing_uuid(tmp_path, monkeypatch):
 
     monkeypatch.chdir(tmp_path)
 
-    ocdid = (
-        "ocd-division/country:us/state:tx/place:mesquite/"
-        "council_district:1"
-    )
+    ocdid = "ocd-division/country:us/state:tx/place:mesquite/council_district:1"
     req = _req_for(ocdid)
 
     old_id = uuid5(NAMESPACE_URL, "existing-mesquite-stub")
@@ -336,8 +333,7 @@ def test_promoted_ingest_stub_preserves_existing_uuid(tmp_path, monkeypatch):
         country="us",
         display_name="Mesquite Council District 1",
         jurisdiction_id=(
-            "ocd-jurisdiction/country:us/state:tx/"
-            "place:mesquite/government"
+            "ocd-jurisdiction/country:us/state:tx/place:mesquite/government"
         ),
         sourcing=[source],
     )
@@ -346,9 +342,7 @@ def test_promoted_ingest_stub_preserves_existing_uuid(tmp_path, monkeypatch):
     div_dir.mkdir(parents=True)
 
     stub_path = div_dir / f"unknown__{old_id}.yaml"
-    stub_path.write_text(
-        yaml.safe_dump(stub.model_dump(mode="json"), sort_keys=False)
-    )
+    stub_path.write_text(yaml.safe_dump(stub.model_dump(mode="json"), sort_keys=False))
 
     val_rec = {
         "GEOID_Census": "4847892",
@@ -497,8 +491,7 @@ def test_duplicate_existing_division_ocdid_fails_closed(tmp_path, monkeypatch):
             country="us",
             display_name=f"Seattle {suffix}",
             jurisdiction_id=(
-                "ocd-jurisdiction/country:us/state:wa/"
-                "place:seattle/government"
+                "ocd-jurisdiction/country:us/state:wa/place:seattle/government"
             ),
         )
         (div_dir / f"{suffix}.yaml").write_text(

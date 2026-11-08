@@ -219,7 +219,9 @@ class Division(BaseModel):
     def dump_division(self, base_dir: str | Path = PROJECT_PATH):
         geoid = find_identifier(self.government_identifiers, "geoid")
         if not geoid:
-            raise ValueError("A census geoid identifier is required to store a division object.")
+            raise ValueError(
+                "A census geoid identifier is required to store a division object."
+            )
         base_path = Path(base_dir)
         base_path.mkdir(parents=True, exist_ok=True)
         filepath = base_path / f"{self.display_name}_{geoid}_{self.id}.yaml"

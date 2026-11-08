@@ -317,7 +317,9 @@ class TestFindOcdidPaths:
 
     def test_returns_empty_for_missing_root(self, temp_dir):
         """A state tree that was never generated is not an error."""
-        assert find_ocdid_paths("ocd-division/country:us/state:wa", temp_dir / "x") == []
+        assert (
+            find_ocdid_paths("ocd-division/country:us/state:wa", temp_dir / "x") == []
+        )
 
     def test_skips_unreadable_yaml(self, temp_dir):
         """A malformed file must not abort the search."""

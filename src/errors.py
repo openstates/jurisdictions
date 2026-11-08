@@ -19,7 +19,9 @@ class UnexpectedContentError(Error):
     For example, when HTML is returned instead of CSV or JSON.
     """
 
-    def __init__(self, message, url: str | None = None, content_type: str | None = None):
+    def __init__(
+        self, message, url: str | None = None, content_type: str | None = None
+    ):
         super().__init__(message)
         self.message = message
         self.url = url

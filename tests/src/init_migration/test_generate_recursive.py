@@ -276,7 +276,6 @@ def test_ensure_ancestor_stubs_country_from_parsed_ocdid(tmp_path: Path):
     assert div_data["country"] == parsed.country
 
 
-
 def test_place_ancestor_uses_local_layout_and_name(tmp_path: Path):
     """Austin place ancestry must not be misclassified as Texas state ancestry."""
     parsed = OCDIdParsed.parse_ocdid(
@@ -302,10 +301,7 @@ def test_place_ancestor_uses_local_layout_and_name(tmp_path: Path):
     )
     assert jur["name"] == "Austin Government"
 
-    ids = {
-        item["id_type"]: item["value"]
-        for item in div["government_identifiers"]
-    }
+    ids = {item["id_type"]: item["value"] for item in div["government_identifiers"]}
     assert ids["statefp"] == "48"
     assert "geoid" not in ids
 
@@ -387,9 +383,7 @@ def test_duplicate_ancestor_jurisdiction_fails_closed(tmp_path: Path):
     county.mkdir(parents=True)
 
     (local / "anderson.yaml").write_text(yaml.safe_dump({"ocdid": jur_ocdid}))
-    (county / "anderson_county.yaml").write_text(
-        yaml.safe_dump({"ocdid": jur_ocdid})
-    )
+    (county / "anderson_county.yaml").write_text(yaml.safe_dump({"ocdid": jur_ocdid}))
 
     parsed = OCDIdParsed.parse_ocdid(
         "ocd-division/country:us/state:tx/county:anderson/council_district:1"
@@ -408,8 +402,10 @@ def test_duplicate_ancestor_jurisdiction_fails_closed(tmp_path: Path):
             "regional",
         ),
         (
-            ("ocd-division/country:us/state:ca/county:marin/place:sausalito"
-            "/council_district:1"),
+            (
+                "ocd-division/country:us/state:ca/county:marin/place:sausalito"
+                "/council_district:1"
+            ),
             "place",
             "local",
         ),
@@ -438,8 +434,9 @@ def test_stub_pairs_share_one_tier_directory(
     assert div_path.relative_to(tmp_path).parts[0] == "divisions"
     assert jur_path.relative_to(tmp_path).parts[0] == "jurisdictions"
     # Same area and same tier subdirectory on both sides.
-    assert div_path.relative_to(tmp_path).parts[1:-1] == (
-        jur_path.relative_to(tmp_path).parts[1:-1]
+    assert (
+        div_path.relative_to(tmp_path).parts[1:-1]
+        == (jur_path.relative_to(tmp_path).parts[1:-1])
     )
     if expected_subdir is None:
         assert div_path.parent == tmp_path / "divisions" / div_path.parent.name

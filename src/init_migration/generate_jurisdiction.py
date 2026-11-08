@@ -199,9 +199,7 @@ class JurGenerator:
             self.req.data.ocdid.raw_ocdid, "jurisdictions", self.output_root
         )
 
-    def _find_existing_jurisdiction_path(
-        self, jurisdiction_ocdid: str
-    ) -> Path | None:
+    def _find_existing_jurisdiction_path(self, jurisdiction_ocdid: str) -> Path | None:
         """Find an existing Jurisdiction YAML by canonical OCD ID."""
         try:
             matches = find_ocdid_paths(
@@ -226,9 +224,7 @@ class JurGenerator:
     def _jurisdiction_exists(self, jurisdiction_ocdid: str) -> bool:
         return self._find_existing_jurisdiction_path(jurisdiction_ocdid) is not None
 
-    def _load_existing_jurisdiction(
-        self, jurisdiction_ocdid: str
-    ) -> Jurisdiction:
+    def _load_existing_jurisdiction(self, jurisdiction_ocdid: str) -> Jurisdiction:
         filepath = self._find_existing_jurisdiction_path(jurisdiction_ocdid)
         if filepath is None:
             raise FileNotFoundError(

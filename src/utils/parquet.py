@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 GENERATION_TRACKING_PREFIX = "generation_tracking"
 
+
 @dataclass(frozen=True)
 class TableExportConfig:
     name: str
@@ -24,18 +25,30 @@ class TableExportConfig:
     sort_cols: list[str]
     select_expr: str = "*"
 
+
 TABLE_CONFIG = [
-    TableExportConfig(name="local_ocdids", partition_col="state", sort_cols=["state", "id"]),
     TableExportConfig(
-        name="master_ocdids", partition_col="state", sort_cols=["state"],
+        name="local_ocdids", partition_col="state", sort_cols=["state", "id"]
+    ),
+    TableExportConfig(
+        name="master_ocdids",
+        partition_col="state",
+        sort_cols=["state"],
         select_expr="*, regexp_extract(id, 'state:([a-z]{2})', 1) AS state",
     ),
-    TableExportConfig(name="ocdid_uuid_lookup", partition_col="state", sort_cols=["state", "ocdid"]),
-    TableExportConfig(name="local_orphans", partition_col="state", sort_cols=["state", "id"]),
+    TableExportConfig(
+        name="ocdid_uuid_lookup", partition_col="state", sort_cols=["state", "ocdid"]
+    ),
+    TableExportConfig(
+        name="local_orphans", partition_col="state", sort_cols=["state", "id"]
+    ),
     TableExportConfig(name="master_orphans", partition_col=None, sort_cols=["id"]),
 ]
 
-def describe_columns(conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig) -> list[dict]:
+
+def describe_columns(
+    conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig
+) -> list[dict]:
     """Column name/type for what actually gets exported (post-select_expr),
     so computed columns like master_ocdids' derived `state` are included —
     reuses the same select_expr the COPY statement runs, so this can't
@@ -45,7 +58,9 @@ def describe_columns(conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig) ->
     return [{"name": row[0], "type": row[1]} for row in result.fetchall()]
 
 
-def export_single(conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig, out_dir: str) -> dict:
+def export_single(
+    conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig, out_dir: str
+) -> dict:
     file_name = f"{cfg.name}.parquet"
     file_path = Path(out_dir) / file_name
     order_by = ", ".join(cfg.sort_cols)
@@ -64,7 +79,10 @@ def export_single(conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig, out_d
         "columns": describe_columns(conn, cfg),
     }
 
-def export_partitioned(conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig, out_dir: str) -> dict:
+
+def export_partitioned(
+    conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig, out_dir: str
+) -> dict:
     table_dir = Path(out_dir) / cfg.name
     order_by = ", ".join(cfg.sort_cols)
 
@@ -91,6 +109,7 @@ def export_partitioned(conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig, 
         "columns": describe_columns(conn, cfg),
     }
 
+
 def write_manifest(out_dir: str, entries: list[dict]) -> Path:
     manifest = {
         "generated_at": datetime.now(tz=UTC).isoformat(),
@@ -101,14 +120,18 @@ def write_manifest(out_dir: str, entries: list[dict]) -> Path:
     logger.info(f"Wrote manifest with {len(entries)} table(s) to {manifest_path}")
     return manifest_path
 
+
 def export_to_parquet(duckdb_path, out_dir):
     conn = duckdb.connect(duckdb_path, read_only=True)
     Path(out_dir).mkdir(parents=True, exist_ok=True)
 
     try:
-        tables = {r[0] for r in conn.execute(
-            "SELECT table_name FROM information_schema.tables"
-        ).fetchall()}
+        tables = {
+            r[0]
+            for r in conn.execute(
+                "SELECT table_name FROM information_schema.tables"
+            ).fetchall()
+        }
 
         manifest_tables = []
         for cfg in TABLE_CONFIG:
@@ -122,9 +145,13 @@ def export_to_parquet(duckdb_path, out_dir):
             )
 
             manifest_tables.append(entry)
-        tracking_tables = sorted(t for t in tables if t.startswith(GENERATION_TRACKING_PREFIX))
+        tracking_tables = sorted(
+            t for t in tables if t.startswith(GENERATION_TRACKING_PREFIX)
+        )
         for table in tracking_tables:
-            cfg = TableExportConfig(name=table, partition_col=None, sort_cols=["original_id"])
+            cfg = TableExportConfig(
+                name=table, partition_col=None, sort_cols=["original_id"]
+            )
             entry = export_single(conn, cfg, out_dir)
             manifest_tables.append(entry)
     finally:
