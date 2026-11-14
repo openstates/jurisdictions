@@ -149,7 +149,7 @@ class JurGenerator:
                 fallback_name = f"{division.display_name} {classification.replace('_', ' ').title()}"
             # --- Name / URL ---
             # No website fabrication: an unresolved official site stays None
-            # rather than becoming a synthetic opencivicdata.org address.
+            # rather than becoming a synthetic address.
             # Website resolution is a separate enrichment concern.
             name = (ai or {}).get("name") or fallback_name
             url = (ai or {}).get("url")
@@ -172,7 +172,7 @@ class JurGenerator:
                     SourceObj(
                         field=["ocdid", "name", "classification"],
                         source_name="derived_from_division",
-                        source_url=f"https://opencivicdata.org/division/{division.ocdid}",
+                        source_url=f"https://github.com/openstates/jurisdictions/blob/main/divisions/{division.ocdid}",
                         source_type=SourceType.HUMAN,
                         source_description="Jurisdiction derived from Division object",
                     )

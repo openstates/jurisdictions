@@ -3,7 +3,7 @@ id: census-pipeline-rework-plan
 type: planning
 owner: maintainers
 status: active
-last_updated: 2026-11-08
+last_updated: 2026-11-14
 tags: [planning, rework, census, pipeline]
 ---
 
@@ -369,6 +369,15 @@ Division relationship, website if known, Source.
 
 ### Task 9.3 — Offline model validation — zero network calls.
 
+### Task 9.4 — Feature flag baseline
+`feature_flags` lists the populated top-level Jurisdiction fields, sorted.
+When a prior record exists, its flags carry forward (prior ∪ new); flags are
+never removed automatically. A flagged field that is now empty is written
+as-is, so validation fails it instead of the data silently regressing.
+Excluded: `id`, `ocdid`, `name`, `classification`, `accurate_asof` (to be
+made required separately), `last_updated`, `feature_flags`. Tests: compute,
+exclusions, carry forward, determinism, missing-field detection.
+
 ## Phase 10 — YAML Rendering
 
 ### Task 10.1 — Deterministic serializer
@@ -520,6 +529,42 @@ deliberate exceptions in `docs/rework/architecture_decisions.md`.
 Add a type checker run (`mypy` or `pyright`) to the pre-commit checklist
 and CI over `src/` and `tests/`, clean on the converted modules.
 
+### Task 17.5 — In-container secret vault
+API keys (`GITHUB_TOKEN`, `GEMINI_API_KEY`, `OPENAI_API_KEY`,
+`BRAVE_API_KEY`) currently reach the app as environment variables via
+`.env`/`docker run -e`, where they are visible in `docker inspect`,
+`/proc/<pid>/environ`, child processes and crash dumps. Replace this with a
+secret vault process running inside the container that serves secrets to
+the application on request.
+
+- **Vault**: an open-source, self-hosted secret store (e.g. OpenBao or
+  HashiCorp Vault agent; choice recorded in
+  `docs/rework/architecture_decisions.md`). The entrypoint starts it
+  before the app; it listens on a Unix socket or `127.0.0.1` only and
+  keeps secrets in memory or on an encrypted volume, never in an image
+  layer.
+- **Bootstrap**: the one credential that unseals/authenticates to the
+  vault is mounted as a file (Docker secret under `/run/secrets/`), never
+  passed as an environment variable or build arg.
+- **Application**: `src/clients/config.py` `get_settings()` reads secrets
+  from the vault client instead of `os.getenv`; the direct
+  `os.getenv("GITHUB_TOKEN")` in `src/init_migration/downloader.py` goes
+  through settings. Secret fields are Pydantic `SecretStr`, so `repr`,
+  `model_dump` and logs mask them. Non-secret config (`OLLAMA_HOST`) may
+  stay in the environment.
+- **Fail closed**: in container mode, the app refuses to start if any
+  secret key is present in its environment, and a missing secret raises
+  `MissingAPIKeyError` naming the key, not its value. `.env` remains for
+  local development outside the container only.
+
+Tests: unit tests with a mocked vault client cover settings loading,
+masking in `repr`/logs, and the fail-closed check; an integration test
+(`tests/integration/`, marked `integration`) builds the image, runs it
+with a mounted bootstrap secret, and asserts no secret value appears in
+`docker inspect`, the app process environment, or log output. Update
+`README.md` run instructions, `.env.sample`, and `CHANGELOG.md` (breaking:
+`docker run -e <KEY>` no longer supplies secrets).
+
 ## Phase 18 — Cleanup
 
 ### Task 18.1 — Identify dead legacy modules
@@ -581,6 +626,7 @@ second run zero diff.
 - Normal fixture integration requiring network: 0
 - Second-run generated YAML differences: 0
 - Graph-only canonical facts: 0
+- Secret values in the container's runtime environment: 0
 
 The system is correct when every record is processed deterministically,
 every decision is explainable, every unresolved case is explicit, every
