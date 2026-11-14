@@ -32,6 +32,7 @@ from src.ocdid_validation import (
 )
 from src.resolve_government import CensusDivisionRecord
 from src.sources.census_tiger import series_as_of
+from src.utils.feature_flags import compute_feature_flags, merge_feature_flags
 
 
 class CanonicalModels(BaseModel):
@@ -188,15 +189,20 @@ def build_jurisdiction(
     *,
     government: GovernmentRecord,
     division: Division,
+    prior: Jurisdiction | None = None,
 ) -> Jurisdiction:
-    """Build a canonical Jurisdiction governing one verified canonical Division."""
+    """Build a canonical Jurisdiction governing one verified canonical Division.
+
+    ``prior`` is the record already on disk for the same OCD ID, if any; its
+    ``feature_flags`` carry forward so a regeneration never drops a flag.
+    """
     classification = _jurisdiction_classification(government)
     jurisdiction_candidate = derive_jurisdiction_candidate(
         division.ocdid,
         classification=classification.value,
     )
 
-    return Jurisdiction(
+    jurisdiction = Jurisdiction(
         ocdid=jurisdiction_candidate.value,
         name=government.name,
         url=government.website,
@@ -225,6 +231,11 @@ def build_jurisdiction(
             label="government source",
         ),
     )
+    jurisdiction.feature_flags = merge_feature_flags(
+        prior.feature_flags if prior is not None else None,
+        compute_feature_flags(jurisdiction),
+    )
+    return jurisdiction
 
 
 def build_canonical_models(
@@ -232,6 +243,7 @@ def build_canonical_models(
     government: GovernmentRecord,
     resolved_division: CensusDivisionRecord,
     validation: OCDIDValidationResult,
+    prior_jurisdiction: Jurisdiction | None = None,
 ) -> CanonicalModels:
     """Build both canonical models for one verified pipeline record."""
     division = build_division(
@@ -241,6 +253,7 @@ def build_canonical_models(
     jurisdiction = build_jurisdiction(
         government=government,
         division=division,
+        prior=prior_jurisdiction,
     )
     return CanonicalModels(
         division=division,

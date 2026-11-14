@@ -97,7 +97,7 @@ Census fields baked directly into the model:
 | `url` | `str` | required | — | **Not `HttpUrl`; also violates rework §23 nullable** |
 | `classification` | `ClassificationEnum` | required | — | Nine allowed values |
 | `legislative_sessions` | `Dict[str, SessionDetail]` | yes | `{}` | |
-| `feature_flags` | `List[str]` | yes | `[]` | |
+| `feature_flags` | `List[str]` | yes | `[]` | Baseline of populated top-level fields, sorted; set by `build_jurisdiction` and carried forward from the prior record, never removed automatically (Task 9.4, `src/utils/feature_flags.py`) |
 | `term` | `Optional[TermDetail]` | yes | `None` | |
 | `accurate_asof` | `Optional[datetime]` | yes | `None` | |
 | `last_updated` | `datetime` | required | `datetime.now(UTC)` factory | Drives UUID (see §5) |

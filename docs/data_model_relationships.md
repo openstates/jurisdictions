@@ -165,7 +165,7 @@ Jurisdiction
 │   ├── source_url: str (.gov source)
 │   └── last_known_term_end_date: Optional[datetime]
 │
-└── feature_flags: Dict (capabilities/features)
+└── feature_flags: List[str] (populated top-level fields; regression baseline)
 ```
 
 ---
