@@ -3,7 +3,7 @@ id: census-pipeline-rework-plan
 type: planning
 owner: maintainers
 status: active
-last_updated: 2026-11-08
+last_updated: 2026-11-14
 tags: [planning, rework, census, pipeline]
 ---
 
@@ -368,6 +368,15 @@ Stable UUID, OCD identity, official name, class, Census government ID,
 Division relationship, website if known, Source.
 
 ### Task 9.3 — Offline model validation — zero network calls.
+
+### Task 9.4 — Feature flag baseline
+`feature_flags` lists the populated top-level Jurisdiction fields, sorted.
+When a prior record exists, its flags carry forward (prior ∪ new); flags are
+never removed automatically. A flagged field that is now empty is written
+as-is, so validation fails it instead of the data silently regressing.
+Excluded: `id`, `ocdid`, `name`, `classification`, `accurate_asof` (to be
+made required separately), `last_updated`, `feature_flags`. Tests: compute,
+exclusions, carry forward, determinism, missing-field detection.
 
 ## Phase 10 — YAML Rendering
 
