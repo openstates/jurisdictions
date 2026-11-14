@@ -26,6 +26,9 @@ def validate_ocdid(value: str) -> str:
 OCDIdStr = Annotated[str, AfterValidator(validate_ocdid)]
 OCDIdType = Literal["ocd-division", "ocd-jurisdiction"]
 
+# States use `state:`, DC uses `district:`, and territories use `territory:`.
+STATE_SEGMENTS = ("state", "district", "territory")
+
 
 def get_ocdid_type(raw_ocdid: OCDIdStr) -> OCDIdType:
     """Derive OCD ID type from the validated OCD ID string."""
@@ -105,6 +108,13 @@ class OCDIdParsed(BaseModel):
                 ocdid_dict = ocdid_parser(valid_ocdid)
                 # For division OCD IDs, the base is the same as the raw OCD ID
                 base_ocdid = valid_ocdid
+            # DC (district:dc) and the territories (territory:pr) have no
+            # state: segment; their code plays the state's role. A real
+            # state: comes first, so state:ny/.../district:5 stays ny.
+            for segment in STATE_SEGMENTS:
+                if ocdid_dict.get(segment):
+                    ocdid_dict["state"] = ocdid_dict[segment]
+                    break
             return cls(**ocdid_dict, base_ocdid=base_ocdid, raw_ocdid=raw_ocdid)
         except Exception as error:
             raise OCDIdParsingError(error) from error
