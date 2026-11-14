@@ -278,7 +278,7 @@ url: "https://www.seattle.gov/government-summary/public-safety-commission"
 **Purpose:** Breaks down an Open Civic Data identifier into its component parts.
 
 **Related Documentation:**
-- [Open Civic Data Project](https://opencivicdata.org/)
+- [Open Civic Data Project](https://open-civic-data.readthedocs.io/)
 - [OCD ID Documentation](docs/ocdid_matching_criteria.md)
 
 ### Key Fields
