@@ -6,20 +6,61 @@ from src.errors import OCDIdParsingError
 from src.utils.ocdid import ocdid_parser
 
 
+def _is_segment_type(text: str) -> bool:
+    """OCD segment type: lowercase letters, ``-``, and ``_`` (OCDEP 2)."""
+    return bool(text) and all(
+        (char.isalpha() and not char.isupper()) or char in "-_" for char in text
+    )
+
+
+def _is_segment_value(text: str) -> bool:
+    """OCD segment id: lowercase letters, digits, ``.``, ``-``, ``_``, ``~`` (OCDEP 2)."""
+    return bool(text) and all(
+        (char.isalpha() and not char.isupper()) or char in "0123456789.-_~"
+        for char in text
+    )
+
+
 def validate_ocdid(value: str) -> str:
+    """Check an OCD ID's prefix and the format of every segment.
+
+    Segments are ``type:id``, using the characters OCDEP 2 allows. A
+    Jurisdiction ID ends in a bare classification segment (``/government``).
+    Reference: https://github.com/opencivicdata/docs.opencivicdata.org/blob/master/proposals/0002.rst
+    """
     if not value.startswith(("ocd-division/", "ocd-jurisdiction/")):
         raise ValueError(
             "OCD ID must start with 'ocd-division/' or 'ocd-jurisdiction/'"
         )
     if not value.count("/") >= 2:
         _, _, country_segment = value.partition("/")
-        if country_segment.startswith("country:") and country_segment.removeprefix(
-            "country:"
+        if not (
+            country_segment.startswith("country:")
+            and country_segment.removeprefix("country:")
         ):
-            return value
-        raise ValueError(
-            "OCD ID must have at least two segments (e.g., 'ocd-division/country:us/state:wa')"
-        )
+            raise ValueError(
+                "OCD ID must have at least two segments (e.g., 'ocd-division/country:us/state:wa')"
+            )
+    prefix, _, body = value.partition("/")
+    segments = body.split("/")
+    if prefix == "ocd-jurisdiction" and len(segments) > 1 and ":" not in segments[-1]:
+        classification = segments.pop()
+        if not _is_segment_type(classification):
+            raise ValueError(
+                f"Jurisdiction classification {classification!r} must use lowercase letters, '-', or '_'"
+            )
+    for segment in segments:
+        segment_type, separator, segment_id = segment.partition(":")
+        if not separator:
+            raise ValueError(f"OCD ID segment {segment!r} must be 'type:id'")
+        if not _is_segment_type(segment_type):
+            raise ValueError(
+                f"OCD ID segment type {segment_type!r} must use lowercase letters, '-', or '_'"
+            )
+        if not _is_segment_value(segment_id):
+            raise ValueError(
+                f"OCD ID segment id {segment_id!r} must use lowercase letters, digits, '.', '-', '_', or '~'"
+            )
     return value
 
 
@@ -88,6 +129,20 @@ class OCDIdParsed(BaseModel):
         else:
             parts = self.raw_ocdid.rstrip("/").split("/")
         return parts
+
+    def get_segments(self) -> list[tuple[str, str]]:
+        """Return the ordered ``(key, value)`` segments below the type prefix.
+
+        Every keyed segment is included, not only the named fields (e.g.
+        ``anc``, ``regional``, ``council_district``). A Jurisdiction ID's
+        trailing classification (``/government``) is not a segment.
+        """
+        segments: list[tuple[str, str]] = []
+        for part in self.get_ocdid_parts()[1:]:
+            key, separator, value = part.partition(":")
+            if separator:
+                segments.append((key, value))
+        return segments
 
     @classmethod
     def parse_ocdid(cls, raw_ocdid: str) -> "OCDIdParsed":
