@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -35,7 +35,7 @@ def _source() -> SourceObj:
         source_type=SourceType.SCRAPED,
         source_url="https://www.census.gov/",
         source_description="Controlled fixture",
-        retrieval_date=datetime(2026, 9, 23, tzinfo=timezone.utc),
+        retrieval_date=datetime(2026, 9, 23, tzinfo=UTC),
     )
 
 
@@ -59,7 +59,7 @@ def _jurisdiction(**overrides) -> Jurisdiction:
         "ocdid": OCDID,
         "name": "City of Sausalito",
         "classification": ClassificationEnum.GOVERNMENT,
-        "last_updated": datetime(2026, 9, 23, tzinfo=timezone.utc),
+        "last_updated": datetime(2026, 9, 23, tzinfo=UTC),
     }
     values.update(overrides)
     return Jurisdiction(**values)
@@ -84,7 +84,7 @@ def _full() -> Jurisdiction:
         governing_charter="https://www.sausalito.gov/charter.pdf",
         census_government_id="161205",
         division_relationships=[DivisionRelationship(division_id=DIVISION)],
-        accurate_asof=datetime(2026, 9, 1, tzinfo=timezone.utc),
+        accurate_asof=datetime(2026, 9, 1, tzinfo=UTC),
     )
 
 
