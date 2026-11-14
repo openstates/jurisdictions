@@ -6,6 +6,7 @@ on:
     paths:
       - "data/parquet/**"
       - "pages/**"
+      - "src/utils/build_pages_data.py"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
@@ -22,13 +23,17 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # data/parquet/ is committed pipeline output (produced by a maintainer
-      # running the pipeline locally, not generated here) — no Python/DuckDB
-      # step needed, just place it where the site expects to find it.
-      - name: Stage Parquet data into pages/data
-        run: |
-          mkdir -p pages/data
-          cp -r data/parquet/. pages/data/
+      # data/parquet/ is committed pipeline output, split by state so populate
+      # PRs don't clash. The site loads faster from one file per table, so
+      # combine them here and write manifest.json from the combined files.
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+
+      - run: uv sync --all-extras
+
+      - name: Build Parquet data into pages/data
+        run: uv run python -m src.utils.build_pages_data --src data/parquet --out pages/data
 
       - uses: actions/configure-pages@v6
 

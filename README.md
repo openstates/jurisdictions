@@ -331,6 +331,15 @@ uv run python src/init_migration/main.py --force
 uv run python src/init_migration/main.py --state ca --verbose
 ```
 
+### Preview the Pages site locally
+
+The pipeline writes `data/parquet/` split by state. The deploy job combines it
+into one file per table plus `manifest.json`; do the same to preview:
+
+1. `uv run python -m src.utils.build_pages_data --src data/parquet --out pages/data`
+2. `uv run python -m http.server -d pages 8000`
+3. Open http://localhost:8000. It worked if the status line says "Ready." and the tables are listed.
+
 ### Docker
 
 The pipeline can run in a container. Pass the states as arguments and mount the output folders to keep the results:
