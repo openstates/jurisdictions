@@ -34,13 +34,14 @@ document.getElementById("history-toggle").addEventListener("click", () => {
     // DuckDB being ready, so there's no reason to wait for it. Both
     // requests run concurrently instead of back-to-back.
     const manifestPromise = Dataset.fetchManifest();
+    const filesPromise = Dataset.prefetchFiles(manifestPromise);
 
     const db = await Dataset.initDb();
     const conn = await db.connect();
     QueryRunner.init(conn);
 
     statusEl.innerHTML = '<span class="spinner"></span>Loading dataset manifest…';
-    const { tableNames, rowCounts, manifestTables } = await Dataset.registerViews(conn, manifestPromise);
+    const { tableNames, rowCounts, manifestTables } = await Dataset.registerViews(db, conn, manifestPromise, filesPromise);
 
     const onSelectTable = (table) => {
       QueryRunner.setQuery(`SELECT * FROM ${table};`);

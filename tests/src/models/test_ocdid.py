@@ -104,6 +104,24 @@ def test_parse_ocdid_returns_parsed_model_for_jurisdiction() -> None:
     assert parsed.base_ocdid == "ocd-jurisdiction/country:us/state:wa/place:seattle"
 
 
+@pytest.mark.parametrize(
+    ("raw_ocdid", "expected_state"),
+    [
+        ("ocd-division/country:us/district:dc", "dc"),
+        ("ocd-division/country:us/district:dc/ward:1", "dc"),
+        ("ocd-jurisdiction/country:us/district:dc/government", "dc"),
+        ("ocd-division/country:us/territory:pr", "pr"),
+        ("ocd-division/country:us/state:ny/place:new_york/district:5", "ny"),
+        ("ocd-division/country:us", None),
+    ],
+)
+def test_parse_ocdid_state_covers_dc_and_territories(
+    raw_ocdid: str, expected_state: str | None
+) -> None:
+    """DC and territories have no state: segment; state falls back to theirs."""
+    assert OCDIdParsed.parse_ocdid(raw_ocdid).state == expected_state
+
+
 def test_get_last_segment_accepts_model_instance() -> None:
     parsed = OCDIdParsed(
         country="us",

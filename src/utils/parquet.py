@@ -1,128 +1,103 @@
-import json
 import logging
 from dataclasses import dataclass
-from datetime import UTC, datetime
 from pathlib import Path
 
 import duckdb
+from duckdb.sqltypes import VARCHAR
 
-# from src.init_migration.main import GENERATION_TRACKING_PREFIX  # "generation_tracking"
+from src.models.ocdid import OCDIdParsed
 
 """
-Takes a duckdb file and partitions the files out to parquet files
-for GitHub Pages consumption.
+Exports pipeline DuckDB tables to state-partitioned Parquet under data/parquet/.
+A run writes only its own states' folders (plus the stateless `state=` folder),
+so populate PRs for different states never change the same file. The site's
+one-file-per-table copy and manifest.json are built at deploy time by
+src/utils/build_pages_data.py.
 """
 
 logger = logging.getLogger(__name__)
 
 GENERATION_TRACKING_PREFIX = "generation_tracking"
 
+STATELESS = ""
+OCDID_STATE_SQL_FUNCTION = "ocdid_state"
+
+
+def ocdid_state(raw_ocdid: str) -> str:
+    """The parser's state code (DC and territories included); '' when there is none."""
+    return OCDIdParsed.parse_ocdid(raw_ocdid).state or STATELESS
+
 
 @dataclass(frozen=True)
 class TableExportConfig:
     name: str
-    partition_col: str | None
     sort_cols: list[str]
     select_expr: str = "*"
+    partition_col: str = "state"
+
+
+def with_state_from(id_col: str) -> str:
+    return f"*, {OCDID_STATE_SQL_FUNCTION}({id_col}) AS state"
 
 
 TABLE_CONFIG = [
     TableExportConfig(
-        name="local_ocdids", partition_col="state", sort_cols=["state", "id"]
-    ),
-    TableExportConfig(
         name="master_ocdids",
-        partition_col="state",
-        sort_cols=["state"],
-        select_expr="*, regexp_extract(id, 'state:([a-z]{2})', 1) AS state",
+        sort_cols=["state", "id"],
+        select_expr=with_state_from("id"),
     ),
+    TableExportConfig(name="local_ocdids", sort_cols=["state", "id"]),
+    TableExportConfig(name="ocdid_uuid_lookup", sort_cols=["state", "ocdid"]),
+    TableExportConfig(name="local_orphans", sort_cols=["state", "id"]),
     TableExportConfig(
-        name="ocdid_uuid_lookup", partition_col="state", sort_cols=["state", "ocdid"]
+        name="master_orphans",
+        sort_cols=["state", "id"],
+        select_expr=with_state_from("id"),
     ),
-    TableExportConfig(
-        name="local_orphans", partition_col="state", sort_cols=["state", "id"]
-    ),
-    TableExportConfig(name="master_orphans", partition_col=None, sort_cols=["id"]),
 ]
 
 
-def describe_columns(
-    conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig
-) -> list[dict]:
-    """Column name/type for what actually gets exported (post-select_expr),
-    so computed columns like master_ocdids' derived `state` are included —
-    reuses the same select_expr the COPY statement runs, so this can't
-    drift out of sync with the real output schema.
-    """
-    result = conn.execute(f"DESCRIBE SELECT {cfg.select_expr} FROM {cfg.name}")
-    return [{"name": row[0], "type": row[1]} for row in result.fetchall()]
-
-
-def export_single(
-    conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig, out_dir: str
-) -> dict:
-    file_name = f"{cfg.name}.parquet"
-    file_path = Path(out_dir) / file_name
-    order_by = ", ".join(cfg.sort_cols)
-
-    conn.execute(
-        f"COPY (SELECT {cfg.select_expr} FROM {cfg.name} ORDER BY {order_by}) "
-        f"TO '{file_path}' (FORMAT PARQUET, COMPRESSION ZSTD)"
+def tracking_config(table: str) -> TableExportConfig:
+    return TableExportConfig(
+        name=table,
+        sort_cols=["state", "original_id"],
+        select_expr=with_state_from("original_id"),
     )
 
-    row_count = conn.execute(f"SELECT COUNT(*) FROM {cfg.name}").fetchone()[0]
-    return {
-        "name": cfg.name,
-        "file": file_name,
-        "rows": row_count,
-        "bytes": file_path.stat().st_size,
-        "columns": describe_columns(conn, cfg),
-    }
+
+def sql_string_list(values: list[str]) -> str:
+    return ", ".join("'" + value.replace("'", "''") + "'" for value in values)
 
 
 def export_partitioned(
-    conn: duckdb.DuckDBPyConnection, cfg: TableExportConfig, out_dir: str
-) -> dict:
+    conn: duckdb.DuckDBPyConnection,
+    cfg: TableExportConfig,
+    out_dir: str,
+    states: list[str],
+) -> None:
+    """Write `<out_dir>/<table>/state=xx/` for the run's states and the stateless rows.
+
+    Folders for other states are left exactly as committed.
+    """
     table_dir = Path(out_dir) / cfg.name
     order_by = ", ".join(cfg.sort_cols)
+    wanted = sql_string_list([*states, STATELESS])
 
     conn.execute(
-        f"COPY (SELECT {cfg.select_expr} FROM {cfg.name} ORDER BY {order_by}) "
+        f"COPY (SELECT * FROM (SELECT {cfg.select_expr} FROM {cfg.name}) "
+        f"WHERE {cfg.partition_col} IN ({wanted}) ORDER BY {order_by}) "
         f"TO '{table_dir}' (FORMAT PARQUET, PARTITION_BY ({cfg.partition_col}), "
         f"FILENAME_PATTERN 'data_{{i}}', OVERWRITE_OR_IGNORE)"
     )
-
-    files = {}
-    total_bytes = 0
-    for parquet_file in sorted(table_dir.rglob("*.parquet")):
-        partition_value = parquet_file.parent.name.split("=", 1)[1]
-        files[partition_value] = str(parquet_file.relative_to(out_dir))
-        total_bytes += parquet_file.stat().st_size
-
-    row_count = conn.execute(f"SELECT COUNT(*) FROM {cfg.name}").fetchone()[0]
-    return {
-        "name": cfg.name,
-        "partitioned_by": cfg.partition_col,
-        "rows": row_count,
-        "bytes": total_bytes,
-        "files": files,
-        "columns": describe_columns(conn, cfg),
-    }
+    logger.info(
+        "Exported table to Parquet",
+        extra={"table": cfg.name, "states": states, "out_dir": str(table_dir)},
+    )
 
 
-def write_manifest(out_dir: str, entries: list[dict]) -> Path:
-    manifest = {
-        "generated_at": datetime.now(tz=UTC).isoformat(),
-        "tables": entries,
-    }
-    manifest_path = Path(out_dir) / "manifest.json"
-    manifest_path.write_text(json.dumps(manifest, indent=2))
-    logger.info(f"Wrote manifest with {len(entries)} table(s) to {manifest_path}")
-    return manifest_path
-
-
-def export_to_parquet(duckdb_path, out_dir):
+def export_to_parquet(duckdb_path: str, out_dir: str, states: list[str]) -> None:
     conn = duckdb.connect(duckdb_path, read_only=True)
+    conn.create_function(OCDID_STATE_SQL_FUNCTION, ocdid_state, [VARCHAR], VARCHAR)
     Path(out_dir).mkdir(parents=True, exist_ok=True)
 
     try:
@@ -133,28 +108,16 @@ def export_to_parquet(duckdb_path, out_dir):
             ).fetchall()
         }
 
-        manifest_tables = []
         for cfg in TABLE_CONFIG:
             if cfg.name not in tables:
-                logger.warning(f"Table {cfg.name} not found, skipping")
+                logger.warning("Table not found, skipping", extra={"table": cfg.name})
                 continue
-            entry = (
-                export_partitioned(conn, cfg, out_dir)
-                if cfg.partition_col
-                else export_single(conn, cfg, out_dir)
-            )
+            export_partitioned(conn, cfg, out_dir, states)
 
-            manifest_tables.append(entry)
         tracking_tables = sorted(
             t for t in tables if t.startswith(GENERATION_TRACKING_PREFIX)
         )
         for table in tracking_tables:
-            cfg = TableExportConfig(
-                name=table, partition_col=None, sort_cols=["original_id"]
-            )
-            entry = export_single(conn, cfg, out_dir)
-            manifest_tables.append(entry)
+            export_partitioned(conn, tracking_config(table), out_dir, states)
     finally:
         conn.close()
-
-    write_manifest(out_dir, manifest_tables)

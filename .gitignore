@@ -183,6 +183,8 @@ src/init_migration/downloader.log
 
 # DuckDB write-ahead-log temp file
 *.duckdb.wal
+*.duckdb
 
 # Generated at deploy time from data/parquet/ — not a source of truth
 pages/data/
+data/parquet/manifest.json

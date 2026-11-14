@@ -92,6 +92,17 @@ def test_load_multiple_states_to_duckdb(tmp_path):
     assert count == 2
 
 
+def test_load_master_csv_creates_missing_data_dir(tmp_path):
+    """A fresh clone has no data/ folder; the first load must create it."""
+    db_path = tmp_path / "data" / "ocdid_pipeline.duckdb"
+    assert not db_path.parent.exists()
+    dm = DownloadManager(states=["wa"], db_path=str(db_path))
+
+    dm.load_master_csv(b"id,name\nocd-division/country:us/state:wa,Washington\n")
+
+    assert db_path.exists()
+
+
 # --- Async Download Orchestration ---
 
 

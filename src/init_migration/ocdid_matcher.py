@@ -19,7 +19,6 @@ import duckdb
 
 from src.init_migration.pipeline_models import OCDidIngestResp
 from src.models.ocdid import OCDIdParsed
-from src.utils.ocdid import ocdid_parser
 
 logger = getLogger(__name__)
 
@@ -90,15 +89,7 @@ class OCDidMatcher:
                 ocdid_str = row_dict["id"]
 
                 # Parse OCD ID
-                parsed_dict = ocdid_parser(ocdid_str)
-                parsed = OCDIdParsed(
-                    base_ocdid=ocdid_str,
-                    raw_ocdid=ocdid_str,
-                    country=parsed_dict.get("country", "us"),
-                    state=parsed_dict.get("state"),
-                    county=parsed_dict.get("county"),
-                    place=parsed_dict.get("place"),
-                )
+                parsed = OCDIdParsed.parse_ocdid(ocdid_str)
 
                 # Generate UUID5 from OCD ID
                 det_id = uuid5(NAMESPACE_URL, ocdid_str)

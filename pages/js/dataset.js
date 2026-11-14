@@ -13,6 +13,14 @@ function absUrl(relativePath) {
   return new URL(relativePath, document.baseURI).href;
 }
 
+// Every parquet URL carries the manifest's own timestamp. A run that changed nothing reuses
+// the cached bytes; a new run changes every URL at once, so the file list and the files can
+// never disagree.
+function versionedUrl(manifest, path) {
+  const version = encodeURIComponent(manifest.generated_at ?? "");
+  return `${absUrl(DATA_BASE + path)}?v=${version}`;
+}
+
 // DuckDB-Wasm init + registering Parquet views from the published manifest.
 export const Dataset = {
   // Call this immediately at page load, in parallel with initDb() — it's a
@@ -46,14 +54,29 @@ export const Dataset = {
     return db;
   },
 
-  async registerViews(conn, manifestPromise) {
+  // Call right after fetchManifest(), before initDb(): starts every single-file table's
+  // download at once, while WASM is still starting. DuckDB-Wasm's own HTTP reads go one
+  // request at a time from its worker, so the browser fetching them in parallel and handing
+  // DuckDB the bytes is much faster on a cold visit. Returns file path -> bytes promise.
+  async prefetchFiles(manifestPromise) {
     const manifest = await manifestPromise;
-    // Every parquet URL carries the manifest's own timestamp. DuckDB-Wasm fetches these through
-    // its internal HTTP filesystem, which we cannot hand a `cache` option — so the version is
-    // put in the URL instead. A run that changed nothing reuses the cached bytes; a new run
-    // changes every URL at once, so the file list and the files can never disagree.
-    const version = encodeURIComponent(manifest.generated_at ?? "");
-    const versioned = (path) => `${absUrl(DATA_BASE + path)}?v=${version}`;
+    const files = new Map();
+    for (const entry of manifest.tables) {
+      if (!entry.file) continue;
+      const bytes = fetch(versionedUrl(manifest, entry.file)).then(async (resp) => {
+        if (!resp.ok) throw new Error(`Failed to load ${entry.file} (${resp.status})`);
+        return new Uint8Array(await resp.arrayBuffer());
+      });
+      bytes.catch(() => {}); // surfaced when registerViews awaits it
+      files.set(entry.file, bytes);
+    }
+    return files;
+  },
+
+  async registerViews(db, conn, manifestPromise, filesPromise) {
+    const manifest = await manifestPromise;
+    const files = await filesPromise;
+    const versioned = (path) => versionedUrl(manifest, path);
 
     const tableNames = [];
     // Row counts and column schema are both computed once at export time
@@ -65,9 +88,10 @@ export const Dataset = {
       const safeName = `"${entry.name.replace(/"/g, '""')}"`;
 
       if (entry.file) {
-        // Single unpartitioned file.
+        // Single file, already downloaded by prefetchFiles(): DuckDB reads it from memory.
+        await db.registerFileBuffer(entry.file, await files.get(entry.file));
         await conn.query(
-          `CREATE VIEW ${safeName} AS SELECT * FROM read_parquet('${versioned(entry.file)}')`
+          `CREATE VIEW ${safeName} AS SELECT * FROM read_parquet('${entry.file.replace(/'/g, "''")}')`
         );
       } else if (entry.files && Object.keys(entry.files).length > 0) {
         // Hive-partitioned table written as separate per-partition files.

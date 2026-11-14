@@ -109,6 +109,7 @@ def clean_duckdb():
     # main.py orchestration flow does not consistently support passing a
     # custom db_path through all pipeline components.
     db_path = DEFAULT_DB_PATH
+    Path(db_path).parent.mkdir(parents=True, exist_ok=True)
 
     conn = duckdb.connect(db_path)
 

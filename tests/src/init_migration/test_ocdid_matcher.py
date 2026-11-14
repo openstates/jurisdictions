@@ -121,3 +121,27 @@ def test_orphan_tables_created_in_duckdb(populated_db):
     ]
     conn.close()
     assert local_orphan_count >= 1  # olympia
+
+
+def test_lookup_state_for_district_of_columbia(tmp_path):
+    """DC has no state: segment; its lookup rows are stored under dc, not ''."""
+    db_path = str(tmp_path / "dc.duckdb")
+    conn = duckdb.connect(db_path)
+    conn.execute("""
+        CREATE TABLE master_ocdids AS SELECT * FROM (VALUES
+            ('ocd-division/country:us/district:dc/ward:1', 'Ward 1')
+        ) AS t(id, name)
+    """)
+    conn.execute("""
+        CREATE TABLE local_ocdids AS SELECT * FROM (VALUES
+            ('ocd-division/country:us/district:dc/ward:1', 'Ward 1', 'dc')
+        ) AS t(id, name, state)
+    """)
+    conn.close()
+
+    OCDidMatcher(db_path=db_path, states=["dc"], csv_backup_path="").run_matching()
+
+    conn = duckdb.connect(db_path)
+    states = conn.execute("SELECT DISTINCT state FROM ocdid_uuid_lookup").fetchall()
+    conn.close()
+    assert states == [("dc",)]

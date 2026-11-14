@@ -325,7 +325,7 @@ async def run_pipeline(args: argparse.Namespace) -> MatchResults:
 
         # Phase 5
         # Using generated duckdb, generate parquet files
-        export_to_parquet(duckdb_path=DEFAULT_DB_PATH, out_dir=DEFAULT_PARQUET_PATH)
+        export_to_parquet(duckdb_path=DEFAULT_DB_PATH, out_dir=DEFAULT_PARQUET_PATH, states=states)
 
     total_elapsed = time.perf_counter() - pipeline_start
     # Summary

@@ -140,6 +140,27 @@ def test_ensure_ancestor_stubs_creates_state_stub(tmp_path: Path):
     assert jur_data["classification"] == "government"
 
 
+def test_ensure_ancestor_stubs_creates_territory_stub(tmp_path: Path):
+    """A territory's own stub is written: the parser gives territory:pr the state code pr."""
+    parsed = OCDIdParsed.parse_ocdid(
+        "ocd-division/country:us/territory:pr/municipio:coamo"
+    )
+    results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
+
+    assert [r["ocdid"] for r in results] == ["ocd-division/country:us/territory:pr"]
+    result = results[0]
+    assert result["action"] == "created"
+
+    div_path = Path(result["division_path"])
+    jur_path = Path(result["jurisdiction_path"])
+    assert div_path.parent == tmp_path / "divisions" / "pr"
+    assert jur_path.parent == tmp_path / "jurisdictions" / "pr"
+    div_data = yaml.safe_load(div_path.read_text(encoding="utf-8"))
+    assert div_data["ocdid"] == "ocd-division/country:us/territory:pr"
+    jur_data = yaml.safe_load(jur_path.read_text(encoding="utf-8"))
+    assert jur_data["ocdid"] == "ocd-jurisdiction/country:us/territory:pr/government"
+
+
 def test_ensure_ancestor_stubs_creates_county_stub(tmp_path: Path):
     """State and county stubs are both created for a state/county/place OCD ID."""
     parsed = OCDIdParsed.parse_ocdid(
