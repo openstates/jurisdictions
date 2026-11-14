@@ -80,6 +80,8 @@ class DownloadManager:
         Returns:
             Number of rows loaded.
         """
+        # data/ is not in git, so a fresh clone may not have it yet.
+        Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
         conn = duckdb.connect(self.db_path)
         try:
             self._load_csv_bytes(
