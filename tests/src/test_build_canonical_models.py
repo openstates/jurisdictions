@@ -21,6 +21,7 @@ from src.ocdid_validation import (
 )
 from src.resolve_government import CensusDivisionRecord
 from src.utils.deterministic_id import generate_id
+from src.utils.feature_flags import missing_flagged_fields
 
 
 def _source(*, field: list[str], dataset: str) -> SourceObj:
@@ -71,8 +72,7 @@ def _division(**overrides) -> CensusDivisionRecord:
         "lea": None,
         "geometry_source": _source(field=["geometry"], dataset="TIGER/Line"),
         "geometry_url": (
-            "https://tigerweb.geo.census.gov/example?"
-            "where=GEOID%3D'0670364'&f=geojson"
+            "https://tigerweb.geo.census.gov/example?where=GEOID%3D'0670364'&f=geojson"
         ),
     }
     values.update(overrides)
@@ -149,9 +149,7 @@ def test_build_division_preserves_distinct_tiger_names_as_aliases() -> None:
 
 
 def test_canonical_construction_rejects_quarantined_identity() -> None:
-    candidate = _candidate(
-        "ocd-division/country:us/state:ca/place:not_canonical"
-    )
+    candidate = _candidate("ocd-division/country:us/state:ca/place:not_canonical")
     validation = OCDIDValidationResult(
         status=OCDIDValidationStatus.QUARANTINED,
         candidate=candidate,
@@ -289,5 +287,72 @@ def test_canonical_models_use_snapshot_observation_time() -> None:
         validation=_verified(),
     )
 
-    assert models.division.last_updated == resolved_division.geometry_source.retrieval_date
+    assert (
+        models.division.last_updated == resolved_division.geometry_source.retrieval_date
+    )
     assert models.jurisdiction.last_updated == government.source.retrieval_date
+
+
+def test_build_jurisdiction_sets_sorted_feature_flags_for_populated_fields() -> None:
+    models = build_canonical_models(
+        government=_government(),
+        resolved_division=_division(),
+        validation=_verified(),
+    )
+
+    assert models.jurisdiction.feature_flags == [
+        "census_government_id",
+        "division_relationships",
+        "sourcing",
+        "url",
+    ]
+
+
+def test_build_jurisdiction_omits_url_flag_when_website_is_unknown() -> None:
+    models = build_canonical_models(
+        government=_government(website=None),
+        resolved_division=_division(),
+        validation=_verified(),
+    )
+
+    assert "url" not in models.jurisdiction.feature_flags
+
+
+def test_build_jurisdiction_carries_prior_flags_forward_and_keeps_dropped_ones() -> (
+    None
+):
+    prior = build_canonical_models(
+        government=_government(),
+        resolved_division=_division(),
+        validation=_verified(),
+    ).jurisdiction.model_copy(update={"feature_flags": ["term", "url"]})
+
+    models = build_canonical_models(
+        government=_government(website=None),
+        resolved_division=_division(),
+        validation=_verified(),
+        prior_jurisdiction=prior,
+    )
+
+    flags = models.jurisdiction.feature_flags
+    assert flags == sorted(flags)
+    assert "term" in flags  # carried forward though the record has no term
+    assert "url" in flags  # kept though the website is now missing
+    assert models.jurisdiction.url is None
+    assert missing_flagged_fields(models.jurisdiction) == ["term", "url"]
+
+
+def test_build_jurisdiction_flags_are_identical_across_builds() -> None:
+    first = build_canonical_models(
+        government=_government(),
+        resolved_division=_division(),
+        validation=_verified(),
+    )
+    second = build_canonical_models(
+        government=_government(),
+        resolved_division=_division(),
+        validation=_verified(),
+        prior_jurisdiction=first.jurisdiction,
+    )
+
+    assert second.jurisdiction.feature_flags == first.jurisdiction.feature_flags
