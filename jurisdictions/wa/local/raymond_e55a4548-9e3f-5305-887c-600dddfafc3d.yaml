@@ -1,0 +1,24 @@
+id: e55a4548-9e3f-5305-887c-600dddfafc3d
+ocdid: ocd-jurisdiction/country:us/state:wa/place:raymond/government
+name: Raymond Ward 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/place:raymond/ward:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T17:42:52.453392Z'
+last_updated: '2026-10-31T17:42:54.590831Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/place:raymond/ward:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

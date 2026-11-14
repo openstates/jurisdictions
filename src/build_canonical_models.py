@@ -31,6 +31,7 @@ from src.ocdid_validation import (
     OCDIDValidationStatus,
 )
 from src.resolve_government import CensusDivisionRecord
+from src.sources.census_tiger import series_as_of
 from src.utils.feature_flags import compute_feature_flags, merge_feature_flags
 
 
@@ -133,7 +134,9 @@ def build_division(
     identifiers = _division_identifiers(division)
     display_name = validation.canonical_name or division.name
 
+    release = division.geometry_source.release
     geometry = Geometry(
+        valid_from=series_as_of(release) if release else None,
         boundary=Boundary(),
         url=division.geometry_url,
         identifiers=identifiers,

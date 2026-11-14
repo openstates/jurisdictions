@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import asyncio
 import base64
 import importlib.util
@@ -6,25 +7,27 @@ import json
 import os
 import random
 import time
+from collections.abc import Iterable, Mapping
 from email.utils import parsedate_to_datetime
+from logging import getLogger
 from pathlib import Path
-from typing import Iterable, Mapping, Optional, Literal
+from typing import Literal, Self
+from typing import Literal as _LiteralForAlias
 from urllib.parse import urlparse
 
-from typing import Literal as _LiteralForAlias
-
 import httpx
-from logging import getLogger
 
 # Import custom errors from parent package
 from src.errors import (
     APIRetryError,
-    UnexpectedContentError,
-    DownloaderNotInitializedError,
     CacheError,
+    DownloaderNotInitializedError,
+    UnexpectedContentError,
 )
 
 logger = getLogger(__name__)
+
+DEFAULT_TIMEOUT = httpx.Timeout(connect=10, read=30, write=10, pool=10)
 
 
 # -----------------------------
@@ -50,10 +53,10 @@ class DownloaderConfig:
         *,
         concurrency: int = 12,
         max_retries: int = 3,
-        timeout: httpx.Timeout = httpx.Timeout(connect=10, read=30, write=10, pool=10),
+        timeout: httpx.Timeout = DEFAULT_TIMEOUT,
         http2: bool = True,
         use_github_auth: bool = False,
-        github_token: Optional[str] = None,
+        github_token: str | None = None,
         etag_cache_path: str | os.PathLike | None = None,
         user_agent: str = "ocd-downloader/1.0 (+https://yourdomain.example)",
         initial_backoff: float = 0.5,
@@ -110,11 +113,11 @@ class AsyncDownloader:
 
     def __init__(self, config: DownloaderConfig | None = None) -> None:
         self.cfg = config or DownloaderConfig()
-        self._client: Optional[httpx.AsyncClient] = None
+        self._client: httpx.AsyncClient | None = None
         self._sem = asyncio.Semaphore(self.cfg.concurrency)
         self._etag_cache: dict[str, dict[str, str]] = {}
 
-    async def __aenter__(self) -> "AsyncDownloader":
+    async def __aenter__(self) -> Self:
         headers = dict(DEFAULT_HEADERS)
         headers["User-Agent"] = self.cfg.user_agent
 
@@ -144,7 +147,7 @@ class AsyncDownloader:
                     f"ETag cache file is corrupted and cannot be parsed as JSON: {e}",
                     cache_path=str(self.cfg.etag_cache_path),
                 ) from e
-            except (OSError, IOError) as e:
+            except OSError as e:
                 # File read error - warn but continue with empty cache
                 logger.warning(
                     f"Failed to read ETag cache from {self.cfg.etag_cache_path}: {e}. "
@@ -172,21 +175,21 @@ class AsyncDownloader:
                 logger.debug(
                     f"Saved ETag cache to {self.cfg.etag_cache_path} ({len(self._etag_cache)} entries)"
                 )
-            except (OSError, IOError) as e:
+            except OSError as e:
                 # File write error during cleanup
                 # Log as error but don't raise - we're in cleanup phase
                 logger.error(
                     f"Failed to save ETag cache to {self.cfg.etag_cache_path}: {e}. "
                     "Cache will not be persisted for next run."
                 )
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 # Unexpected error (e.g., serialization issue)
                 logger.error(
                     f"Unexpected error while saving ETag cache: {type(e).__name__}: {e}. "
                     "Cache will not be persisted for next run."
                 )
 
-    async def fetch_bytes(self, url: str, *, force: bool = False) -> Optional[bytes]:
+    async def fetch_bytes(self, url: str, *, force: bool = False) -> bytes | None:
         """
         Return response bytes, or None if 304 due to conditional request.
 
@@ -306,7 +309,7 @@ class AsyncDownloader:
                                     delay = max(
                                         delay, max(0.0, dt.timestamp() - now_ts)
                                     )
-                            except Exception:
+                            except (TypeError, ValueError):
                                 pass
 
                 if retry and attempt < self.cfg.max_retries:
@@ -362,7 +365,7 @@ class AsyncDownloader:
         path.write_bytes(content)
         return path, "downloaded"
 
-    async def fetch_many(self, urls: Iterable[str]) -> list[Optional[bytes]]:
+    async def fetch_many(self, urls: Iterable[str]) -> list[bytes | None]:
         return await asyncio.gather(*(self.fetch_bytes(u) for u in urls))
 
     async def download_many(

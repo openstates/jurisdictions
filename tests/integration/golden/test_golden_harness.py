@@ -7,7 +7,7 @@ generate stage or regenerate fixtures are marked ``integration``.
 from __future__ import annotations
 
 import hashlib
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -29,13 +29,13 @@ from tests.integration.golden.harness import (
     load_jurisdiction_fixtures,
     load_normalized_government_fixtures,
     load_roster,
-    resolve_golden_government_fixtures,
-    validate_golden_government_fixtures,
     regenerate_from_fixtures,
+    resolve_golden_government_fixtures,
     run_pipeline,
+    validate_golden_government_fixtures,
 )
 
-ASOF = datetime(2025, 10, 27, 1, 29, 51, tzinfo=timezone.utc)
+ASOF = datetime(2025, 10, 27, 1, 29, 51, tzinfo=UTC)
 
 
 def _write(path: Path, data: dict) -> Path:

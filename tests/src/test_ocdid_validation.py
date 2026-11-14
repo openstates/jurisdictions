@@ -5,16 +5,15 @@ import pytest
 from src.models.source import SourceObj
 from src.normalize_government import GovernmentRecord, GovernmentType
 from src.ocdid_rule_engine import OCDIDCandidate
-from src.resolve_government import CensusDivisionRecord
 from src.ocdid_validation import (
     OCDIDQuarantineRecord,
     OCDIDValidationStatus,
     build_quarantine_record,
     validate_candidate,
 )
+from src.resolve_government import CensusDivisionRecord
 from src.sources.ocd_master import OCDMasterIndex
 from src.sources.snapshot import load_snapshot
-
 
 FIXTURE = Path("tests/fixtures/ocd_master/country-us.csv")
 

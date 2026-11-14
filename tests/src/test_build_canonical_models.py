@@ -1,5 +1,5 @@
 import socket
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -33,7 +33,7 @@ def _source(*, field: list[str], dataset: str) -> SourceObj:
         source_description="Controlled Phase 9 fixture",
         dataset=dataset,
         release="2026",
-        retrieval_date=datetime(2026, 9, 23, 17, 17, 58, tzinfo=timezone.utc),
+        retrieval_date=datetime(2026, 9, 23, 17, 17, 58, tzinfo=UTC),
     )
 
 
@@ -133,10 +133,24 @@ def test_build_division_carries_external_identifiers_and_geometry() -> None:
     assert len(division.geometries or []) == 1
     geometry = division.geometries[0]
     assert str(geometry.url).endswith("where=GEOID%3D%270670364%27&f=geojson")
-    assert geometry.valid_from is None
+    assert geometry.valid_from == datetime(2026, 1, 1, tzinfo=UTC)
     assert geometry.valid_to is None
     assert geometry.source is not None
     assert geometry.source.dataset == "TIGER/Line"
+
+
+def test_build_division_leaves_geometry_undated_without_release() -> None:
+    source = _source(field=["geometry"], dataset="TIGER/Line").model_copy(
+        update={"release": None}
+    )
+
+    division = build_division(
+        division=_division(geometry_source=source),
+        validation=_verified(),
+    )
+
+    assert division.geometries[0].valid_from is None
+    assert division.geometries[0].valid_to is None
 
 
 def test_build_division_preserves_distinct_tiger_names_as_aliases() -> None:

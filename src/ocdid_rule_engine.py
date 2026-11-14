@@ -16,7 +16,6 @@ from src.models.ocdid import OCDIdParsed
 from src.normalize_government import GovernmentRecord, GovernmentType
 from src.resolve_government import CensusDivisionRecord
 
-
 RULE_VERSION = "1"
 
 

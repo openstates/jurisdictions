@@ -8,8 +8,8 @@ resolve geography, generate OCDIDs, or build canonical YAML models.
 from __future__ import annotations
 
 import re
+from collections.abc import Iterable
 from enum import Enum
-from typing import Iterable
 
 from pydantic import BaseModel, ConfigDict
 

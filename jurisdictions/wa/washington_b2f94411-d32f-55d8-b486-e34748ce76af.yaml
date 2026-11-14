@@ -1,0 +1,21 @@
+id: b2f94411-d32f-55d8-b486-e34748ce76af
+ocdid: ocd-jurisdiction/country:us/state:wa/government
+name: Washington Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa
+classification: government
+legislative_sessions: {}
+feature_flags: []
+accurate_asof: '2026-10-31T17:35:53.125229Z'
+last_updated: '2026-10-31T17:35:53.125229Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: ocdid_recursive_stub
+  source_type: human_researched
+  source_url:
+    ocd_repo: https://github.com/openstates/jurisdictions
+  source_description: "Placeholder stub \u2014 created by recursive ancestor traversal"
+metadata:
+  urls: []

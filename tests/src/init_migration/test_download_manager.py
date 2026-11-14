@@ -1,11 +1,10 @@
 """Tests for DownloadManager — URL building and DuckDB loading."""
 
-import pytest
 import duckdb
 import httpx
+import pytest
 
 from src.init_migration.download_manager import DownloadManager
-
 
 # --- URL Building ---
 

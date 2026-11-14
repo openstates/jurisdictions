@@ -1,0 +1,24 @@
+id: 3a5c7b4e-eb79-5ff6-a41a-22cb90b8a107
+ocdid: ocd-jurisdiction/country:us/state:wa/place:tacoma/government
+name: Tacoma Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/place:tacoma/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T17:44:53.158368Z'
+last_updated: '2026-10-31T17:44:55.548256Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/place:tacoma/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

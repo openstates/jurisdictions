@@ -12,19 +12,21 @@ Name and URL resolution order:
     2. Deterministic fallback from Division data
 """
 
-from src.init_migration.pipeline_models import GeneratorReq
+import logging
+from datetime import UTC, datetime
+from pathlib import Path
+from uuid import UUID
+
+import yaml
+
 from src.init_migration.jurisdiction_seed import derive_jurisdiction_ocdid
+from src.init_migration.pipeline_models import GeneratorReq
 from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
-from src.models.source import SourceObj, SourceType
 from src.models.ocdid import OCDIdParsed
+from src.models.source import SourceObj, SourceType
 from src.utils.admin_levels import resolve_area_root, resolve_output_dir
 from src.utils.yaml_manager import find_ocdid_paths
-from pathlib import Path
-from datetime import datetime, timezone
-from uuid import UUID
-import logging
-import yaml
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -156,7 +158,7 @@ class JurGenerator:
             term = None
             metadata: dict = {"urls": []}
 
-            now = datetime.now(timezone.utc)
+            now = datetime.now(UTC)
             self.jurisdiction = Jurisdiction(
                 ocdid=jurisdiction_ocdid,
                 name=name,
@@ -183,9 +185,8 @@ class JurGenerator:
             return self.jurisdiction
 
         except Exception:
-            logger.error(
+            logger.exception(
                 f"Failed to generate Jurisdiction from Division {division.ocdid if division else 'unknown'}",
-                exc_info=True,
             )
             raise
 
@@ -213,7 +214,7 @@ class JurGenerator:
             return matches[0] if matches else None
         except ValueError:
             raise
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             logger.debug(
                 f"Error locating existing Jurisdiction {jurisdiction_ocdid}: {exc}"
             )
@@ -271,7 +272,7 @@ class JurGenerator:
             return filepath
 
         except Exception:
-            logger.error("Failed to save Jurisdiction to YAML", exc_info=True)
+            logger.exception("Failed to save Jurisdiction to YAML")
             raise
 
 

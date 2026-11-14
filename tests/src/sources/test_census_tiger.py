@@ -2,8 +2,9 @@
 
 import io
 import zipfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import ClassVar
 
 import httpx
 import pytest
@@ -31,7 +32,7 @@ from src.sources.census_tiger import (
 from src.sources.snapshot import SnapshotStore, load_snapshot, source_obj_from_snapshot
 
 FIXTURES = Path("tests/fixtures/tiger")
-RETRIEVED_AT = datetime(2026, 9, 19, tzinfo=timezone.utc)
+RETRIEVED_AT = datetime(2026, 9, 19, tzinfo=UTC)
 SAUSALITO_URL = (
     "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/"
     "Places_CouSub_ConCity_SubMCD/MapServer/4/query?where=GEOID%3D'0670364'"
@@ -148,8 +149,8 @@ class TestTigerLineNaming:
         assert spec.url.endswith("/PLACE/tl_2025_53_place.zip")
 
     def test_series_as_of(self):
-        assert series_as_of(2025) == datetime(2025, 1, 1, tzinfo=timezone.utc)
-        assert series_as_of("2023") == datetime(2023, 1, 1, tzinfo=timezone.utc)
+        assert series_as_of(2025) == datetime(2025, 1, 1, tzinfo=UTC)
+        assert series_as_of("2023") == datetime(2023, 1, 1, tzinfo=UTC)
 
 
 class TestTigerWebUrls:
@@ -305,15 +306,15 @@ class TestFixtures:
             == "https://www2.census.gov/geo/tiger/TIGER2025/PLACE/"
         )
         assert source.publication_date == datetime(
-            2025, 9, 22, 23, 49, 10, tzinfo=timezone.utc
+            2025, 9, 22, 23, 49, 10, tzinfo=UTC
         )
         assert source.retrieval_date == datetime(
-            2026, 9, 19, 17, 12, 9, tzinfo=timezone.utc
+            2026, 9, 19, 17, 12, 9, tzinfo=UTC
         )
 
 
 class TestRowValidation:
-    ROW = {
+    ROW: ClassVar[dict[str, str]] = {
         "STATEFP": "06",
         "PLACEFP": "70364",
         "GEOID": "0670364",

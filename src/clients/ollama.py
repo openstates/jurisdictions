@@ -17,7 +17,7 @@ _INSTALL_HINT = (
 
 
 @lru_cache(maxsize=1)
-def make_ollama_client() -> "AsyncClient":
+def make_ollama_client() -> AsyncClient:
     """Return an ollama.AsyncClient pointed at the local Ollama daemon.
 
     Reads `OLLAMA_HOST` from the environment (defaults to

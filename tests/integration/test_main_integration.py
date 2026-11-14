@@ -1,9 +1,9 @@
 """Integration tests for stage 1 pipeline."""
 
+import argparse
 from types import SimpleNamespace
 from unittest.mock import patch
 
-import argparse
 import httpx
 import pytest
 

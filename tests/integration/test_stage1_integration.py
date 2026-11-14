@@ -1,13 +1,13 @@
 """Integration test for the full Stage 1 pipeline with mocked HTTP."""
 
-import pytest
+from pathlib import Path
+
 import duckdb
 import httpx
-from pathlib import Path
+import pytest
 
 from src.init_migration.download_manager import DownloadManager
 from src.init_migration.ocdid_matcher import OCDidMatcher
-
 
 MASTER_CSV = b"""id,name
 ocd-division/country:us/state:wa/place:seattle,Seattle

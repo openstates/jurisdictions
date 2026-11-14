@@ -2,7 +2,7 @@
 
 import io
 import zipfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import httpx
@@ -28,7 +28,7 @@ GENERAL = FIXTURES / "govt_units_2022_general_purpose.csv"
 SPECIAL = FIXTURES / "govt_units_2022_special_district.csv"
 SCHOOL = FIXTURES / "govt_units_2022_school_district.csv"
 DEPENDENT = FIXTURES / "govt_units_2022_dependent_school_system.csv"
-RETRIEVED_AT = datetime(2026, 9, 19, tzinfo=timezone.utc)
+RETRIEVED_AT = datetime(2026, 9, 19, tzinfo=UTC)
 
 
 def by_id(result):
@@ -148,10 +148,10 @@ class TestFixtureProvenance:
         assert source.release == "2022"
         assert str(source.source_url) == census_of_governments_url(2022)
         assert source.publication_date == datetime(
-            2023, 8, 24, 12, 44, 48, tzinfo=timezone.utc
+            2023, 8, 24, 12, 44, 48, tzinfo=UTC
         )
         assert source.retrieval_date == datetime(
-            2026, 9, 19, 16, 14, 20, tzinfo=timezone.utc
+            2026, 9, 19, 16, 14, 20, tzinfo=UTC
         )
         assert source.dataset.startswith("Census of Governments: Organization")
 

@@ -1,7 +1,7 @@
 """Tests for the source snapshot layer: fetch, verify, cache, provenance."""
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import httpx
 import pytest
@@ -26,37 +26,37 @@ from src.sources.snapshot import (
 
 URL = "https://example.com/data/units.csv"
 CONTENT = b"id,name\n1,alpha\n2,beta\n"
-RETRIEVED_AT = datetime(2026, 9, 18, 12, 0, tzinfo=timezone.utc)
-PUBLISHED_AT = datetime(2025, 3, 1, tzinfo=timezone.utc)
+RETRIEVED_AT = datetime(2026, 9, 18, 12, 0, tzinfo=UTC)
+PUBLISHED_AT = datetime(2025, 3, 1, tzinfo=UTC)
 
 
 def make_spec(**overrides) -> SnapshotSpec:
-    fields = dict(
-        source="example",
-        source_name="Example Provider",
-        dataset="Example Units",
-        release="2025",
-        filename="units.csv",
-        url=URL,
-        publication_date=PUBLISHED_AT,
-    )
+    fields = {
+        "source": "example",
+        "source_name": "Example Provider",
+        "dataset": "Example Units",
+        "release": "2025",
+        "filename": "units.csv",
+        "url": URL,
+        "publication_date": PUBLISHED_AT,
+    }
     fields.update(overrides)
     return SnapshotSpec(**fields)
 
 
 def make_metadata(**overrides) -> SnapshotMetadata:
-    fields = dict(
-        source="example",
-        source_name="Example Provider",
-        dataset="Example Units",
-        release="2025",
-        filename="units.csv",
-        url=URL,
-        sha256=sha256_of_bytes(CONTENT),
-        size_bytes=len(CONTENT),
-        retrieved_at=RETRIEVED_AT,
-        publication_date=PUBLISHED_AT,
-    )
+    fields = {
+        "source": "example",
+        "source_name": "Example Provider",
+        "dataset": "Example Units",
+        "release": "2025",
+        "filename": "units.csv",
+        "url": URL,
+        "sha256": sha256_of_bytes(CONTENT),
+        "size_bytes": len(CONTENT),
+        "retrieved_at": RETRIEVED_AT,
+        "publication_date": PUBLISHED_AT,
+    }
     fields.update(overrides)
     return SnapshotMetadata(**fields)
 
@@ -267,7 +267,7 @@ class TestFetch:
             return_value=httpx.Response(200, content=CONTENT)
         )
         store = SnapshotStore(tmp_path)
-        later = datetime(2026, 9, 19, tzinfo=timezone.utc)
+        later = datetime(2026, 9, 19, tzinfo=UTC)
         async with AsyncDownloader() as downloader:
             first = await store.fetch(
                 make_spec(), downloader, retrieved_at=RETRIEVED_AT
@@ -284,7 +284,7 @@ class TestFetch:
             return_value=httpx.Response(200, content=CONTENT)
         )
         store = SnapshotStore(tmp_path)
-        later = datetime(2026, 9, 19, tzinfo=timezone.utc)
+        later = datetime(2026, 9, 19, tzinfo=UTC)
         async with AsyncDownloader() as downloader:
             await store.fetch(make_spec(), downloader, retrieved_at=RETRIEVED_AT)
             refreshed = await store.fetch(
@@ -302,7 +302,7 @@ class TestFetch:
         store = SnapshotStore(tmp_path)
         cached = store.put(make_spec(), CONTENT, retrieved_at=RETRIEVED_AT)
         cached.path.write_bytes(b"corrupted")
-        later = datetime(2026, 9, 19, tzinfo=timezone.utc)
+        later = datetime(2026, 9, 19, tzinfo=UTC)
 
         async with AsyncDownloader() as downloader:
             snapshot = await store.fetch(make_spec(), downloader, retrieved_at=later)

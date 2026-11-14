@@ -12,15 +12,14 @@ Output:
 
 from __future__ import annotations
 
-import json
 import html
+import json
 import re
+from logging import getLogger
 from pathlib import Path
-from typing import Optional
+
 import httpx
 from pydantic import BaseModel, Field
-
-from logging import getLogger
 
 logger = getLogger(__name__)
 
@@ -35,10 +34,10 @@ LSAD_CODE_PATTERN = re.compile(r"^[0-9A-Z]{2}$")
 
 class LSADCode(BaseModel):
     lsad_description: str = Field(description="Official LSAD description")
-    lsad_prefix: Optional[str] = Field(
+    lsad_prefix: str | None = Field(
         default=None, description="Prefix text, if LSAD is prefix-based"
     )
-    lsad_suffix: Optional[str] = Field(
+    lsad_suffix: str | None = Field(
         default=None, description="Suffix text, if LSAD is suffix-based"
     )
     associated_geographic_entity: str

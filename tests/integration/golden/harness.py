@@ -38,6 +38,11 @@ from src.init_migration.pipeline_models import (
 from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
 from src.models.ocdid import OCDIdParsed
+from src.normalize_government import (
+    GovernmentType,
+    NormalizationResult,
+    normalize_records,
+)
 from src.ocdid_rule_engine import generate_candidate
 from src.ocdid_validation import (
     OCDIDQuarantineRecord,
@@ -46,16 +51,15 @@ from src.ocdid_validation import (
     build_quarantine_record,
     validate_candidate,
 )
-from src.normalize_government import (
-    GovernmentType,
-    NormalizationResult,
-    normalize_records,
-)
 from src.render_yaml import (
     record_relative_path,
-    slugify as render_slugify,
-    state_segment as render_state_segment,
     write_yaml_record,
+)
+from src.render_yaml import (
+    slugify as render_slugify,
+)
+from src.render_yaml import (
+    state_segment as render_state_segment,
 )
 from src.resolve_government import (
     ResolutionResult,

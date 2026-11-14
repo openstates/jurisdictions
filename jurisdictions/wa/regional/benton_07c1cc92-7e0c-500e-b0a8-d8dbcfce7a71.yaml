@@ -1,0 +1,24 @@
+id: 07c1cc92-7e0c-500e-b0a8-d8dbcfce7a71
+ocdid: ocd-jurisdiction/country:us/state:wa/county:benton/government
+name: Benton County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:benton/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T17:35:55.932247Z'
+last_updated: '2026-10-31T17:35:56.369817Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:benton/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

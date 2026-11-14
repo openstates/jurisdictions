@@ -1,0 +1,24 @@
+id: 0178e1f7-ef10-5e3d-85e2-61196c84b1ed
+ocdid: ocd-jurisdiction/country:us/state:wa/county:pacific/government
+name: Pacific County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:pacific/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T17:38:25.626527Z'
+last_updated: '2026-10-31T17:38:27.272039Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:pacific/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

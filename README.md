@@ -331,6 +331,20 @@ uv run python src/init_migration/main.py --force
 uv run python src/init_migration/main.py --state ca --verbose
 ```
 
+### Docker
+
+The pipeline can run in a container. Pass the states as arguments and mount the output folders to keep the results:
+
+```sh
+docker build -t jurisdictions .
+docker run --rm \
+  -v "$PWD/divisions:/app/divisions" -v "$PWD/jurisdictions:/app/jurisdictions" \
+  -v "$PWD/data:/app/data" -v "$PWD/logs:/app/logs" \
+  jurisdictions --state wa,tx
+```
+
+The **Populate states** GitHub Action (`.github/workflows/populate-states.yml`) runs the same image for a comma-separated list of states and opens a PR with the generated YAML. Tick `include_data` to also commit `data/`.
+
 ### Maintenance & Troubleshooting
 
 ```sh

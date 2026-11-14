@@ -14,23 +14,27 @@ Responsibilities:
 
 import logging
 from pathlib import Path
+
+import polars as pl
+from pydantic import BaseModel
+
+from src.init_migration.generate_division import DivGenerator
+from src.init_migration.generate_jurisdiction import JurGenerator
+from src.init_migration.generate_recursive import ensure_ancestor_stubs
+from src.init_migration.jurisdiction_seed import (
+    derive_jurisdiction_ocdid,
+    infer_jurisdiction_seed,
+)
 from src.init_migration.pipeline_models import (
     GeneratorReq,
     GeneratorResp,
     GeneratorStatus,
     Status,
 )
-from src.init_migration.jurisdiction_seed import derive_jurisdiction_ocdid
-from src.init_migration.generate_division import DivGenerator
-from src.init_migration.generate_jurisdiction import JurGenerator
-from src.init_migration.generate_recursive import ensure_ancestor_stubs
-from src.init_migration.jurisdiction_seed import infer_jurisdiction_seed
-from src.utils.ocdid import ocdid_parser
-from src.utils.place_name import namelsad_to_display_name
 from src.models.division import Division, find_identifier
 from src.models.jurisdiction import Jurisdiction
-import polars as pl
-from pydantic import BaseModel
+from src.utils.ocdid import ocdid_parser
+from src.utils.place_name import namelsad_to_display_name
 
 # Try to import rapidfuzz, fall back to difflib if not available
 try:
@@ -218,7 +222,7 @@ class GeneratePipeline:
             logger.info("Normalized validation data with place names")
             return df
         except Exception:
-            logger.error("Failed to normalize validation data", exc_info=True)
+            logger.exception("Failed to normalize validation data")
             raise ValueError("Cannot normalize validation data")
 
     def find_matches(self, ocdid: str) -> pl.DataFrame:
@@ -368,7 +372,7 @@ class GeneratePipeline:
             return result_df
 
         except Exception:
-            logger.error(f"Error in find_matches for {ocdid}", exc_info=True)
+            logger.exception(f"Error in find_matches for {ocdid}")
             return pl.DataFrame()
 
     @staticmethod
@@ -622,4 +626,4 @@ class GeneratePipeline:
                 logger.info(f"Saved ocdid_no_validation records to {filepath}")
 
         except Exception:
-            logger.error("Failed to save quarantine data", exc_info=True)
+            logger.exception("Failed to save quarantine data")

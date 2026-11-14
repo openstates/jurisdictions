@@ -1,13 +1,14 @@
 from datetime import datetime
-from src.models.source import SourceObj
+
 from src.models.jurisdiction import (
+    ClassificationEnum,
     Jurisdiction,
     TermDetail,
-    ClassificationEnum,
+    session_calendar_year,
+    session_span,
 )
-from src.models.jurisdiction import session_calendar_year, session_span
+from src.models.source import SourceObj
 from src.utils.datetime import ymd
-
 
 if __name__ == "__main__":
     now = datetime.fromisoformat("2025-09-27T21:12:18.255687+00:00")

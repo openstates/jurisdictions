@@ -1,0 +1,24 @@
+id: 303fa39d-a587-5028-958c-0e0550292d4f
+ocdid: ocd-jurisdiction/country:us/state:wa/county:douglas/government
+name: Douglas County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:douglas/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T17:36:14.966135Z'
+last_updated: '2026-10-31T17:36:15.628384Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:douglas/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

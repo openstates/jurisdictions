@@ -10,21 +10,21 @@ Tests cover:
 - AI lookup stub behavior
 """
 
-import pytest
 from datetime import datetime
 from uuid import NAMESPACE_URL, uuid5
 
-from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp
+import pytest
+
 from src.init_migration.generate_jurisdiction import (
     JurGenerator,
     get_jurisdiction_filename,
 )
+from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp
 from src.models.division import Division
 from src.models.jurisdiction import Jurisdiction
 from src.models.ocdid import OCDIdParsed
 from src.models.source import SourceType
 from src.utils.yaml_manager import YamlManager
-
 
 # ============================================================================
 # FIXTURES

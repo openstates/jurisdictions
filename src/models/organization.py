@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional, List
+
 from pydantic import BaseModel, Field, HttpUrl
 
 from src.models.source import SourceObj, SourceType
@@ -37,19 +37,19 @@ class Organization(BaseModel):
     """
 
     name: str
-    classification: Optional[OrganizationClassificationEnum] = Field(
+    classification: OrganizationClassificationEnum | None = Field(
         default=None,
         description="An organization category. See OrganizationClassificationEnum.",
     )
-    other_names: Optional[List[str]] = Field(
+    other_names: list[str] | None = Field(
         default=None,
         description="Commonly used names for the organization, if different from the official name. Provide as a list of strings to support search functionality and matching.",
     )
-    url: Optional[HttpUrl] = Field(
+    url: HttpUrl | None = Field(
         None,
         description="URL pointing to organization's official website. Internal links within government websites to a specific page permitted.",
     )
-    sourcing: List[SourceObj] = Field(
+    sourcing: list[SourceObj] = Field(
         default_factory=lambda: [
             SourceObj(
                 field=["organization"],

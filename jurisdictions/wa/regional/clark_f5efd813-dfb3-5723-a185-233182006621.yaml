@@ -1,0 +1,24 @@
+id: f5efd813-dfb3-5723-a185-233182006621
+ocdid: ocd-jurisdiction/country:us/state:wa/county:clark/government
+name: Clark County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:clark/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T17:36:02.864873Z'
+last_updated: '2026-10-31T17:36:03.410998Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:clark/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

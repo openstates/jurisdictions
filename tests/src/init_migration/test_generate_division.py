@@ -1,15 +1,15 @@
-import pytest
-from uuid import UUID
-from uuid import NAMESPACE_URL, uuid5
+from pathlib import Path
+from uuid import NAMESPACE_URL, UUID, uuid5
 
-from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp
+import pytest
+
 from src.init_migration.generate_division import (
     DivGenerator,
     _leaf_segment_display_name,
 )
+from src.init_migration.pipeline_models import GeneratorReq, OCDidIngestResp
 from src.models.division import Division, Identifiers, find_identifier
 from src.models.ocdid import OCDIdParsed
-from pathlib import Path
 
 
 def _identifier_values(

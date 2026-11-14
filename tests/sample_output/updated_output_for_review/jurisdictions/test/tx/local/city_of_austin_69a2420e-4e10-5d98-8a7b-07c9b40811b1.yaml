@@ -1,0 +1,63 @@
+id: 69a2420e-4e10-5d98-8a7b-07c9b40811b1
+ocdid: ocd-jurisdiction/country:us/state:tx/place:austin/government
+name: City of Austin
+url: https://www.austintexas.gov/
+classification: government
+census_government_id: null
+division_relationships: []
+legislative_sessions: {}
+feature_flags: []
+term:
+  duration: 4
+  term_description: The regular term of the mayor and council members is four years.
+    Council terms shall be staggered so that a general election is held every two
+    years, and half, or as near to half as is practical, of the council is elected
+    at each election. The term "council member(s)" includes the mayor unless otherwise
+    provided.
+  number_of_positions: 11
+  term_limits: 2 consecutive terms
+  source_url: https://library.municode.com/tx/austin/codes/code_of_ordinances?nodeId=CH_ARTIIIEL_S2ELDACOTEELMARFEL
+  last_known_term_end_date: null
+accurate_asof: '2025-10-27T01:29:51Z'
+last_updated: '2025-10-27T01:29:51Z'
+sourcing:
+- field:
+  - url
+  source_name: City of Austin ArcGIS Hub
+  source_type: human_researched
+  source_url: https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/
+  source_description: null
+  dataset: null
+  release: null
+  publication_date: null
+  retrieval_date: null
+- field:
+  - term
+  - term.term_description
+  source_name: Austin Code of Ordinances
+  source_type: human_researched
+  source_url: https://library.municode.com/tx/austin/codes/code_of_ordinances?nodeId=CH_ARTIIIEL_S2ELDACOTEELMARFEL
+  source_description: null
+  dataset: null
+  release: null
+  publication_date: null
+  retrieval_date: null
+- field:
+  - term
+  - term.term_limits
+  source_name: Austin Code of Ordinances
+  source_type: human_researched
+  source_url: https://library.municode.com/tx/austin/codes/code_of_ordinances?nodeId=CH_ARTIITHCO_S5TELI
+  source_description: null
+  dataset: null
+  release: null
+  publication_date: null
+  retrieval_date: null
+metadata:
+  urls:
+  - url_type: meetings
+    url: https://www.austintexas.gov/department/city-council/council/council_meeting_info_center.htm
+  - url_type: people
+    url: https://www.austintexas.gov/government
+organizations: null
+governing_charter: null

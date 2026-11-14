@@ -1,6 +1,6 @@
 """Unit tests for ``src.models.source``."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -30,8 +30,8 @@ def _full_source() -> SourceObj:
         source_description="TIGER/Line place boundaries",
         dataset="TIGER/Line Shapefiles",
         release="2024",
-        publication_date=datetime(2024, 9, 15, tzinfo=timezone.utc),
-        retrieval_date=datetime(2026, 8, 1, 14, 30, 5, tzinfo=timezone.utc),
+        publication_date=datetime(2024, 9, 15, tzinfo=UTC),
+        retrieval_date=datetime(2026, 8, 1, 14, 30, 5, tzinfo=UTC),
     )
 
 
@@ -90,9 +90,9 @@ def test_source_obj_fully_populated_round_trips_losslessly() -> None:
     assert restored == source
     assert restored.dataset == "TIGER/Line Shapefiles"
     assert restored.release == "2024"
-    assert restored.publication_date == datetime(2024, 9, 15, tzinfo=timezone.utc)
+    assert restored.publication_date == datetime(2024, 9, 15, tzinfo=UTC)
     assert restored.retrieval_date == datetime(
-        2026, 8, 1, 14, 30, 5, tzinfo=timezone.utc
+        2026, 8, 1, 14, 30, 5, tzinfo=UTC
     )
     assert restored.publication_date.tzinfo is not None
     assert restored.retrieval_date.tzinfo is not None
@@ -115,8 +115,8 @@ def test_source_obj_fully_populated_round_trips_losslessly() -> None:
     ("publication_date", "retrieval_date"),
     [
         (None, None),
-        (datetime(2024, 9, 15, tzinfo=timezone.utc), None),
-        (None, datetime(2026, 8, 1, tzinfo=timezone.utc)),
+        (datetime(2024, 9, 15, tzinfo=UTC), None),
+        (None, datetime(2026, 8, 1, tzinfo=UTC)),
     ],
 )
 def test_publication_and_retrieval_dates_accept_none_independently(
@@ -192,22 +192,22 @@ def test_source_metadata_does_not_change_division_uuid() -> None:
         "country": "us",
         "display_name": "Sausalito",
         "jurisdiction_id": "ocd-jurisdiction/country:us/state:ca/place:sausalito/government",
-        "last_updated": datetime(2026, 4, 8, 12, 0, tzinfo=timezone.utc),
+        "last_updated": datetime(2026, 4, 8, 12, 0, tzinfo=UTC),
     }
     bare = SourceObj(**_LEGACY_REQUIRED)
     release_2024 = SourceObj(
         **_LEGACY_REQUIRED,
         dataset="TIGER/Line Shapefiles",
         release="2024",
-        publication_date=datetime(2024, 9, 15, tzinfo=timezone.utc),
-        retrieval_date=datetime(2026, 8, 1, tzinfo=timezone.utc),
+        publication_date=datetime(2024, 9, 15, tzinfo=UTC),
+        retrieval_date=datetime(2026, 8, 1, tzinfo=UTC),
     )
     release_2025 = SourceObj(
         **_LEGACY_REQUIRED,
         dataset="TIGER/Line Shapefiles",
         release="2025",
-        publication_date=datetime(2025, 9, 15, tzinfo=timezone.utc),
-        retrieval_date=datetime(2026, 9, 1, tzinfo=timezone.utc),
+        publication_date=datetime(2025, 9, 15, tzinfo=UTC),
+        retrieval_date=datetime(2026, 9, 1, tzinfo=UTC),
     )
 
     ids = {
@@ -227,13 +227,13 @@ def test_source_metadata_does_not_change_jurisdiction_uuid() -> None:
         "name": "Sausalito City Government",
         "classification": ClassificationEnum.GOVERNMENT,
         "metadata": {"urls": []},
-        "last_updated": datetime(2026, 4, 8, 12, 0, tzinfo=timezone.utc),
+        "last_updated": datetime(2026, 4, 8, 12, 0, tzinfo=UTC),
     }
     before = SourceObj(**{**_LEGACY_REQUIRED, "field": ["url"]})
     after = SourceObj(
         **{**_LEGACY_REQUIRED, "field": ["url"]},
         release="v2",
-        retrieval_date=datetime(2026, 9, 1, tzinfo=timezone.utc),
+        retrieval_date=datetime(2026, 9, 1, tzinfo=UTC),
     )
 
     assert Jurisdiction(**common, sourcing=[before]).id == (

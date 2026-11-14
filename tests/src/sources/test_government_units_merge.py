@@ -2,7 +2,7 @@
 
 import csv
 import io
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -65,21 +65,21 @@ def load_annual(include_pensions: bool = True) -> ParseResult:
 
 
 def make_record(census_id: str = "161205", **overrides) -> CensusGovernmentRecord:
-    values = dict(
-        census_id=census_id,
-        name="CITY OF SAUSALITO",
-        kind=GovernmentKind.GENERAL_PURPOSE,
-        state="CA",
-        fips_state="06",
-        is_active=True,
-        unit_type="2 - MUNICIPAL",
-        fips_county="041",
-        fips_place="70364",
-        county_area_name="MARIN",
-        web_address="http://www.ci.sausalito.ca.us",
-        population=7199,
-        population_year=2021,
-    )
+    values = {
+        "census_id": census_id,
+        "name": "CITY OF SAUSALITO",
+        "kind": GovernmentKind.GENERAL_PURPOSE,
+        "state": "CA",
+        "fips_state": "06",
+        "is_active": True,
+        "unit_type": "2 - MUNICIPAL",
+        "fips_county": "041",
+        "fips_place": "70364",
+        "county_area_name": "MARIN",
+        "web_address": "http://www.ci.sausalito.ca.us",
+        "population": 7199,
+        "population_year": 2021,
+    }
     values.update(overrides)
     return CensusGovernmentRecord(**values)
 
@@ -94,8 +94,8 @@ def metadata(source: str, release: str, day: int) -> SnapshotMetadata:
         url=f"https://example.com/{source}/{release}.zip",
         sha256="a" * 64,
         size_bytes=1,
-        retrieved_at=datetime(2026, 9, day, tzinfo=timezone.utc),
-        publication_date=datetime(2026, 9, 1, tzinfo=timezone.utc),
+        retrieved_at=datetime(2026, 9, day, tzinfo=UTC),
+        publication_date=datetime(2026, 9, 1, tzinfo=UTC),
     )
 
 

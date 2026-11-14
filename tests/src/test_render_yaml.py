@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import yaml
@@ -14,7 +14,7 @@ from src.render_yaml import (
 )
 from src.utils.deterministic_id import generate_id
 
-ASOF = datetime(2026, 9, 23, 17, 17, 58, tzinfo=timezone.utc)
+ASOF = datetime(2026, 9, 23, 17, 17, 58, tzinfo=UTC)
 
 
 def _division() -> Division:

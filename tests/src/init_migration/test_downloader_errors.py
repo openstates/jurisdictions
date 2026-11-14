@@ -3,8 +3,8 @@
 import pytest
 from httpx import Response
 
-from src.init_migration.downloader import AsyncDownloader, DownloaderConfig
 from src.errors import APIRetryError, UnexpectedContentError
+from src.init_migration.downloader import AsyncDownloader, DownloaderConfig
 
 
 class TestErrorHandling:

@@ -1,9 +1,9 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import NAMESPACE_URL, uuid4, uuid5
 
+import pytest
 from hypothesis import given
 from hypothesis import strategies as st
-import pytest
 from pydantic import ValidationError
 
 from src.models.jurisdiction import ClassificationEnum, Jurisdiction, TermDetail
@@ -51,7 +51,7 @@ def test_jurisdiction_id_defaults_to_uuid5_of_ocdid(
         url="https://example.gov",
         classification=classification,
         metadata={"urls": []},
-        last_updated=datetime(2026, 4, 8, 12, 0, tzinfo=timezone.utc),
+        last_updated=datetime(2026, 4, 8, 12, 0, tzinfo=UTC),
     )
 
     assert jurisdiction.id == uuid5(NAMESPACE_URL, ocdid)
@@ -71,7 +71,7 @@ def test_jurisdiction_mutable_facts_do_not_change_uuid() -> None:
         "name": "Seattle City Government",
         "classification": ClassificationEnum.GOVERNMENT,
         "metadata": {"urls": []},
-        "last_updated": datetime(2026, 3, 7, tzinfo=timezone.utc),
+        "last_updated": datetime(2026, 3, 7, tzinfo=UTC),
     }
     source = SourceObj(
         field=["url"],
@@ -87,14 +87,14 @@ def test_jurisdiction_mutable_facts_do_not_change_uuid() -> None:
         source_type=SourceType.HUMAN,
         source_description=None,
         release="2026-09",
-        retrieval_date=datetime(2026, 9, 14, tzinfo=timezone.utc),
+        retrieval_date=datetime(2026, 9, 14, tzinfo=UTC),
     )
     variants = [
         Jurisdiction(**base),
         Jurisdiction(
-            **{**base, "last_updated": datetime(2026, 9, 14, tzinfo=timezone.utc)}
+            **{**base, "last_updated": datetime(2026, 9, 14, tzinfo=UTC)}
         ),
-        Jurisdiction(**base, accurate_asof=datetime(2026, 1, 1, tzinfo=timezone.utc)),
+        Jurisdiction(**base, accurate_asof=datetime(2026, 1, 1, tzinfo=UTC)),
         Jurisdiction(**base, url="https://www.seattle.gov/"),
         Jurisdiction(**base, sourcing=[source]),
         Jurisdiction(**base, sourcing=[later_release]),
@@ -243,7 +243,7 @@ def test_jurisdiction_url_absence_does_not_change_uuid() -> None:
         "name": "Seattle City Government",
         "classification": ClassificationEnum.GOVERNMENT,
         "metadata": {"urls": []},
-        "last_updated": datetime(2026, 4, 8, 12, 0, tzinfo=timezone.utc),
+        "last_updated": datetime(2026, 4, 8, 12, 0, tzinfo=UTC),
     }
 
     without_url = Jurisdiction(**common)

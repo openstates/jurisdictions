@@ -1,0 +1,24 @@
+id: c72c2f98-b037-5e81-b479-31312b0b6320
+ocdid: ocd-jurisdiction/country:us/state:wa/county:asotin/government
+name: Asotin County Council District 1 Government
+url: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:asotin/council_district:1
+classification: government
+legislative_sessions: {}
+feature_flags: []
+term: null
+accurate_asof: '2026-10-31T17:35:54.182535Z'
+last_updated: '2026-10-31T17:35:54.671266Z'
+sourcing:
+- field:
+  - ocdid
+  - name
+  - classification
+  source_name: derived_from_division
+  source_type: human_researched
+  source_url:
+    division: https://opencivicdata.org/division/ocd-division/country:us/state:wa/county:asotin/council_district:1
+  source_description: Jurisdiction derived from Division object
+metadata:
+  urls: []
+organizations: null
+governing_charter: null

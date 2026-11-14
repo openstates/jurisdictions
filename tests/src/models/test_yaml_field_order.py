@@ -5,7 +5,7 @@ scatters related fields and makes diffs noisier than the change behind
 them. These tests pin the dump paths to declaration order.
 """
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import yaml
@@ -42,7 +42,7 @@ def _division() -> Division:
         geometries=[
             Geometry(
                 boundary=Boundary(centroid=Centroid(coordinates=[-122.3, 47.6])),
-                valid_from=datetime(2020, 1, 1, tzinfo=timezone.utc),
+                valid_from=datetime(2020, 1, 1, tzinfo=UTC),
                 source=source,
             )
         ],

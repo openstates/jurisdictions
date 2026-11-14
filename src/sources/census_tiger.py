@@ -17,7 +17,7 @@ import re
 import zipfile
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from logging import getLogger
 from pathlib import Path
 
@@ -124,7 +124,7 @@ def load_tiger_config(path: Path = DEFAULT_CONFIG_PATH) -> TigerConfig:
 
 def series_as_of(year: int | str) -> datetime:
     """The date a TIGER/Line release describes: January 1 of the release year."""
-    return datetime(int(year), 1, 1, tzinfo=timezone.utc)
+    return datetime(int(year), 1, 1, tzinfo=UTC)
 
 
 def tiger_line_filename(

@@ -43,8 +43,8 @@ def decode_id(identifier: str | UUID) -> DecodedID:
 
 
 __all__ = [
+    "DecodedID",
+    "decode_id",
     "generate_id",
     "verify_id",
-    "decode_id",
-    "DecodedID",
 ]
